@@ -6,6 +6,7 @@ public class Player : NetworkBehaviour
     public Vector2Int initialPos;
     public GameObject currentZone;
     private BorderZone currentBorderZone;
+    private Chest nearbyChest;
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
 
@@ -41,10 +42,40 @@ public class Player : NetworkBehaviour
             MapManager.Instance.OnSwapingZone(this, direction);
         }
 
+        if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
+        {
+            OpenChestServerRpc();
+        }
+
         if (IsOwner)
         {
             UpdateOtherPlayerVisual();
         }
+    }
+
+    [ServerRpc]
+    private void OpenChestServerRpc()
+    {
+        Vector2Int position = NetworkMapPos.Value;
+
+        MapManager.Instance.OnChestOpen(position);
+
+        OpenChestClientRpc(position);
+    }
+
+    [ClientRpc]
+    private void OpenChestClientRpc(Vector2Int position)
+    {
+        MapManager.Instance.OnChestOpenedNetworked(position);
+
+        Player actualPlayer = IsHost
+            ? MapManager.Instance.Player1
+            : MapManager.Instance.Player2;
+
+        MapManager.Instance.DisableChestAtPosition(
+            position,
+            actualPlayer
+        );
     }
 
     [ServerRpc]
@@ -147,19 +178,27 @@ public class Player : NetworkBehaviour
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Border"))
+        switch (other.tag)
         {
-            BorderZone borderZone = other.GetComponent<BorderZone>();
-
-            currentBorderZone = borderZone;
+            case "Border":
+                currentBorderZone = other.GetComponent<BorderZone>();
+                break;
+            case "Chest":
+                nearbyChest = other.GetComponentInParent<Chest>();
+                break;
         }
     }
 
     public void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Border"))
+        switch (other.tag)
         {
-            currentBorderZone = null;
+            case "Border":
+                currentBorderZone = null;
+                break;
+            case "Chest":
+                nearbyChest = null;
+                break;
         }
     }
 }

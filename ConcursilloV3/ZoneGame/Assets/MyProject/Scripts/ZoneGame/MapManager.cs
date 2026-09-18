@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MapManager : MonoBehaviour
 {
@@ -88,13 +89,6 @@ public class MapManager : MonoBehaviour
     {   
         InitPlayersInfo(startPos);
 
-        player1.NetworkMapPos.Value = startPos;
-        player2.NetworkMapPos.Value = startPos;
-
-        Debug.Log($"Starting position for both players: {startPos}");
-        Debug.Log($"Player 1 initial position: {player1.NetworkMapPos.Value}");
-        Debug.Log($"Player 2 initial position: {player2.NetworkMapPos.Value}");
-
         map[startPos.y, startPos.x] = new MomHouse();
 
         grandmaPos = GrandmaHousePos(startPos);
@@ -105,8 +99,12 @@ public class MapManager : MonoBehaviour
 
         FillOtherZones();
 
-        Zone currentZoneData = player1.currentZone.GetComponent<Zone>();
-        currentZoneData.Setup(player1.NetworkMapPos.Value, map);
+        player1.NetworkMapPos.Value = startPos;
+        player2.NetworkMapPos.Value = startPos;
+
+        Debug.Log($"Starting position for both players: {startPos}");
+        Debug.Log($"Player 1 initial position: {player1.NetworkMapPos.Value}");
+        Debug.Log($"Player 2 initial position: {player2.NetworkMapPos.Value}");
 
         PrintMap();
     }
@@ -397,5 +395,26 @@ public class MapManager : MonoBehaviour
 
         Zone currentZone = player.currentZone.GetComponent<Zone>();
         currentZone.Setup(player.NetworkMapPos.Value, map);
+    }
+
+    public void OnChestOpen(Vector2Int position)
+    {
+        map[position.y, position.x].chestOpened = true;
+
+        LogManager.Log($"Chest at {position} opened!");
+    }
+
+    public void OnChestOpenedNetworked(Vector2Int position)
+    {
+        map[position.y, position.x].chestOpened = true;
+    }
+
+    public void DisableChestAtPosition(Vector2Int position, Player player)
+    {
+        if (player.NetworkMapPos.Value != position)
+            return;
+
+        Zone zone = player.currentZone.GetComponent<Zone>();
+        zone.DisableChest();
     }
 }
