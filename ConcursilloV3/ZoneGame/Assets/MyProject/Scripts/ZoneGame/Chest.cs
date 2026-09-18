@@ -3,8 +3,5 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
-    public void OnOpen()
-    {
-        
-    }
+    
 }

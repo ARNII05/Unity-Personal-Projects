@@ -35,15 +35,17 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
+        if (!IsOwner)
+            return;
+        
         if (currentBorderZone != null && Input.GetKeyDown(KeyCode.F))
         {
             Direction direction = currentBorderZone.direction;
             currentBorderZone = null;
             MapManager.Instance.OnSwapingZone(this, direction);
         }
-
-        if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
-        {
+        else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
+        {       
             OpenChestServerRpc();
         }
 
