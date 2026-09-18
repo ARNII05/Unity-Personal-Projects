@@ -1,0 +1,195 @@
+{
+  "player": "Dylan",
+  "themes": [
+    {
+      "name": "Cultura General",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es el color del cielo en un día despejado?","answers":["Rojo","Azul","Verde","Amarillo"],"correct":1},
+        {"id":2,"statement":"¿Cuántos días hay en un año bisiesto?","answers":["365","366","364","367"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuál es el idioma con más hablantes nativos del mundo?","answers":["Español","Inglés","Chino mandarín","Hindi"],"correct":2},
+        {"id":4,"statement":"¿Cuál es la moneda oficial de Estados Unidos?","answers":["Euro","Dólar","Yen","Libra"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué filósofo es autor de la frase 'Pienso, luego existo'?","answers":["Platón","Descartes","Aristóteles","Kant"],"correct":1},
+        {"id":6,"statement":"¿Cuál es la obra literaria más antigua que se conserva?","answers":["La Ilíada","La Odisea","El Poema de Gilgamesh","Beowulf"],"correct":2}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué país ganó la primera Copa del Mundo de fútbol en 1930?","answers":["Uruguay","Brasil","Italia","Alemania"],"correct":0},
+        {"id":8,"statement":"¿Quién es acreditado con la invención de la imprenta de tipos móviles?","answers":["Gutenberg","Edison","Tesla","Da Vinci"],"correct":0}
+      ]
+    },
+    {
+      "name": "Historia",
+      "easy": [
+        {"id":1,"statement":"¿Quién lideró la expedición que llegó a América en 1492?","answers":["Colón","Magallanes","Vasco de Gama","Pizarro"],"correct":0},
+        {"id":2,"statement":"¿Qué gran estructura fue construida para proteger la frontera norte de China?","answers":["Muralla de Adriano","Muralla de Berlín","Gran Muralla Maya","Gran Muralla China"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué título militar y político alcanzó Napoleón Bonaparte en Francia?","answers":["Rey","Emperador","General de España","Presidente"],"correct":1},
+        {"id":4,"statement":"¿En qué año terminó oficialmente la Segunda Guerra Mundial?","answers":["1944","1945","1946","1947"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué tratado de 1919 puso fin a la Primera Guerra Mundial?","answers":["Tratado de París","Tratado de Versalles","Tratado de Londres","Tratado de Berlín"],"correct":1},
+        {"id":6,"statement":"¿Quién fue el último emperador del Sacro Imperio Romano Germánico?","answers":["Napoleón","Carlos V","Francisco II","Otto I"],"correct":2}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué evento simbólico marcó el inicio de la Revolución Francesa en 1789?","answers":["Toma de la Bastilla","Batalla de Waterloo","Marcha sobre Versalles","Batalla de Maratón"],"correct":0},
+        {"id":8,"statement":"¿Quién fue el principal líder de la Revolución Cubana que gobernó el país por décadas?","answers":["Che Guevara","Fidel Castro","Camilo Cienfuegos","Hugo Chávez"],"correct":1}
+      ]
+    },
+    {
+      "name": "Ciencia",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es el planeta más cercano al Sol?","answers":["Tierra","Venus","Mercurio","Marte"],"correct":2},
+        {"id":2,"statement":"¿Qué gas es el más abundante en la atmósfera terrestre?","answers":["Oxígeno","Nitrógeno","Argón","Hidrógeno"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué científico formuló la Teoría de la Relatividad?","answers":["Newton","Einstein","Galileo","Tesla"],"correct":1},
+        {"id":4,"statement":"¿Cuál es la unidad de fuerza en el Sistema Internacional?","answers":["Watt","Joule","Pascal","Newton"],"correct":3}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué tipo de enlace químico se caracteriza por compartir pares de electrones?","answers":["Iónico","Covalente","Metálico","Fuerzas de Van der Waals"],"correct":1},
+        {"id":6,"statement":"¿Cuál es la velocidad de la luz aproximada en el vacío?","answers":["300,000 km/s","150,000 km/s","3,000,000 m/s","300,000,000 km/s"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"A fecha de 2024/2025, ¿qué planeta tiene más satélites naturales confirmados?","answers":["Júpiter","Urano","Saturno","Neptuno"],"correct":2},
+        {"id":8,"statement":"¿Qué partícula subatómica tiene carga eléctrica negativa?","answers":["Protón","Electrón","Neutrón","Quark"],"correct":1}
+      ]
+    },
+    {
+      "name": "Overwatch",
+      "easy": [
+        {"id":1,"statement":"¿Cuánta salud restaura un paquete de salud grande?","answers":["200","215","225","250"],"correct":3},
+        {"id":2,"statement":"¿Cuál es la nacionalidad de la heroína Sojourn?","answers":["Sueca","Canadiense","Brasileña","Estadounidense"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cómo se llama la pareja de Tracer en el lore del juego?","answers":["Emma","Emily","Jenifer","Judith"],"correct":1},
+        {"id":4,"statement":"¿Cuál es la duración del efecto de la pasiva de DPS (reducción de cura)?","answers":["2s","3s","4s","5s"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuál de estos países NO posee un mapa jugable actualmente?","answers":["Australia","India","Costa Rica","Polonia"],"correct":2},
+        {"id":6,"statement":"¿Cuánto daño por segundo (aprox) inflige el centro de los Dragones de Hanzo?","answers":["200","350","150","250"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué país perdió Torbjörn su brazo durante la Crisis Ómnica?","answers":["Turquía","Alemania","Eslovenia","Rusia"],"correct":0},
+        {"id":8,"statement":"¿Con cuántos héroes debutó Overwatch en su lanzamiento en mayo de 2016?","answers":["19","21","20","22"],"correct":1}
+      ]
+    },
+    {
+      "name": "Entretenimiento",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es la película más taquillera de la historia (sin ajustar inflación)?","answers":["Titanic","Avengers: Endgame","Avatar","Star Wars"],"correct":2},
+        {"id":2,"statement":"¿Qué serie de comedia sigue a seis amigos en la ciudad de Nueva York?","answers":["Friends","How I Met Your Mother","The Office","Seinfeld"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué actor da vida al Capitán Jack Sparrow?","answers":["Orlando Bloom","Johnny Depp","Leonardo DiCaprio","Brad Pitt"],"correct":1},
+        {"id":4,"statement":"¿En qué año se estrenó 'Harry Potter y la piedra filosofal'?","answers":["2000","2001","2002","2003"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién ganó el Oscar a Mejor Director en 2020 (por películas de 2019)?","answers":["Alfonso Cuarón","Bong Joon-ho","Sam Mendes","Guillermo del Toro"],"correct":1},
+        {"id":6,"statement":"¿Cuál fue la primera película en ganar el Oscar a Mejor Película?","answers":["Wings","Gone with the Wind","Sunrise","All Quiet on the Western Front"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué actor interpretó a Vito Corleone en la primera entrega de 'El Padrino'?","answers":["Marlon Brando","Al Pacino","Robert De Niro","James Caan"],"correct":0},
+        {"id":8,"statement":"¿Qué director dirigió clásicos del suspense como 'Psicosis' y 'Vértigo'?","answers":["Stanley Kubrick","Martin Scorsese","Steven Spielberg","Alfred Hitchcock"],"correct":3}
+      ]
+    },
+    {
+      "name": "Five Nights at Freddy's",
+      "easy": [
+        {"id":1,"statement":"¿Qué animatrónico de FNaF 2 ignora por completo la máscara de Freddy?","answers":["Chica","Freddy","Foxy","Bonnie"],"correct":2},
+        {"id":2,"statement":"¿Cómo se llama el creador independiente de la franquicia?","answers":["Phillip Shaw","Saul Aguilar","Evan Lampi","Scott Cawthon"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuántas cámaras de seguridad hay en total en el primer juego?","answers":["12","11","8","14"],"correct":1},
+        {"id":4,"statement":"¿Qué entrega introduce formalmente la historia de los niños asesinados?","answers":["FNaF 4","FNaF 3","FNaF 2","FNaF 1"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién es el dueño de Fazbear Entertainment?","answers":["Henry Emily","Michael Afton","William Afton","Phone Guy"],"correct":0},
+        {"id":6,"statement":"¿Qué animatrónico en UCN tenía un sonido de jumpscare erróneo corregido?","answers":["Nightmare Puppet","Music Man","Yendo","Bonnie"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cómo se llamaba el juego de Scott que derivó en FNaF?","answers":["Chipper's Family Lumber Co.","Chipper & Brothers Woodworks","Chipper & Sons Lumber Co.","Chipper & Sons Timber Co."],"correct":2},
+        {"id":8,"statement":"¿Cómo se llama la unidad de voz que te guía en Sister Location?","answers":["HandUnit","Bidybabs","Minireenas","Ennard"],"correct":0}
+      ]
+    },
+    {
+      "name": "Inazuma Eleven",
+      "easy": [
+        {"id":1,"statement":"¿En qué posición juega Bellatrix (Reina del Génesis)?","answers":["Portera","Defensa","Centrocampista","Delantera"],"correct":2},
+        {"id":2,"statement":"¿En qué consola se lanzó originalmente Inazuma Eleven 3 en Europa?","answers":["Wii U","Wii","Nintendo DS","Nintendo 3DS"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿En qué temporada aparecieron por primera vez 'Los Emperadores' (Argentina)?","answers":["1","3","4","2"],"correct":1},
+        {"id":4,"statement":"¿De qué afinidad/elemento es el Tótem 'Calamar Oscuro'?","answers":["Aire","Fuego","Bosque","Tierra"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién es el verdadero capitán de Orfeo (aunque Paolo esté en el campo)?","answers":["Gigi","Angelo","Paolo","Hide Nakata"],"correct":3},
+        {"id":6,"statement":"¿Cuántos minutos tardó Jude Sharp en analizar al Raimon en su debut?","answers":["10","2","5","8"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"En Victory Road, ¿qué espíritus se requieren para 'Guardián Férreo'?","answers":["Jack Wallside / Thiago Torres","King / Mark Evans","Mark Evans / Darren","Gabi / Nathan"],"correct":0},
+        {"id":8,"statement":"En Victory Road, ¿qué calzado otorga la mayor estadística de Potencia?","answers":["Botas Ángel Oscuro","Botas Garshield","Zapatillas Gir","Botas Supernova"],"correct":0}
+      ]
+    },
+    {
+      "name": "Pokemon",
+      "easy": [
+        {"id":1,"statement":"¿Contra qué tipo de Pokémon es muy efectivo el tipo Lucha?","answers":["Bicho","Eléctrico","Hielo","Tierra"],"correct":2},
+        {"id":2,"statement":"¿A qué tipos es resistente Trapinch (Habilidad Corte Fuerte)?","answers":["Agua y Volador","Roca y Agua","Planta y Hielo","Roca y Veneno"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿En qué año se lanzó en Japón Pokémon Rojo y Verde?","answers":["1990","1996","1999","1997"],"correct":1},
+        {"id":4,"statement":"¿Qué generación de Pokémon se desarrolla en la región de Alola?","answers":["5","6","7","4"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuál fue el primer Pokémon de la 5ª generación en ser revelado?","answers":["Magearna","Snivy","Tepig","Zoroark"],"correct":3},
+        {"id":6,"statement":"¿Cuántos tipos de Energía Básica existen actualmente en el TCG?","answers":["8","9","13","15"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué Pokémon ocupa el número 245 en la Pokédex Nacional?","answers":["Suicune","Larvitar","Entei","Celebi"],"correct":0},
+        {"id":8,"statement":"¿Dónde ocurre el primer encuentro con Blue Eye en Pokémon Ranger 3?","answers":["Torre de Radio","Cueva Rasposa","Vieja Mansión","Ruinas del Alba"],"correct":0}
+      ]
+    },
+    {
+      "name": "OW e-sports",
+      "easy": [
+        {"id":1,"statement":"¿Qué equipo protagonizó el error táctico que dio nombre al término 'C9'?","answers":["Twisted Minds","Al Qadsiah","Cloud9","Team Peps"],"correct":2},
+        {"id":2,"statement":"¿En qué equipo compite actualmente el jugador 'Dip'?","answers":["Vanir Quick","Team G4mbit","Ereus","Team Peps"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Quién se coronó campeón en la OWCS 2024 (Major Dallas)?","answers":["Al Qadsiah","Twisted Minds","Team Falcons","Crazy Raccoon"],"correct":3},
+        {"id":4,"statement":"¿Qué equipo tiene históricamente más victorias en la región EMEA?","answers":["Twisted Minds","Virtus.Pro","Al Qadsiah","Team Peps"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué equipo de la OWL ostenta el récord de mayores ganancias totales?","answers":["Twisted Minds","Crazy Raccoon","Team Falcons","San Francisco Shock"],"correct":3},
+        {"id":6,"statement":"¿Quién ganó la Gran Final de la Overwatch League en 2021?","answers":["Florida Mayhem","Shanghai Dragons","Dallas Fuel","San Francisco Shock"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál fue la fecha exacta de inicio de la temporada inaugural de la OWL?","answers":["2018-01-25","2018-02-02","2018-01-10","2018-01-28"],"correct":2},
+        {"id":8,"statement":"¿Quién era el Head Coach de Dallas Fuel en su campeonato de 2022?","answers":["Rush","Yong","Cho Bee-won","Aid"],"correct":0}
+      ]
+    },
+    {
+      "name": "Smash Ultimate",
+      "easy": [
+        {"id":1,"statement":"¿Con qué personaje es conocido el jugador japonés 'acola'?","answers":["Pikachu","Fox","Steve","Link"],"correct":2},
+        {"id":2,"statement":"¿Quién es considerado el #1 tras su dominio en 2024 (LumiRank)?","answers":["MkLeo","Sparg0","acola","Sonix"],"correct":2}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Quién fue el ganador del EVO Japan 2020?","answers":["Crovy","Shuton","Nax","Janco"],"correct":1},
+        {"id":4,"statement":"¿Qué personaje de DLC fue considerado el mejor (Top 1) del meta final?","answers":["Fox","Pyra y Mythra","Steve","Samus"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué organización NO ha tenido un equipo oficial de Smash de élite?","answers":["ZETA DIVISION","26 RISE","T1","FaZe Clan"],"correct":1},
+        {"id":6,"statement":"¿Qué torneo de 2024 rompió récords de audiencia en Japón?","answers":["Smash Ultimate Summit 3","Super Smash Con 2023","Smash Ultimate Summit 6","Kagaribi 13"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuántos años tenía Doramigi cuando sorprendió ganando a tops mundiales?","answers":["13","14","15","16"],"correct":1},
+        {"id":8,"statement":"¿En qué mes de 2019 se celebró el primer Major relevante (Genesis 6)?","answers":["Febrero","Mayo","Abril","Enero"],"correct":0}
+      ]
+    }
+  ]
+}

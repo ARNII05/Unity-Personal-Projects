@@ -1,0 +1,595 @@
+{
+  "player": "Dani",
+  "themes": [
+    {
+      "name": "Cultura General",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuántos continentes hay en el modelo tradicional?",
+          "answers": ["5", "6", "7", "8"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Cuál es el océano más grande del planeta?",
+          "answers": ["Atlántico", "Índico", "Ártico", "Pacífico"],
+          "correct": 3
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué país tiene uno de los archivos más secretos del mundo?",
+          "answers": ["Grecia", "Italia", "El Vaticano", "Croacia"],
+          "correct": 1
+        },
+        {
+          "id": 4,
+          "statement": "¿Cuál es la capital de Canadá?",
+          "answers": ["Toronto", "Vancouver", "Ottawa", "Montreal"],
+          "correct": 2
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué país tiene más husos horarios oficiales?",
+          "answers": ["Estados Unidos", "Rusia", "China", "Francia"],
+          "correct": 3
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué idioma tiene más hablantes nativos en el mundo?",
+          "answers": ["Inglés", "Hindi", "Español", "Mandarín"],
+          "correct": 3
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué país NO utiliza el sistema métrico decimal oficialmente?",
+          "answers": ["Liberia", "Myanmar", "Estados Unidos", "Todos los anteriores"],
+          "correct": 3
+        },
+        {
+          "id": 8,
+          "statement": "¿Cuál es el desierto más grande del mundo (incluyendo fríos)?",
+          "answers": ["Sahara", "Gobi", "Antártida", "Arabia"],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "name": "Historia",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Quién descubrió América en 1492?",
+          "answers": ["Cristóbal Colón", "Magallanes", "Vasco da Gama", "Hernán Cortés"],
+          "correct": 0
+        },
+        {
+          "id": 2,
+          "statement": "¿En qué país comenzaron los Juegos Olímpicos antiguos?",
+          "answers": ["Roma", "Egipto", "Grecia", "China"],
+          "correct": 2
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué muro cayó en 1989?",
+          "answers": ["Muro de Roma", "Muro de Berlín", "Gran Muralla China", "Muro de Varsovia"],
+          "correct": 1
+        },
+        {
+          "id": 4,
+          "statement": "¿Quién fue el primer presidente de Estados Unidos?",
+          "answers": ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "John Adams"],
+          "correct": 2
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿En qué año cayó Constantinopla?",
+          "answers": ["1492", "1453", "1517", "1402"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué tratado puso fin a la Primera Guerra Mundial?",
+          "answers": ["Utrecht", "Versalles", "París", "Tordesillas"],
+          "correct": 1
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué civilización construyó Caral?",
+          "answers": ["Maya", "Inca", "Norte Chico", "Azteca"],
+          "correct": 2
+        },
+        {
+          "id": 8,
+          "statement": "¿Quién fue el último zar de Rusia?",
+          "answers": ["Alejandro III", "Pedro el Grande", "Nicolás II", "Iván IV"],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "name": "Ciencia",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Qué planeta es conocido como el planeta rojo?",
+          "answers": ["Venus", "Marte", "Júpiter", "Saturno"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Qué gas respiramos principalmente?",
+          "answers": ["Oxígeno", "Nitrógeno", "CO2", "Helio"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Cuántos huesos tiene el cuerpo humano adulto?",
+          "answers": ["206", "201", "210", "198"],
+          "correct": 0
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué órgano bombea la sangre?",
+          "answers": ["Pulmón", "Cerebro", "Corazón", "Hígado"],
+          "correct": 2
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué partícula transmite la fuerza electromagnética?",
+          "answers": ["Neutrón", "Fotón", "Electrón", "Protón"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Elemento más abundante del universo?",
+          "answers": ["Oxígeno", "Hidrógeno", "Helio", "Carbono"],
+          "correct": 1
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Quién formuló las ecuaciones del electromagnetismo?",
+          "answers": ["Faraday", "Maxwell", "Tesla", "Ampère"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué hormona regula el azúcar en sangre?",
+          "answers": ["Adrenalina", "Insulina", "Cortisol", "Melatonina"],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "name": "Entretenimiento",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Qué saga incluye a Pikachu?",
+          "answers": ["Digimon", "Pokémon", "Yu-Gi-Oh", "Naruto"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Qué plataforma creó la serie 'Stranger Things'?",
+          "answers": ["HBO", "Amazon", "Netflix", "Disney+"],
+          "correct": 2
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué cantante es conocido como el Rey del Pop?",
+          "answers": ["Elvis Presley", "Michael Jackson", "Prince", "Freddie Mercury"],
+          "correct": 1
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué videojuego tiene al personaje Kratos?",
+          "answers": ["Dark Souls", "God of War", "The Witcher", "Skyrim"],
+          "correct": 1
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Quién compuso la música de El Señor de los Anillos?",
+          "answers": ["John Williams", "Hans Zimmer", "Howard Shore", "James Horner"],
+          "correct": 2
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué banda lanzó 'The Dark Side of the Moon'?",
+          "answers": ["Queen", "Pink Floyd", "The Beatles", "U2"],
+          "correct": 1
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué actor interpretó al Joker en 2019?",
+          "answers": ["Heath Ledger", "Joaquin Phoenix", "Jared Leto", "Christian Bale"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué año se lanzó el primer videojuego comercial Pong?",
+          "answers": ["1972", "1968", "1978", "1980"],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "name": "Cine",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Qué película tiene al personaje Jack Sparrow?",
+          "answers": ["Titanic", "Piratas del Caribe", "Avatar", "Gladiator"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Qué película tiene a Simba como protagonista?",
+          "answers": ["Aladdin", "El Rey León", "Tarzán", "Hércules"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Quién dirigió Titanic?",
+          "answers": ["Spielberg", "James Cameron", "Scorsese", "Ridley Scott"],
+          "correct": 1
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué película ganó el Óscar a Mejor Película en 1994?",
+          "answers": ["Forrest Gump", "Pulp Fiction", "Braveheart", "Seven"],
+          "correct": 0
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Quién dirigió El Laberinto del Fauno?",
+          "answers": ["Almodóvar", "Guillermo del Toro", "Cuarón", "Amenábar"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué película fue la primera completamente animada por ordenador?",
+          "answers": ["Toy Story", "Shrek", "Monsters Inc", "Frozen"],
+          "correct": 0
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué director ganó la Palma de Oro por Pulp Fiction?",
+          "answers": ["Tarantino", "Scorsese", "Spielberg", "Fincher"],
+          "correct": 0
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué película muda ganó el Óscar a Mejor Película en 2012?",
+          "answers": ["The Artist", "Hugo", "Argo", "Lincoln"],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "name": "League of Legends",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuánto daño hace el smite evolucionado a monstruos de la jungla?",
+          "answers": ["1100", "1200", "1050", "900"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿De qué tipo es el tomo amplificador?",
+          "answers": ["Starter Item", "Consumible", "Item básico", "Item épico"],
+          "correct": 2
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Cuál es el campeón con más skins de todo el juego?",
+          "answers": ["Lux", "Miss Fortune", "Ahri", "Lux y Miss Fortune"],
+          "correct": 3
+        },
+        {
+          "id": 4,
+          "statement": "¿Cuánto oro te da el Gromp al matarlo?",
+          "answers": ["80", "100", "95", "105"],
+          "correct": 0
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Cuál fue el primer campeón en tener una skin definitiva (Ultimate)?",
+          "answers": ["Ezreal", "Sona", "Udyr", "Miss Fortune"],
+          "correct": 0
+        },
+        {
+          "id": 6,
+          "statement": "Antes del 2014, ¿qué campeón tenía una habilidad definitiva que aplicaba un silencio en área?",
+          "answers": ["Kassadin", "Talon", "LeBlanc", "Kassadin (R) / Cho'Gath (W)"],
+          "correct": 0
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Cuál es el nombre del Darkin que está dentro del arma de Varus?",
+          "answers": ["Shabaka", "Cebotaru", "Xolaani", "Varus"],
+          "correct": 3
+        },
+        {
+          "id": 8,
+          "statement": "¿Quién fue el antiguo maestro que traicionó a Zed?",
+          "answers": ["Shen", "Kusho", "Yevnai", "Jhin"],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "name": "Avenged Sevenfold",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuál de estos no ha sido/es un miembro del grupo?",
+          "answers": ["Arin Ilejay", "Johnny Christ", "Jean Paul", "The Rev"],
+          "correct": 2
+        },
+        {
+          "id": 2,
+          "statement": "¿Cuál fue su último álbum?",
+          "answers": ["Hail To The King", "Life Is But a Dream", "The Stage", "Nightmare"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Con qué otro nombre se les conoce a Avenged?",
+          "answers": ["A7G", "A7F", "A7FL", "A7X"],
+          "correct": 3
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué año se fundó el grupo?",
+          "answers": ["1999", "1993", "2000", "1995"],
+          "correct": 0
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué número tienen algunos modelos de la guitarra de Synyster Gates?",
+          "answers": ["6662", "6661", "6663", "6664"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "En su primera semana, ¿cuántas copias vendió City of Evil?",
+          "answers": ["+20k", "+40k", "+30k", "+35k"],
+          "correct": 2
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿A qué Génesis hace referencia el nombre del grupo?",
+          "answers": ["Cap 4 Versículo 15", "Cap 4 Versículo 3", "Cap 3 Versículo 15", "Cap 3 Versículo 3"],
+          "correct": 0
+        },
+        {
+          "id": 8,
+          "statement": "¿Cuál fue el primer nombre oficial antes de Avenged Sevenfold?",
+          "answers": ["Seventh Trumpet", "Lips of Deceit", "Burning Within", "Successful Failure"],
+          "correct": 3
+        }
+      ]
+    },
+    {
+      "name": "Hollow Knight",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuántas personas crearon Hollow Knight?",
+          "answers": ["4", "3", "5", "6"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Cómo se llama el reino en el que transcurre la historia?",
+          "answers": ["KnightNest", "GraceNest", "Hallownest", "Hollownest"],
+          "correct": 2
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Cómo se llaman los sistemas de túneles?",
+          "answers": ["Ciervocaminos", "Huesocaminos", "Rocacaminos", "Geocaminos"],
+          "correct": 0
+        },
+        {
+          "id": 4,
+          "statement": "¿Cuál es el jefe final opcional de velocidad extrema?",
+          "answers": ["Hornet", "Radiance", "Lost Kin", "Nightmare King Grimm"],
+          "correct": 3
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Cuál es el nombre del hermano de Hornet mencionado en el lore?",
+          "answers": ["Zote", "Vasija Pura", "No tiene nombre oficial", "Herrah"],
+          "correct": 2
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué objeto es necesario para acceder al Templo de los Ancestros?",
+          "answers": ["Alma del Rey", "Capa Ala de Polilla", "Llave simple", "Llave elegante"],
+          "correct": 0
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Cuál es la fuente de la infección de Hallownest?",
+          "answers": ["El Vacío", "Radiancia", "El Hollow Knight", "La Dama Blanca"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué nombre recibe el enemigo del Godhome Pantheon final?",
+          "answers": ["Radiancia Absoluta", "Pariente Perdido", "Vasija Hueca", "Vasija Pura"],
+          "correct": 3
+        }
+      ]
+    },
+    {
+      "name": "Bleach",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Quién es el protagonista principal de Bleach?",
+          "answers": ["Uryu Ishida", "Ichigo Kurosaki", "Renji Abarai", "Byakuya Kuchiki"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Cuál es la zanpakutō de Rukia Kuchiki?",
+          "answers": ["Zabimaru", "Hyorinmaru", "Sode no Shirayuki", "Senbonzakura"],
+          "correct": 2
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Quién fue el capitán de la 5ª División en Soul Society?",
+          "answers": ["Sajin Komamura", "Byakuya Kuchiki", "Shinji Hirako", "Sosuke Aizen"],
+          "correct": 3
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué miembro de los Espada tiene el número 4?",
+          "answers": ["Ulquiorra Cifer", "Grimmjow", "Nnoitra", "Zommari"],
+          "correct": 0
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Cuál es la habilidad de Hyorinmaru?",
+          "answers": ["Fuego", "Hielo y agua", "Rayos", "Clones"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Quién obtuvo primero el poder de un Hollow para defender Karakura?",
+          "answers": ["Isshin Kurosaki", "Kaien Shiba", "Shunsui Kyōraku", "Jūshirō Ukitake"],
+          "correct": 0
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué Hollow absorbió a Kaien Shiba?",
+          "answers": ["Grand Fisher", "Gilliam", "Aaroniero Arruruerie", "Cirucci"],
+          "correct": 2
+        },
+        {
+          "id": 8,
+          "statement": "¿Quién fue el creador del Hōgyoku?",
+          "answers": ["Sōsuke Aizen", "Urahara Kisuke", "Yoruichi", "Gin"],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "name": "Dr.Stone",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuál fue el primer invento de Senku tras la petrificación?",
+          "answers": ["Jabón", "Pólvora", "Antibiótico", "Fluido de resurrección"],
+          "correct": 3
+        },
+        {
+          "id": 2,
+          "statement": "¿Qué apodo tiene Gen?",
+          "answers": ["Trampista", "Mentalista", "Brujo", "Mago"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué compuesto utiliza Senku para la pólvora?",
+          "answers": ["Nitrato de potasio, azufre y carbón", "Clorato y azúcar", "Nitrato de sodio", "Azufre y fósforo"],
+          "correct": 0
+        },
+        {
+          "id": 4,
+          "statement": "¿Cómo se llama la aldea que crearon los astronautas?",
+          "answers": ["Aldea Wright", "Aldea Asagiri", "Aldea Ishigami", "Aldea Lee"],
+          "correct": 2
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿En qué año fue la primera petrificación?",
+          "answers": ["2020", "2019", "2017", "2021"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Cuál es el nombre del barco del Reino de la Ciencia?",
+          "answers": ["Perseo", "Medusa", "Byakuya", "Ishigami"],
+          "correct": 0
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué científico de la NASA estaba con Byakuya?",
+          "answers": ["Victor Hansen", "Albert Newton", "Carlos Romero", "Shamil Volkov"],
+          "correct": 3
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué elemento es esencial para crear ácido nítrico natural?",
+          "answers": ["Amoniaco", "Nitrógeno", "Guano", "Cloruro de sodio"],
+          "correct": 2
+        }
+      ]
+    }
+  ]
+}

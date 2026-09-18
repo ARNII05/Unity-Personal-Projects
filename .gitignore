@@ -1,0 +1,96 @@
+# =========================
+# Unity generated folders
+# =========================
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Memory / recordings (pesados)
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Crash / logs
+sysinfo.txt
+mono_crash.*
+
+# =========================
+# Builds / exports
+# =========================
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# =========================
+# IDE / editor files
+# =========================
+.vs/
+.gradle/
+*.csproj
+*.sln
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.opendb
+*.VC.db
+*.tmp
+*.log
+.vsconfig
+*.sln
+*.csproj
+
+# JetBrains Rider
+/[Aa]ssets/Plugins/Editor/JetBrains*
+*.DotSettings.user
+
+# Visual Studio cache
+.vs/
+
+# =========================
+# Unity cache / crash / metadata
+# =========================
+*.pdb
+*.mdb
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# =========================
+# Addressables
+# =========================
+/ServerData/
+/[Aa]ssets/StreamingAssets/aa*/
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+/[Aa]ssets/Addressables_Temp*/
+
+# =========================
+# Visual Scripting
+# =========================
+/[Aa]ssets/Unity.VisualScripting.Generated/
+
+# =========================
+# Blender
+# =========================
+*.blend1
+
+# =========================
+# Test Runner
+# =========================
+InitTestScene*.unity*
+
+# =========================
+# Others
+# =========================
+crashlytics-build.properties
+
+# =========================
+# Custom Exclusions (Quiz & Zone Exes)
+# =========================
+QuizGameExe/
+ZoneGameExe/

@@ -1,0 +1,195 @@
+{
+  "player": "Feks",
+  "themes": [
+    {
+      "name": "Cultura General",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es la capital de Italia?","answers":["Turín","Milán","Nápoles","Roma"],"correct":3},
+        {"id":2,"statement":"¿Cuántos colores se dice tradicionalmente que tiene el arcoíris?","answers":["5","6","7","8"],"correct":2}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué país es la cuna del tango?","answers":["Brasil","Argentina","Chile","Perú"],"correct":1},
+        {"id":4,"statement":"¿Qué instrumento musical tiene teclas blancas y negras?","answers":["Piano","Guitarra","Violín","Flauta"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién escribió la novela 'Cien años de soledad'?","answers":["Pablo Neruda","Gabriel García Márquez","Jorge Luis Borges","Mario Vargas Llosa"],"correct":1},
+        {"id":6,"statement":"¿Cuál es el río más largo del mundo (por longitud y caudal)?","answers":["Nilo","Amazonas","Yangtsé","Misisipi"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál es la obra arquitectónica inacabada más famosa de Gaudí?","answers":["Parc Güell","Casa Batlló","La Sagrada Familia","Palau Güell"],"correct":2},
+        {"id":8,"statement":"¿Quién pintó el tríptico 'El Jardín de las Delicias'?","answers":["El Bosco","Velázquez","Goya","Rembrandt"],"correct":0}
+      ]
+    },
+    {
+      "name": "Historia",
+      "easy": [
+        {"id":1,"statement":"¿Quién fue el primer presidente de los Estados Unidos?","answers":["Abraham Lincoln","George Washington","Thomas Jefferson","John Adams"],"correct":1},
+        {"id":2,"statement":"¿En qué año se produjo la caída definitiva del Imperio Romano de Occidente?","answers":["450","410","500","476"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué reina inglesa fue conocida como 'La Reina Virgen'?","answers":["Ana","Victoria","Isabel I","María I"],"correct":2},
+        {"id":4,"statement":"¿Quién fue el principal líder bolchevique en la Revolución de 1917?","answers":["Stalin","Lenin","Trotsky","Kerensky"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿En qué batalla fue derrotada la caballería francesa por arqueros ingleses en 1415?","answers":["Agincourt","Poitiers","Crécy","Hastings"],"correct":0},
+        {"id":6,"statement":"¿Qué faraón mandó construir la Gran Pirámide de Giza?","answers":["Keops","Tutankamón","Ramsés II","Amenhotep III"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Quién fue el líder histórico de la Revolución Cubana fallecido en 2016?","answers":["Che Guevara","Fidel Castro","Raúl Castro","Hugo Chávez"],"correct":1},
+        {"id":8,"statement":"¿Qué magnicidio en Sarajevo desencadenó la Primera Guerra Mundial?","answers":["Revolución Rusa","Invasión de Polonia","Asesinato de Francisco Fernando","Tratado de Versalles"],"correct":2}
+      ]
+    },
+    {
+      "name": "Ciencia",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es el metal más ligero de la tabla periódica?","answers":["Aluminio","Litio","Hierro","Plata"],"correct":1},
+        {"id":2,"statement":"¿Qué órgano es el motor del sistema circulatorio?","answers":["Pulmón","Corazón","Hígado","Riñón"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué elemento químico tiene como símbolo la letra 'O'?","answers":["Oro","Oxígeno","Plata","Ozono"],"correct":1},
+        {"id":4,"statement":"¿Qué partícula subatómica tiene carga eléctrica negativa?","answers":["Protón","Electrón","Neutrón","Fotón"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuál es la fórmula química de la molécula de agua?","answers":["H2O","CO2","O2","H2"],"correct":0},
+        {"id":6,"statement":"¿Qué científico escocés descubrió la penicilina?","answers":["Louis Pasteur","Alexander Fleming","Marie Curie","Einstein"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál es el valor aproximado de la velocidad de la luz en el vacío?","answers":["3×10^8 m/s","1×10^8 m/s","3×10^6 m/s","3×10^9 m/s"],"correct":0},
+        {"id":8,"statement":"¿Qué partícula subatómica se caracteriza por no tener carga eléctrica?","answers":["Protón","Electrón","Neutrón","Quark"],"correct":2}
+      ]
+    },
+    {
+      "name": "Overwatch",
+      "easy": [
+        {"id":1,"statement":"¿En qué temporada se aplicó el 'rework' global de vida y proyectiles?","answers":["S8","S10","S9","S11"],"correct":2},
+        {"id":2,"statement":"¿Qué astrofísico perdió la cordura tras un experimento fallido con la gravedad?","answers":["Sigma","Moira","Reaper","Zenyatta"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Quién fue el carismático director de Overwatch hasta su salida en 2021?","answers":["Aaron Keller","Alec Dawson","Jeff Kaplan","Jared Neuss"],"correct":2},
+        {"id":4,"statement":"¿Qué héroe tiene la velocidad base de movimiento más alta (6.0 m/s)?","answers":["Genji (y Tracer)","Hanzo","Mercy","Lucio"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuántos créditos blancos cuesta actualmente una skin legendaria de OW1?","answers":["1350","1500","1400","1550"],"correct":1},
+        {"id":6,"statement":"¿En qué dos subcategorías se dividían los DPS al inicio (hasta 2018)?","answers":["Ataque y Apoyo","Tanque y Defensa","Daño y Flanker","Ataque y Defensa"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué significan las siglas de MEKA (el escuadrón de D.Va)?","answers":["Best-mobile Exo-force of the Korean Army","Mobile Exo-force of the Korean Army","Official Korean Army","Official Exo-force of the Korean Army"],"correct":1},
+        {"id":8,"statement":"¿Cuántos mapas estaban disponibles en el lanzamiento oficial (mayo 2016)?","answers":["12","10","9","11"],"correct":0}
+      ]
+    },
+    {
+      "name": "Entretenimiento",
+      "easy": [
+        {"id":1,"statement":"¿Cómo se llama la identidad secreta de Spider-Man?","answers":["Peter Parker","Tony Stark","Bruce Wayne","Clark Kent"],"correct":0},
+        {"id":2,"statement":"¿En qué serie el protagonista cocina metanfetamina azul?","answers":["Breaking Bad","The Wire","Lost","Dexter"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué película de Steven Spielberg trata sobre un tiburón blanco?","answers":["Tiburón","La cosa","Jaws 2","Deep Blue Sea"],"correct":0},
+        {"id":4,"statement":"¿Qué cantante británica lanzó el exitoso álbum '25'?","answers":["Adele","Beyoncé","Taylor Swift","Rihanna"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién dirigió la película musical 'La La Land'?","answers":["Damien Chazelle","Christopher Nolan","Quentin Tarantino","James Cameron"],"correct":0},
+        {"id":6,"statement":"¿Qué película de Pixar ganó el Oscar a Mejor Animación en 2020?","answers":["Toy Story 4","Frozen 2","Coco","Klaus"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué compositor creó la banda sonora de la trilogía original de ESDLA?","answers":["John Williams","Howard Shore","Hans Zimmer","James Horner"],"correct":1},
+        {"id":8,"statement":"¿Qué actor ganó un Oscar póstumo por interpretar al Joker en 2008?","answers":["Jared Leto","Heath Ledger","Jack Nicholson","Joaquin Phoenix"],"correct":1}
+      ]
+    },
+    {
+      "name": "Bomberos",
+      "easy": [
+        {"id":1,"statement":"¿Qué número de emergencias se debe marcar en España?","answers":["091","112","061","080"],"correct":1},
+        {"id":2,"statement":"¿Cuál es el vehículo principal para la extinción de incendios?","answers":["Ambulancia","Camión autobomba","Patrulla","Escala aérea"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué titulación mínima se exige generalmente para opositar a bombero C1?","answers":["ESO o equivalente","Bachillerato","Grado","Máster"],"correct":1},
+        {"id":4,"statement":"¿Qué ejercicio de tracción es fundamental en las pruebas físicas?","answers":["Press banca","Dominadas","Lanzamiento","Sentadillas"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿A qué grupo de clasificación pertenece un bombero en la mayoría de servicios?","answers":["A1","A2","C1","C2"],"correct":2},
+        {"id":6,"statement":"¿Qué test mide la capacidad aeróbica máxima mediante pitidos?","answers":["Sprint 100m","Natación 50m","Course Navette","Salto vertical"],"correct":2}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué ley actual regula el Sistema Nacional de Protección Civil en España?","answers":["Ley 17/2015","Ley 2/1985","Ley 31/1995","Ley 7/1985"],"correct":0},
+        {"id":8,"statement":"¿Cómo se denomina técnicamente al retroceso de gases de incendio explosivo?","answers":["Backdraft","Flashover","Boilover","Rollover"],"correct":0}
+      ]
+    },
+    {
+      "name": "GTAV",
+      "easy": [
+        {"id":1,"statement":"¿Quiénes son los tres protagonistas de la historia?","answers":["Michael, Franklin y Trevor","Niko, Roman y Johnny","CJ, Big Smoke y Ryder","Luis, Tony y Huang"],"correct":0},
+        {"id":2,"statement":"¿Cuál era el apellido real de Michael antes de cambiarlo?","answers":["Snider","Philips","Townley","Norton"],"correct":2}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿En qué año se lanzó originalmente GTA V (PS3/Xbox 360)?","answers":["2011","2013","2012","2010"],"correct":1},
+        {"id":4,"statement":"¿Cómo se llama la ciudad principal inspirada en Los Ángeles?","answers":["Liberty City","Vice City","Los Santos","San Fierro"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cómo se llama oficialmente el programa en el que Michael finge estar?","answers":["FIB Secure","Protección de testigos","LS Confidential","IAA Shield"],"correct":1},
+        {"id":6,"statement":"¿Qué red social del juego es una parodia de Facebook?","answers":["Lifeinvader","Fruit","Bleeter","Whiz"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué agente del FIB es el principal antagonista que extorsiona al trío?","answers":["Steve Haines","Dave Norton","Andreas Sanchez","Devin Weston"],"correct":0},
+        {"id":8,"statement":"¿Cómo se llama el golpe final al gran banco de Los Santos?","answers":["The Big Score","Operation Gold Rush","Project UD","Final Score"],"correct":0}
+      ]
+    },
+    {
+      "name": "Dispatch",
+      "easy": [
+        {"id":1,"statement":"¿Cuál de estos personajes NO pertenece al elenco de Dispatch?","answers":["Chase","Evan","Royd","Lana"],"correct":1},
+        {"id":2,"statement":"¿Cuál es la habilidad pasiva de Roid en el juego?","answers":["Mejora la velocidad de respuesta","Reduce costes","Doble llamada","Revela gravedad"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué estudio desarrolló el juego Dispatch?","answers":["BioWare","Bungie","Capcom","AdHoc Studio"],"correct":3},
+        {"id":4,"statement":"¿Cuál es la organización para la que trabajan los protagonistas?","answers":["Dispatch Network","Heroes Dispatch Network","Superhero Dispatch Network","HDN Global"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué factor determina el tiempo de llegada de una unidad al aviso?","answers":["Nivel del operador","Clima","Distancia y tráfico","Presupuesto"],"correct":2},
+        {"id":6,"statement":"¿Qué ocurre si mandas una unidad sin los requisitos adecuados?","answers":["Se cancela el aviso","Penalización de tiempo y riesgo de fallo","Sube el presupuesto","No pasa nada"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué sucede si ignoras una emergencia crítica por atender avisos menores?","answers":["Se soluciona sola","Pausado automático","Escalada del desastre y muertes","Nada"],"correct":2},
+        {"id":8,"statement":"¿Cuál es el pilar estratégico para ganar en niveles avanzados?","answers":["Gastar todo el dinero","Ignorar las radios","Priorizar por gravedad y cercanía","Enviar solo héroes"],"correct":3}
+      ]
+    },
+    {
+      "name": "Baldurs Gate III",
+      "easy": [
+        {"id":1,"statement":"¿En cuántos actos se divide la historia principal?","answers":["1","2","3","4"],"correct":2},
+        {"id":2,"statement":"¿Qué raza te introduce el parásito en el ojo al inicio?","answers":["Githyanki","Azotamentes (Mind Flayer)","Cambion","Drow"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuántos tipos de daño físico (no elemental) existen?","answers":["1","2","3","4"],"correct":2},
+        {"id":4,"statement":"¿Quién es la clériga del Dominio del Engaño que adora a Shar?","answers":["Lae'zel","Karlach","Corazón Sombrío (Shadowheart)","Minthara"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cómo se obtiene el tridente legendario 'Nyrulna' en el Circo?","answers":["Ganando el premio de la ruleta de Akabi","Robándolo de un cofre","Matando al dueño del circo","En un sótano"],"correct":0},
+        {"id":6,"statement":"¿Quién es el demonio patrón que mantiene el pacto de Wyll?","answers":["Zariel","Mizora","Raphael","Asmodeus"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué ranura de equipo ocupan los 'Guantes de Hechizo'?","answers":["Capa","Guantes","Anillo","Botas"],"correct":1},
+        {"id":8,"statement":"¿Cuál es el nombre del ser que controla la corona de Karsus?","answers":["Cerebro Neto (Netherbrain)","Elder Cortex","Absolute Prime","Illithid King"],"correct":0}
+      ]
+    },
+    {
+      "name": "Solo Leveling",
+      "easy": [
+        {"id":1,"statement":"¿De qué color son los ojos de Cha Hae-In cuando usa sus habilidades?","answers":["Marrones","Azules","Grises/Plateados","Verdes"],"correct":2},
+        {"id":2,"statement":"¿Cuántos pisos totales tiene el Castillo Demoníaco?","answers":["90","100","120","110"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿A manos de quién muere el presidente Go Gunhee?","answers":["Baran","Monarca de las Sombras","Monarca de las Heladas","Antares"],"correct":2},
+        {"id":4,"statement":"¿Cuál era el nombre del cazador de Clase S antes de ser la sombra Iron?","answers":["Hwang Dongsoo","Ashborn","Kim Chul","Bellion"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué monarcas están presentes en la batalla donde muere Sung Il-Hwan?","answers":["Antares y Ashborn","Monarcas de las Heladas y Colmillos","Legia y Tarnak","Querehsha"],"correct":1},
+        {"id":6,"statement":"¿Qué habilidad usa Jinwoo para intentar acabar con Beru en la isla Jeju?","answers":["Mutilar","Masacre","Toque del Dominador","Sigilo"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué capítulo/orden de arco ocurre el 'Portal Rojo'?","answers":["3º","4º","5º","6º"],"correct":3},
+        {"id":8,"statement":"¿En qué se convierte el Arquitecto tras ser derrotado por Jinwoo?","answers":["Monarca","Sombra","Polvo","Humano"],"correct":1}
+      ]
+    }
+  ]
+}

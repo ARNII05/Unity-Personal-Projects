@@ -1,0 +1,70 @@
+{
+  "gameModes": [
+    {
+      "name": "Imágenes de héroes",
+      "basePath": "CharImg",
+      "levels": [
+        { "answer": "Junkrat" },
+        { "answer": "Moira" },
+        { "answer": "Sojourn" },
+        { "answer": "D.Va" },
+        { "answer": "Widowmaker" }
+      ]
+    },
+				{
+      "name": "Imágenes de mapas",
+      "basePath": "MapImg",
+      "levels": [
+        { "answer": "Oasis" },
+        { "answer": "Ruta 66" },
+        { "answer": "Circuit Royal" },
+        { "answer": "Suravasa" },
+        { "answer": "Blizzard World" }
+      ]
+    },
+    {
+      "name": "Descripción de héroes",
+      "basePath": "CharDesc",
+      "levels": [
+        { "answer": "Sombra" },
+        { "answer": "Ana" },
+        { "answer": "Ramattra" },
+        { "answer": "Mei" },
+        { "answer": "Torbjorn" }
+      ]
+    },
+				{
+      "name": "Sonido de TF",
+      "basePath": "TfSound",
+      "levels": [
+        { "answer": "Lucio, Genji" },
+        { "answer": "Roadhog, Hanzo, Doomfist, Soldado76" },
+        { "answer": "Mauga, Hanzo, Torbjorn, Cassidy, Kiriko, Sigma" },
+        { "answer": "Reinhardt, Sombra, Lucio, Zenyatta, Sigma, Torbjorn, Winston, Brigitte" },
+        { "answer": "Reinhardt, Sigma, Brigitte, Baptiste, Reaper, Ramattra, Mauga, Moira, Zenyatta, Orisa" }
+      ]
+    },
+				{
+						"name": "Héroes mezclados", 
+						"basePath": "ShuffledHeroes",
+						"levels": [
+								{ "answer": "Genji, Reinhardt, Mercy, Hanzo, Doomfist" },
+								{ "answer": "Tracer, D.Va, Reaper, Zenyatta, Winston" }, 
+								{ "answer": "Cassidy, Pharah, Roadhog, Kiriko, Bastion" },
+								{ "answer": "Mei, Sigma, Widowmaker, Ana, Junkrat" },
+								{ "answer": "Moira, Orisa, Torbjorn, Sombra, Lucio" }
+						]
+				},
+    {
+      "name": "Sonidos de héroes",	
+      "basePath": "CharSound",
+      "levels": [
+       	{ "answer": "Cassidy" },
+        { "answer": "Junker Queen" },	
+        { "answer": "Echo" },
+        { "answer": "Freja" },
+        { "answer": "Orisa" }
+      ]
+    }
+  ]
+}

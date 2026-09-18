@@ -1,0 +1,195 @@
+{
+  "player": "Veri",
+  "themes": [
+    {
+      "name": "Cultura General",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es la capital de Japón?","answers":["Tokio","Osaka","Kioto","Nagoya"],"correct":0},
+        {"id":2,"statement":"¿Qué instrumento musical tiene cuerdas y se toca frotándolas con un arco?","answers":["Guitarra","Violín","Piano","Flauta"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué río atraviesa el centro de la ciudad de París?","answers":["Ródano","Loira","Sena","Danubio"],"correct":2},
+        {"id":4,"statement":"¿Cuál es la montaña más alta del mundo sobre el nivel del mar?","answers":["K2","Makalu","Kangchenjunga","Everest"],"correct":3}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué artista malagueño pintó el famoso mural 'Guernica'?","answers":["Dalí","Picasso","Miró","Velázquez"],"correct":1},
+        {"id":6,"statement":"¿Qué ciudad italiana es conocida mundialmente por sus canales y góndolas?","answers":["Ámsterdam","Venecia","Brujas","Lisboa"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué país posee el mayor número de islas en su territorio (más de 220.000)?","answers":["Filipinas","Suecia","Indonesia","Canadá"],"correct":1},
+        {"id":8,"statement":"¿Cuál es el idioma oficial de la República Árabe de Egipto?","answers":["Árabe","Inglés","Francés","Bereber"],"correct":0}
+      ]
+    },
+    {
+      "name": "Historia",
+      "easy": [
+        {"id":1,"statement":"¿Quién es considerado tradicionalmente el primer faraón que unificó Egipto?","answers":["Keops","Narmer","Ramsés II","Tutankamón"],"correct":1},
+        {"id":2,"statement":"¿En qué año comenzó la Segunda Guerra Mundial con la invasión de Polonia?","answers":["1938","1939","1940","1941"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué civilización precolombina construyó la ciudadela de Machu Picchu?","answers":["Azteca","Inca","Maya","Olmeca"],"correct":1},
+        {"id":4,"statement":"¿De qué antiguo reino era soberano Alejandro Magno?","answers":["Macedonia","Roma","Egipto","Esparta"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué conquista cambió el rumbo de Inglaterra en el año 1066 tras la batalla de Hastings?","answers":["Revolución Industrial","Conquista Normanda","Guerra de los Cien Años","Rebelión de los Barones"],"correct":1},
+        {"id":6,"statement":"¿De qué principado histórico fue soberano Vlad III, conocido como el Empalador?","answers":["Valaquia","Hungría","Transilvania","Moldavia"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál fue el detonante principal de la Guerra de los Treinta Años en 1618?","answers":["Conflictos religiosos","Crisis económica","Sucesión española","Diferencias culturales"],"correct":0},
+        {"id":8,"statement":"¿Qué cultura construyó la fase principal de Stonehenge durante el periodo Neolítico?","answers":["Celtas","Culturas neolíticas locales","Romanos","Vikingos"],"correct":1}
+      ]
+    },
+    {
+      "name": "Ciencia",
+      "easy": [
+        {"id":1,"statement":"¿Qué compuesto químico constituye aproximadamente el 60-70% del cuerpo humano?","answers":["Agua","Sangre","Lípido","Proteína"],"correct":0},
+        {"id":2,"statement":"¿Qué planeta es conocido popularmente como 'el planeta azul'?","answers":["Tierra","Neptuno","Saturno","Urano"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué gas es fundamental para el proceso de respiración celular en humanos?","answers":["Oxígeno","Nitrógeno","Hidrógeno","Dióxido de carbono"],"correct":0},
+        {"id":4,"statement":"¿Qué parte del ojo es el tejido coloreado que regula el tamaño de la pupila?","answers":["Córnea","Cristalino","Iris","Retina"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué naturalista británico es el autor de 'El origen de las especies'?","answers":["Darwin","Newton","Einstein","Mendel"],"correct":0},
+        {"id":6,"statement":"¿Cómo se define la fotosíntesis en las plantas?","answers":["Respiración celular","Conversión de energía lumínica en energía química","Transpiración foliar","Absorción de nitrógeno"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué partícula del átomo se encuentra en el núcleo y carece de carga eléctrica?","answers":["Protón","Electrón","Neutrón","Positrón"],"correct":2},
+        {"id":8,"statement":"¿Cuál es la velocidad aproximada del sonido en el aire a nivel del mar y 20°C?","answers":["343 m/s","300 m/s","400 m/s","250 m/s"],"correct":0}
+      ]
+    },
+    {
+      "name": "Overwatch",
+      "easy": [
+        {"id":1,"statement":"¿Cuál de estos tanques posee la barrera con mayor superficie física del juego?","answers":["Winston","Ramattra","Sigma","Reinhardt"],"correct":3},
+        {"id":2,"statement":"¿Cuántos rangos competitivos existen actualmente (de Bronce a Campeón)?","answers":["7","9","10","8"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"Tras no recibir daño, ¿cuánto tiempo tarda en activarse la pasiva de regeneración de vida?","answers":["5s","2.5s","6s","7s"],"correct":1},
+        {"id":4,"statement":"¿Cuántos puntos competitivos (para armas doradas/jade) se otorgan por un empate?","answers":["10","5","0","15"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuántas páginas de recompensas tiene el Pase de Batalla estándar (del nivel 1 al 80)?","answers":["8","9","10","7"],"correct":0},
+        {"id":6,"statement":"¿Cuál es el código de importación clásico para el modo personalizado '1v1 Arena'?","answers":["NDKZ1","TXCXX","GVXPY","B7FNB"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál es el nombre completo de la heroína de soporte Kiriko?","answers":["Kiriko Shimada","Kiriko Shinya","Kiriko Kamori","Kiriko Higashikata"],"correct":2},
+        {"id":8,"statement":"¿Cuánto daño máximo inflige cada explosión de las Bombas Lapa (Sticky Bombs) de Echo?","answers":["25","30","20","15"],"correct":0}
+      ]
+    },
+    {
+      "name": "Entretenimiento",
+      "easy": [
+        {"id":1,"statement":"¿En qué mítica serie animada aparecen los hermanos Bart, Lisa y Maggie?","answers":["Los Simpson","Padre de Familia","South Park","Futurama"],"correct":0},
+        {"id":2,"statement":"¿Cómo se llama el ogro de DreamWorks que vive en una ciénaga?","answers":["Shrek","Sulley","Beast","Hulk"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué artista estadounidense es aclamado mundialmente como el 'Rey del Pop'?","answers":["Elvis Presley","Michael Jackson","Prince","Justin Timberlake"],"correct":1},
+        {"id":4,"statement":"¿En qué película de terror aparece Jack Torrance en el Hotel Overlook?","answers":["El Resplandor","El Exorcista","It","Psicosis"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién es el director de la película de ciencia ficción 'Inception' (Origen)?","answers":["Christopher Nolan","Steven Spielberg","Quentin Tarantino","James Cameron"],"correct":0},
+        {"id":6,"statement":"¿Qué película de Disney ganó el Oscar a Mejor Película de Animación en la gala de 2014?","answers":["Frozen","Rango","Brave","Monstruos University"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué actor dio vida a Tony Stark (Iron Man) desde 2008 hasta 2019?","answers":["Chris Hemsworth","Robert Downey Jr.","Chris Evans","Mark Ruffalo"],"correct":1},
+        {"id":8,"statement":"¿Qué cineasta dirigió la adaptación cinematográfica de 'The Shining' en 1980?","answers":["Stanley Kubrick","Alfred Hitchcock","Martin Scorsese","David Lynch"],"correct":0}
+      ]
+    },
+    {
+      "name": "Hollow Knight",
+      "easy": [
+        {"id":1,"statement":"¿Cuántos niveles de mejora puede alcanzar el Aguijón del Caballero?","answers":["5","7","4","6"],"correct":0},
+        {"id":2,"statement":"¿A qué juego independiente hace referencia el amuleto 'Capa de polilla' o el diseño de algunos NPCs?","answers":["Undertale","The Binding of Isaac","Terraria","Cave Story"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿En qué zona del mapa se encuentra escondida la Llave del Amor?","answers":["Páramos fúngicos","Jardines de la Reina","Canales Reales","La Colmena"],"correct":1},
+        {"id":4,"statement":"¿Cuántos Maestros del Aguijón (hermanos de Sly) se encuentran en Hallownest?","answers":["2","3","5","4"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuánto daño por golpe inflige el Aguijón Espiral (tercera mejora)?","answers":["13","21","17","19"],"correct":2},
+        {"id":6,"statement":"¿Cuántos finales distintos se pueden obtener en el juego (incluyendo DLCs)?","answers":["5","6","3","4"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuántos creyentes oníricos hay en el Santuario de los Creyentes (Tierras de Reposo)?","answers":["17","15","18","20"],"correct":2},
+        {"id":8,"statement":"¿Cuántos jefes aparecen registrados en el Panteón de Hallownest (Panteón 5)?","answers":["42","45","46","47"],"correct":3}
+      ]
+    },
+    {
+      "name": "Kirby",
+      "easy": [
+        {"id":1,"statement":"¿Cuántos personajes son considerados los principales del grupo (Kirby, Dedede, Meta Knight y Waddle Dee Pañuelo)?","answers":["3","4","2","5"],"correct":1},
+        {"id":2,"statement":"¿Qué enemigo común suele otorgar la habilidad de 'Espada' al ser absorbido?","answers":["Waddle Doo","Sir Kibble","Chilly","Blade Knight"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Quién es el director y creador original de Kirby en HAL Laboratory?","answers":["Shigeru Miyamoto","Masahiro Sakurai","Satoru Iwata","Shinya Kumazaki"],"correct":1},
+        {"id":4,"statement":"¿Qué bufón cósmico lucha sobre una pelota y es el jefe final de Milky Way Wishes?","answers":["Kracko","Dark Mind","Marx","Magolor"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿En qué consola portátil debutó el primer juego, 'Kirby's Dream Land'?","answers":["2DS","3DS","Game Boy","Game Gear"],"correct":2},
+        {"id":6,"statement":"¿Cuál es el primer mundo de Kirby's Epic Yarn?","answers":["Acualandia","Dulcilandia","Pradolandia","Plaza Parche"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En cuántos títulos diferentes de la saga aparece la zona de 'Otra Dimensión' (Another Dimension)?","answers":["4","3","7","5"],"correct":3},
+        {"id":8,"statement":"¿Cuál es el número aproximado de habilidades de copia distintas en toda la serie?","answers":["56","70","60","66"],"correct":1}
+      ]
+    },
+    {
+      "name": "Black Clover",
+      "easy": [
+        {"id":1,"statement":"¿De qué reino proviene originalmente Yuno (antes de saber su linaje real)?","answers":["Reino del Diamante","Reino del Trébol","Reino del Corazón","Reino de la Pica"],"correct":1},
+        {"id":2,"statement":"¿Cuántos reinos principales componen el continente de Black Clover?","answers":["5","3","4","6"],"correct":2}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Mediante qué técnica sensorial puede Asta detectar ataques sin tener magia?","answers":["Zutter","Mana Skin","Mana Zone","Ki"],"correct":3},
+        {"id":4,"statement":"¿Cómo se llama la espada que permite a Asta absorber y liberar magia?","answers":["Espada de Shukuma (Mora)","Espada de Danma (Slayer)","Espada de Metsuma (Dweller)","Cuchilla Negra"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuántos miembros oficiales tiene el escuadrón de los Toros Negros al final del arco de los Elfos?","answers":["15","14","10","12"],"correct":0},
+        {"id":6,"statement":"¿Qué edad tiene el vice-capitán de los Toros Negros, Nacht Faust?","answers":["20","29","27","31"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué personaje es el primero en ser identificado como un espía/mensajero del Reino de la Pica?","answers":["Julius Novachrono","Yami Sukehiro","Fanzell Kruger","Ralph Niaflem"],"correct":3},
+        {"id":8,"statement":"¿Qué personaje derrota finalmente a Vetto de la Tríada Oscura usando el 'Rugido del Dragón'?","answers":["Yuno","Noelle Silva","Asta","Magna Swing"],"correct":1}
+      ]
+    },
+    {
+      "name": "Voley",
+      "easy": [
+        {"id":1,"statement":"¿Cuántos jugadores de un mismo equipo hay simultáneamente en pista en voleibol sala?","answers":["4","5","6","7"],"correct":2},
+        {"id":2,"statement":"¿Sobre qué superficie se disputa oficialmente el voleibol de playa?","answers":["Arena","Hierba","Madera","Caucho"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿A cuántos sets ganados se juega un partido oficial de voleibol (al mejor de...)?","answers":["2","3","5","4"],"correct":2},
+        {"id":4,"statement":"¿Qué selección masculina se colgó el oro en los JJOO de Tokio 2020?","answers":["Brasil","Francia","ROC (Rusia)","Argentina"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué jugador defensivo viste un color distinto y no puede sacar ni bloquear?","answers":["Central","Opuesto","Líbero","Colocador"],"correct":2},
+        {"id":6,"statement":"¿Cuál es la altura oficial de la red para la categoría masculina senior?","answers":["2.43 m","2.40 m","2.24 m","2.50 m"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué año y ciudad se fundó la Federación Internacional de Voleibol (FIVB)?","answers":["1928, Lausana","1932, Berlín","1947, París","1950, Roma"],"correct":2},
+        {"id":8,"statement":"¿Quién fue el seleccionador que llevó al oro masculino a Brasil en Río 2016?","answers":["Bernardinho","Paulo Coco","Zé Roberto","Renan Dal Zotto"],"correct":0}
+      ]
+    },
+    {
+      "name": "The Binding of Isaac: Rebirth",
+      "easy": [
+        {"id":1,"statement":"¿Quién es el personaje principal que huye al sótano?","answers":["Isaac","Eve","Cain","Azazel"],"correct":0},
+        {"id":2,"statement":"¿Qué atributo de Isaac mejoran los objetos representados por 'lágrimas'?","answers":["Rango","Velocidad","Cadencia de fuego","Suerte"],"correct":2}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuál es el primer jefe final obligatorio que aparece en el piso 'Depths II'?","answers":["Mom","Dad","Satan","The Lamb"],"correct":0},
+        {"id":4,"statement":"¿Qué personaje se desbloquea tras completar el juego por primera vez?","answers":["Magdalene","Eve","Azazel","Lazarus"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué objeto pasivo otorga un escudo que bloquea el primer golpe en cada habitación?","answers":["Holy Mantle","Book of Belial","Brimstone","The Wafer"],"correct":0},
+        {"id":6,"statement":"¿Cómo se llama el nivel sangriento que sigue a la derrota de Mom?","answers":["Caves","Catacombs","Sheol","Womb"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué estadísticas mejora el objeto 'The Pact' (El Pacto)?","answers":["Daño y Cadencia","Vida y Suerte","Velocidad y Rango","Solo Daño"],"correct":0},
+        {"id":8,"statement":"¿Qué personaje inicia con la capacidad de volar y disparo de corto alcance (Brimstone)?","answers":["Isaac","Azazel","Eve","The Lost"],"correct":1}
+      ]
+    }
+  ]
+}

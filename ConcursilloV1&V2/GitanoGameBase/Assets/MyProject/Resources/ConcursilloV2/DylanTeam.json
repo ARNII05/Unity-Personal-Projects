@@ -1,0 +1,70 @@
+{
+  "gameModes": [
+    {
+      "name": "Imágenes de héroes",
+      "basePath": "CharImg",
+      "levels": [
+        { "answer": "Junkrat" },
+        { "answer": "Sigma" },
+        { "answer": "Reinhardt" },
+        { "answer": "Kiriko" },
+        { "answer": "Ana" }
+      ]
+    },
+    {
+      "name": "Imágenes de mapas",
+      "basePath": "MapImg",
+      "levels": [
+        { "answer": "Ilios" },
+        { "answer": "Hanamura" },
+        { "answer": "Ruta 66" },
+        { "answer": "Numbani" },
+        { "answer": "Kings Row" }
+      ]
+    },
+    {
+      "name": "Descripción de héroes",
+      "basePath": "CharDesc",
+      "levels": [
+        { "answer": "Genji" },
+        { "answer": "Mercy" },
+        { "answer": "Cassidy" },
+        { "answer": "Zarya" },
+        { "answer": "Lucio" }
+      ]
+    },
+    {
+						"name": "Sonido de TF",
+						"basePath": "TfSound",
+						"levels": [
+									{ "answer": "Symmetra, Cassidy" },
+									{ "answer": "Reinhardt, Kiriko, Genji, Mei" },
+									{ "answer": "Ana, Junkrat, Widowmaker, Lucio, Sigma, Ashe" },
+									{ "answer": "D.Va, Zenyatta, Reaper, Sojourn, Roadhog, Mercy, Hanzo, Moira" },
+									{ "answer": "Tracer, Winston, Baptiste, Sigma, Sombra, Cassidy, Sierra, JunkerQueen, Soldado: 76, Ana" }
+							]
+			},
+			{
+					"name": "Héroes mezclados", 
+					"basePath": "ShuffledHeroes",
+					"levels": [
+								{ "answer": "Jetpack Cat, Mauga, Anran, Bastion, Emre" },
+        { "answer": "Hazard, Mei, Illari, Lifeweaver, Juno" }, 
+        { "answer": "Ramattra, Junker Queen, Venture, Wrecking Ball, Tracer" },
+        { "answer": "Hanzo, Zarya, Lucio, Symmetra, Mizuki" }, 
+        { "answer": "Sierra, Pharah, Ashe, Ana, Zenyatta" }  
+					] 
+			},
+   {
+      "name": "Sonidos de héroes",
+      "basePath": "CharSound",
+      "levels": [
+        { "answer": "Doomfist" },
+        { "answer": "Mizuki" },
+        { "answer": "Brigitte" },
+        { "answer": "Wrecking Ball" },
+        { "answer": "Baptiste" }
+      ]
+   }
+  ]
+}

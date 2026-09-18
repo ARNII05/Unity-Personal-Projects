@@ -1,0 +1,595 @@
+{
+  "player": "Ade",
+  "themes": [
+    {
+      "name": "Cultura General",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuál es la capital de Rusia?",
+          "answers": ["Sant Petesburgo", "Moscú", "Kazan", "Quebec"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Qué animal es conocido como el rey de la selva?",
+          "answers": ["Tigre", "León", "Elefante", "Gorila"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Cuál es el océano más grande del planeta?",
+          "answers": ["Atlántico", "Índico", "Ártico", "Pacífico"],
+          "correct": 3
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué país tiene forma de bota?",
+          "answers": ["Grecia", "Italia", "Portugal", "Croacia"],
+          "correct": 1
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué elemento químico tiene el símbolo Au?",
+          "answers": ["Plata", "Oro", "Argón", "Aluminio"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿En qué año cayó el Muro de Berlín?",
+          "answers": ["1987", "1988", "1989", "1991"],
+          "correct": 2
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué país tiene más husos horarios?",
+          "answers": ["Estados Unidos", "Rusia", "China", "Francia"],
+          "correct": 3
+        },
+        {
+          "id": 8,
+          "statement": "¿Quién escribió 'Cien años de soledad'?",
+          "answers": ["Mario Vargas Llosa", "Pablo Neruda", "Gabriel García Márquez", "Julio Cortázar"],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "name": "Historia",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿En qué país se construyeron las pirámides de Giza?",
+          "answers": ["México", "Egipto", "Perú", "Grecia"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Quién fue el primer presidente de Estados Unidos?",
+          "answers": ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "John Adams"],
+          "correct": 2
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué imperio construyó el Coliseo?",
+          "answers": ["Griego", "Egipcio", "Romano", "Bizantino"],
+          "correct": 2
+        },
+        {
+          "id": 4,
+          "statement": "¿En qué año comenzó la Segunda Guerra Mundial?",
+          "answers": ["1937", "1938", "1939", "1940"],
+          "correct": 2
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué civilización construyó Machu Picchu?",
+          "answers": ["Azteca", "Maya", "Inca", "Olmeca"],
+          "correct": 2
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué reina gobernó Inglaterra durante la llamada Era Victoriana?",
+          "answers": ["Isabel I", "Victoria", "Ana", "María I"],
+          "correct": 1
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué tratado dividió el Nuevo Mundo entre España y Portugal en 1494?",
+          "answers": ["Tratado de París", "Tratado de Utrecht", "Tratado de Tordesillas", "Tratado de Lisboa"],
+          "correct": 2
+        },
+        {
+          "id": 8,
+          "statement": "¿Quién fue el líder soviético durante la Crisis de los Misiles en Cuba?",
+          "answers": ["Stalin", "Gorbachov", "Lenin", "Nikita Jrushchov"],
+          "correct": 3
+        }
+      ]
+    },
+    {
+      "name": "Ciencia",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuál es el estado sólido del agua?",
+          "answers": ["Vapor", "Nieve", "Hielo", "Escarcha"],
+          "correct": 2
+        },
+        {
+          "id": 2,
+          "statement": "¿Qué órgano bombea la sangre en el cuerpo humano?",
+          "answers": ["Pulmón", "Hígado", "Cerebro", "Corazón"],
+          "correct": 3
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué planeta es conocido como el planeta rojo?",
+          "answers": ["Marte", "Venus", "Saturno", "Mercurio"],
+          "correct": 0
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué tipo de energía utiliza paneles solares?",
+          "answers": ["Eólica", "Solar", "Nuclear", "Geotérmica"],
+          "correct": 1
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué científico descubrió la penicilina?",
+          "answers": ["Marie Curie", "Alexander Fleming", "Louis Pasteur", "Darwin"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Cuál es el número atómico del carbono?",
+          "answers": ["6", "12", "8", "14"],
+          "correct": 0
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué fenómeno explica el desplazamiento al rojo en el universo?",
+          "answers": ["Gravedad", "Expansión del universo", "Rotación terrestre", "Magnetismo"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué rama de la física estudia las partículas subatómicas?",
+          "answers": ["Termodinámica", "Óptica", "Mecánica cuántica", "Acústica"],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "name": "Overwatch",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuántos héroes añadieron en el lanzamiento de OW2?",
+          "answers": ["1", "2", "3", "4"],
+          "correct": 2
+        },
+        {
+          "id": 2,
+          "statement": "¿Cuánta penalización de moviemiento tiene Hazard al usar el block?",
+          "answers": ["40%", "50%", "65%", "55%"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Cuánta salud base tiene el tp de Symettra?",
+          "answers": ["200", "50", "150", "100"],
+          "correct": 0
+        },
+        {
+          "id": 4,
+          "statement": "¿Cuánto daño extra hace la lanza de Orisa si impacta a alguien contra una pared?",
+          "answers": ["45", "30", "50", "40"],
+          "correct": 3
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿De quien es la frase 'A little care always helps'?",
+          "answers": ["Ana", "Baptiste", "Life Weaver", "Kiriko"],
+          "correct": 2
+        },
+        {
+          "id": 6,
+          "statement": "¿Cuál era el nombre del programa que dio origen a los supersoldados como Jack Morrison y Gabriel Reyes?",
+          "answers": ["Proyecto Helix", "Programa Aurora", "Iniciativa Talon", "Soldier Enhancement Initiative"],
+          "correct": 3
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué música le gusta a Pharah?",
+          "answers": ["Pop", "Rock clásico", "Metal", "No metal"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Cuándo fue la primera aparición del evento 'Desafio de Kanezaka'?",
+          "answers": ["2021", "2019", "2020", "2022"],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "name": "Entretenimiento",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Qué saga cinematográfica tiene un personaje llamado Darth Vader?",
+          "answers": ["Star Trek", "Star Wars", "Harry Potter", "Avatar"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Qué videojuego tiene como protagonista a Mario?",
+          "answers": ["Zelda", "Sonic", "Metroid", "Super Mario Bros"],
+          "correct": 3
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué banda británica lanzó el álbum 'Abbey Road'?",
+          "answers": ["Queen", "The Rolling Stones", "The Beatles", "Oasis"],
+          "correct": 2
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué actor interpreta a Jack Sparrow?",
+          "answers": ["Orlando Bloom", "Johnny Depp", "Leonardo DiCaprio", "Brad Pitt"],
+          "correct": 1
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué película surcoreana ganó el Oscar a Mejor Película en 2020?",
+          "answers": ["Oldboy", "Parasite", "The Host", "Burning"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué compositor creó la banda sonora de 'Interstellar'?",
+          "answers": ["John Williams", "Hans Zimmer", "Howard Shore", "Ennio Morricone"],
+          "correct": 1
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué actor interpretó al Joker en 'The Dark Knight' (2008)?",
+          "answers": ["Joaquin Phoenix", "Heath Ledger", "Jared Leto", "Jack Nicholson"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué serie fue la primera producción original de Netflix en ganar un Emmy importante?",
+          "answers": ["Stranger Things", "The Crown", "House of Cards", "Narcos"],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "name": "The Legend of Zelda",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "En 'Ocarina of time', ¿cuántas piedras espirituales hay?",
+          "answers": ["4", "1", "2", "3"],
+          "correct": 3
+        },
+        {
+          "id": 2,
+          "statement": "¿En qué se caracteriza el 'Bosque perdido' en la mayoría de los Zelda?",
+          "answers": ["Hay que resolver varios puzzles para cruzar", "Utiliza cierto patrón de direcciones", "Es complicada por los enmigos que hay", "Te manda a otra dimensión"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "En Breath of the Wild, ¿cómo se llama el portador de la bestia divina del aire?",
+          "answers": ["Urbosa", "Mifa", "Revali", "Daruk"],
+          "correct": 2
+        },
+        {
+          "id": 4,
+          "statement": "¿Cuál de estos personajes NO es un sabio en 'The Legend of Zelda: Ocarina of Time'?",
+          "answers": ["Ganondorf", "Darunia", "Impa", "Rauru"],
+          "correct": 0
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Cuantas mazmorras hay en 'Twilight Princess'?",
+          "answers": ["5", "7", "9", "12"],
+          "correct": 2
+        },
+        {
+          "id": 6,
+          "statement": "¿The Legend of Zelda: Ocarina of Time, ¿cuál es el nombre del líder de los Kokiri que guía a Link al inicio de su aventura?",
+          "answers": ["Darunia", "Rauru", "Saria", "Mido"],
+          "correct": 3
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "En Ocarina of Time, ¿cuantos miembros hay en el grupo de 'Siete Sabios'?",
+          "answers": ["8", "7", "9", "6"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "En Link: The Faces of Evil, ¿cómo se llama la isla principal donde transcurre la historia?",
+          "answers": ["Gamelon", "Labrynna", "Holodrum", "Koridai"],
+          "correct": 3
+        }
+      ]
+    },
+    {
+      "name": "The boys",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Quién mata a Robin Ward en el primer episodio?",
+          "answers": ["A-Train", "Soldier Boy", "Homelander", "Queen Maeve"],
+          "correct": 0
+        },
+        {
+          "id": 2,
+          "statement": "¿Quién es el líder de los Siete?",
+          "answers": ["Soldier Boy", "Homelander", "A-Train", "Black Noir"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Qué empresa controla a los superhéroes en la serie?",
+          "answers": ["Vought", "Wayne Enterprises", "Oscorp", "LexCorp"],
+          "correct": 0
+        },
+        {
+          "id": 4,
+          "statement": "¿Cuál es el poder de A-Train?",
+          "answers": ["Superfuerza", "Velocidad sobrehumana", "Telepatía", "Invisibilidad"],
+          "correct": 1
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Quién filtra los secretos de Vought a Hughie?",
+          "answers": ["MM", "Frenchie", "Starlight", "Queen Maeve"],
+          "correct": 2
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué suceso provoca la muerte de Translucent?",
+          "answers": ["Explotó un coche", "Se cae de un edificio", "Lo asesina Homelander", "Fue atravesado por un explosivo"],
+          "correct": 3
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Cuál es el origen del personaje Soldier Boy en la serie?",
+          "answers": ["Guerra Fría", "Segunda Guerra Mundial", "Vietnam", "Primera Guerra Mundial"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Cómo se llama la versión corrupta de Homelander en los cómics que inspira la serie?",
+          "answers": ["Homelander Noir", "Capitán América", "Supersonic", "Golden Boy"],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "name": "Pokémon",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuántas generaciones hay?",
+          "answers": ["10", "7", "8", "9"],
+          "correct": 3
+        },
+        {
+          "id": 2,
+          "statement": "¿De qué tipo es el movimiento 'Acoso'?",
+          "answers": ["Veneno", "Bicho", "Roca", "Normal"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Dónde se desarrolla la trama en 'Pokémon Negro y Blanco'?",
+          "answers": ["Ciudad Porcelana", "Ciudad Vertania", "Teselia", "Ciudad Relieve"],
+          "correct": 2
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué Pokémon es la evolución final de Snivy?",
+          "answers": ["Serperior", "Emboar", "Samurott", "Sceptile"],
+          "correct": 0
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿En qué generación se añadió la habilidad 'Regeneración'?",
+          "answers": ["7", "5", "3", "4"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Qué Pokémon es conocido como 'el espíritu de Teselia'?",
+          "answers": ["Zekrom", "Reshiram", "Cobalion", "Victini"],
+          "correct": 3
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Cuál de estos Pokémon NO está en el equipo del campeón de la sexta generación?",
+          "answers": ["Gourgeist", "Tyrantrum", "Aegislash", "Aurorus"],
+          "correct": 2
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué Pokémon legendario es exclusivo de Pokémon Blanco?",
+          "answers": ["Thundurus", "Reshiram", "Tornadus", "Regice"],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "name": "Interstellar",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Quién dirige la película 'Interstellar'?",
+          "answers": ["Steven Spielberg", "Christopher Nolan", "James Cameron", "Ridley Scott"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Cuál es la profesión inicial de Cooper?",
+          "answers": ["Astronauta", "Ingeniero", "Granjero y piloto", "Profesor"],
+          "correct": 2
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿Cómo se llama la hija de Cooper?",
+          "answers": ["Murph", "Amelia", "Tom", "Casey"],
+          "correct": 0
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué problema climático afecta a la Tierra?",
+          "answers": ["Huracanes", "Tormentas de arena", "Inundaciones", "Terremotos"],
+          "correct": 1
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué planeta se encuentra orbitando el agujero negro Gargantua con enormes olas?",
+          "answers": ["Miller", "Mann", "Edmunds", "Saturn"],
+          "correct": 0
+        },
+        {
+          "id": 6,
+          "statement": "¿Quién traiciona al equipo al intentar escapar de manera egoísta?",
+          "answers": ["Cooper", "Brand", "Mann", "Doyle"],
+          "correct": 2
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué ecuación crucial intenta resolver Murphy para salvar a la humanidad?",
+          "answers": ["Ecuación de la gravedad cuántica", "Ecuación de Maxwell", "Ecuación de Schrödinger", "Ecuación de Einstein"],
+          "correct": 0
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué recurso usa Cooper dentro del tesseract para comunicarse con su hija a través del tiempo?",
+          "answers": ["Gravedad", "Tiempo", "Electromagnetismo", "Materia oscura"],
+          "correct": 0
+        }
+      ]
+    },
+    {
+      "name": "Twitch",
+      "easy": [
+        {
+          "id": 1,
+          "statement": "¿Cuánto cuesta una sub de tier 1 en España?",
+          "answers": ["4.50€", "4.99€", "5.99€", "5.99€"],
+          "correct": 1
+        },
+        {
+          "id": 2,
+          "statement": "¿Quién es el fundador de Twitch?",
+          "answers": ["Justin Kan", "Emmett Shear", "Mark Zuckerberg", "PewDiePie"],
+          "correct": 1
+        }
+      ],
+      "normal": [
+        {
+          "id": 3,
+          "statement": "¿En qué año se lanzó Twitch como plataforma independiente?",
+          "answers": ["2010", "2012", "2011", "2013"],
+          "correct": 2
+        },
+        {
+          "id": 4,
+          "statement": "¿Qué medida implementa Twitch para prevenir el abuso de bots en raids?",
+          "answers": ["Captcha", "Autenticación de dos pasos", "Limitación de IP", "Verificación de correo"],
+          "correct": 3
+        }
+      ],
+      "dificult": [
+        {
+          "id": 5,
+          "statement": "¿Qué evento de Twitch es famoso por recaudar dinero para caridad?",
+          "answers": ["TwitchCon", "Twitch Plays Pokémon", "Twitch Rivals", "Twitch Sings"],
+          "correct": 1
+        },
+        {
+          "id": 6,
+          "statement": "¿Cuál es el límite de suscriptores simultáneos en un canal Twitch estándar?",
+          "answers": ["5000", "10000", "1000", "Sin límite oficial"],
+          "correct": 3
+        }
+      ],
+      "very_dificult": [
+        {
+          "id": 7,
+          "statement": "¿Qué protocolo de transmisión usa Twitch principalmente para video en directo?",
+          "answers": ["HLS", "RTMP", "WebRTC", "HTTP/2"],
+          "correct": 1
+        },
+        {
+          "id": 8,
+          "statement": "¿Qué servicio compró Twitch en 2014?",
+          "answers": ["Curse", "Mixer", "Azubu", "Hitbox"],
+          "correct": 0
+        }
+      ]
+    }
+  ]
+}

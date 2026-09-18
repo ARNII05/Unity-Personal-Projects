@@ -1,0 +1,195 @@
+{
+  "player": "Emilio",
+  "themes": [
+    {
+      "name": "Cultura General",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es la capital de Francia?","answers":["Londres","París","Roma","Berlín"],"correct":1},
+        {"id":2,"statement":"¿Cuál es el planeta más cercano al Sol?","answers":["Mercurio","Venus","Tierra","Marte"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuál es el idioma más hablado del mundo (incluyendo no nativos)?","answers":["Español","Chino mandarín","Inglés","Hindi"],"correct":2},
+        {"id":4,"statement":"¿Cuál es la moneda de Japón?","answers":["Yen","Dólar","Euro","Libra"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién pintó 'La última cena'?","answers":["Michelangelo","Leonardo da Vinci","Raphael","Caravaggio"],"correct":1},
+        {"id":6,"statement":"¿Cuál es la obra literaria más antigua conocida?","answers":["Beowulf","El Poema de Gilgamesh","La Iliada","La Odisea"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué filósofo dijo 'Pienso, luego existo'?","answers":["Kant","Descartes","Platón","Aristóteles"],"correct":1},
+        {"id":8,"statement":"¿Qué país ganó la primera Copa del Mundo de fútbol?","answers":["Italia","Uruguay","Brasil","Alemania"],"correct":1}
+      ]
+    },
+    {
+      "name": "Historia",
+      "easy": [
+        {"id":1,"statement":"¿Quién lideró la expedición que llegó a América en 1492?","answers":["Colón","Magallanes","Vasco de Gama","Pizarro"],"correct":0},
+        {"id":2,"statement":"¿Qué muralla se construyó para proteger la frontera norte de China?","answers":["Gran Muralla China","Muralla de Berlín","Muralla Maya","Muralla de Adriano"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué título alcanzó Napoleón Bonaparte en 1804?","answers":["General Español","Filósofo","Rey de Francia","Emperador de Francia"],"correct":3},
+        {"id":4,"statement":"¿Qué año terminó la Segunda Guerra Mundial?","answers":["1945","1944","1947","1946"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué tratado puso fin a la Primera Guerra Mundial?","answers":["Versalles","Berlín","París","Londres"],"correct":0},
+        {"id":6,"statement":"¿Quién fue el último emperador del Sacro Imperio Romano Germánico?","answers":["Otto I","Carlos V","Napoleón","Francisco II"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué evento simbólico marcó el inicio de la Revolución Francesa?","answers":["Toma de la Bastilla","Toma de Versalles","Batalla de Waterloo","Batalla de Marat"],"correct":0},
+        {"id":8,"statement":"¿Quién fue el principal líder de la Revolución Cubana?","answers":["Fidel Castro","Che Guevara","Hugo Chávez","Camilo Cienfuegos"],"correct":0}
+      ]
+    },
+    {
+      "name": "Ciencia",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es el gas que respiramos principalmente?","answers":["Nitrógeno","Oxígeno","Dióxido de carbono","Hidrógeno"],"correct":1},
+        {"id":2,"statement":"¿Cuál es el planeta más grande del sistema solar?","answers":["Saturno","Júpiter","Urano","Neptuno"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué científico formuló la teoría de la relatividad?","answers":["Galileo","Einstein","Newton","Tesla"],"correct":1},
+        {"id":4,"statement":"¿Cuál es la unidad de fuerza en el Sistema Internacional?","answers":["Joule","Watt","Newton","Pascal"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué tipo de enlace químico se basa en compartir electrones?","answers":["Covalente","Iónico","Metálico","Puente de hidrógeno"],"correct":0},
+        {"id":6,"statement":"¿Cuál es la velocidad de la luz en el vacío?","answers":["3×10^6 m/s","3×10^8 m/s","3×10^9 m/s","1.5×10^8 m/s"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"A fecha de 2024/2025, ¿qué planeta tiene más satélites confirmados?","answers":["Júpiter","Saturno","Neptuno","Urano"],"correct":1},
+        {"id":8,"statement":"¿Qué partícula subatómica tiene carga negativa?","answers":["Electrón","Quark","Protón","Neutrón"],"correct":0}
+      ]
+    },
+    {
+      "name": "Overwatch",
+      "easy": [
+        {"id":1,"statement":"¿En qué país real está ambientado el mapa de Oasis?","answers":["Egipto","Iraq","Arabia Saudita","Irán"],"correct":1},
+        {"id":2,"statement":"¿Qué héroe obligó a Blizzard a crear la Role Queue debido a la composición GOATS?","answers":["Orisa","Brigitte","Ana","Tracer"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"Zenyatta fue el mentor y maestro de...","answers":["Tracer","Wuyang","Genji","Hanzo"],"correct":2},
+        {"id":4,"statement":"¿Cada cuántos niveles se ganaba una estrella en el marco de nivel de OW1?","answers":["100","105","120","150"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuánta munición por segundo consume el rayo primario de Zarya?","answers":["25","15","20","10"],"correct":2},
+        {"id":6,"statement":"¿Cuál era la salud máxima del escudo de Brigitte en su lanzamiento?","answers":["400","300","500","600"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál es el plato favorito de Baptiste (mencionado en su biografía)?","answers":["Ragú de carne","Chenchen","Cerdo y el lalo","Griot"],"correct":1},
+        {"id":8,"statement":"¿Cuánto daño hace cada proyectil de los Cañones de Fusión de D.Va a corta distancia?","answers":["2-0.6 (por perdigón)","1.5-0.4","2-1","2-0.9"],"correct":0}
+      ]
+    },
+    {
+      "name": "Entretenimiento",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es la película animada con un pez llamado Nemo?","answers":["Buscando a Dory","Buscando a Nemo","La Sirenita","Shark Tale"],"correct":1},
+        {"id":2,"statement":"¿Qué serie tiene un personaje llamado Homer Simpson?","answers":["Family Guy","Los Simpson","Futurama","South Park"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Quién interpreta a Tony Stark en el MCU?","answers":["Chris Evans","Robert Downey Jr.","Chris Hemsworth","Mark Ruffalo"],"correct":1},
+        {"id":4,"statement":"¿Qué cantante lanzó el álbum '25'?","answers":["Beyoncé","Adele","Taylor Swift","Rihanna"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué director dirigió 'Pulp Fiction'?","answers":["Steven Spielberg","Quentin Tarantino","Guy Ritchie","Christopher Nolan"],"correct":1},
+        {"id":6,"statement":"¿Qué película ganó el Oscar a Mejor Película en 1994?","answers":["Pulp Fiction","Forrest Gump","The Shawshank Redemption","Quiz Show"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué actriz interpretó a Hermione Granger en la saga de Harry Potter?","answers":["Natalie Portman","Emma Watson","Keira Knightley","Emma Stone"],"correct":1},
+        {"id":8,"statement":"¿Qué director dirigió la película de terror 'The Shining'?","answers":["Stanley Kubrick","Alfred Hitchcock","Martin Scorsese","Francis Ford Coppola"],"correct":0}
+      ]
+    },
+    {
+      "name": "Geografía",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es la capital de Francia?","answers":["París","Roma","Lisboa","Berlín"],"correct":0},
+        {"id":2,"statement":"¿En qué continente se encuentra Brasil?","answers":["África","América del Sur","Europa","Asia"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuál es el río más largo del mundo (por volumen y longitud)?","answers":["Nilo","Amazonas","Yangtsé","Misisipi"],"correct":1},
+        {"id":4,"statement":"¿Qué país es actualmente el más poblado del mundo?","answers":["India","China","Estados Unidos","Indonesia"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuál es el estrecho que separa Asia de América?","answers":["Estrecho de Magallanes","Estrecho de Gibraltar","Estrecho de Bering","Estrecho de Ormuz"],"correct":2},
+        {"id":6,"statement":"¿Qué país africano tiene mayor extensión territorial?","answers":["Nigeria","República Democrática del Congo","Sudáfrica","Argelia"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál es la capital de Mongolia?","answers":["Astaná","Ulán Bator","Biskek","Dusambé"],"correct":1},
+        {"id":8,"statement":"¿Qué país posee oficialmente la mayor cantidad de islas en el mundo?","answers":["Suecia","Indonesia","Filipinas","Canadá"],"correct":0}
+      ]
+    },
+    {
+      "name": "Haikyuu",
+      "easy": [
+        {"id":1,"statement":"¿En qué posición juega principalmente Shoyo Hinata?","answers":["Líbero","Colocador","Central","Opuesto"],"correct":2},
+        {"id":2,"statement":"¿Cuál es el número de camiseta de Kageyama en Karasuno?","answers":["2","9","11","5"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cómo se llama el 'Pequeño Gigante' original?","answers":["Kita Shinsuke","Oikawa Tooru","Ushijima Wakatoshi","Tenma Udai"],"correct":3},
+        {"id":4,"statement":"¿Contra qué equipo juega Karasuno su primer partido oficial en el Interhigh?","answers":["Tokonami","Nekoma","Date Tech","Shiratorizawa"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cómo se llama el entrenador actual de Karasuno?","answers":["Takeda Ittetsu","Ukai Keishin","Washijo Tanji","Nekomata Yasufumi"],"correct":1},
+        {"id":6,"statement":"¿Qué jugador de Nekoma es conocido como 'el cerebro'?","answers":["Yaku","Lev","Kuroo","Kenma"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué año de preparatoria está Daichi Sawamura al inicio?","answers":["Primero","Tercero","Segundo","Graduado"],"correct":1},
+        {"id":8,"statement":"¿Qué posición jugaba el Pequeño Gigante (Tenma Udai) en Karasuno?","answers":["Central","Colocador","Rematador Externo","Opuesto"],"correct":2}
+      ]
+    },
+    {
+      "name": "Call of Duty",
+      "easy": [
+        {"id":1,"statement":"¿Qué modo es parte fija del formato competitivo CDL?","answers":["Zombies","Dominio","Punto Caliente","Duelo por equipos"],"correct":2},
+        {"id":2,"statement":"¿Cuántos jugadores por equipo hay en la CDL actual?","answers":["5","6","3","4"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué modo reemplazó a Control en algunos títulos antiguos?","answers":["Captura la bandera","Sabotaje","Demolición","Cuartel general"],"correct":0},
+        {"id":4,"statement":"¿Qué accesorio suele estar prohibido por Gentleman's Agreement (GA)?","answers":["Silenciador","Mira réflex","Cargador ampliado","Lanzagranadas"],"correct":3}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué significa 'GA' en el competitivo de CoD?","answers":["Game Advantage","Global Access","Gentlemen's Agreement","General Ability"],"correct":2},
+        {"id":6,"statement":"¿Qué equipo ganó el primer anillo de la CDL (2020)?","answers":["Atlanta FaZe","Dallas Empire","OpTic Chicago","New York Subliners"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuántos segundos otorga cada tick de puntuación en Hardpoint?","answers":["2","1","5","3"],"correct":1},
+        {"id":8,"statement":"¿Qué jugador es apodado 'The King'?","answers":["Scump","Simp","Crimsix","Clayster"],"correct":0}
+      ]
+    },
+    {
+      "name": "Rocket League",
+      "easy": [
+        {"id":1,"statement":"¿Cuántos jugadores hay en el modo estándar?","answers":["4 por equipo","2 por equipo","3 por equipo","5 por equipo"],"correct":2},
+        {"id":2,"statement":"¿Cuánto dura un partido estándar?","answers":["4 min","6 min","7 min","5 min"],"correct":3}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué rango está justo debajo de Grand Champion I?","answers":["Champion III","Supersonic Legend","Diamond III","Master"],"correct":0},
+        {"id":4,"statement":"¿Cuánto boost máximo puede tener un coche?","answers":["150","50","100","120"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cómo se llama centrar el balón desde la pared?","answers":["Ceiling shot","Flip reset","Air dribble","Wall pass"],"correct":3},
+        {"id":6,"statement":"¿Qué rango se añadió por encima de GC en 2020?","answers":["Legendary Master","Elite Champion","Supersonic Legend","Ultimate GC"],"correct":2}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuántos pads de boost pequeños hay en el mapa estándar?","answers":["28","36","30","34"],"correct":1},
+        {"id":8,"statement":"¿Qué permite hacer un flip reset?","answers":["1 toque","2 toques","Saltar ilimitadamente si tocas con las 4 ruedas","3 toques"],"correct":2}
+      ]
+    },
+    {
+      "name": "Destiny 2",
+      "easy": [
+        {"id":1,"statement":"¿Qué clase usa el Martillo del Sol?","answers":["Hechicero","Cazador","Titán","Exo"],"correct":2},
+        {"id":2,"statement":"¿Quién es el líder de la Vanguardia de los Titanes?","answers":["Ikora Rey","Zavala","Cayde-6","Osiris"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuál fue la primera incursión (Raid) de Destiny 2?","answers":["Último Deseo","Cámara de Cristal","Raíz de Pesadillas","Leviatán"],"correct":3},
+        {"id":4,"statement":"¿A qué facción lidera Savathûn?","answers":["La Colmena","Los Caídos","Los Cabal","Los Vex"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué arma exótica dispara proyectiles que atraviesan enemigos?","answers":["Gjallarhorn","Sleeper Simulant","Thorn","Ace of Spades"],"correct":1},
+        {"id":6,"statement":"¿Cómo se llamaba el Espectro de Cayde-6?","answers":["Glint","Sundance","Targe","Sagira"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Dónde se encuentra el Mundo Trono de Savathûn?","answers":["En Marte","En el Reino Ascendente","En el patio del Testigo","En la Luna"],"correct":1},
+        {"id":8,"statement":"¿Quién es el antagonista principal introducido en 'La Reina Bruja'?","answers":["El Testigo","Oryx","El Arquitecto","Calus"],"correct":0}
+      ]
+    }
+  ]
+}

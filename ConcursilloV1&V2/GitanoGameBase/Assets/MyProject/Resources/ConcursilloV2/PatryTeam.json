@@ -1,0 +1,70 @@
+{
+  "gameModes": [
+    {
+      "name": "Imágenes de héroes",
+      "basePath": "CharImg",
+      "levels": [
+        { "answer": "Wrecking Ball" },
+        { "answer": "Illari" },
+        { "answer": "Ashe" },
+        { "answer": "Pharah" },
+        { "answer": "Lifeweaver" }
+      ]
+    },
+    {
+      "name": "Imágenes de mapas",
+      "basePath": "MapImg",
+      "levels": [
+        { "answer": "Esperanca" },
+        { "answer": "Colosseo" },
+        { "answer": "Monasterio Shambali" },
+        { "answer": "Paraiso" },
+        { "answer": "New Junk City" }
+      ]
+    },
+    {
+      "name": "Descripción de héroes",
+      "basePath": "CharDesc",
+      "levels": [
+        { "answer": "Winston" },
+        { "answer": "Reaper" },
+        { "answer": "Brigitte" },
+        { "answer": "Bastion" },
+        { "answer": "Zenyatta" }
+      ]
+    },
+    {
+      "name": "Sonido de TF",
+      "basePath": "TfSound",
+      "levels": [
+        { "answer": "Junkrat, Kiriko" },
+        { "answer": "Wrecking Ball, Zenyatta, Reaper, Sojourn" },
+        { "answer": "Brigitte, Winston, Bastion, Lifeweaver, Symmetra, Tracer" },
+        { "answer": "Junker Queen, Orisa, Sojourn, Kiriko, Moira, Junkrat, Lucio, Sigma" },
+        { "answer": "Ramattra, Genji, Mercy, Cassidy, Ana, Sombra, Doomfist, Torbjorn, Baptiste, Roadhog" }
+      ]
+    },
+				{
+						"name": "Héroes mezclados", 
+						"basePath": "ShuffledHeroes",
+						"levels": [
+								{ "answer": "Domina, Brigitte, Reaper, D.Va, Soldado:76" },
+								{ "answer": "Venture, Freja, Lucio, Roadhog, Tracer" }, 
+								{ "answer": "Hanzo, Junkrat, Zarya, Sojourn, Ana" },
+								{ "answer": "Sigma, Ashe, Wuyang, Moira, Vendetta" },
+								{ "answer": "Echo, Symmetra, Baptiste, Sombra, Zenyatta" }
+						]
+				},
+    {
+      "name": "Sonidos de héroes",
+      "basePath": "CharSound",
+      "levels": [
+        { "answer": "Winston" },
+        { "answer": "Emre" },
+        { "answer": "Brigitte" },
+        { "answer": "Freja" },
+        { "answer": "Sierra" }
+      ]
+    }
+  ]
+}

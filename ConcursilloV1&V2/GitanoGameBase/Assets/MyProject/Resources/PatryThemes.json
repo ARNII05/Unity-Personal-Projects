@@ -1,0 +1,195 @@
+{
+  "player": "Patry",
+  "themes": [
+    {
+      "name": "Cultura General",
+      "easy": [
+        {"id":1,"statement":"¿Cuál es la capital de Francia?","answers":["Lyon","París","Marsella","Burdeos"],"correct":1},
+        {"id":2,"statement":"¿Cuántos días tiene una semana estándar?","answers":["5","6","7","8"],"correct":2}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué país es la cuna del tango?","answers":["Brasil","Argentina","Chile","Perú"],"correct":1},
+        {"id":4,"statement":"¿Qué instrumento musical tiene teclas blancas y negras?","answers":["Piano","Guitarra","Violín","Flauta"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué artista postimpresionista pintó 'La noche estrellada'?","answers":["Van Gogh","Picasso","Monet","Dalí"],"correct":0},
+        {"id":6,"statement":"¿Cuál es el idioma oficial de Brasil?","answers":["Español","Portugués","Inglés","Francés"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué civilización antigua se originaron los Juegos Olímpicos?","answers":["Italia","Grecia","Egipto","China"],"correct":1},
+        {"id":8,"statement":"¿Qué autor escribió la obra cumbre 'Don Quijote de la Mancha'?","answers":["Cervantes","Lope de Vega","García Márquez","Borges"],"correct":0}
+      ]
+    },
+    {
+      "name": "Historia",
+      "easy": [
+        {"id":1,"statement":"¿Quién fue el primer ser humano en pisar la Luna?","answers":["Neil Armstrong","Buzz Aldrin","Yuri Gagarin","Michael Collins"],"correct":0},
+        {"id":2,"statement":"¿En qué año se firmó la Declaración de Independencia de EE. UU.?","answers":["1776","1789","1800","1750"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué antiguo pueblo árabe construyó la ciudad de Petra?","answers":["Egipcio","Persa","Nabateo","Romano"],"correct":2},
+        {"id":4,"statement":"¿Qué título ostentaba Cleopatra VII en Egipto?","answers":["Faraona/Reina","Reina de Roma","Emperatriz de Persia","Princesa de Grecia"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué batalla de 1815 supuso la derrota definitiva de Napoleón?","answers":["Waterloo","Austerlitz","Leipzig","Borodino"],"correct":0},
+        {"id":6,"statement":"¿Qué título recibió Temuyín al unificar las tribus de Asia Central?","answers":["Emperador Chino","Genghis Khan","Rey de Francia","Faraón Egipcio"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué año se fundó Roma según el mito de Rómulo y Remo?","answers":["753 a.C.","700 a.C.","500 a.C.","800 a.C."],"correct":0},
+        {"id":8,"statement":"¿Qué magnicidio fue el detonante de la Primera Guerra Mundial?","answers":["Asesinato de Francisco Fernando","Invasión de Polonia","Revolución Rusa","Tratado de Versalles"],"correct":0}
+      ]
+    },
+    {
+      "name": "Ciencia",
+      "easy": [
+        {"id":1,"statement":"¿Cuántos planetas componen actualmente el sistema solar?","answers":["7","8","9","10"],"correct":1},
+        {"id":2,"statement":"¿Qué fuerza atrae los cuerpos hacia el centro de la Tierra?","answers":["Magnetismo","Gravedad","Electromagnetismo","Fuerza nuclear"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué órgano del cuerpo humano es el encargado de producir insulina?","answers":["Hígado","Páncreas","Riñón","Estómago"],"correct":1},
+        {"id":4,"statement":"¿Cuál de estos planetas es apodado como 'El planeta rojo'?","answers":["Marte","Venus","Júpiter","Mercurio"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué físico formuló la ley de la gravitación universal?","answers":["Einstein","Newton","Galileo","Tesla"],"correct":1},
+        {"id":6,"statement":"¿Qué gas es indispensable para que se produzca una combustión?","answers":["Oxígeno","Nitrógeno","Hidrógeno","Helio"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál es la velocidad de la luz en el vacío (m/s)?","answers":["3×10^8","1×10^8","3×10^6","3×10^9"],"correct":0},
+        {"id":8,"statement":"¿Qué partícula del núcleo atómico tiene carga eléctrica positiva?","answers":["Protón","Electrón","Neutrón","Quark"],"correct":0}
+      ]
+    },
+    {
+      "name": "Entretenimiento",
+      "easy": [
+        {"id":1,"statement":"¿Quién es el autor de la saga 'El Señor de los Anillos'?","answers":["J.K. Rowling","J.R.R. Tolkien","George R.R. Martin","C.S. Lewis"],"correct":1},
+        {"id":2,"statement":"¿Qué película de Pixar tiene a un pez payaso como protagonista?","answers":["Buscando a Nemo","Buscando a Dory","La Sirenita","El espantatiburones"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Qué serie de culto trata sobre los supervivientes del vuelo 815 de Oceanic?","answers":["Lost","Survivor","The 100","Lost in Space"],"correct":0},
+        {"id":4,"statement":"¿Qué actriz dio vida a Katniss Everdeen en 'Los Juegos del Hambre'?","answers":["Jennifer Lawrence","Emma Watson","Kristen Stewart","Shailene Woodley"],"correct":0}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién es el director de 'Pulp Fiction' y 'Kill Bill'?","answers":["Quentin Tarantino","Guy Ritchie","Steven Spielberg","Christopher Nolan"],"correct":0},
+        {"id":6,"statement":"¿Qué película ganó el Oscar a Mejor Película en la gala de 1995 (cine de 1994)?","answers":["Pulp Fiction","Forrest Gump","Cadena Perpetua","Quiz Show"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Qué actriz británica interpretó a Hermione Granger?","answers":["Emma Watson","Emma Stone","Natalie Portman","Keira Knightley"],"correct":0},
+        {"id":8,"statement":"¿Qué cineasta dirigió la película original de 'Blade Runner' (1982)?","answers":["Ridley Scott","James Cameron","David Fincher","George Lucas"],"correct":0}
+      ]
+    },
+    {
+      "name": "Overwatch",
+      "easy": [
+        {"id":1,"statement":"¿Cuánta vida se les reduce a los tanques en modos 'Open Queue' respecto a 'Role Queue'?","answers":["120","200","150","175"],"correct":2},
+        {"id":2,"statement":"¿Cuál de estos héroes NO ha recibido un 'rework' mayor de habilidades?","answers":["Bastion","Sombra","Lifeweaver","Symmetra"],"correct":2}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuánta experiencia (XP) total otorgan las 3 misiones diarias?","answers":["4000","9000","5000","6000"],"correct":1},
+        {"id":4,"statement":"En el modo Stadium, ¿cuánto oro deben acumular los rivales para ganar por paliza?","answers":["12k","11k","10k","13k"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué porcentaje del daño por heridas (pasiva) se cura Junker Queen?","answers":["190%","225%","250%","350%"],"correct":1},
+        {"id":6,"statement":"¿Cuánta sanación por segundo (HPS) realiza el Rayo Orbital de Juno?","answers":["100/s","75/s","90/s","85/s"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué ciudad se desarrolla la misión de historia 'Invasión: Liberación'?","answers":["Gibraltar","Estambul","Durban","Gotemburgo"],"correct":3},
+        {"id":8,"statement":"¿Cuál es el nombre real de Venture, el primer héroe no binario?","answers":["Sloane Cameron","Jack Henderson","Michael Scofield","Oliver Henderson"],"correct":0}
+      ]
+    },
+    {
+      "name": "Simpsons",
+      "easy": [
+        {"id":1,"statement":"¿En qué número de Evergreen Terrace viven los Simpson?","answers":["742 Everred","744 Evergreen","742 Evergreen","744 Everred"],"correct":2},
+        {"id":2,"statement":"¿Cómo se llama el hijo menor de Ned Flanders?","answers":["Todd","Rod","Jeff","Nelson"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuál de estos personajes sigue 'vivo' en la continuidad actual?","answers":["Poochie","Cletus Spuckler","Edna Krabappel","Encías Sangrantes Murphy"],"correct":1},
+        {"id":4,"statement":"¿Qué apodo cariñoso usa a veces Bart para referirse a su hermana Lisa?","answers":["No tiene","Lis","Lise","Liza"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿En qué año se estrenó 'Los Simpson' como serie de media hora independiente?","answers":["1993","1990","1987","1989"],"correct":3},
+        {"id":6,"statement":"¿Cuál es el nombre original del cerdo de Homer en la película?","answers":["Spider-Cerdo","Harry Popote","Plopper","Ninguno"],"correct":2}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuál es el segundo nombre de Milhouse?","answers":["Van Houten","Mussolini","Jefferson","Milton"],"correct":1},
+        {"id":8,"statement":"¿Quién es el verdadero creador de Rasca y Pica (Itchy & Scratchy)?","answers":["Roger Meyers Sr.","Roger Meyers Jr.","Chester Lampwick","Lyle Lanley"],"correct":2}
+      ]
+    },
+    {
+      "name": "Stardew Valley",
+      "easy": [
+        {"id":1,"statement":"¿En qué estación se pueden cultivar fresas?","answers":["Verano","Primavera","Invierno","Otoño"],"correct":1},
+        {"id":2,"statement":"¿Qué ocurre con un cultivo si no se riega durante un día?","answers":["No crece ese día","Muere inmediatamente","Crece más lento","Viene un cuervo"],"correct":0}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuánta energía consume el uso de la azada con nivel 0 de agricultura?","answers":["1","3","2","4"],"correct":2},
+        {"id":4,"statement":"¿Qué lingote necesitas para mejorar herramientas al nivel de Acero?","answers":["Cobre","Hierro","Oro","Iridio"],"correct":1}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Qué tecla se usa en el chat para el carácter especial del mando (▷)?","answers":["<",">","@","$"],"correct":1},
+        {"id":6,"statement":"¿Cuáles son los únicos dos tipos de clima en Isla Jengibre?","answers":["Lluvia verde y sol","Nieve y sol","Tormenta y viento","Sol y lluvia"],"correct":3}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Cuántos espacios totales tiene la mochila al inicio del juego?","answers":["8","10","12","16"],"correct":2},
+        {"id":8,"statement":"¿Qué objeto entrega Gunther para poder entrar en las cloacas?","answers":["Llave oxidada","Amuleto oscuro","Gema prismática","Llave maestra"],"correct":0}
+      ]
+    },
+    {
+      "name": "Pichi Pichi Pitch",
+      "easy": [
+        {"id":1,"statement":"¿Cómo se llama la princesa sirena de la perla rosa?","answers":["Lucía","Hanón","Rina","Noel"],"correct":0},
+        {"id":2,"statement":"¿De qué color es la perla de Lucía?","answers":["Azul","Rosa","Verde","Morado"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿De quién está enamorada Lucía desde que era niña?","answers":["Taro","Kaito","Masahiro","Ryo"],"correct":1},
+        {"id":4,"statement":"¿Cuántas princesas sirena existen en los siete mares?","answers":["5","6","7","8"],"correct":2}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Quién es el líder de los Panthalassa y villano de la 1ª temporada?","answers":["Gaito","Mikeru","Izul","Eril"],"correct":0},
+        {"id":6,"statement":"¿Qué princesa sirena es capturada por Gaito antes de empezar la serie?","answers":["Noel","Karen","Coco","Sara"],"correct":2}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿En qué personaje se reencarna la esencia de Gaito en la temporada Pure?","answers":["Taro","Kaito","Mikeru","Seira"],"correct":2},
+        {"id":8,"statement":"¿Cuál es el color de la perla de Sara (y posteriormente Seira)?","answers":["Naranja","Amarillo","Morado","Rojo oscuro"],"correct":0}
+      ]
+    },
+    {
+      "name": "Bridgertons",
+      "easy": [
+        {"id":1,"statement":"¿Cuántos hijos tuvo en total Violet Bridgerton?","answers":["6","7","8","9"],"correct":2},
+        {"id":2,"statement":"¿Qué personaje es en realidad Lady Whistledown?","answers":["Eloise Bridgerton","Penelope Featherington","Cressida Cowper","Reina Charlotte"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Con qué noble se casa Daphne en la primera temporada?","answers":["Anthony Bridgerton","Colin Bridgerton","Simon Basset","Príncipe Friedrich"],"correct":2},
+        {"id":4,"statement":"¿Cuál de los hermanos es el protagonista central de la temporada 2?","answers":["Benedict","Eloise","Francesca","Anthony"],"correct":3}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿Cuál es el título nobiliario exacto de Simon Basset?","answers":["Marqués de Kent","Duque de Hastings","Conde de Sussex","Vizconde de Mayfair"],"correct":1},
+        {"id":6,"statement":"¿Cómo se apellidaba Kate antes de convertirse en Vizcondesa Bridgerton?","answers":["Sheffield","Sharma","Cowper","Featherington"],"correct":1}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿Con quién se casa Francesca al final de la temporada 3?","answers":["John Stirling","Michael Stirling","Theo Sharpe","Lord Debling"],"correct":0},
+        {"id":8,"statement":"¿Quién es la primera persona en descubrir la identidad de Whistledown?","answers":["Colin Bridgerton","Eloise Bridgerton","Madame Delacroix","Cressida Cowper"],"correct":2}
+      ]
+    },
+    {
+      "name": "Disney",
+      "easy": [
+        {"id":1,"statement":"¿Cuál de estos personajes NO aparece en la saga Toy Story?","answers":["Sid","Andy","Perla","Zurg"],"correct":2},
+        {"id":2,"statement":"¿Cómo se llama el fiel reno de Kristoff en Frozen?","answers":["Olaf","Sven","Eugene","Hans"],"correct":1}
+      ],
+      "normal": [
+        {"id":3,"statement":"¿Cuál fue el primer largometraje animado de la historia de Disney?","answers":["El Rey León","Dumbo","Blancanieves","Frozen"],"correct":2},
+        {"id":4,"statement":"¿Qué princesa Disney pierde un zapato de cristal al dar las doce?","answers":["Ariel","Bella","Aurora","Cenicienta"],"correct":3}
+      ],
+      "dificult": [
+        {"id":5,"statement":"¿En qué año se estrenó 'Blancanieves y los siete enanitos'?","answers":["1959","1937","1943","1950"],"correct":1},
+        {"id":6,"statement":"¿Qué película fue un fracaso inicial debido al estallido de la IIGM en Europa?","answers":["Fantasía/Pinocho","Toy Story","Rey León","La Sirenita"],"correct":0}
+      ],
+      "very_dificult": [
+        {"id":7,"statement":"¿De qué nacionalidad es el cuento original en el que se basa Blancanieves?","answers":["Alemán","Francés","Danés","Ruso"],"correct":0},
+        {"id":8,"statement":"¿Cuál de estos segmentos NO forma parte de la película 'Saludos Amigos'?","answers":["Pedro","Aquarela do Brasil","Tampoo (Caxangá)","Lago Titicaca"],"correct":2}
+      ]
+    }
+  ]
+}
