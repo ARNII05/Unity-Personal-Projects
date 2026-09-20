@@ -68,12 +68,14 @@ public class MapManager : MonoBehaviour
         if (player1 == null)
         {
             player1 = player;
+            player1.inventory = new Inventory();
             player1.name = "Player 1";
             Debug.Log($"Player 1 registrado: {player.name}");
         }
         else if (player2 == null)
         {
             player2 = player;
+            player2.inventory = new Inventory();
             player2.name = "Player 2";
             Debug.Log($"Player 2 registrado: {player.name}");
         }
@@ -305,15 +307,6 @@ public class MapManager : MonoBehaviour
             $"{player.name} entered zone " +
             $"NetworkMapPos: {newPos}"
         );
-
-        Player otherPlayer =
-            player == player1 ? player2 : player1;
-
-        LogManager.Log(
-            $"{otherPlayer.name}: " +
-            $"NetworkMapPos: " +
-            $"{otherPlayer.NetworkMapPos.Value}"
-        );
     }
 
     private Vector3 GetPlayerEntryPoint(
@@ -381,7 +374,6 @@ public class MapManager : MonoBehaviour
     {
         if (player.currentZone != null)
         {
-            Debug.Log($"Destroying {player.currentZone.name} for {player.name}");
             Destroy(player.currentZone);
         }
 
@@ -390,8 +382,6 @@ public class MapManager : MonoBehaviour
             player == player1 ? player1ZonePos : player2ZonePos,
             Quaternion.identity
         );
-
-        Debug.Log($"Instantiated {player.currentZone.name} for {player.name}");
 
         Zone currentZone = player.currentZone.GetComponent<Zone>();
         currentZone.Setup(player.NetworkMapPos.Value, map);

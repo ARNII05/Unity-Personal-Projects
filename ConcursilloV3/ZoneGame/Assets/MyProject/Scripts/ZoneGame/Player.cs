@@ -7,6 +7,7 @@ public class Player : NetworkBehaviour
     public GameObject currentZone;
     private BorderZone currentBorderZone;
     private Chest nearbyChest;
+    public Inventory inventory;
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
 
@@ -59,6 +60,9 @@ public class Player : NetworkBehaviour
     private void OpenChestServerRpc()
     {
         Vector2Int position = NetworkMapPos.Value;
+
+        nearbyChest.OnOpen(this);
+        nearbyChest = null;
 
         MapManager.Instance.OnChestOpen(position);
 
