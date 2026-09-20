@@ -54,7 +54,7 @@ public class Inventory
     {
         foreach (var item in items)
         {
-            LogManager.Log($"Item: {item.Key}, Amount: {item.Value}");
+            UIManager.Instance.WriteOnLogs($"Item: {item.Key}, Amount: {item.Value}\n");
         }
     }
 }

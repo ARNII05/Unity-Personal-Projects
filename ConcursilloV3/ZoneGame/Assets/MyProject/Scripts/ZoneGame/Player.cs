@@ -7,7 +7,7 @@ public class Player : NetworkBehaviour
     public GameObject currentZone;
     private BorderZone currentBorderZone;
     private Chest nearbyChest;
-    public Inventory inventory;
+    public Inventory inventory = new();
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
 
@@ -50,10 +50,7 @@ public class Player : NetworkBehaviour
             OpenChestServerRpc();
         }
 
-        if (IsOwner)
-        {
-            UpdateOtherPlayerVisual();
-        }
+        UpdateOtherPlayerVisual();
     }
 
     [ServerRpc]
@@ -122,13 +119,16 @@ public class Player : NetworkBehaviour
             otherPlayerVisualRoot.SetActive(false);
         }
 
-        MapManager.Instance.RegisterPlayer(this);
+        MapManager.Instance.RegisterPlayer(this, IsServer);
     }
 
     private void OnNetworkMapPosChanged(
         Vector2Int oldPos,
         Vector2Int newPos)
     {
+        if (!MapManager.Instance.IsMapReady)
+            return;
+
         MapManager.Instance.UpdateActualZone(this);
     }
 
@@ -141,12 +141,18 @@ public class Player : NetworkBehaviour
             MapManager.Instance.Player2 == null)
             return;
 
+        if (currentZone == null)
+            return;
+
         Player otherPlayer;
 
         if (this == MapManager.Instance.Player1)
             otherPlayer = MapManager.Instance.Player2;
         else
             otherPlayer = MapManager.Instance.Player1;
+
+        if (otherPlayer.currentZone == null)
+            return;
 
         bool sameZone =
             NetworkMapPos.Value ==
@@ -180,6 +186,19 @@ public class Player : NetworkBehaviour
             : -Mathf.Abs(scale.x);
 
         otherPlayerVisualRoot.transform.localScale = scale;
+    }
+
+    [ClientRpc]
+    public void SendMapClientRpc(
+        NetworkZoneData[] networkMap,
+        Vector2Int serverStartPos,
+        Vector2Int serverGrandmaPos)
+    {
+        MapManager.Instance.ReceiveMapFromServer(
+            networkMap,
+            serverStartPos,
+            serverGrandmaPos
+        );
     }
 
     public void OnTriggerEnter2D(Collider2D other)

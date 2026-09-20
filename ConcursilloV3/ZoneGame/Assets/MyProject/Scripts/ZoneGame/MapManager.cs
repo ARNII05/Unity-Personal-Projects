@@ -1,20 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MapManager : MonoBehaviour
 {
     public static MapManager instance { get; private set; }
+    public bool IsMapReady { get; private set; }
 
     public ZoneData[,] map;
     public Vector2Int grandmaPos;
+
     private Vector2Int startPos;
 
     public const int mapWidth = 7;
     public const int mapHeight = 7;
+
     [SerializeField] private Vector3 player1ZonePos;
     [SerializeField] private Vector3 player2ZonePos;
 
@@ -28,7 +28,7 @@ public class MapManager : MonoBehaviour
 
     public Player Player1 => player1;
     public Player Player2 => player2;
-    
+
     public static MapManager Instance
     {
         get
@@ -37,6 +37,7 @@ public class MapManager : MonoBehaviour
             {
                 instance = FindFirstObjectByType<MapManager>();
             }
+
             return instance;
         }
     }
@@ -56,90 +57,316 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         map = new ZoneData[mapHeight, mapWidth];
-
-        startPos = new(
-            Random.Range(0, mapWidth),
-            Random.Range(0, mapHeight)
-        );
+        IsMapReady = false;
     }
 
-    public void RegisterPlayer(Player player)
+    public void RegisterPlayer(Player player, bool isServer)
     {
         if (player1 == null)
         {
             player1 = player;
-            player1.inventory = new Inventory();
             player1.name = "Player 1";
-            Debug.Log($"Player 1 registrado: {player.name}");
+
+            LogManager.Log(
+                $"Player 1 registrado: {player.name}"
+            );
         }
         else if (player2 == null)
         {
             player2 = player;
-            player2.inventory = new Inventory();
             player2.name = "Player 2";
-            Debug.Log($"Player 2 registrado: {player.name}");
+
+            LogManager.Log(
+                $"Player 2 registrado: {player.name}"
+            );
         }
 
-        if (player1 != null && player2 != null)
+        if (player1 != null &&
+            player2 != null &&
+            isServer)
         {
-            Debug.Log("Los dos Players están registrados. Generando mapa...");
+            LogManager.Log(
+                "Los dos Players están registrados. Generando mapa..."
+            );
+
+            GenerateStartPositions();
             MakeRandomMap();
         }
     }
 
-    public void MakeRandomMap()
-    {   
-        InitPlayersInfo(startPos);
-
-        map[startPos.y, startPos.x] = new MomHouse();
+    private void GenerateStartPositions()
+    {
+        startPos = new Vector2Int(
+            Random.Range(0, mapWidth),
+            Random.Range(0, mapHeight)
+        );
 
         grandmaPos = GrandmaHousePos(startPos);
+    }
 
-        map[grandmaPos.y, grandmaPos.x] = new GrandmaHouse();
+    public void MakeRandomMap()
+    {
+        InitPlayersInfo(startPos);
+
+        map[startPos.y, startPos.x] =
+            new MomHouse();
+
+        map[grandmaPos.y, grandmaPos.x] =
+            new GrandmaHouse();
 
         ImplementRiver(startPos);
-
         FillOtherZones();
 
         player1.NetworkMapPos.Value = startPos;
         player2.NetworkMapPos.Value = startPos;
 
-        Debug.Log($"Starting position for both players: {startPos}");
-        Debug.Log($"Player 1 initial position: {player1.NetworkMapPos.Value}");
-        Debug.Log($"Player 2 initial position: {player2.NetworkMapPos.Value}");
+        PrintMap();
+
+        CreateInitialZones();
+
+        IsMapReady = true;
+
+        StartCoroutine(SendMapNextFrame());
+    }
+
+    private System.Collections.IEnumerator SendMapNextFrame()
+    {
+        yield return null;
+
+        SendMapToClient();
+    }
+
+    private void SendMapToClient()
+    {
+        NetworkZoneData[] networkMap =
+            new NetworkZoneData[mapWidth * mapHeight];
+
+        int index = 0;
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                networkMap[index] =
+                    new NetworkZoneData(map[y, x]);
+
+                index++;
+            }
+        }
+
+        player1.SendMapClientRpc(
+            networkMap,
+            startPos,
+            grandmaPos
+        );
+    }
+
+    public void ReceiveMapFromServer(
+        NetworkZoneData[] networkMap,
+        Vector2Int serverStartPos,
+        Vector2Int serverGrandmaPos)
+    {
+        map = new ZoneData[mapHeight, mapWidth];
+
+        startPos = serverStartPos;
+        grandmaPos = serverGrandmaPos;
+
+        int index = 0;
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                map[y, x] =
+                    CreateZoneFromNetworkData(
+                        networkMap[index]
+                    );
+
+                index++;
+            }
+        }
+
+        InitPlayersInfo(startPos);
+
+        CreateInitialZones();
+        IsMapReady = true;
+
+
+        LogManager.Log(
+            "Mapa recibido del servidor."
+        );
 
         PrintMap();
     }
 
-    private void InitPlayersInfo(Vector2Int startPos)
+    private ZoneData CreateZoneFromNetworkData(
+        NetworkZoneData networkData)
     {
-        player1.initialPos = startPos;
-        player2.initialPos = startPos;
-        player1.transform.position = player1RealPos;
-        player2.transform.position = player2RealPos;
+        ZoneData zone = networkData.type switch
+        {
+            ZoneType.MomHouse =>
+                new MomHouse(),
 
-        GameObject player1Zone = Instantiate(
-            Resources.Load<GameObject>(ZonePrefabPath + "MomHouse"),
-            player1ZonePos,
-            Quaternion.identity
-        );
+            ZoneType.Forest =>
+                new Forest(),
 
-        GameObject player2Zone = Instantiate(
-            Resources.Load<GameObject>(ZonePrefabPath + "MomHouse"),
-            player2ZonePos,
-            Quaternion.identity
-        );
+            ZoneType.SpecialZone =>
+                new SpecialZone(),
 
-        player1.currentZone = player1Zone;
-        player2.currentZone = player2Zone;
+            ZoneType.WaterPit =>
+                new WaterPit(),
+
+            ZoneType.FlowerField =>
+                new FlowerField(),
+
+            ZoneType.Ruins =>
+                new Ruins(),
+
+            ZoneType.Swamp =>
+                new Swamp(),
+
+            ZoneType.Village =>
+                new Village(),
+
+            ZoneType.Camp =>
+                new Camp(),
+
+            ZoneType.River =>
+                new River(),
+
+            ZoneType.GrandmaHouse =>
+                new GrandmaHouse(),
+
+            _ => null
+        };
+
+        if (zone == null)
+        {
+            Debug.LogError(
+                $"No se pudo crear la zona {networkData.type}"
+            );
+
+            return null;
+        }
+
+        zone.chestOpened =
+            networkData.chestOpened;
+
+        zone.flowersRemaining =
+            networkData.flowersRemaining;
+
+        zone.riverBridged =
+            networkData.riverBridged;
+
+        return zone;
     }
 
-    private Vector2Int GrandmaHousePos(Vector2Int startPos)
+    private void InitPlayersInfo(Vector2Int startPos)
+    {
+        if (player1 == null ||
+            player2 == null)
+        {
+            return;
+        }
+
+        player1.initialPos = startPos;
+        player2.initialPos = startPos;
+
+        player1.transform.position =
+            player1RealPos;
+
+        player2.transform.position =
+            player2RealPos;
+    }
+
+    private void CreateInitialZones()
+    {
+        if (player1 == null ||
+            player2 == null)
+        {
+            return;
+        }
+
+        CreatePlayerZone(
+            player1,
+            player1ZonePos
+        );
+
+        CreatePlayerZone(
+            player2,
+            player2ZonePos
+        );
+    }
+
+    private void CreatePlayerZone(
+        Player player,
+        Vector3 zonePosition)
+    {
+        if (player.currentZone != null)
+        {
+            Destroy(player.currentZone);
+        }
+
+        Vector2Int position = player.NetworkMapPos.Value;
+
+        ZoneData zoneData =
+            map[position.y, position.x];
+
+        GameObject prefab =
+            LoadZone(zoneData.type);
+
+        if (prefab == null)
+        {
+            Debug.LogError(
+                "No se pudo cargar el prefab MomHouse."
+            );
+
+            return;
+        }
+
+        GameObject zone =
+            Instantiate(
+                prefab,
+                zonePosition,
+                Quaternion.identity
+            );
+
+        player.currentZone = zone;
+
+        Zone currentZone =
+            player.currentZone
+                .GetComponent<Zone>();
+
+        currentZone.Setup(
+            player.NetworkMapPos.Value,
+            map
+        );
+    }
+
+    private GameObject LoadZone(ZoneType zoneType)
+    {
+        GameObject prefab =
+            Resources.Load<GameObject>(
+                ZonePrefabPath + zoneType.ToString()
+            );
+
+        if (prefab != null) return prefab;
+
+        return Resources.Load<GameObject>(
+                ZonePrefabPath + "MomHouse");
+    }
+
+    private Vector2Int GrandmaHousePos(
+        Vector2Int startPos)
     {
         int targetDistance = 7;
-        List<Vector2Int> possiblePositions = new();
 
-        while (possiblePositions.Count == 0 && targetDistance > 0)
+        List<Vector2Int> possiblePositions =
+            new();
+
+        while (
+            possiblePositions.Count == 0 &&
+            targetDistance > 0)
         {
             possiblePositions.Clear();
 
@@ -148,12 +375,18 @@ public class MapManager : MonoBehaviour
                 for (int x = 0; x < mapWidth; x++)
                 {
                     int distance =
-                        Mathf.Abs(startPos.x - x) +
-                        Mathf.Abs(startPos.y - y);
+                        Mathf.Abs(
+                            startPos.x - x
+                        ) +
+                        Mathf.Abs(
+                            startPos.y - y
+                        );
 
                     if (distance >= targetDistance)
                     {
-                        possiblePositions.Add(new Vector2Int(x, y));
+                        possiblePositions.Add(
+                            new Vector2Int(x, y)
+                        );
                     }
                 }
             }
@@ -161,16 +394,26 @@ public class MapManager : MonoBehaviour
             targetDistance--;
         }
 
-        return possiblePositions[Random.Range(0, possiblePositions.Count)];
+        return possiblePositions[
+            Random.Range(
+                0,
+                possiblePositions.Count
+            )
+        ];
     }
 
     private void FillOtherZones()
     {
-        List<ZoneType> allowedFillTypes = new();
+        List<ZoneType> allowedFillTypes =
+            new();
 
-        foreach (ZoneType type in System.Enum.GetValues(typeof(ZoneType)))
+        foreach (
+            ZoneType type
+            in System.Enum.GetValues(
+                typeof(ZoneType)))
         {
-            if (type != ZoneType.MomHouse &&
+            if (
+                type != ZoneType.MomHouse &&
                 type != ZoneType.GrandmaHouse &&
                 type != ZoneType.River)
             {
@@ -182,17 +425,30 @@ public class MapManager : MonoBehaviour
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                if (map[y, x] != null) continue;
+                if (map[y, x] != null)
+                {
+                    continue;
+                }
 
-                int randomIndex = Random.Range(0, allowedFillTypes.Count);
-                ZoneType selectedType = allowedFillTypes[randomIndex];
+                int randomIndex =
+                    Random.Range(
+                        0,
+                        allowedFillTypes.Count
+                    );
 
-                map[y, x] = ZoneVault.GenerateZone(selectedType);
+                ZoneType selectedType =
+                    allowedFillTypes[randomIndex];
+
+                map[y, x] =
+                    ZoneVault.GenerateZone(
+                        selectedType
+                    );
             }
         }
     }
 
-    private void ImplementRiver(Vector2Int startPos)
+    private void ImplementRiver(
+        Vector2Int startPos)
     {
         int midX = Mathf.Clamp(
             (startPos.x + grandmaPos.x) / 2,
@@ -206,63 +462,110 @@ public class MapManager : MonoBehaviour
             mapHeight - 2
         );
 
-        int riverStyle = Random.Range(0, 2);
+        int riverStyle =
+            Random.Range(0, 2);
 
         switch (riverStyle)
         {
             case 0:
+
                 for (int x = 0; x < mapWidth; x++)
                 {
-                    PlaceRiverTile(x, midY, startPos);
+                    PlaceRiverTile(
+                        x,
+                        midY,
+                        startPos
+                    );
                 }
+
                 break;
 
             case 1:
+
                 for (int y = 0; y < mapHeight; y++)
                 {
-                    PlaceRiverTile(midX, y, startPos);
+                    PlaceRiverTile(
+                        midX,
+                        y,
+                        startPos
+                    );
                 }
+
                 break;
         }
     }
 
-    private void PlaceRiverTile(int x, int y, Vector2Int startPos)
+    private void PlaceRiverTile(
+        int x,
+        int y,
+        Vector2Int startPos)
     {
-        Vector2Int pos = new(x, y);
+        Vector2Int pos =
+            new(x, y);
 
-        if (pos != startPos && pos != grandmaPos)
+        if (
+            pos != startPos &&
+            pos != grandmaPos)
         {
-            map[y, x] = ZoneVault.GenerateZone(ZoneType.River);
+            map[y, x] =
+                ZoneVault.GenerateZone(
+                    ZoneType.River
+                );
         }
     }
 
     private void PrintMap()
     {
-        StringBuilder mapLayout = new();
-        mapLayout.AppendLine("\n=== MAP GRID (7x7) ===");
+        StringBuilder mapLayout =
+            new();
 
-        for (int y = mapHeight - 1; y >= 0; y--)
+        mapLayout.AppendLine(
+            "\n=== MAP GRID (7x7) ==="
+        );
+
+        for (
+            int y = mapHeight - 1;
+            y >= 0;
+            y--)
         {
-            for (int x = 0; x < mapWidth; x++)
+            for (
+                int x = 0;
+                x < mapWidth;
+                x++)
             {
-                Vector2Int currentPos = new(x, y);
+                Vector2Int currentPos =
+                    new(x, y);
 
-                if (currentPos == player1.NetworkMapPos.Value)
+                if (
+                    player1 != null &&
+                    currentPos ==
+                    player1.NetworkMapPos.Value)
                 {
                     mapLayout.Append("[P]");
                 }
-                else if (currentPos == grandmaPos)
+                else if (
+                    currentPos == grandmaPos)
                 {
                     mapLayout.Append("[A]");
                 }
-                else if (map[y, x] != null)
+                else if (
+                    map[y, x] != null)
                 {
-                    string zoneName = map[y, x].GetType().Name;
-                    string tag = zoneName.Length >= 2
-                        ? zoneName.Substring(0, 2)
-                        : zoneName.PadRight(2);
+                    string zoneName =
+                        map[y, x]
+                            .GetType()
+                            .Name;
 
-                    mapLayout.Append($"[{tag}]");
+                    string tag =
+                        zoneName.Length >= 2
+                            ? zoneName.Substring(
+                                0,
+                                2)
+                            : zoneName.PadRight(2);
+
+                    mapLayout.Append(
+                        $"[{tag}]"
+                    );
                 }
                 else
                 {
@@ -273,7 +576,9 @@ public class MapManager : MonoBehaviour
             mapLayout.AppendLine();
         }
 
-        LogManager.Log(mapLayout.ToString());
+        LogManager.Log(
+            mapLayout.ToString()
+        );
     }
 
     public void OnSwapingZone(
@@ -281,7 +586,10 @@ public class MapManager : MonoBehaviour
         Direction direction)
     {
         PlayerMoveResult moveResult =
-            CanSwapZone(player, direction);
+            CanSwapZone(
+                player,
+                direction
+            );
 
         if (!moveResult.canMove)
         {
@@ -292,7 +600,8 @@ public class MapManager : MonoBehaviour
             return;
         }
 
-        Vector2Int newPos = moveResult.newPos;
+        Vector2Int newPos =
+            moveResult.newPos;
 
         player.transform.position =
             GetPlayerEntryPoint(
@@ -301,7 +610,9 @@ public class MapManager : MonoBehaviour
                 newPos
             );
 
-        player.SetNetworkMapPosServerRpc(newPos);
+        player.SetNetworkMapPosServerRpc(
+            newPos
+        );
 
         LogManager.Log(
             $"{player.name} entered zone " +
@@ -328,83 +639,134 @@ public class MapManager : MonoBehaviour
         );
     }
 
-    private PlayerMoveResult CanSwapZone(Player player, Direction direction)
+    private PlayerMoveResult CanSwapZone(
+        Player player,
+        Direction direction)
     {
-        Vector2Int newPos = player.NetworkMapPos.Value;
+        Vector2Int newPos =
+            player.NetworkMapPos.Value;
 
         switch (direction)
         {
             case Direction.North:
-                newPos.y += 1;
+                newPos.y++;
                 break;
 
             case Direction.South:
-                newPos.y -= 1;
+                newPos.y--;
                 break;
 
             case Direction.East:
-                newPos.x += 1;
+                newPos.x++;
                 break;
 
             case Direction.West:
-                newPos.x -= 1;
+                newPos.x--;
                 break;
         }
 
         return new PlayerMoveResult(
-            newPos.x >= 0 && newPos.x < mapWidth &&
-            newPos.y >= 0 && newPos.y < mapHeight,
+            newPos.x >= 0 &&
+            newPos.x < mapWidth &&
+            newPos.y >= 0 &&
+            newPos.y < mapHeight,
             newPos
         );
     }
 
-    struct PlayerMoveResult
+    private struct PlayerMoveResult
     {
         public bool canMove;
         public Vector2Int newPos;
 
-        public PlayerMoveResult(bool canMove, Vector2Int newPos)
+        public PlayerMoveResult(
+            bool canMove,
+            Vector2Int newPos)
         {
             this.canMove = canMove;
             this.newPos = newPos;
         }
     }
 
-    public void UpdateActualZone(Player player)
+    public void UpdateActualZone(
+        Player player)
     {
+        if (map == null ||
+            player == null)
+        {
+            return;
+        }
+
         if (player.currentZone != null)
         {
             Destroy(player.currentZone);
         }
 
-        player.currentZone = Instantiate(
-            Resources.Load<GameObject>(ZonePrefabPath + "MomHouse"),
-            player == player1 ? player1ZonePos : player2ZonePos,
-            Quaternion.identity
+        Vector2Int position = player.NetworkMapPos.Value;
+
+        ZoneData zoneData =
+            map[position.y, position.x];
+
+        GameObject prefab =
+            LoadZone(zoneData.type);
+
+        player.currentZone =
+            Instantiate(
+                prefab,
+                player == player1
+                    ? player1ZonePos
+                    : player2ZonePos,
+                Quaternion.identity
+            );
+
+        Zone currentZone =
+            player.currentZone
+                .GetComponent<Zone>();
+
+        currentZone.Setup(
+            player.NetworkMapPos.Value,
+            map
         );
-
-        Zone currentZone = player.currentZone.GetComponent<Zone>();
-        currentZone.Setup(player.NetworkMapPos.Value, map);
     }
 
-    public void OnChestOpen(Vector2Int position)
+    public void OnChestOpen(
+        Vector2Int position)
     {
-        map[position.y, position.x].chestOpened = true;
+        map[position.y, position.x]
+            .chestOpened = true;
 
-        LogManager.Log($"Chest at {position} opened!");
+        LogManager.Log(
+            $"Chest at {position} opened!"
+        );
     }
 
-    public void OnChestOpenedNetworked(Vector2Int position)
+    public void OnChestOpenedNetworked(
+        Vector2Int position)
     {
-        map[position.y, position.x].chestOpened = true;
+        map[position.y, position.x]
+            .chestOpened = true;
     }
 
-    public void DisableChestAtPosition(Vector2Int position, Player player)
+    public void DisableChestAtPosition(
+        Vector2Int position,
+        Player player)
     {
-        if (player.NetworkMapPos.Value != position)
+        if (
+            player.NetworkMapPos.Value !=
+            position)
+        {
             return;
+        }
 
-        Zone zone = player.currentZone.GetComponent<Zone>();
+        if (player.currentZone == null)
+        {
+            return;
+        }
+
+        Zone zone =
+            player.currentZone
+                .GetComponent<Zone>();
+
         zone.DisableChest();
     }
 }
