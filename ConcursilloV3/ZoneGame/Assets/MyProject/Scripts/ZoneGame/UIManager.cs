@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
 
     public void WriteOnLogs(string text)
     {
-        TextMeshProUGUI logsText = logs.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI logsText = logs.GetComponentInChildren<TextMeshProUGUI>();
 
         logsText.text = text;
     }

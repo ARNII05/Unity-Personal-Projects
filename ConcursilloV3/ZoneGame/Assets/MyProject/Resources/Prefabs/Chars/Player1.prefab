@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: b1a12227299737d4d9b531a4871e366c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -229,8 +229,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3451399596
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1289436327
+  InScenePlacedSourceGlobalObjectIdHash: 848225072
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -264,7 +264,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aafea0b5cd305144859c95a4edf406d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapPos: {x: 0, y: 0}
   initialPos: {x: 0, y: 0}
   currentZone: {fileID: 0}
   otherPlayerVisualPrefab: {fileID: 5393094303414788010, guid: 605a6d82b3019d0498f0df9bc508b83a, type: 3}
@@ -272,6 +271,8 @@ MonoBehaviour:
     m_InternalValue: 0
   FacingRight:
     m_InternalValue: 1
+  NetworkMapPos:
+    m_InternalValue: {x: 0, y: 0}
 --- !u!114 &3306176914413675400
 MonoBehaviour:
   m_ObjectHideFlags: 0

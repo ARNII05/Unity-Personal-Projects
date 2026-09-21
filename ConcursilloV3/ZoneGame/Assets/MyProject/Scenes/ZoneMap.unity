@@ -966,8 +966,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grandmaPos: {x: 0, y: 0}
-  player1ZonePos: {x: 0, y: 0, z: 0}
-  player2ZonePos: {x: 255, y: 0, z: 0}
   player1RealPos: {x: -54.7, y: -3.14, z: -6.2}
   player2RealPos: {x: 203, y: -3.15, z: -6.2}
 --- !u!114 &1347194777
@@ -1684,7 +1682,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2073411863
 MonoBehaviour:
   m_ObjectHideFlags: 0

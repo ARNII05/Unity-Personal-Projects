@@ -15,8 +15,8 @@ public class MapManager : MonoBehaviour
     public const int mapWidth = 7;
     public const int mapHeight = 7;
 
-    [SerializeField] private Vector3 player1ZonePos;
-    [SerializeField] private Vector3 player2ZonePos;
+    //[SerializeField] private Vector3 player1ZonePos;
+    //[SerializeField] private Vector3 player2ZonePos;
 
     [SerializeField] private Vector3 player1RealPos;
     [SerializeField] private Vector3 player2RealPos;
@@ -191,7 +191,6 @@ public class MapManager : MonoBehaviour
         CreateInitialZones();
         IsMapReady = true;
 
-
         LogManager.Log(
             "Mapa recibido del servidor."
         );
@@ -287,14 +286,17 @@ public class MapManager : MonoBehaviour
             return;
         }
 
+        Vector3 p1ZonePos = map[startPos.y, startPos.x].player1ZonePos;
+        Vector3 p2ZonePos = map[startPos.y, startPos.x].player2ZonePos;
+
         CreatePlayerZone(
             player1,
-            player1ZonePos
+            p1ZonePos
         );
 
         CreatePlayerZone(
             player2,
-            player2ZonePos
+            p2ZonePos
         );
     }
 
@@ -714,8 +716,8 @@ public class MapManager : MonoBehaviour
             Instantiate(
                 prefab,
                 player == player1
-                    ? player1ZonePos
-                    : player2ZonePos,
+                    ? zoneData.player1ZonePos
+                    : zoneData.player2ZonePos,
                 Quaternion.identity
             );
 

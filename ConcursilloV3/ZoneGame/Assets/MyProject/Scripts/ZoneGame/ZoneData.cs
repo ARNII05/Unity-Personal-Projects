@@ -10,6 +10,8 @@ public abstract class ZoneData
     public bool riverBridged;
     public Vector3[] player1EntryPoints;
     public Vector3[] player2EntryPoints;
+    public Vector3 player1ZonePos;
+    public Vector3 player2ZonePos;
 
     public ZoneData(ZoneType type, int initialFlowers = 1)
     {
@@ -82,6 +84,9 @@ public class MomHouse : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0 , 0);
     }
     public override void OnEnter()
     {
@@ -102,6 +107,9 @@ public class Forest : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
 
     public override void OnEnter()
@@ -123,6 +131,9 @@ public class SpecialZone : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
 
     public override void OnEnter()
@@ -144,6 +155,9 @@ public class WaterPit : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
     public override void OnEnter()
     {
@@ -164,6 +178,9 @@ public class FlowerField : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
 
     public override void OnEnter()
@@ -185,6 +202,9 @@ public class Ruins : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
     public override void OnEnter()
     {
@@ -205,6 +225,9 @@ public class Swamp : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
     public override void OnEnter()
     {
@@ -225,6 +248,9 @@ public class Village : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
     public override void OnEnter()
     {
@@ -245,6 +271,9 @@ public class Camp : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
     public override void OnEnter()
     {
@@ -256,15 +285,18 @@ public class River : ZoneData
 {
     public River() : base(ZoneType.River, initialFlowers: 0)
     {
-        player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
-        player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
-        player1EntryPoints[2] = new Vector3(47.3f, -0.2f, -6.2f);
-        player1EntryPoints[3] = new Vector3(-144.2f, -0.2f, -6.2f);
+        player1EntryPoints[0] = new Vector3(-65.8f, 11.2f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-127.9f, -32.2f, -6.2f);
+        player1EntryPoints[2] = new Vector3(36f, 26.3f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-136.6f, -11.9f, -6.2f);
 
-        player2EntryPoints[0] = new Vector3(155f, 44.4f, -6.2f);
-        player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
-        player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
-        player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+        player2EntryPoints[0] = new Vector3(169.7f, 11.9f, -6.2f);
+        player2EntryPoints[1] = new Vector3(126.9f, -32.8f, -6.2f);
+        player2EntryPoints[2] = new Vector3(292f, 26.8f, -6.2f);
+        player2EntryPoints[3] = new Vector3(117.9f, -11.9f, -6.2f);
+
+        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
+        player2ZonePos = new Vector3(206, 36.6f, 0);
     }
     public override void OnEnter()
     {
@@ -285,6 +317,9 @@ public class GrandmaHouse : ZoneData
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
     }
     
     public override void OnEnter()
