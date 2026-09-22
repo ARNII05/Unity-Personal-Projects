@@ -6,17 +6,27 @@ public class Items
 {
     public ItemType itemType;
     public int amount;
+    public Sprite sprite;
+    private const string baseSpritePath = "Prefabs/ItemsImg/";
 
     public Items(ItemType itemType, int amount)
     {
         this.itemType = itemType;
         this.amount = amount;
+        sprite = Resources.Load<Sprite>(baseSpritePath + itemType.ToString());
     }
 }
 
 public class Flower : Items
 {
     public Flower() : base(ItemType.Flower, 0)
+    {
+    }
+}
+
+public class Bouquet : Items
+{
+    public Bouquet() : base(ItemType.Bouquet, 0)
     {
     }
 }
@@ -28,6 +38,12 @@ public class Log : Items
     }
 }
 
+public class Branch : Items
+{
+    public Branch() : base(ItemType.Branch, 0)
+    {
+    }
+}
 
 public class Meat : Items
 {
@@ -60,7 +76,9 @@ public class Map : Items
 public enum ItemType
 {
     Flower,
+    Bouquet,
     Log,
+    Branch,
     Meat,
     Coin,
     Radar,

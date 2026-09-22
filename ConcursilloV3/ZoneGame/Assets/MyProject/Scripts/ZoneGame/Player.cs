@@ -49,7 +49,11 @@ public class Player : NetworkBehaviour
         {       
             OpenChestServerRpc();
         }
-
+        else if (Input.GetKeyDown(KeyCode.I))
+        {
+            InventoryUI.Instance.ToggleInventory();
+        }
+        
         UpdateOtherPlayerVisual();
     }
 
@@ -64,6 +68,42 @@ public class Player : NetworkBehaviour
         MapManager.Instance.OnChestOpen(position);
 
         OpenChestClientRpc(position);
+
+        SyncInventory();
+    }
+
+    private void SyncInventory()
+    {
+        ItemType[] itemTypes = new ItemType[inventory.items.Count];
+        int[] amounts = new int[inventory.items.Count];
+
+        int i = 0;
+
+        foreach (var item in inventory.items)
+        {
+            itemTypes[i] = item.Key;
+            amounts[i] = item.Value;
+            i++;
+        }
+
+        ClientRpcParams rpcParams = new()
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { OwnerClientId }
+            }
+        };
+
+        SyncInventoryClientRpc(itemTypes, amounts, rpcParams);
+    }
+
+    [ClientRpc]
+    private void SyncInventoryClientRpc(
+     ItemType[] itemTypes,
+     int[] amounts,
+     ClientRpcParams clientRpcParams = default)
+    {
+        inventory.SetItems(itemTypes, amounts);
     }
 
     [ClientRpc]
@@ -99,6 +139,8 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
+            InventoryUI.Instance.SetInventory(inventory);
+            
             otherPlayerVisualRoot = new GameObject("Other Player Visual Root");
 
             otherPlayerVisualRoot.transform.SetPositionAndRotation(

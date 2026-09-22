@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Inventory
 {
-    private Dictionary<ItemType, int> items = new();
-    private const int maxCapacity = 5;
+    public Dictionary<ItemType, int> items = new();
+    public event Action OnInventoryChanged;
+    private const int maxCapacity = 7;
 
     public bool AddItem(ItemType itemType, int amount)
     {
@@ -16,12 +19,23 @@ public class Inventory
         }
 
         if (items.Count >= maxCapacity)
-        {
             return false;
-        }
 
         items[itemType] = amount;
+
         return true;
+    }
+
+    public void SetItems(ItemType[] itemTypes, int[] amounts)
+    {
+        items.Clear();
+
+        for (int i = 0; i < itemTypes.Length; i++)
+        {
+            items[itemTypes[i]] = amounts[i];
+        }
+
+        OnInventoryChanged?.Invoke();
     }
 
     public int GetItemAmount(ItemType itemType)
@@ -46,15 +60,21 @@ public class Inventory
         {
             items.Remove(itemType);
         }
-        
+
+        OnInventoryChanged?.Invoke();
         return true;
     }
 
     public void PrintInventory()
     {
+        if (items.Count == 0)
+        {
+            return;
+        }
+        
         foreach (var item in items)
         {
-            UIManager.Instance.WriteOnLogs($"Item: {item.Key}, Amount: {item.Value}\n");
+            Debug.Log($"Item: {item.Key}, Amount: {item.Value}\n");
         }
     }
 }

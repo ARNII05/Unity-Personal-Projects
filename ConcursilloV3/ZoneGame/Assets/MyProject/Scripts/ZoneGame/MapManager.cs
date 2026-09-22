@@ -736,10 +736,6 @@ public class MapManager : MonoBehaviour
     {
         map[position.y, position.x]
             .chestOpened = true;
-
-        LogManager.Log(
-            $"Chest at {position} opened!"
-        );
     }
 
     public void OnChestOpenedNetworked(

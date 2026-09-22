@@ -9,7 +9,9 @@ public static class ItemVault
         return itemType switch
         {
             ItemType.Flower => new Flower(),
+            ItemType.Bouquet => new Bouquet(),
             ItemType.Log => new Log(),
+            ItemType.Branch => new Branch(),
             ItemType.Meat => new Meat(),
             ItemType.Coin => new Coin(),
             ItemType.Radar => new Radar(),
