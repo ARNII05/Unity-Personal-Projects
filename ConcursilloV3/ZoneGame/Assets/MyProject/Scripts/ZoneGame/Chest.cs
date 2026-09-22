@@ -11,13 +11,6 @@ public class Chest : MonoBehaviour
         {
             ItemType randomItemType = (ItemType)Random.Range(0, System.Enum.GetValues(typeof(ItemType)).Length);
             
-            Items a = new Coin()
-            {
-                amount = Random.Range(1, 4)
-            };
-
-            player.inventory.AddItem(a.itemType, a.amount);
-
             Items generatedItem = ItemVault.GenerateItem(randomItemType);
             generatedItem.amount = Random.Range(1, 4);
 
