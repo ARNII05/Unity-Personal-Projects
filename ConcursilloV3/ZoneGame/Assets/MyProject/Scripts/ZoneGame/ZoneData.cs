@@ -285,7 +285,7 @@ public class River : ZoneData
 {
     public River() : base(ZoneType.River, initialFlowers: 0)
     {
-        player1EntryPoints[0] = new Vector3(-65.8f, 11.2f, -6.2f);
+        player1EntryPoints[0] = new Vector3(-85.2f, 11.2f, -6.2f);
         player1EntryPoints[1] = new Vector3(-127.9f, -32.2f, -6.2f);
         player1EntryPoints[2] = new Vector3(36f, 26.3f, -6.2f);
         player1EntryPoints[3] = new Vector3(-136.6f, -11.9f, -6.2f);

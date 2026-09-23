@@ -5,6 +5,7 @@ using UnityEngine;
 public class Zone : MonoBehaviour
 {
     [SerializeField] private BorderZone[] borders;
+    [SerializeField] private WarHog[] warHogs;
     [SerializeField] private GameObject chest;
 
     public void Setup(Vector2Int mapPos, ZoneData[,] map)
@@ -15,7 +16,7 @@ public class Zone : MonoBehaviour
             Vector2Int offset = GetDirectionOffset(direction);
             Vector2Int neighborPos = mapPos + offset;
             bool isNeighborValid = IsValid(neighborPos, map);
-            SetBorder(direction, isNeighborValid);
+            SetBorderAndProtector(direction, isNeighborValid);
         }
 
         if (map[mapPos.y, mapPos.x].chestOpened)
@@ -36,13 +37,21 @@ public class Zone : MonoBehaviour
         };
     }
 
-    private void SetBorder(Direction direction, bool active)
+    private void SetBorderAndProtector(Direction direction, bool active)
     {
         foreach (var border in borders)
         {
             if (border.direction == direction)
             {
                 border.gameObject.SetActive(active);
+            }
+        }
+
+        foreach (var warHog in warHogs)
+        {
+            if (warHog.directionType == direction)
+            {
+                warHog.gameObject.SetActive(!active);
             }
         }
     }

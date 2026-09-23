@@ -15,9 +15,6 @@ public class MapManager : MonoBehaviour
     public const int mapWidth = 7;
     public const int mapHeight = 7;
 
-    //[SerializeField] private Vector3 player1ZonePos;
-    //[SerializeField] private Vector3 player2ZonePos;
-
     [SerializeField] private Vector3 player1RealPos;
     [SerializeField] private Vector3 player2RealPos;
 
@@ -66,29 +63,17 @@ public class MapManager : MonoBehaviour
         {
             player1 = player;
             player1.name = "Player 1";
-
-            LogManager.Log(
-                $"Player 1 registrado: {player.name}"
-            );
         }
         else if (player2 == null)
         {
             player2 = player;
             player2.name = "Player 2";
-
-            LogManager.Log(
-                $"Player 2 registrado: {player.name}"
-            );
         }
 
         if (player1 != null &&
             player2 != null &&
             isServer)
         {
-            LogManager.Log(
-                "Los dos Players están registrados. Generando mapa..."
-            );
-
             GenerateStartPositions();
             MakeRandomMap();
         }

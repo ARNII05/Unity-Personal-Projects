@@ -129,10 +129,6 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log(
-            $"{name} spawned | OwnerClientId: {OwnerClientId} | IsOwner: {IsOwner}"
-        );
-
         base.OnNetworkSpawn();
 
         NetworkMapPos.OnValueChanged += OnNetworkMapPosChanged;
