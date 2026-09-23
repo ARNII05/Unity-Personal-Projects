@@ -7,11 +7,13 @@ public class NetworkUI : MonoBehaviour
     public void StartHost()
     {
         NetworkManager.Singleton.StartHost();
+        CursorManager.Instance.LockCursor();
     }
 
     public void StartClient()
     {
         NetworkManager.Singleton.StartClient();
+        CursorManager.Instance.LockCursor();
     }
 
     public void EndGame()

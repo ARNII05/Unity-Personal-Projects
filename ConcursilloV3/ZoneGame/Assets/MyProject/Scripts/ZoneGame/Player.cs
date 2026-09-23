@@ -22,8 +22,8 @@ public class Player : NetworkBehaviour
         NetworkVariableWritePermission.Owner
     );
 
-    public NetworkVariable<bool> FacingRight = new(
-        true,
+    public NetworkVariable<int> NetworkDirection = new(
+        0,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
@@ -38,7 +38,7 @@ public class Player : NetworkBehaviour
     {
         if (!IsOwner)
             return;
-        
+
         if (currentBorderZone != null && Input.GetKeyDown(KeyCode.F))
         {
             Direction direction = currentBorderZone.direction;
@@ -46,14 +46,14 @@ public class Player : NetworkBehaviour
             MapManager.Instance.OnSwapingZone(this, direction);
         }
         else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
-        {       
+        {
             OpenChestServerRpc();
         }
         else if (Input.GetKeyDown(KeyCode.I))
         {
             InventoryUI.Instance.ToggleInventory();
         }
-        
+
         UpdateOtherPlayerVisual();
     }
 
@@ -99,9 +99,9 @@ public class Player : NetworkBehaviour
 
     [ClientRpc]
     private void SyncInventoryClientRpc(
-     ItemType[] itemTypes,
-     int[] amounts,
-     ClientRpcParams clientRpcParams = default)
+        ItemType[] itemTypes,
+        int[] amounts,
+        ClientRpcParams clientRpcParams = default)
     {
         inventory.SetItems(itemTypes, amounts);
     }
@@ -136,19 +136,24 @@ public class Player : NetworkBehaviour
         base.OnNetworkSpawn();
 
         NetworkMapPos.OnValueChanged += OnNetworkMapPosChanged;
-
+        IsWalking.OnValueChanged += OnWalkingChanged;
+        NetworkDirection.OnValueChanged += OnDirectionChanged;
+        
         if (IsOwner)
         {
             InventoryUI.Instance.SetInventory(inventory);
-            
-            otherPlayerVisualRoot = new GameObject("Other Player Visual Root");
+
+            otherPlayerVisualRoot = new GameObject(
+                "Other Player Visual Root"
+            );
 
             otherPlayerVisualRoot.transform.SetPositionAndRotation(
                 transform.position,
-                transform.rotation);
-            
+                transform.rotation
+            );
+
             otherPlayerVisualRoot.transform.localScale =
-                Vector3.one;
+                Vector3.one * 1.5f;
 
             otherPlayerVisual = Instantiate(
                 otherPlayerVisualPrefab,
@@ -162,6 +167,38 @@ public class Player : NetworkBehaviour
         }
 
         MapManager.Instance.RegisterPlayer(this, IsServer);
+    }
+
+    private void OnWalkingChanged(bool oldValue, bool newValue)
+    {
+        UpdateAnimator();
+    }
+
+    private void OnDirectionChanged(int oldValue, int newValue)
+    {
+        UpdateAnimator();
+    }
+
+    private void UpdateAnimator()
+    {
+        if (!IsOwner)
+            return;
+
+        Player1Controller controller =
+            GetComponent<Player1Controller>();
+
+        if (controller == null || controller.anim == null)
+            return;
+
+        controller.anim.SetInteger(
+            "Direction",
+            NetworkDirection.Value
+        );
+
+        controller.anim.SetBool(
+            "IsWalking",
+            IsWalking.Value
+        );
     }
 
     private void OnNetworkMapPosChanged(
@@ -210,24 +247,15 @@ public class Player : NetworkBehaviour
             (otherPlayer.transform.position -
              otherPlayer.currentZone.transform.position);
 
+        otherPlayerAnimator.SetInteger(
+            "Direction",
+            otherPlayer.NetworkDirection.Value
+        );
+
         otherPlayerAnimator.SetBool(
-            "Walk",
+            "IsWalking",
             otherPlayer.IsWalking.Value
         );
-
-        otherPlayerAnimator.SetBool(
-            "Idle",
-            !otherPlayer.IsWalking.Value
-        );
-
-        Vector3 scale =
-            otherPlayerVisualRoot.transform.localScale;
-
-        scale.x = otherPlayer.FacingRight.Value
-            ? Mathf.Abs(scale.x)
-            : -Mathf.Abs(scale.x);
-
-        otherPlayerVisualRoot.transform.localScale = scale;
     }
 
     [ClientRpc]
@@ -248,10 +276,13 @@ public class Player : NetworkBehaviour
         switch (other.tag)
         {
             case "Border":
-                currentBorderZone = other.GetComponent<BorderZone>();
+                currentBorderZone =
+                    other.GetComponent<BorderZone>();
                 break;
+
             case "Chest":
-                nearbyChest = other.GetComponentInParent<Chest>();
+                nearbyChest =
+                    other.GetComponentInParent<Chest>();
                 break;
         }
     }
@@ -263,6 +294,7 @@ public class Player : NetworkBehaviour
             case "Border":
                 currentBorderZone = null;
                 break;
+
             case "Chest":
                 nearbyChest = null;
                 break;

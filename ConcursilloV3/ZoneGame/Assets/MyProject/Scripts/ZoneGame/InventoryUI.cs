@@ -95,17 +95,19 @@ public class InventoryUI : MonoBehaviour
 
     public void ToggleInventory()
     {
-        bool isOpen = inventoryPanel.activeSelf;
-        inventoryPanel.SetActive(!isOpen);
+        if (!inventoryPanel.activeSelf) OpenInventory();
+        else CloseInventory();
     }
 
     public void OpenInventory()
     {
         inventoryPanel.SetActive(true);
+        CursorManager.Instance.UnlockCursor();
     }
 
     public void CloseInventory()
     {
         inventoryPanel.SetActive(false);
+        CursorManager.Instance.LockCursor();
     }
 }

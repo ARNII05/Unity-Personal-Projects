@@ -6,7 +6,6 @@ using UnityEngine;
 public class Player1Controller : NetworkBehaviour
 {
     public Animator anim;
-    public bool facingRight = true;
 
     [Header("Configuración de Velocidad")]
     private const float moveSpeed = 35;
@@ -16,7 +15,7 @@ public class Player1Controller : NetworkBehaviour
 
     private Player player;
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         player = GetComponent<Player>();
@@ -26,7 +25,7 @@ public class Player1Controller : NetworkBehaviour
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
-    void Update()
+    private void Update()
     {
         if (!IsOwner)
             return;
@@ -39,28 +38,13 @@ public class Player1Controller : NetworkBehaviour
 
         movementInput = movementInput.normalized;
 
-        if (movementInput != Vector2.zero)
-        {
-            Walk();
-            player.IsWalking.Value = true;
+        player.IsWalking.Value = movementInput != Vector2.zero;
 
-            if (movementInput.x > 0 && !facingRight)
-            {
-                Flip();
-            }
-            else if (movementInput.x < 0 && facingRight)
-            {
-                Flip();
-            }
-        }
-        else
-        {
-            WalkOff();
-            player.IsWalking.Value = false;
-        }
+        if (movementInput != Vector2.zero)
+            UpdateDirection();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!IsOwner)
             return;
@@ -68,30 +52,17 @@ public class Player1Controller : NetworkBehaviour
         rb.velocity = movementInput * moveSpeed;
     }
 
-    private void Flip()
+    private void UpdateDirection()
     {
-        facingRight = !facingRight;
-
-        Vector3 localScale = transform.localScale;
-        localScale.x *= -1;
-        transform.localScale = localScale;
-
-        player.FacingRight.Value = facingRight;
-    }
-
-    public void Walk()
-    {
-        if (anim != null)
+        if (Mathf.Abs(movementInput.x) > Mathf.Abs(movementInput.y))
         {
-            anim.SetBool("Walk", true);
-        }
-    }
+            player.NetworkDirection.Value =
+                movementInput.x > 0 ? 2 : 3;
 
-    public void WalkOff()
-    {
-        if (anim != null)
-        {
-            anim.SetBool("Walk", false);
+            return;
         }
+
+        player.NetworkDirection.Value =
+            movementInput.y > 0 ? 1 : 0;
     }
 }
