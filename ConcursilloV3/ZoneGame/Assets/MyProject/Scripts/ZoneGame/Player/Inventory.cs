@@ -38,6 +38,11 @@ public class Inventory
         OnInventoryChanged?.Invoke();
     }
 
+    public bool HasItem(ItemType itemType)
+    {
+        return items[itemType] > 0;
+    }
+
     public int GetItemAmount(ItemType itemType)
     {
         if (items.ContainsKey(itemType))

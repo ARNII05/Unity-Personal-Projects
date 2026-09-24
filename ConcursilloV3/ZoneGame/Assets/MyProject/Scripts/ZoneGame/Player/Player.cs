@@ -1,11 +1,13 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Player : NetworkBehaviour
 {
     public Vector2Int initialPos;
     public GameObject currentZone;
     private BorderZone currentBorderZone;
+    private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
     public Inventory inventory = new();
 
@@ -39,7 +41,11 @@ public class Player : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        if (currentBorderZone != null && Input.GetKeyDown(KeyCode.F))
+        if (currentRiverInteraction != null && Input.GetKeyDown(KeyCode.F))
+        {
+            RiverInteractionServerRpc();
+        }
+        else if (currentBorderZone != null && Input.GetKeyDown(KeyCode.F))
         {
             Direction direction = currentBorderZone.direction;
             currentBorderZone = null;
@@ -58,6 +64,44 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
+    private void RiverInteractionServerRpc()
+    {
+        bool isBridged = currentRiverInteraction.SendInteractToRiver(this);
+        
+        if (!isBridged)
+            return;
+        
+        RiverInteractionClientRpc(isBridged, NetworkMapPos.Value);
+    }
+
+    [ClientRpc]
+    private void RiverInteractionClientRpc(
+        bool isBridged,
+        Vector2Int position)
+    {
+        MapManager.Instance.map[
+            position.y,
+            position.x
+        ].riverBridged = isBridged;
+
+        if (!NetworkManager.Singleton.LocalClient.PlayerObject
+                .TryGetComponent<Player>(out var localPlayer))
+            return;
+
+        if (localPlayer.NetworkMapPos.Value != position)
+            return;
+
+        if (localPlayer.currentZone == null)
+            return;
+
+        if (!localPlayer.currentZone.TryGetComponent<River>(
+            out var riverZone))
+            return;
+
+        riverZone.SwapGameObjectStatusNetworking();
+    }
+
+    [ServerRpc]
     private void OpenChestServerRpc()
     {
         Vector2Int position = NetworkMapPos.Value;
@@ -70,6 +114,21 @@ public class Player : NetworkBehaviour
         OpenChestClientRpc(position);
 
         SyncInventory();
+    }
+
+    [ClientRpc]
+    private void OpenChestClientRpc(Vector2Int position)
+    {
+        MapManager.Instance.OnChestOpenedNetworked(position);
+
+        Player actualPlayer = IsHost
+            ? MapManager.Instance.Player1
+            : MapManager.Instance.Player2;
+
+        MapManager.Instance.DisableChestAtPosition(
+            position,
+            actualPlayer
+        );
     }
 
     private void SyncInventory()
@@ -104,21 +163,6 @@ public class Player : NetworkBehaviour
         ClientRpcParams clientRpcParams = default)
     {
         inventory.SetItems(itemTypes, amounts);
-    }
-
-    [ClientRpc]
-    private void OpenChestClientRpc(Vector2Int position)
-    {
-        MapManager.Instance.OnChestOpenedNetworked(position);
-
-        Player actualPlayer = IsHost
-            ? MapManager.Instance.Player1
-            : MapManager.Instance.Player2;
-
-        MapManager.Instance.DisableChestAtPosition(
-            position,
-            actualPlayer
-        );
     }
 
     [ServerRpc]
@@ -280,6 +324,11 @@ public class Player : NetworkBehaviour
                 nearbyChest =
                     other.GetComponentInParent<Chest>();
                 break;
+            
+            case "RiverInteractor":
+                currentRiverInteraction = 
+                    other.GetComponentInParent<RiverInteraction>();
+                break;
         }
     }
 
@@ -293,6 +342,10 @@ public class Player : NetworkBehaviour
 
             case "Chest":
                 nearbyChest = null;
+                break;
+
+            case "RiverInteractor":
+                currentRiverInteraction = null;
                 break;
         }
     }

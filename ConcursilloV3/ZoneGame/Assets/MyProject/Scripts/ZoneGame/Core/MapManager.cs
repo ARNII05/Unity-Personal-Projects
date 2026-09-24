@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class MapManager : MonoBehaviour
 {
@@ -341,6 +342,13 @@ public class MapManager : MonoBehaviour
             player.NetworkMapPos.Value,
             map
         );
+
+        if (zoneData.type != ZoneType.HorizontalRiver
+            && zoneData.type != ZoneType.VerticalRiver)
+            return;
+
+        River actualRiver = zone.GetComponent<River>();
+        actualRiver.mapPosition = player.NetworkMapPos.Value;
     }
 
     private GameObject LoadZone(ZoneType zoneType)
@@ -741,7 +749,7 @@ public class MapManager : MonoBehaviour
         GameObject prefab =
             LoadZone(zoneData.type);
 
-        player.currentZone =
+        GameObject zone = 
             Instantiate(
                 prefab,
                 player == player1
@@ -749,6 +757,8 @@ public class MapManager : MonoBehaviour
                     : zoneData.player2ZonePos,
                 Quaternion.identity
             );
+
+        player.currentZone = zone;
 
         Zone currentZone =
             player.currentZone
@@ -758,6 +768,13 @@ public class MapManager : MonoBehaviour
             player.NetworkMapPos.Value,
             map
         );
+
+        if (zoneData.type != ZoneType.HorizontalRiver
+            && zoneData.type != ZoneType.VerticalRiver)
+            return;
+
+        River actualRiver = zone.GetComponent<River>();
+        actualRiver.mapPosition = player.NetworkMapPos.Value;
     }
 
     public void OnChestOpen(
