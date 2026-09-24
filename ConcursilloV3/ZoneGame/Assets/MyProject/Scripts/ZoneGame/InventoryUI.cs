@@ -102,12 +102,12 @@ public class InventoryUI : MonoBehaviour
     public void OpenInventory()
     {
         inventoryPanel.SetActive(true);
-        CursorManager.Instance.UnlockCursor();
+        //CursorManager.Instance.UnlockCursor();
     }
 
     public void CloseInventory()
     {
         inventoryPanel.SetActive(false);
-        CursorManager.Instance.LockCursor();
+        //CursorManager.Instance.LockCursor();
     }
 }

@@ -45,7 +45,7 @@ public abstract class ZoneData
         return isPlayer1 ? player1EntryPoints : player2EntryPoints;
     }
 
-    public abstract void OnEnter();
+    public abstract void OnEnter(Player player);
 
     public virtual void OnOpenChest()
     {
@@ -88,7 +88,7 @@ public class MomHouse : ZoneData
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0 , 0);
     }
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la casa de tu Madre. Se escuchan los árboles mover con el viento.");
     }
@@ -112,7 +112,7 @@ public class Forest : ZoneData
         player2ZonePos = new Vector3(255, 0, 0);
     }
 
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando al Bosque. Se escuchan los árboles mover con el viento.");
     }
@@ -136,7 +136,7 @@ public class SpecialZone : ZoneData
         player2ZonePos = new Vector3(255, 0, 0);
     }
 
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a una Zona Especial.");
     }
@@ -159,7 +159,7 @@ public class WaterPit : ZoneData
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
     }
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Pozo de Agua.");
     }
@@ -183,7 +183,7 @@ public class FlowerField : ZoneData
         player2ZonePos = new Vector3(255, 0, 0);
     }
 
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Campo Florido.");
     }
@@ -206,7 +206,7 @@ public class Ruins : ZoneData
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
     }
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a unas Ruinas.");
     }
@@ -229,7 +229,7 @@ public class Swamp : ZoneData
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
     }
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Pantano.");
     }
@@ -252,7 +252,7 @@ public class Village : ZoneData
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
     }
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Pueblo.");
     }
@@ -275,30 +275,53 @@ public class Camp : ZoneData
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
     }
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Campamento.");
     }
 }
 
-public class River : ZoneData
+public class VerticalRiver : ZoneData
 {
-    public River() : base(ZoneType.River, initialFlowers: 0)
+    public VerticalRiver() : base(ZoneType.VerticalRiver, initialFlowers: 0)
     {
         player1EntryPoints[0] = new Vector3(-85.2f, 11.2f, -6.2f);
         player1EntryPoints[1] = new Vector3(-127.9f, -32.2f, -6.2f);
-        player1EntryPoints[2] = new Vector3(36f, 26.3f, -6.2f);
+        player1EntryPoints[2] = new Vector3(-62.3f, 3.3f, -6.2f);
         player1EntryPoints[3] = new Vector3(-136.6f, -11.9f, -6.2f);
 
         player2EntryPoints[0] = new Vector3(169.7f, 11.9f, -6.2f);
         player2EntryPoints[1] = new Vector3(126.9f, -32.8f, -6.2f);
-        player2EntryPoints[2] = new Vector3(292f, 26.8f, -6.2f);
+        player2EntryPoints[2] = new Vector3(192.3f, 3.3f, -6.2f);
         player2EntryPoints[3] = new Vector3(117.9f, -11.9f, -6.2f);
 
         player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
         player2ZonePos = new Vector3(206, 36.6f, 0);
     }
-    public override void OnEnter()
+    public override void OnEnter(Player player)
+    {
+        LogManager.Log("Entrando a un Río.");
+    }
+}
+
+public class HorizontalRiver : ZoneData
+{
+    public HorizontalRiver() : base(ZoneType.HorizontalRiver, initialFlowers: 0)
+    {
+        player1EntryPoints[0] = new Vector3(-85.7f, 12.9f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-110.6f, -43.9f, -6.2f);
+        player1EntryPoints[2] = new Vector3(43.7f, -10.5f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-141.3f, -10.5f, -6.2f);
+
+        player2EntryPoints[0] = new Vector3(169.5f, 13.4f, -6.2f);
+        player2EntryPoints[1] = new Vector3(144f, -48.9f, -6.2f);
+        player2EntryPoints[2] = new Vector3(298.2f, -10.6f, -6.2f);
+        player2EntryPoints[3] = new Vector3(111.9f, -10.6f, -6.2f);
+
+        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
+        player2ZonePos = new Vector3(206, 36.6f, 0);
+    }
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Río.");
     }
@@ -322,7 +345,7 @@ public class GrandmaHouse : ZoneData
         player2ZonePos = new Vector3(255, 0, 0);
     }
     
-    public override void OnEnter()
+    public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la Casa de la Abuela.");
     }
@@ -339,6 +362,7 @@ public enum ZoneType
     Swamp,
     Village,
     Camp,
-    River,
+    VerticalRiver,
+    HorizontalRiver,
     GrandmaHouse
 }

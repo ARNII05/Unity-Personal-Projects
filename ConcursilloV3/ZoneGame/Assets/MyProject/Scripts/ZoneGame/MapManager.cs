@@ -14,6 +14,7 @@ public class MapManager : MonoBehaviour
 
     public const int mapWidth = 7;
     public const int mapHeight = 7;
+    private const int MinAccessibleTilesBeforeRiver = 10;
 
     [SerializeField] private Vector3 player1RealPos;
     [SerializeField] private Vector3 player2RealPos;
@@ -91,27 +92,40 @@ public class MapManager : MonoBehaviour
 
     public void MakeRandomMap()
     {
-        InitPlayersInfo(startPos);
+        const int maxAttempts = 100;
 
-        map[startPos.y, startPos.x] =
-            new MomHouse();
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            map = new ZoneData[mapHeight, mapWidth];
 
-        map[grandmaPos.y, grandmaPos.x] =
-            new GrandmaHouse();
+            GenerateStartPositions();
 
-        ImplementRiver(startPos);
-        FillOtherZones();
+            InitPlayersInfo(startPos);
 
-        player1.NetworkMapPos.Value = startPos;
-        player2.NetworkMapPos.Value = startPos;
+            map[startPos.y, startPos.x] = new MomHouse();
+            map[grandmaPos.y, grandmaPos.x] = new GrandmaHouse();
 
-        PrintMap();
+            ImplementRiver(startPos);
 
-        CreateInitialZones();
+            if (HasEnoughAccessibleTilesBeforeRiver())
+            {
+                FillOtherZones();
 
-        IsMapReady = true;
+                player1.NetworkMapPos.Value = startPos;
+                player2.NetworkMapPos.Value = startPos;
 
-        StartCoroutine(SendMapNextFrame());
+                PrintMap();
+                CreateInitialZones();
+                IsMapReady = true;
+                StartCoroutine(SendMapNextFrame());
+
+                return;
+            }
+        }
+
+        Debug.LogError(
+            "No se pudo generar un mapa válido después de 100 intentos."
+        );
     }
 
     private System.Collections.IEnumerator SendMapNextFrame()
@@ -176,10 +190,6 @@ public class MapManager : MonoBehaviour
         CreateInitialZones();
         IsMapReady = true;
 
-        LogManager.Log(
-            "Mapa recibido del servidor."
-        );
-
         PrintMap();
     }
 
@@ -215,8 +225,11 @@ public class MapManager : MonoBehaviour
             ZoneType.Camp =>
                 new Camp(),
 
-            ZoneType.River =>
-                new River(),
+            ZoneType.VerticalRiver =>
+                new VerticalRiver(),
+
+            ZoneType.HorizontalRiver => 
+                new HorizontalRiver(),
 
             ZoneType.GrandmaHouse =>
                 new GrandmaHouse(),
@@ -343,49 +356,34 @@ public class MapManager : MonoBehaviour
                 ZonePrefabPath + "MomHouse");
     }
 
-    private Vector2Int GrandmaHousePos(
-        Vector2Int startPos)
+    private Vector2Int GrandmaHousePos(Vector2Int startPos)
     {
-        int targetDistance = 7;
+        const int minAxisDistance = 2;
 
-        List<Vector2Int> possiblePositions =
-            new();
+        List<Vector2Int> possiblePositions = new();
 
-        while (
-            possiblePositions.Count == 0 &&
-            targetDistance > 0)
+        for (int y = 0; y < mapHeight; y++)
         {
-            possiblePositions.Clear();
-
-            for (int y = 0; y < mapHeight; y++)
+            for (int x = 0; x < mapWidth; x++)
             {
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    int distance =
-                        Mathf.Abs(
-                            startPos.x - x
-                        ) +
-                        Mathf.Abs(
-                            startPos.y - y
-                        );
+                Vector2Int pos = new(x, y);
 
-                    if (distance >= targetDistance)
-                    {
-                        possiblePositions.Add(
-                            new Vector2Int(x, y)
-                        );
-                    }
+                if (pos == startPos)
+                    continue;
+
+                int dx = Mathf.Abs(startPos.x - x);
+                int dy = Mathf.Abs(startPos.y - y);
+
+                if (dx >= minAxisDistance &&
+                    dy >= minAxisDistance)
+                {
+                    possiblePositions.Add(pos);
                 }
             }
-
-            targetDistance--;
         }
 
         return possiblePositions[
-            Random.Range(
-                0,
-                possiblePositions.Count
-            )
+            Random.Range(0, possiblePositions.Count)
         ];
     }
 
@@ -402,7 +400,8 @@ public class MapManager : MonoBehaviour
             if (
                 type != ZoneType.MomHouse &&
                 type != ZoneType.GrandmaHouse &&
-                type != ZoneType.River)
+                type != ZoneType.VerticalRiver &&
+                type != ZoneType.HorizontalRiver)
             {
                 allowedFillTypes.Add(type);
             }
@@ -434,58 +433,103 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private void ImplementRiver(
-        Vector2Int startPos)
+    private void ImplementRiver(Vector2Int startPos)
     {
-        int midX = Mathf.Clamp(
-            (startPos.x + grandmaPos.x) / 2,
-            1,
-            mapWidth - 2
-        );
+        int minX = Mathf.Min(startPos.x, grandmaPos.x);
+        int maxX = Mathf.Max(startPos.x, grandmaPos.x);
 
-        int midY = Mathf.Clamp(
-            (startPos.y + grandmaPos.y) / 2,
-            1,
-            mapHeight - 2
-        );
+        int minY = Mathf.Min(startPos.y, grandmaPos.y);
+        int maxY = Mathf.Max(startPos.y, grandmaPos.y);
 
-        int riverStyle =
-            Random.Range(0, 2);
+        List<bool> possibleOrientations = new();
 
-        switch (riverStyle)
+        if (minY + 1 < maxY)
+            possibleOrientations.Add(true);
+
+        if (minX + 1 < maxX)
+            possibleOrientations.Add(false);
+
+        if (possibleOrientations.Count == 0)
         {
-            case 0:
-
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    PlaceRiverTile(
-                        x,
-                        midY,
-                        startPos
-                    );
-                }
-
-                break;
-
-            case 1:
-
-                for (int y = 0; y < mapHeight; y++)
-                {
-                    PlaceRiverTile(
-                        midX,
-                        y,
-                        startPos
-                    );
-                }
-
-                break;
+            return;
         }
+
+        bool horizontalRiver =
+            possibleOrientations[
+                Random.Range(0, possibleOrientations.Count)
+            ];
+
+        if (horizontalRiver)
+        {
+            int riverY = Random.Range(minY + 1, maxY);
+
+            for (int x = 0; x < mapWidth; x++)
+            {
+                PlaceRiverTile(x, riverY, startPos, ZoneType.HorizontalRiver);
+            }
+        }
+        else
+        {
+            int riverX = Random.Range(minX + 1, maxX);
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                PlaceRiverTile(riverX, y, startPos, ZoneType.VerticalRiver);
+            }
+        }
+    }
+
+    private bool HasEnoughAccessibleTilesBeforeRiver()
+    {
+        bool[,] visited = new bool[mapHeight, mapWidth];
+        Queue<Vector2Int> queue = new();
+
+        queue.Enqueue(startPos);
+        visited[startPos.y, startPos.x] = true;
+
+        int accessibleTiles = 0;
+
+        Vector2Int[] directions =
+        {
+            Vector2Int.up,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.right
+        };
+
+        while (queue.Count > 0)
+        {
+            Vector2Int current = queue.Dequeue();
+            accessibleTiles++;
+
+            foreach (Vector2Int direction in directions)
+            {
+                Vector2Int next = current + direction;
+
+                if (next.x < 0 || next.x >= mapWidth ||
+                    next.y < 0 || next.y >= mapHeight)
+                    continue;
+
+                if (visited[next.y, next.x])
+                    continue;
+
+                if (map[next.y, next.x] != null &&
+                    (map[next.y, next.x].type == ZoneType.VerticalRiver || map[next.y, next.x].type == ZoneType.HorizontalRiver))
+                    continue;
+
+                visited[next.y, next.x] = true;
+                queue.Enqueue(next);
+            }
+        }
+
+        return accessibleTiles >= MinAccessibleTilesBeforeRiver;
     }
 
     private void PlaceRiverTile(
         int x,
         int y,
-        Vector2Int startPos)
+        Vector2Int startPos,
+        ZoneType riverType)
     {
         Vector2Int pos =
             new(x, y);
@@ -496,7 +540,7 @@ public class MapManager : MonoBehaviour
         {
             map[y, x] =
                 ZoneVault.GenerateZone(
-                    ZoneType.River
+                    riverType
                 );
         }
     }
