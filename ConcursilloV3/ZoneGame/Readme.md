@@ -1,55 +1,71 @@
-# Unity Personal Projects
+# Cooperative 2D Adventure
 
-Collection of personal game development projects created with **Unity and C#**.
+A **2D cooperative puzzle and exploration game** currently in development, created with **Unity and C#**.
 
-These projects were developed to practice game programming, gameplay systems, UI, player interaction and game logic.
+The game focuses on cooperative exploration, shared game state and interaction with a procedurally generated world.
 
-## Projects
+## Overview
 
-### Quiz Game
+Players explore a randomly generated map made up of different zones. Players can move independently through the world while interacting with objects, items and events.
 
-A quiz game inspired by the format of **Who Wants to Be a Millionaire?**, featuring custom topics, questions and gameplay mechanics.
+The objective is to explore the map, solve challenges, collect resources and ultimately reach the final objective.
 
-Players answer questions while progressing through different levels and can use several **lifelines** to help them when they are unsure of an answer.
+The game is designed around a **shared world**, meaning that players interact with the same generated map and shared game state.
 
-The game supports different custom quiz topics and includes a scoring and progression system.
+## Current Features
 
-**Technologies:**
+* Procedurally generated map
+* Zone-based exploration
+* Cooperative multiplayer
+* Shared game state
+* Player movement between zones
+* Inventory system
+* Item management
+* Random player starting position
+* Random objective location
+* Different types of zones with unique mechanics
+* Map boundaries and zone transitions
+* Interactive objects and items
 
-* Unity
-* C#
-* JSON
-* PlayerPrefs
+## Planned Features
 
-**Status:** Completed / Personal Project
+* Complete multiplayer implementation
+* Cooperative puzzles
+* Additional zone mechanics
+* NPCs and enemies
+* More interactive objects
+* Improved player interaction
+* Final objective and game progression
+* Visual and audio polish
 
----
+## Technologies
 
-### Overwatch Quiz
+* **Unity**
+* **C#**
+* **Multiplayer Networking**
+* **Procedural Generation**
 
-A quiz game based on **Overwatch**, featuring multiple game modes and different types of challenges.
+## Development
 
-Players can identify heroes, maps and other elements through different types of clues, including:
+This project is currently **in development**.
 
-* Character descriptions
-* Character images
-* Character sounds
-* Map images
-* Gameplay sounds
+The repository is updated progressively as new gameplay systems and mechanics are implemented.
 
-The project includes multiple levels, a scoring system and a global timer.
+## Project Structure
+Assets/
+├── Scripts/
+│   ├── Player/
+│   ├── Inventory/
+│   ├── Map/
+│   ├── Networking/
+│   └── Zones/
+├── Prefabs/
+├── Scenes/
+└── Resources/
 
-**Technologies:**
+Packages/
+ProjectSettings/
 
-* Unity
-* C#
-* JSON
-* PlayerPrefs
+## Goal
 
-**Status:** Completed / Personal Project
-
----
-
-## Purpose
-
-These projects were created as part of my learning and development as a programmer, with a focus on **C# and Unity game development**.
+This project is being developed as a personal programming project to gain practical experience with **Unity, C#, multiplayer systems, procedural generation and game architecture**.
