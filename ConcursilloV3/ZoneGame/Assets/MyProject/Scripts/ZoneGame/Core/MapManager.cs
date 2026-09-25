@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour
@@ -77,7 +79,41 @@ public class MapManager : MonoBehaviour
         {
             GenerateStartPositions();
             MakeRandomMap();
+            InitRoleSelector();
         }
+    }
+    public Player GetOtherPlayer(Player player)
+    {
+        if (player == player1)
+            return player2;
+
+        if (player == player2)
+            return player1;
+
+        return null;
+    }
+
+    public Player GetPlayerById(ulong playerId)
+    {
+        if (playerId == player1.OwnerClientId)
+            return player1;
+
+        if (playerId == player2.OwnerClientId)
+            return player2;
+
+        return null;
+    }
+
+    private void InitRoleSelector()
+    {
+        StartCoroutine(InitRoleSelectorCoroutine());
+    }
+
+    private IEnumerator InitRoleSelectorCoroutine()
+    {
+        yield return null;
+
+        player1.InitRoleSelector();
     }
 
     private void GenerateStartPositions()

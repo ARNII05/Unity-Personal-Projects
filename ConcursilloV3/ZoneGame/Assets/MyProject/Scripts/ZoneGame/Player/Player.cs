@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static Player;
 
 public class Player : NetworkBehaviour
 {
@@ -32,6 +33,12 @@ public class Player : NetworkBehaviour
 
     public NetworkVariable<Vector2Int> NetworkMapPos = new(
         Vector2Int.zero,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
+    public NetworkVariable<PlayerRole> Role = new(
+        PlayerRole.None,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
@@ -215,6 +222,64 @@ public class Player : NetworkBehaviour
         MapManager.Instance.RegisterPlayer(this, IsServer);
     }
 
+    [ServerRpc]
+    public void SelectRoleServerRpc(PlayerRole playerRole)
+    {
+        if (Role.Value != PlayerRole.None)
+            return;
+        
+        Role.Value = playerRole;
+        SelectRoleClientRpc(playerRole, OwnerClientId);
+    }
+
+    [ClientRpc]
+    public void SelectRoleClientRpc(PlayerRole playerRole, ulong playerId)
+    {
+        RoleSelectorUI.Instance.CommonActions(playerId, playerRole);
+        
+        if (NetworkManager.Singleton.LocalClientId != playerId)
+            ActionsWithDifferentId(playerRole);
+        else
+            ActionsWithSameId(playerRole);
+    }
+
+    private void ActionsWithSameId(PlayerRole playerRole)
+    {
+        if (playerRole == PlayerRole.Gardener)
+        {
+            RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.gardenerRoleObject);
+        }
+        else
+        {
+            RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.builderRoleObject);
+        }
+    }
+
+    private void ActionsWithDifferentId(PlayerRole playerRole)
+    {
+        if (playerRole == PlayerRole.Gardener)
+        {
+            RoleSelectorUI.Instance.SetRoleTextBox(
+                $"{name} ha escogido el rol de Gardinero", RoleSelectorUI.Instance.gardenerRoleObject);
+        }
+        else
+        {
+            RoleSelectorUI.Instance.SetRoleTextBox(
+                $"{name} ha escogido el rol de Constructor", RoleSelectorUI.Instance.builderRoleObject);
+        }
+    }
+
+    public void InitRoleSelector()
+    {
+        InitRoleSelectorClientRpc();
+    }
+
+    [ClientRpc]
+    private void InitRoleSelectorClientRpc()
+    {
+        RoleSelectorUI.Instance.InitRoleSelector();
+    }
+
     private void OnWalkingChanged(bool oldValue, bool newValue)
     {
         UpdateAnimator();
@@ -355,4 +420,11 @@ public class Player : NetworkBehaviour
                 break;
         }
     }
+}
+
+public enum PlayerRole
+{
+    None,
+    Gardener,
+    Builder
 }
