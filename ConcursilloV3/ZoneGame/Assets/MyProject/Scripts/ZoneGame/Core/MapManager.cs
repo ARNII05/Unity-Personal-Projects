@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class MapManager : MonoBehaviour
 {
@@ -125,7 +124,7 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.LogError(
-            "No se pudo generar un mapa v�lido despu�s de 100 intentos."
+            "No se pudo generar un mapa v lido despu s de 100 intentos."
         );
     }
 
@@ -284,9 +283,6 @@ public class MapManager : MonoBehaviour
         {
             return;
         }
-
-        Vector3 p1ZonePos = map[startPos.y, startPos.x].player1ZonePos;
-        Vector3 p2ZonePos = map[startPos.y, startPos.x].player2ZonePos;
 
         CreatePlayerZone(
             player1
