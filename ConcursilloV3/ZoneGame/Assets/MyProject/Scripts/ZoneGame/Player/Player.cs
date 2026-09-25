@@ -254,7 +254,7 @@ public class Player : NetworkBehaviour
         if (!MapManager.Instance.IsMapReady)
             return;
 
-        MapManager.Instance.UpdateActualZone(this);
+        MapManager.Instance.CreatePlayerZone(this);
     }
 
     private void UpdateOtherPlayerVisual()

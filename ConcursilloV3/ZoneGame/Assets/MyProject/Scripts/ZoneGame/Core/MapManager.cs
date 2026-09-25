@@ -125,7 +125,7 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.LogError(
-            "No se pudo generar un mapa válido después de 100 intentos."
+            "No se pudo generar un mapa vï¿½lido despuï¿½s de 100 intentos."
         );
     }
 
@@ -289,19 +289,15 @@ public class MapManager : MonoBehaviour
         Vector3 p2ZonePos = map[startPos.y, startPos.x].player2ZonePos;
 
         CreatePlayerZone(
-            player1,
-            p1ZonePos
+            player1
         );
 
         CreatePlayerZone(
-            player2,
-            p2ZonePos
+            player2
         );
     }
 
-    private void CreatePlayerZone(
-        Player player,
-        Vector3 zonePosition)
+    public void CreatePlayerZone(Player player)
     {
         if (player.currentZone != null)
         {
@@ -309,46 +305,42 @@ public class MapManager : MonoBehaviour
         }
 
         Vector2Int position = player.NetworkMapPos.Value;
+        ZoneData zoneData = map[position.y, position.x];
 
-        ZoneData zoneData =
-            map[position.y, position.x];
-
-        GameObject prefab =
-            LoadZone(zoneData.type);
+        GameObject prefab = LoadZone(zoneData.type);
 
         if (prefab == null)
         {
-            Debug.LogError(
-                "No se pudo cargar el prefab MomHouse."
-            );
-
+            Debug.LogError($"No se pudo cargar el prefab de {zoneData.type}.");
             return;
         }
 
-        GameObject zone =
-            Instantiate(
-                prefab,
-                zonePosition,
-                Quaternion.identity
-            );
+        Vector3 zonePosition =
+            player == player1
+                ? zoneData.player1ZonePos
+                : zoneData.player2ZonePos;
+
+        GameObject zone = Instantiate(
+            prefab,
+            zonePosition,
+            Quaternion.identity
+        );
 
         player.currentZone = zone;
 
-        Zone currentZone =
-            player.currentZone
-                .GetComponent<Zone>();
+        Zone currentZone = zone.GetComponent<Zone>();
 
         currentZone.Setup(
-            player.NetworkMapPos.Value,
+            position,
             map
         );
 
-        if (zoneData.type != ZoneType.HorizontalRiver
-            && zoneData.type != ZoneType.VerticalRiver)
-            return;
-
-        River actualRiver = zone.GetComponent<River>();
-        actualRiver.mapPosition = player.NetworkMapPos.Value;
+        if (zoneData.type == ZoneType.HorizontalRiver ||
+            zoneData.type == ZoneType.VerticalRiver)
+        {
+            River actualRiver = zone.GetComponent<River>();
+            actualRiver.mapPosition = position;
+        }
     }
 
     private GameObject LoadZone(ZoneType zoneType)
@@ -725,56 +717,6 @@ public class MapManager : MonoBehaviour
             this.canMove = canMove;
             this.newPos = newPos;
         }
-    }
-
-    public void UpdateActualZone(
-        Player player)
-    {
-        if (map == null ||
-            player == null)
-        {
-            return;
-        }
-
-        if (player.currentZone != null)
-        {
-            Destroy(player.currentZone);
-        }
-
-        Vector2Int position = player.NetworkMapPos.Value;
-
-        ZoneData zoneData =
-            map[position.y, position.x];
-
-        GameObject prefab =
-            LoadZone(zoneData.type);
-
-        GameObject zone = 
-            Instantiate(
-                prefab,
-                player == player1
-                    ? zoneData.player1ZonePos
-                    : zoneData.player2ZonePos,
-                Quaternion.identity
-            );
-
-        player.currentZone = zone;
-
-        Zone currentZone =
-            player.currentZone
-                .GetComponent<Zone>();
-
-        currentZone.Setup(
-            player.NetworkMapPos.Value,
-            map
-        );
-
-        if (zoneData.type != ZoneType.HorizontalRiver
-            && zoneData.type != ZoneType.VerticalRiver)
-            return;
-
-        River actualRiver = zone.GetComponent<River>();
-        actualRiver.mapPosition = player.NetworkMapPos.Value;
     }
 
     public void OnChestOpen(
