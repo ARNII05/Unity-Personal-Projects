@@ -71,13 +71,14 @@ public class Player : NetworkBehaviour
         if (!isBridged)
             return;
         
-        RiverInteractionClientRpc(isBridged, NetworkMapPos.Value);
+        RiverInteractionClientRpc(isBridged, NetworkMapPos.Value, OwnerClientId);
     }
 
     [ClientRpc]
     private void RiverInteractionClientRpc(
         bool isBridged,
-        Vector2Int position)
+        Vector2Int position,
+        ulong playerId)
     {
         MapManager.Instance.map[
             position.y,
@@ -97,6 +98,11 @@ public class Player : NetworkBehaviour
         if (!localPlayer.currentZone.TryGetComponent<River>(
             out var riverZone))
             return;
+
+        if (NetworkManager.Singleton.LocalClientId == playerId)
+        {
+            localPlayer.inventory.RemoveItem(ItemType.Log, 1);
+        }
 
         riverZone.SwapGameObjectStatusNetworking();
     }

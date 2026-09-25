@@ -285,13 +285,13 @@ public class VerticalRiver : ZoneData
 {
     public VerticalRiver() : base(ZoneType.VerticalRiver, initialFlowers: 0)
     {
-        player1EntryPoints[0] = new Vector3(-85.2f, 11.2f, -6.2f);
+        player1EntryPoints[0] = new Vector3(43.6f, 26.2f, -6.2f);
         player1EntryPoints[1] = new Vector3(-127.9f, -32.2f, -6.2f);
         player1EntryPoints[2] = new Vector3(-62.3f, 3.3f, -6.2f);
         player1EntryPoints[3] = new Vector3(-136.6f, -11.9f, -6.2f);
 
         player2EntryPoints[0] = new Vector3(169.7f, 11.9f, -6.2f);
-        player2EntryPoints[1] = new Vector3(126.9f, -32.8f, -6.2f);
+        player2EntryPoints[1] = new Vector3(299f, 26.2f, -6.2f);
         player2EntryPoints[2] = new Vector3(192.3f, 3.3f, -6.2f);
         player2EntryPoints[3] = new Vector3(117.9f, -11.9f, -6.2f);
 

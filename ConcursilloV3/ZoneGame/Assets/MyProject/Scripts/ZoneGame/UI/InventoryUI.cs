@@ -47,18 +47,29 @@ public class InventoryUI : MonoBehaviour
 
     private void Refresh()
     {
+        for (int j = 0; j < 6; j++)
+        {
+            GameObject box =
+                inventoryPanel.transform.Find($"Box{j + 1}").gameObject;
+
+            GameObject iconBox =
+                box.transform.Find("IconBox").gameObject;
+
+            iconBox.SetActive(false);
+        }
+
         int i = 0;
 
         foreach (var item in inventory.items)
         {
-            if (item.Key != ItemType.Coin)
+            if (item.Key == ItemType.Coin)
             {
-                UpdateItemBox(i, item.Key, item.Value);
-                i++;
+                UpdateCoinAmount(item.Value);
                 continue;
             }
-            
-            UpdateCoinAmount(item.Value);
+
+            UpdateItemBox(i, item.Key, item.Value);
+            i++;
         }
     }
 

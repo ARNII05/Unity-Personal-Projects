@@ -40,7 +40,8 @@ public class Inventory
 
     public bool HasItem(ItemType itemType)
     {
-        return items[itemType] > 0;
+        return items.TryGetValue(itemType, out int amount) &&
+               amount > 0;
     }
 
     public int GetItemAmount(ItemType itemType)
