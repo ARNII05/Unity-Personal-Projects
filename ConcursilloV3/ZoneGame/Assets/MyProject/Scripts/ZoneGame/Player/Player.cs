@@ -223,50 +223,94 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
+    public void DeselectRoleServerRpc(PlayerRole playerRole)
+    {
+        Role.Value = PlayerRole.None;
+        SelectRoleClientRpc(playerRole, OwnerClientId, SelectionRolType.Deselect);
+    }
+
+    [ServerRpc]
     public void SelectRoleServerRpc(PlayerRole playerRole)
     {
         if (Role.Value != PlayerRole.None)
             return;
         
         Role.Value = playerRole;
-        SelectRoleClientRpc(playerRole, OwnerClientId);
+        SelectRoleClientRpc(playerRole, OwnerClientId, SelectionRolType.Select);
     }
 
     [ClientRpc]
-    public void SelectRoleClientRpc(PlayerRole playerRole, ulong playerId)
+    public void SelectRoleClientRpc(PlayerRole playerRole, ulong playerId, SelectionRolType selectionRolType)
     {
-        RoleSelectorUI.Instance.CommonActions(playerId, playerRole);
+        RoleSelectorUI.Instance.CommonActions(playerId, playerRole, selectionRolType);
         
         if (NetworkManager.Singleton.LocalClientId != playerId)
-            ActionsWithDifferentId(playerRole);
+            ActionsWithDifferentId(playerRole, selectionRolType);
         else
-            ActionsWithSameId(playerRole);
+            ActionsWithSameId(playerRole, selectionRolType);
     }
 
-    private void ActionsWithSameId(PlayerRole playerRole)
+    private void ActionsWithSameId(PlayerRole playerRole, SelectionRolType selectionRolType)
     {
-        if (playerRole == PlayerRole.Gardener)
+        switch (selectionRolType)
         {
-            RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.gardenerRoleObject);
-        }
-        else
+            case SelectionRolType.Select:
+                if (playerRole == PlayerRole.Gardener)
+                    RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.gardenerRoleObject, true);
+                else RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.builderRoleObject, true);
+                break;
+            case SelectionRolType.Deselect:
+                if (playerRole == PlayerRole.Gardener)
+                    RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.gardenerRoleObject, false);
+                else RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.builderRoleObject, false);
+                break;
+        }   
+    }
+
+    private void ActionsWithDifferentId(PlayerRole playerRole, SelectionRolType selectionRolType)
+    {
+        switch (selectionRolType)
         {
-            RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.builderRoleObject);
+            case SelectionRolType.Select:
+                if (playerRole == PlayerRole.Gardener)
+                    RoleSelectorUI.Instance.SetRoleTextBox(
+                        RoleSelectorUI.Instance.gardenerRoleObject, true,
+                            $"{name} ha escogido el rol de Gardinero");
+                else RoleSelectorUI.Instance.SetRoleTextBox(
+                        RoleSelectorUI.Instance.builderRoleObject, true,
+                            $"{name} ha escogido el rol de Constructor");
+                break;
+            case SelectionRolType.Deselect:
+                if (playerRole == PlayerRole.Gardener)
+                    RoleSelectorUI.Instance.SetRoleTextBox(
+                        RoleSelectorUI.Instance.gardenerRoleObject, false);
+                else RoleSelectorUI.Instance.SetRoleTextBox(
+                        RoleSelectorUI.Instance.builderRoleObject, false);
+                break;
         }
     }
 
-    private void ActionsWithDifferentId(PlayerRole playerRole)
+    [ServerRpc]
+    public void StartGameServerRpc()
     {
-        if (playerRole == PlayerRole.Gardener)
-        {
-            RoleSelectorUI.Instance.SetRoleTextBox(
-                $"{name} ha escogido el rol de Gardinero", RoleSelectorUI.Instance.gardenerRoleObject);
-        }
-        else
-        {
-            RoleSelectorUI.Instance.SetRoleTextBox(
-                $"{name} ha escogido el rol de Constructor", RoleSelectorUI.Instance.builderRoleObject);
-        }
+        if (Role.Value == PlayerRole.None)
+            return;
+
+        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
+
+        if (otherPlayer == null)
+            return;
+
+        if (otherPlayer.Role.Value == PlayerRole.None)
+            return;
+
+        StartGameClientRpc();
+    }
+
+    [ClientRpc]
+    private void StartGameClientRpc()
+    {
+        RoleSelectorUI.Instance.CloseLobby();
     }
 
     public void InitRoleSelector()
@@ -427,4 +471,10 @@ public enum PlayerRole
     None,
     Gardener,
     Builder
+}
+
+public enum SelectionRolType
+{
+    Select,
+    Deselect
 }
