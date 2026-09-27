@@ -319,6 +319,7 @@ public class Player : NetworkBehaviour
             return;
 
         RoleSelectorUI.Instance.CloseLobby();
+        CraftingUI.Instance.Init();
         State = PlayerState.Normal;
     }
 

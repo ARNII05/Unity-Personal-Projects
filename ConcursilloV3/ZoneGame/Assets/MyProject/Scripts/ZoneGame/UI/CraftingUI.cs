@@ -45,6 +45,10 @@ public class CraftingUI : MonoBehaviour
     {
         this.player = player;
         player.inventory.OnInventoryChanged += UpdateUI;
+    }
+
+    public void Init()
+    {
         if (player.Role.Value == PlayerRole.Gardener)
         {
             boxItemBtn.onClick.AddListener(player.craftingSystem.CraftBouquet);
@@ -65,9 +69,13 @@ public class CraftingUI : MonoBehaviour
 
         int maxItemAmount = CraftingSystem.flowersForBouquet;
 
-        itemTextCount.text = $"{itemAmount}/{maxItemAmount}";
+        bool canBuildItem = player.Role.Value == PlayerRole.Gardener 
+            ? player.craftingSystem.CanCraftBouquet() 
+            : player.craftingSystem.CanCraftLog();
 
-        UpdateCanvasGroup(itemAmount >= maxItemAmount);
+        UpdateCanvasGroup(canBuildItem);
+
+        itemTextCount.text = $"{itemAmount}/{maxItemAmount}";
     }
 
     private void UpdateCanvasGroup(bool haveNecessaryItems = false)
@@ -98,6 +106,6 @@ public class CraftingUI : MonoBehaviour
             _ => Resources.Load<Sprite>(itemsBasePath + "Log"),
         };
 
-        itemTextCount.text = $"0/{maxItemAmount}";
+        itemTextCount.text = $"5/{maxItemAmount}";
     }
 }

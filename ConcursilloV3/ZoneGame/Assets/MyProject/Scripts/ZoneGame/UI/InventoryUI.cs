@@ -45,7 +45,7 @@ public class InventoryUI : MonoBehaviour
 
     private void ChangeItemBoxStatus(bool status)
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < Inventory.maxCapacity; i++)
         {
             GameObject actualBox = inventoryPanel.transform.Find($"Box{i + 1}").gameObject;
             GameObject itemBox = actualBox.transform.Find("IconBox").gameObject;
@@ -55,7 +55,7 @@ public class InventoryUI : MonoBehaviour
 
     private void Refresh()
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < Inventory.maxCapacity; j++)
         {
             GameObject box =
                 inventoryPanel.transform.Find($"Box{j + 1}").gameObject;

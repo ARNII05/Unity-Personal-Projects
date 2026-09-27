@@ -8,7 +8,7 @@ public class Inventory
 {
     public Dictionary<ItemType, int> items = new();
     public event Action OnInventoryChanged;
-    public int maxCapacity = 4;
+    public const int maxCapacity = 4;
 
     public bool AddItem(ItemType itemType, int amount)
     {
@@ -28,20 +28,14 @@ public class Inventory
         return true;
     }
 
-    public bool HasItem(ItemType itemType)
+    public bool HasSpaceForItem(ItemType itemType)
     {
-        return items.TryGetValue(itemType, out int amount) &&
-               amount > 0;
+        return items.ContainsKey(itemType) || items.Count < maxCapacity;
     }
 
     public int GetItemAmount(ItemType itemType)
     {
-        if (items.ContainsKey(itemType))
-        {
-            return items[itemType];
-        }
-        
-        return 0;
+        return items.TryGetValue(itemType, out int amount) ? amount : 0;
     }
 
     public bool RemoveItem(ItemType itemType, int amount)
@@ -59,18 +53,5 @@ public class Inventory
 
         OnInventoryChanged?.Invoke();
         return true;
-    }
-
-    public void PrintInventory()
-    {
-        if (items.Count == 0)
-        {
-            return;
-        }
-        
-        foreach (var item in items)
-        {
-            Debug.Log($"Item: {item.Key}, Amount: {item.Value}\n");
-        }
     }
 }
