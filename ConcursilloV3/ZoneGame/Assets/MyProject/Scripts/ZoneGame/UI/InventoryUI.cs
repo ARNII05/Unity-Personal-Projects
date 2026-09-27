@@ -9,6 +9,7 @@ public class InventoryUI : MonoBehaviour
     public static InventoryUI Instance { get; private set; }
 
     [SerializeField] private GameObject inventoryPanel;
+    
     private Inventory inventory;
     private Player player;
 
@@ -44,7 +45,7 @@ public class InventoryUI : MonoBehaviour
 
     private void ChangeItemBoxStatus(bool status)
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 4; i++)
         {
             GameObject actualBox = inventoryPanel.transform.Find($"Box{i + 1}").gameObject;
             GameObject itemBox = actualBox.transform.Find("IconBox").gameObject;
@@ -54,7 +55,7 @@ public class InventoryUI : MonoBehaviour
 
     private void Refresh()
     {
-        for (int j = 0; j < 6; j++)
+        for (int j = 0; j < 4; j++)
         {
             GameObject box =
                 inventoryPanel.transform.Find($"Box{j + 1}").gameObject;
@@ -69,12 +70,6 @@ public class InventoryUI : MonoBehaviour
 
         foreach (var item in inventory.items)
         {
-            if (item.Key == ItemType.Coin)
-            {
-                UpdateCoinAmount(item.Value);
-                continue;
-            }
-
             UpdateItemBox(i, item.Key, item.Value);
             i++;
         }
@@ -98,17 +93,6 @@ public class InventoryUI : MonoBehaviour
         itemBoxText.text = amount.ToString();
 
         iconBox.SetActive(true);
-    }
-
-    private void UpdateCoinAmount(int amount)
-    {
-        GameObject coinsObject =
-            inventoryPanel.transform.Find("CoinsUI").gameObject;
-
-        TextMeshProUGUI coinsObjectText = 
-            coinsObject.GetComponentInChildren<TextMeshProUGUI>();
-
-        coinsObjectText.text = amount.ToString();
     }
 
     public void ToggleInventory()

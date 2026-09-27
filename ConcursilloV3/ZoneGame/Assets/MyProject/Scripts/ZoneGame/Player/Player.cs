@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static Player;
 
+[RequireComponent(typeof(CraftingSystem))]
 public class Player : NetworkBehaviour
 {
     public Vector2Int initialPos;
@@ -11,6 +12,7 @@ public class Player : NetworkBehaviour
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
     public Inventory inventory = new();
+    public CraftingSystem craftingSystem;
     public PlayerState State { get; set; } = PlayerState.Normal;
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
@@ -43,6 +45,11 @@ public class Player : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
+
+    private void Awake()
+    {
+        craftingSystem = GetComponent<CraftingSystem>();
+    }
 
     private void Update()
     {
@@ -120,14 +127,39 @@ public class Player : NetworkBehaviour
     {
         Vector2Int position = NetworkMapPos.Value;
 
-        nearbyChest.OnOpen(this);
+        ChestItems items = nearbyChest.OnOpen();
+
         nearbyChest = null;
 
         MapManager.Instance.OnChestOpen(position);
 
         OpenChestClientRpc(position);
 
-        SyncInventory();
+        ClientRpcParams rpcParams = new()
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { OwnerClientId }
+            }
+        };
+
+        GiveChestItemsClientRpc(
+            items.itemTypes,
+            items.amounts,
+            rpcParams
+        );
+    }
+
+    [ClientRpc]
+    private void GiveChestItemsClientRpc(
+        ItemType[] itemTypes,
+        int[] amounts,
+        ClientRpcParams clientRpcParams = default)
+    {
+        for (int i = 0; i < itemTypes.Length; i++)
+        {
+            inventory.AddItem(itemTypes[i], amounts[i]);
+        }
     }
 
     [ClientRpc]
@@ -143,40 +175,6 @@ public class Player : NetworkBehaviour
             position,
             actualPlayer
         );
-    }
-
-    private void SyncInventory()
-    {
-        ItemType[] itemTypes = new ItemType[inventory.items.Count];
-        int[] amounts = new int[inventory.items.Count];
-
-        int i = 0;
-
-        foreach (var item in inventory.items)
-        {
-            itemTypes[i] = item.Key;
-            amounts[i] = item.Value;
-            i++;
-        }
-
-        ClientRpcParams rpcParams = new()
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { OwnerClientId }
-            }
-        };
-
-        SyncInventoryClientRpc(itemTypes, amounts, rpcParams);
-    }
-
-    [ClientRpc]
-    private void SyncInventoryClientRpc(
-        ItemType[] itemTypes,
-        int[] amounts,
-        ClientRpcParams clientRpcParams = default)
-    {
-        inventory.SetItems(itemTypes, amounts);
     }
 
     [ServerRpc]
@@ -197,6 +195,7 @@ public class Player : NetworkBehaviour
         {
             RoleSelectorUI.Instance.InitPlayer(this);
             InventoryUI.Instance.InitPlayer(this);
+            CraftingUI.Instance.SetPlayer(this);
 
             otherPlayerVisualRoot = new GameObject(
                 "Other Player Visual Root"
@@ -328,8 +327,6 @@ public class Player : NetworkBehaviour
     {
         if (!IsOwner)
             return;
-
-        Debug.Log($"Rol: {Role.Value}");
 
         if (Role.Value == PlayerRole.Gardener)
             inventory.AddItem(ItemType.Radar, 1);

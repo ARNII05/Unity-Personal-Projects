@@ -8,7 +8,7 @@ public class Inventory
 {
     public Dictionary<ItemType, int> items = new();
     public event Action OnInventoryChanged;
-    private const int maxCapacity = 7;
+    public int maxCapacity = 4;
 
     public bool AddItem(ItemType itemType, int amount)
     {
@@ -26,18 +26,6 @@ public class Inventory
         OnInventoryChanged?.Invoke();
 
         return true;
-    }
-
-    public void SetItems(ItemType[] itemTypes, int[] amounts)
-    {
-        items.Clear();
-
-        for (int i = 0; i < itemTypes.Length; i++)
-        {
-            items[itemTypes[i]] = amounts[i];
-        }
-
-        OnInventoryChanged?.Invoke();
     }
 
     public bool HasItem(ItemType itemType)
