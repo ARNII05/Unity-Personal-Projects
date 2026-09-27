@@ -67,7 +67,9 @@ public class CraftingUI : MonoBehaviour
 
         int itemAmount = player.inventory.GetItemAmount(itemType);
 
-        int maxItemAmount = CraftingSystem.flowersForBouquet;
+        int maxItemAmount = player.Role.Value == PlayerRole.Gardener
+											? CraftingSystem.flowersForBouquet
+											: CraftingSystem.branchesForLog;
 
         bool canBuildItem = player.Role.Value == PlayerRole.Gardener 
             ? player.craftingSystem.CanCraftBouquet() 
@@ -92,7 +94,10 @@ public class CraftingUI : MonoBehaviour
     private void SetUI()
     {
         PlayerRole playerRole = player.Role.Value;
-        int maxItemAmount = CraftingSystem.flowersForBouquet;
+        
+								int maxItemAmount = player.Role.Value == PlayerRole.Gardener
+											? CraftingSystem.flowersForBouquet
+											: CraftingSystem.branchesForLog;
 
         childItemImg.sprite = (playerRole) switch
         {
