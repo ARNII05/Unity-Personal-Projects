@@ -9,16 +9,16 @@ public class RoleSelectorUI : MonoBehaviour
 {
     public static RoleSelectorUI Instance { get; private set; }
 
-    [SerializeField] private GameObject lockObj;
+    [SerializeField] private GameObject lockObj, startGameObj;
     [SerializeField] private CanvasGroup canvasGroup;
 
     public GameObject[] background;
-    private GameObject lobbyPanel;
+    private GameObject roleLobbyPanel;
     public GameObject gardenerRoleObject;
     public GameObject builderRoleObject;
 
-    Player player;
-    Player otherPlayer;
+    private Player player;
+    private Player otherPlayer;
     
     private void Awake()
     {
@@ -33,44 +33,51 @@ public class RoleSelectorUI : MonoBehaviour
 
     private void Start()
     {
-        lobbyPanel = transform.Find("LobbyPanel").gameObject;
-        lobbyPanel.SetActive(false);
+        roleLobbyPanel = transform.Find("RoleLobbyPanel").gameObject;
+        roleLobbyPanel.SetActive(false);
         background[0].SetActive(false);
         background[1].SetActive(false);
     }
 
+    public void InitPlayer(Player player)
+    {
+        this.player = player;
+    }
+
     public void InitRoleSelector()
     {
-        player = NetworkManager.Singleton.LocalClient.PlayerObject
-            .GetComponent<Player>();
-
         otherPlayer = MapManager.Instance.GetOtherPlayer(player);
+
+        player.State = PlayerState.SelectingRole;
 
         player.Role.OnValueChanged += OnRoleChanged;
         otherPlayer.Role.OnValueChanged += OnRoleChanged;
 
-        lobbyPanel.SetActive(true);
+        roleLobbyPanel.SetActive(true);
         background[0].SetActive(true);
         background[1].SetActive(true);
+        startGameObj.SetActive(NetworkManager.Singleton.IsHost);
 
         UpdateStartButton();
+        UpdateInfoBoxText();
     }
 
     private void OnRoleChanged(PlayerRole previousValue, PlayerRole newValue)
     {
         UpdateStartButton();
+        UpdateInfoBoxText();
     }
 
     private void UpdateStartButton()
     {
-        bool bothready = player.Role.Value != PlayerRole.None
+        bool bothReady = player.Role.Value != PlayerRole.None
             && otherPlayer.Role.Value != PlayerRole.None;
 
-        lockObj.SetActive(!bothready);
+        lockObj.SetActive(!bothReady);
         
-        canvasGroup.alpha = bothready ? 1 : 0.4f;
-        canvasGroup.interactable = bothready;
-        canvasGroup.blocksRaycasts = bothready;
+        canvasGroup.alpha = bothReady ? 1 : 0.4f;
+        canvasGroup.interactable = bothReady;
+        canvasGroup.blocksRaycasts = bothReady;
     }
 
     public void SwapBox(GameObject mainObject, bool selected)
@@ -91,35 +98,26 @@ public class RoleSelectorUI : MonoBehaviour
 
     public void CommonActions(ulong playerId, PlayerRole playerRole, SelectionRolType selectionRolType)
     {
-        Player player = MapManager.Instance.GetPlayerById(playerId);
-        Player otherPlayer = MapManager.Instance.GetOtherPlayer(player);
+        string playerName = MapManager.Instance.GetPlayerById(playerId).name;
         
         bool isSelectionType = selectionRolType == SelectionRolType.Select;
 
-        GameObject playerBox = lobbyPanel.transform.Find($"{playerRole}Box").gameObject;
+        GameObject playerBox = roleLobbyPanel.transform.Find($"{playerRole}Box").gameObject;
         TextMeshProUGUI playerRoleText = playerBox.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
-        playerRoleText.text = isSelectionType ? player.name : "Sin escoger";
-
-        InfoBoxText(selectionRolType, player.name, otherPlayer);
+        playerRoleText.text = isSelectionType ? playerName : "Sin escoger";
     }
 
-    public void InfoBoxText(SelectionRolType selectionRolType, string playerName, Player otherPlayer)
+    public void UpdateInfoBoxText()
     {
-        TextMeshProUGUI infoboxText = lobbyPanel.transform.Find("InfoBox").GetComponentInChildren<TextMeshProUGUI>();
-        
-        switch (selectionRolType)
+        TextMeshProUGUI infoboxText = roleLobbyPanel.transform.Find("InfoBox").GetComponentInChildren<TextMeshProUGUI>();
+
+        infoboxText.text = (player.Role.Value, otherPlayer.Role.Value) switch
         {
-            case SelectionRolType.Select:
-                if (otherPlayer.Role.Value == PlayerRole.None)
-                    infoboxText.text = $"{otherPlayer.name} sin rol";
-                else infoboxText.text = "Jugadores listos para empezar";
-                break;
-            case SelectionRolType.Deselect:
-                if (otherPlayer.Role.Value == PlayerRole.None)
-                    infoboxText.text += $"\n{playerName} sin rol";
-                else infoboxText.text = $"{playerName} sin rol";
-                break;
-        }
+            (PlayerRole.None, PlayerRole.None) => "Ningún jugador tiene rol",
+            (PlayerRole.None, _) => $"{player.name} sin rol",
+            (_, PlayerRole.None) => $"{otherPlayer.name} sin rol",
+            _ => "Los 2 jugadores están listos.",
+        };
     }
 
     public void StartGame()
@@ -129,7 +127,7 @@ public class RoleSelectorUI : MonoBehaviour
     
     public void CloseLobby()
     {
-        lobbyPanel.SetActive(false);
+        roleLobbyPanel.SetActive(false);
         background[0].SetActive(false);
         background[1].SetActive(false);
     }

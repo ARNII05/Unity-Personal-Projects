@@ -15,6 +15,7 @@ public class Inventory
         if (items.ContainsKey(itemType))
         {
             items[itemType] += amount;
+            OnInventoryChanged?.Invoke();
             return true;
         }
 
@@ -22,6 +23,7 @@ public class Inventory
             return false;
 
         items[itemType] = amount;
+        OnInventoryChanged?.Invoke();
 
         return true;
     }

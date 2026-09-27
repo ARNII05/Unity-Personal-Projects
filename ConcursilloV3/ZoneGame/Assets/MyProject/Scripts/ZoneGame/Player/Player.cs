@@ -11,6 +11,7 @@ public class Player : NetworkBehaviour
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
     public Inventory inventory = new();
+    public PlayerState State { get; set; } = PlayerState.Normal;
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
 
@@ -191,10 +192,11 @@ public class Player : NetworkBehaviour
         NetworkMapPos.OnValueChanged += OnNetworkMapPosChanged;
         IsWalking.OnValueChanged += OnWalkingChanged;
         NetworkDirection.OnValueChanged += OnDirectionChanged;
-        
+
         if (IsOwner)
         {
-            InventoryUI.Instance.SetInventory(inventory);
+            RoleSelectorUI.Instance.InitPlayer(this);
+            InventoryUI.Instance.InitPlayer(this);
 
             otherPlayerVisualRoot = new GameObject(
                 "Other Player Visual Root"
@@ -304,13 +306,36 @@ public class Player : NetworkBehaviour
         if (otherPlayer.Role.Value == PlayerRole.None)
             return;
 
+        GiveStartingItemClientRpc();
+        otherPlayer.GiveStartingItemClientRpc();
+
         StartGameClientRpc();
+        otherPlayer.StartGameClientRpc();
     }
 
     [ClientRpc]
     private void StartGameClientRpc()
     {
+        if (!IsOwner)
+            return;
+
         RoleSelectorUI.Instance.CloseLobby();
+        State = PlayerState.Normal;
+    }
+
+    [ClientRpc]
+    private void GiveStartingItemClientRpc()
+    {
+        if (!IsOwner)
+            return;
+
+        Debug.Log($"Rol: {Role.Value}");
+
+        if (Role.Value == PlayerRole.Gardener)
+            inventory.AddItem(ItemType.Radar, 1);
+
+        else if (Role.Value == PlayerRole.Builder)
+            inventory.AddItem(ItemType.Map, 1);
     }
 
     public void InitRoleSelector()
@@ -477,4 +502,14 @@ public enum SelectionRolType
 {
     Select,
     Deselect
+}
+
+public enum PlayerState
+{
+    Normal,
+    SelectingRole,
+    Inventory,
+    Interacting,
+    Trading,
+    Crafting
 }

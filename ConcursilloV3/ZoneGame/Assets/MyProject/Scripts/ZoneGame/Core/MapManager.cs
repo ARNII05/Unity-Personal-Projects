@@ -77,9 +77,9 @@ public class MapManager : MonoBehaviour
             player2 != null &&
             isServer)
         {
+            InitRoleSelector();
             GenerateStartPositions();
             MakeRandomMap();
-            InitRoleSelector();
         }
     }
     public Player GetOtherPlayer(Player player)
@@ -160,7 +160,7 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.LogError(
-            "No se pudo generar un mapa v lido despu s de 100 intentos."
+            "No se pudo generar un mapa valido despu s de 100 intentos."
         );
     }
 

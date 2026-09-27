@@ -30,7 +30,7 @@ public class Player1Controller : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        if (InventoryUI.Instance.IsOpen)
+        if (player.State != PlayerState.Normal)
             return;
 
         movementInput.x = Input.GetAxisRaw("Horizontal");

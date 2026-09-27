@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,8 @@ public class InventoryUI : MonoBehaviour
     public static InventoryUI Instance { get; private set; }
 
     [SerializeField] private GameObject inventoryPanel;
-    public bool IsOpen => inventoryPanel.activeSelf;
     private Inventory inventory;
+    private Player player;
 
     private void Awake()
     {
@@ -26,6 +27,12 @@ public class InventoryUI : MonoBehaviour
     {
         ChangeItemBoxStatus(false);
         inventoryPanel.SetActive(false);
+    }
+
+    public void InitPlayer(Player player)
+    {
+        this.player = player;
+        SetInventory(player.inventory);
     }
 
     public void SetInventory(Inventory inventory)
@@ -112,12 +119,14 @@ public class InventoryUI : MonoBehaviour
 
     public void OpenInventory()
     {
+        player.State = PlayerState.Inventory;
         inventoryPanel.SetActive(true);
         //CursorManager.Instance.UnlockCursor();
     }
 
     public void CloseInventory()
     {
+        player.State = PlayerState.Normal;
         inventoryPanel.SetActive(false);
         //CursorManager.Instance.LockCursor();
     }
