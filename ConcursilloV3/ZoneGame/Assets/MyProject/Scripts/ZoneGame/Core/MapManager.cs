@@ -152,6 +152,7 @@ public class MapManager : MonoBehaviour
 
                 PrintMap();
                 CreateInitialZones();
+                FillChests();
                 IsMapReady = true;
                 StartCoroutine(SendMapNextFrame());
 
@@ -162,6 +163,24 @@ public class MapManager : MonoBehaviour
         Debug.LogError(
             "No se pudo generar un mapa valido despu s de 100 intentos."
         );
+    }
+
+    private void FillChests()
+    {
+        foreach (var zone in map)
+        {
+            int itemsToGenerate = Random.Range(1, 4);
+
+            for (int i = 0; i < itemsToGenerate; i++)
+            {
+                ItemType randomItemType = (ItemType)Random.Range(1, System.Enum.GetValues(typeof(ItemType)).Length);
+
+                Items generatedItem = ItemVault.GenerateItem(randomItemType);
+                generatedItem.amount = Random.Range(1, 4);
+
+                zone.chestInventory.AddItem(randomItemType, generatedItem.amount);
+            }
+        }
     }
 
     private System.Collections.IEnumerator SendMapNextFrame()
@@ -230,7 +249,7 @@ public class MapManager : MonoBehaviour
     }
 
     private ZoneData CreateZoneFromNetworkData(
-        NetworkZoneData networkData)
+    NetworkZoneData networkData)
     {
         ZoneData zone = networkData.type switch
         {
@@ -264,7 +283,7 @@ public class MapManager : MonoBehaviour
             ZoneType.VerticalRiver =>
                 new VerticalRiver(),
 
-            ZoneType.HorizontalRiver => 
+            ZoneType.HorizontalRiver =>
                 new HorizontalRiver(),
 
             ZoneType.GrandmaHouse =>
@@ -287,6 +306,16 @@ public class MapManager : MonoBehaviour
 
         zone.riverBridged =
             networkData.riverBridged;
+
+        zone.chestInventory = new Inventory();
+
+        for (int i = 0; i < networkData.chestItemTypes.Length; i++)
+        {
+            zone.chestInventory.AddItem(
+                networkData.chestItemTypes[i],
+                networkData.chestAmounts[i]
+            );
+        }
 
         return zone;
     }
@@ -358,6 +387,17 @@ public class MapManager : MonoBehaviour
         player.currentZone = zone;
 
         Zone currentZone = zone.GetComponent<Zone>();
+        
+        if (!zone.TryGetComponent<Chest>(out var currentZoneChest))
+        {
+            Debug.Log("No chest found");
+            return;
+        }
+
+        if (!zoneData.chestOpened)
+        {
+            currentZoneChest.inventory = zoneData.chestInventory;
+        }
 
         currentZone.Setup(
             position,
