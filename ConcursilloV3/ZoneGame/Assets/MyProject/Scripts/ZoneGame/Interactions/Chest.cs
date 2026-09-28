@@ -4,7 +4,7 @@ using UnityEngine;
 public class Chest : MonoBehaviour
 {
     public Inventory inventory = new();
-    private ChestUI chestUI;
+    public ChestUI chestUI;
 
     private void Start()
     {

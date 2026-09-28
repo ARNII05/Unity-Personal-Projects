@@ -1,3 +1,4 @@
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -70,7 +71,8 @@ public class Player : NetworkBehaviour
         }
         else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
         {
-            OpenChestServerRpc();
+            nearbyChest.OnOpen(this);
+            OnChestInventoryModifiedServerRpc();
         }
         else if (Input.GetKeyDown(KeyCode.I))
         {
@@ -125,60 +127,57 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void OpenChestServerRpc()
+    private void OnChestInventoryModifiedServerRpc()
     {
         Vector2Int position = NetworkMapPos.Value;
-
-        nearbyChest.OnOpen(this);
-
-        /*
-        nearbyChest = null;
 
         MapManager.Instance.OnChestOpen(position);
 
         OpenChestClientRpc(position);
-
-        ClientRpcParams rpcParams = new()
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { OwnerClientId }
-            }
-        };
-
-        GiveChestItemsClientRpc(
-            items.itemTypes,
-            items.amounts,
-            rpcParams
-        );
-        */
-    }
-
-    [ClientRpc]
-    private void GiveChestItemsClientRpc(
-        ItemType[] itemTypes,
-        int[] amounts,
-        ClientRpcParams clientRpcParams = default)
-    {
-        for (int i = 0; i < itemTypes.Length; i++)
-        {
-            inventory.AddItem(itemTypes[i], amounts[i]);
-        }
     }
 
     [ClientRpc]
     private void OpenChestClientRpc(Vector2Int position)
     {
         MapManager.Instance.OnChestOpenedNetworked(position);
+    }
 
-        Player actualPlayer = IsHost
-            ? MapManager.Instance.Player1
-            : MapManager.Instance.Player2;
-
-        MapManager.Instance.DisableChestAtPosition(
-            position,
-            actualPlayer
+    [ServerRpc]
+    public void SendItemToChestServerRpc(ItemType itemType, int amount)
+    {
+        UpdateChestInventoryClientRpc(
+            itemType,
+            amount
         );
+    }
+
+    [ClientRpc]
+    private void UpdateChestInventoryClientRpc( ItemType itemType, int amount)
+    {
+        Chest chest = currentZone.GetComponentInChildren<Chest>();
+
+        chest.inventory.AddItem(itemType, amount);
+
+        chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
+    }
+
+    [ServerRpc]
+    public void RemoveItemToChestServerRpc(ItemType itemType, int amount)
+    {
+        RemoveItemFromChestClientRpc(
+            itemType,
+            amount
+        );
+    }
+
+    [ClientRpc]
+    private void RemoveItemFromChestClientRpc(ItemType itemType, int amount)
+    {
+        Chest chest = currentZone.GetComponentInChildren<Chest>();
+
+        chest.inventory.RemoveItem(itemType, amount);
+
+        chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
     }
 
     [ServerRpc]

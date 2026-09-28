@@ -9,8 +9,6 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log($"Index : {index}, toWho : {toWho}");
-
         switch (toWho)
         {
             case 0:

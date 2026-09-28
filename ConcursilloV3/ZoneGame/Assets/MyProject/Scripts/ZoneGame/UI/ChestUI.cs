@@ -5,7 +5,7 @@ using UnityEngine;
 public class ChestUI : MonoBehaviour
 {
     [SerializeField] private InventoryUI playerInventoryUI;
-    [SerializeField] private InventoryUI chestInventoryUI;
+    public InventoryUI chestInventoryUI;
 
     private Vector3 playerInventoryBasePos = Vector3.zero;
     private Vector3 playerInventoryChangedPos = new(-460, -1, 0);
@@ -29,14 +29,12 @@ public class ChestUI : MonoBehaviour
         if (itemType == ItemType.None)
             return;
 
-        if (chestInventoryUI.inventory.HasSpaceForItem(itemType))
-        {
-            playerInventoryUI.inventory.RemoveItem(itemType, 1);
-            chestInventoryUI.inventory.AddItem(itemType, 1);
-        }
+        if (!chestInventoryUI.inventory.HasSpaceForItem(itemType))
+            return;
 
         playerInventoryUI.ChangeButtonStatus(true);
-        chestInventoryUI.ChangeButtonStatus(true);
+        playerInventoryUI.inventory.RemoveItem(itemType, 1);
+        player.SendItemToChestServerRpc(itemType, 1);
     }
 
     public void SendAllItemsToChest(int index)
@@ -48,60 +46,44 @@ public class ChestUI : MonoBehaviour
 
         int itemAmount = playerInventoryUI.inventory.GetItemAmount(itemType);
 
-        if (chestInventoryUI.inventory.HasSpaceForItem(itemType))
-        {
-            playerInventoryUI.inventory.RemoveItem(itemType, itemAmount);
-            chestInventoryUI.inventory.AddItem(itemType, itemAmount);
-        }
+        if (!chestInventoryUI.inventory.HasSpaceForItem(itemType))
+            return;
 
         playerInventoryUI.ChangeButtonStatus(true);
-        chestInventoryUI.ChangeButtonStatus(true);
+        playerInventoryUI.inventory.RemoveItem(itemType, itemAmount);
+        player.SendItemToChestServerRpc(itemType, itemAmount);
     }
 
     public void SendItemsToPlayer(int index)
     {
-        Debug.Log("Entered SendItemsToPlayer func");
-        
         ItemType itemType = chestInventoryUI.inventory.GetItemByIndex(index);
 
         if (itemType == ItemType.None)
-        {
-            Debug.Log("No item found");
             return;
-        }
 
-        if (playerInventoryUI.inventory.HasSpaceForItem(itemType))
-        {
-            chestInventoryUI.inventory.RemoveItem(itemType, 1);
-            playerInventoryUI.inventory.AddItem(itemType, 1);
-        }
+        if (!playerInventoryUI.inventory.HasSpaceForItem(itemType))
+            return;
 
         playerInventoryUI.ChangeButtonStatus(true);
-        chestInventoryUI.ChangeButtonStatus(true);
+        playerInventoryUI.inventory.AddItem(itemType, 1);
+        player.RemoveItemToChestServerRpc(itemType, 1);
     }
 
     public void SendAllItemsToPlayer(int index)
     {
-        Debug.Log("Entered SendAllItemsToPlayer func");
-        
         ItemType itemType = chestInventoryUI.inventory.GetItemByIndex(index);
 
         if (itemType == ItemType.None)
-        {
-            Debug.Log("No item found");
             return;
-        }
 
         int itemAmount = chestInventoryUI.inventory.GetItemAmount(itemType);
 
-        if (playerInventoryUI.inventory.HasSpaceForItem(itemType))
-        {
-            chestInventoryUI.inventory.RemoveItem(itemType, itemAmount);
-            playerInventoryUI.inventory.AddItem(itemType, itemAmount);
-        }
+        if (!playerInventoryUI.inventory.HasSpaceForItem(itemType))
+            return;
 
         playerInventoryUI.ChangeButtonStatus(true);
-        chestInventoryUI.ChangeButtonStatus(true);
+        playerInventoryUI.inventory.AddItem(itemType, itemAmount);
+        player.RemoveItemToChestServerRpc(itemType, itemAmount);
     }
 
     public void ToggleInventory()

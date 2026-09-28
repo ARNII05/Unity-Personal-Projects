@@ -387,8 +387,10 @@ public class MapManager : MonoBehaviour
         player.currentZone = zone;
 
         Zone currentZone = zone.GetComponent<Zone>();
-        
-        if (!zone.TryGetComponent<Chest>(out var currentZoneChest))
+
+        Chest currentZoneChest = zone.GetComponentInChildren<Chest>(true);
+
+        if (!currentZoneChest)
         {
             Debug.Log("No chest found");
             return;
@@ -800,28 +802,5 @@ public class MapManager : MonoBehaviour
     {
         map[position.y, position.x]
             .chestOpened = true;
-    }
-
-    public void DisableChestAtPosition(
-        Vector2Int position,
-        Player player)
-    {
-        if (
-            player.NetworkMapPos.Value !=
-            position)
-        {
-            return;
-        }
-
-        if (player.currentZone == null)
-        {
-            return;
-        }
-
-        Zone zone =
-            player.currentZone
-                .GetComponent<Zone>();
-
-        zone.DisableChest();
     }
 }
