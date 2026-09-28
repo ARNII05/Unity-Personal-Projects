@@ -75,6 +75,7 @@ public class Map : Items
 
 public enum ItemType
 {
+    None,
     Flower,
     Bouquet,
     Log,

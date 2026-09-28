@@ -38,6 +38,20 @@ public class Inventory
         return items.TryGetValue(itemType, out int amount) ? amount : 0;
     }
 
+    public ItemType GetItemByIndex(int index)
+    {
+        int i = 0;
+
+        foreach (var item in items)
+        {
+            if (index == i)
+                return item.Key;
+            i++;
+        }
+
+        return ItemType.None;
+    }
+
     public bool RemoveItem(ItemType itemType, int amount)
     {
         if (!items.ContainsKey(itemType))

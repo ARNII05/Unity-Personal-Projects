@@ -285,9 +285,6 @@ public class MapManager : MonoBehaviour
         zone.chestOpened =
             networkData.chestOpened;
 
-        zone.flowersRemaining =
-            networkData.flowersRemaining;
-
         zone.riverBridged =
             networkData.riverBridged;
 

@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 8102183640445281570}
   - component: {fileID: 3306176914413675400}
   - component: {fileID: 807781835822540707}
+  - component: {fileID: 4046487436973983766}
   m_Layer: 0
   m_Name: Player2
   m_TagString: Player
@@ -229,8 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2979425305
-  InScenePlacedSourceGlobalObjectIdHash: 848225072
+  GlobalObjectIdHash: 250954918
+  InScenePlacedSourceGlobalObjectIdHash: 2554304316
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -265,6 +266,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialPos: {x: 0, y: 0}
   currentZone: {fileID: 0}
+  craftingSystem: {fileID: 0}
+  inventoryUI: {fileID: 0}
   otherPlayerVisualPrefab: {fileID: 2750538708692950159, guid: 605a6d82b3019d0498f0df9bc508b83a, type: 3}
   IsWalking:
     m_InternalValue: 0
@@ -272,6 +275,8 @@ MonoBehaviour:
     m_InternalValue: 0
   NetworkMapPos:
     m_InternalValue: {x: 0, y: 0}
+  Role:
+    m_InternalValue: 0
 --- !u!114 &3306176914413675400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,5 +318,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4046487436973983766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8706166708134200965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37c98c7f04e192943aa600a3d61a3088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

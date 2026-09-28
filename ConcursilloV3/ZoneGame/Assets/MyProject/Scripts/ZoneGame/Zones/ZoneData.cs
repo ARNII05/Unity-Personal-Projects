@@ -6,7 +6,7 @@ public abstract class ZoneData
     public ZoneType type;
 
     public bool chestOpened;
-    public int flowersRemaining;
+    public Inventory chestInventory;
     public bool riverBridged;
     public Vector3[] player1EntryPoints;
     public Vector3[] player2EntryPoints;
@@ -19,13 +19,7 @@ public abstract class ZoneData
         player2EntryPoints = new Vector3[4];
         this.type = type;
         chestOpened = false;
-        flowersRemaining = initialFlowers;
         riverBridged = false;
-    }
-
-    public int FlowersAvailable()
-    {
-        return flowersRemaining;
     }
 
     public Vector3 GetEntryPoint(Direction direction, Vector3[] entryPoints)
@@ -46,30 +40,6 @@ public abstract class ZoneData
     }
 
     public abstract void OnEnter(Player player);
-
-    public virtual void OnOpenChest()
-    {
-        if (chestOpened)
-        {
-            LogManager.Log("El cofre de esta zona ya está vacío.");
-            return;
-        }
-
-        chestOpened = true;
-        LogManager.Log("Has abierto un cofre.");
-    }
-
-    public virtual void OnPickingUpFlowers()
-    {
-        if (flowersRemaining <= 0)
-        {
-            LogManager.Log("No quedan flores en esta zona.");
-            return;
-        }
-
-        flowersRemaining--;
-        LogManager.Log($"Recogiste una flor. Quedan {flowersRemaining} en esta zona.");
-    }
 }
 public class MomHouse : ZoneData
 {

@@ -3,24 +3,46 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
-    public ChestItems OnOpen()
-    {   
-        int itemsToGenerate = Random.Range(1, 4);
+    public Inventory inventory = new();
+    private ChestUI chestUI;
 
-        ChestItems result = new(new ItemType[itemsToGenerate], new int[itemsToGenerate]);
+    private void Start()
+    {
+        GameObject chestobj = GameObject.Find("ChestUI");
+        chestUI = chestobj.GetComponent<ChestUI>();
+
+        Debug.Log($"===== CHEST CREATED ID: {GetInstanceID()} =====");
+
+        FillInventory();
+    }
+
+    private void FillInventory()
+    {
+        int itemsToGenerate = Random.Range(1, 4);
 
         for (int i = 0; i < itemsToGenerate; i++)
         {
-            ItemType randomItemType = (ItemType)Random.Range(0, System.Enum.GetValues(typeof(ItemType)).Length);
-            
+            ItemType randomItemType = (ItemType)Random.Range(1, System.Enum.GetValues(typeof(ItemType)).Length);
+
             Items generatedItem = ItemVault.GenerateItem(randomItemType);
             generatedItem.amount = Random.Range(1, 4);
 
-            result.itemTypes[i] = randomItemType;
-            result.amounts[i] = generatedItem.amount;
+            inventory.AddItem(randomItemType, generatedItem.amount);
+        }
+    }
+
+    public void OnOpen(Player player)
+    {
+        Debug.Log($"===== CHEST OPENED ID: {GetInstanceID()} =====");
+
+        foreach (var item in inventory.items)
+        {
+            Debug.Log($"OPENED CHEST -> {item.Key} x{item.Value}");
         }
 
-        return result;
+        chestUI.InitPlayer(player);
+        chestUI.SetInventory(inventory);
+        chestUI.ToggleInventory();
     }
 }
 

@@ -13,6 +13,8 @@ public class Player : NetworkBehaviour
     private Chest nearbyChest;
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
+    private InventoryUI inventoryUI;
+    
     public PlayerState State { get; set; } = PlayerState.Normal;
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
@@ -72,7 +74,7 @@ public class Player : NetworkBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.I))
         {
-            InventoryUI.Instance.ToggleInventory();
+            inventoryUI.ToggleInventory();
         }
 
         UpdateOtherPlayerVisual();
@@ -127,8 +129,9 @@ public class Player : NetworkBehaviour
     {
         Vector2Int position = NetworkMapPos.Value;
 
-        ChestItems items = nearbyChest.OnOpen();
+        nearbyChest.OnOpen(this);
 
+        /*
         nearbyChest = null;
 
         MapManager.Instance.OnChestOpen(position);
@@ -148,6 +151,7 @@ public class Player : NetworkBehaviour
             items.amounts,
             rpcParams
         );
+        */
     }
 
     [ClientRpc]
@@ -194,7 +198,9 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
             RoleSelectorUI.Instance.InitPlayer(this);
-            InventoryUI.Instance.InitPlayer(this);
+            GameObject inventoryPanel = GameObject.Find("InventoryPanel");
+            inventoryUI = inventoryPanel.GetComponent<InventoryUI>();
+            inventoryUI.SetPlayer(this);
             CraftingUI.Instance.SetPlayer(this);
 
             otherPlayerVisualRoot = new GameObject(

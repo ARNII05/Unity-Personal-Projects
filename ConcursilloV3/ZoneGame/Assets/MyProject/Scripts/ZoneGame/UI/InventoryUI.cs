@@ -6,31 +6,20 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    public static InventoryUI Instance { get; private set; }
-
-    [SerializeField] private GameObject inventoryPanel;
+    private GameObject inventoryUI;
     
-    private Inventory inventory;
+    public Inventory inventory;
+
     private Player player;
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-    }
 
     private void Start()
     {
+        inventoryUI = gameObject.transform.GetChild(0).gameObject;
         ChangeItemBoxStatus(false);
-        inventoryPanel.SetActive(false);
+        inventoryUI.SetActive(false);
     }
 
-    public void InitPlayer(Player player)
+    public void SetPlayer(Player player)
     {
         this.player = player;
         SetInventory(player.inventory);
@@ -47,9 +36,28 @@ public class InventoryUI : MonoBehaviour
     {
         for (int i = 0; i < Inventory.maxCapacity; i++)
         {
-            GameObject actualBox = inventoryPanel.transform.Find($"Box{i + 1}").gameObject;
+            GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
+            actualBox.GetComponent<Button>().interactable = status;
             GameObject itemBox = actualBox.transform.Find("IconBox").gameObject;
             itemBox.SetActive(status);
+        }
+    }
+
+    public void ChangeButtonStatus(bool status)
+    {
+        for (int i = 0; i < Inventory.maxCapacity; i++)
+        {
+            GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
+            actualBox.GetComponent<Button>().interactable = false;
+        }
+
+        if (!status)
+            return;
+
+        for (int i = 0; i < inventory.items.Count; i++)
+        {
+            GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
+            actualBox.GetComponent<Button>().interactable = status;
         }
     }
 
@@ -58,7 +66,7 @@ public class InventoryUI : MonoBehaviour
         for (int j = 0; j < Inventory.maxCapacity; j++)
         {
             GameObject box =
-                inventoryPanel.transform.Find($"Box{j + 1}").gameObject;
+                inventoryUI.transform.Find($"Box{j + 1}").gameObject;
 
             GameObject iconBox =
                 box.transform.Find("IconBox").gameObject;
@@ -78,7 +86,7 @@ public class InventoryUI : MonoBehaviour
     private void UpdateItemBox(int index, ItemType itemType, int amount)
     {
         GameObject actualBox =
-            inventoryPanel.transform.Find($"Box{index + 1}").gameObject;
+            inventoryUI.transform.Find($"Box{index + 1}").gameObject;
 
         GameObject iconBox =
             actualBox.transform.Find("IconBox").gameObject;
@@ -97,21 +105,31 @@ public class InventoryUI : MonoBehaviour
 
     public void ToggleInventory()
     {
-        if (!inventoryPanel.activeSelf) OpenInventory();
+        if (!inventoryUI.activeSelf) OpenInventory();
         else CloseInventory();
     }
 
     public void OpenInventory()
     {
         player.State = PlayerState.Inventory;
-        inventoryPanel.SetActive(true);
+        ShowInventory();
         //CursorManager.Instance.UnlockCursor();
     }
 
     public void CloseInventory()
     {
         player.State = PlayerState.Normal;
-        inventoryPanel.SetActive(false);
+        HideInventory();
         //CursorManager.Instance.LockCursor();
+    }
+
+    public void ShowInventory()
+    {
+        inventoryUI.SetActive(true);
+    }
+
+    public void HideInventory()
+    {
+        inventoryUI.SetActive(false);
     }
 }
