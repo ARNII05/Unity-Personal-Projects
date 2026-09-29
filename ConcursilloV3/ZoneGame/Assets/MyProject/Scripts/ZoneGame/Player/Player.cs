@@ -72,7 +72,6 @@ public class Player : NetworkBehaviour
         else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
         {
             nearbyChest.OnOpen(this);
-            OnChestInventoryModifiedServerRpc();
         }
         else if (Input.GetKeyDown(KeyCode.I))
         {
@@ -127,36 +126,23 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void OnChestInventoryModifiedServerRpc()
-    {
-        Vector2Int position = NetworkMapPos.Value;
-
-        MapManager.Instance.OnChestOpen(position);
-
-        OpenChestClientRpc(position);
-    }
-
-    [ClientRpc]
-    private void OpenChestClientRpc(Vector2Int position)
-    {
-        MapManager.Instance.OnChestOpenedNetworked(position);
-    }
-
-    [ServerRpc]
     public void SendItemToChestServerRpc(ItemType itemType, int amount)
     {
         UpdateChestInventoryClientRpc(
             itemType,
-            amount
+            amount,
+            NetworkMapPos.Value
         );
     }
 
     [ClientRpc]
-    private void UpdateChestInventoryClientRpc( ItemType itemType, int amount)
+    private void UpdateChestInventoryClientRpc(ItemType itemType, int amount, Vector2Int position)
     {
-        Chest chest = currentZone.GetComponentInChildren<Chest>();
+        ZoneData zoneData = MapManager.Instance.map[position.y, position.x];
 
-        chest.inventory.AddItem(itemType, amount);
+        zoneData.chestInventory.AddItem(itemType, amount);
+
+        Chest chest = currentZone.GetComponentInChildren<Chest>();
 
         chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
     }
@@ -166,16 +152,19 @@ public class Player : NetworkBehaviour
     {
         RemoveItemFromChestClientRpc(
             itemType,
-            amount
+            amount,
+            NetworkMapPos.Value
         );
     }
 
     [ClientRpc]
-    private void RemoveItemFromChestClientRpc(ItemType itemType, int amount)
+    private void RemoveItemFromChestClientRpc(ItemType itemType, int amount, Vector2Int position)
     {
-        Chest chest = currentZone.GetComponentInChildren<Chest>();
+        ZoneData zoneData = MapManager.Instance.map[position.y, position.x];
 
-        chest.inventory.RemoveItem(itemType, amount);
+        zoneData.chestInventory.RemoveItem(itemType, amount);
+
+        Chest chest = currentZone.GetComponentInChildren<Chest>();
 
         chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
     }

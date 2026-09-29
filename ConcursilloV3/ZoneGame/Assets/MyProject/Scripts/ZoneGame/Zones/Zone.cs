@@ -18,11 +18,6 @@ public class Zone : MonoBehaviour
             bool isNeighborValid = IsValid(neighborPos, map);
             SetBorderAndProtector(direction, isNeighborValid);
         }
-
-        if (map[mapPos.y, mapPos.x].chestOpened)
-        {
-            chest.SetActive(false);
-        }
     }
 
     private Vector2Int GetDirectionOffset(Direction direction)
@@ -60,10 +55,5 @@ public class Zone : MonoBehaviour
     {
         return pos.x >= 0 && pos.x < map.GetLength(1) &&
                pos.y >= 0 && pos.y < map.GetLength(0);
-    }
-
-    public void DisableChest()
-    {
-        chest.SetActive(false);
     }
 }

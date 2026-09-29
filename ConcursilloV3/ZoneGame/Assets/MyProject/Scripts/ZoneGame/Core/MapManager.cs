@@ -301,9 +301,6 @@ public class MapManager : MonoBehaviour
             return null;
         }
 
-        zone.chestOpened =
-            networkData.chestOpened;
-
         zone.riverBridged =
             networkData.riverBridged;
 
@@ -395,11 +392,8 @@ public class MapManager : MonoBehaviour
             Debug.Log("No chest found");
             return;
         }
-
-        if (!zoneData.chestOpened)
-        {
-            currentZoneChest.inventory = zoneData.chestInventory;
-        }
+            
+        currentZoneChest.inventory = zoneData.chestInventory;
 
         currentZone.Setup(
             position,
@@ -788,19 +782,5 @@ public class MapManager : MonoBehaviour
             this.canMove = canMove;
             this.newPos = newPos;
         }
-    }
-
-    public void OnChestOpen(
-        Vector2Int position)
-    {
-        map[position.y, position.x]
-            .chestOpened = true;
-    }
-
-    public void OnChestOpenedNetworked(
-        Vector2Int position)
-    {
-        map[position.y, position.x]
-            .chestOpened = true;
     }
 }
