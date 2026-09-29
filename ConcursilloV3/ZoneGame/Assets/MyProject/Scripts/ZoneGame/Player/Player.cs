@@ -9,6 +9,7 @@ public class Player : NetworkBehaviour
 {
     public Vector2Int initialPos;
     public GameObject currentZone;
+    private bool skipOtherPlayerVisualFrame;
     private BorderZone currentBorderZone;
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
@@ -79,6 +80,13 @@ public class Player : NetworkBehaviour
             && (State == PlayerState.Inventory || State == PlayerState.Normal))
         {
             inventoryUI.ToggleInventory();
+        }
+
+        if (skipOtherPlayerVisualFrame)
+        {
+            skipOtherPlayerVisualFrame = false;
+            otherPlayerVisualRoot.SetActive(false);
+            return;
         }
 
         UpdateOtherPlayerVisual();
@@ -396,6 +404,8 @@ public class Player : NetworkBehaviour
             return;
 
         MapManager.Instance.CreatePlayerZone(this);
+
+        skipOtherPlayerVisualFrame = true;
     }
 
     private void UpdateOtherPlayerVisual()
@@ -424,15 +434,20 @@ public class Player : NetworkBehaviour
             NetworkMapPos.Value ==
             otherPlayer.NetworkMapPos.Value;
 
-        otherPlayerVisualRoot.SetActive(sameZone);
-
         if (!sameZone)
+        {
+            otherPlayerVisualRoot.SetActive(false);
             return;
+        }
 
-        otherPlayerVisualRoot.transform.position =
+        Vector3 visualPosition =
             currentZone.transform.position +
             (otherPlayer.transform.position -
              otherPlayer.currentZone.transform.position);
+
+        otherPlayerVisualRoot.transform.position = visualPosition;
+
+        otherPlayerVisualRoot.SetActive(true);
 
         otherPlayerAnimator.SetInteger(
             "Direction",

@@ -683,8 +683,8 @@ public class MapManager : MonoBehaviour
     }
 
     public void OnSwapingZone(
-        Player player,
-        Direction direction)
+    Player player,
+    Direction direction)
     {
         PlayerMoveResult moveResult =
             CanSwapZone(
@@ -704,21 +704,24 @@ public class MapManager : MonoBehaviour
         Vector2Int newPos =
             moveResult.newPos;
 
-        player.transform.position =
-            GetPlayerEntryPoint(
-                player,
-                direction,
-                newPos
+        UIManager.Instance.PlayZoneTransition(() =>
+        {
+            Debug.Log("CAMBIANDO DE ZONA");
+            
+            player.transform.position =
+                GetPlayerEntryPoint(
+                    player,
+                    direction,
+                    newPos
+                );
+
+            player.SetNetworkMapPosServerRpc(newPos);
+
+            LogManager.Log(
+                $"{player.name} entered zone " +
+                $"NetworkMapPos: {newPos}"
             );
-
-        player.SetNetworkMapPosServerRpc(
-            newPos
-        );
-
-        LogManager.Log(
-            $"{player.name} entered zone " +
-            $"NetworkMapPos: {newPos}"
-        );
+        });
     }
 
     private Vector3 GetPlayerEntryPoint(
