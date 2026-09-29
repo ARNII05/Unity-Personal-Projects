@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MapManager : MonoBehaviour
 {
@@ -82,6 +83,7 @@ public class MapManager : MonoBehaviour
             MakeRandomMap();
         }
     }
+    
     public Player GetOtherPlayer(Player player)
     {
         if (player == player1)
@@ -304,6 +306,9 @@ public class MapManager : MonoBehaviour
         zone.riverBridged =
             networkData.riverBridged;
 
+        zone.chestOpened =
+            networkData.chestOpened;
+
         zone.chestInventory = new Inventory();
 
         for (int i = 0; i < networkData.chestItemTypes.Length; i++)
@@ -386,14 +391,12 @@ public class MapManager : MonoBehaviour
         Zone currentZone = zone.GetComponent<Zone>();
 
         Chest currentZoneChest = zone.GetComponentInChildren<Chest>(true);
-
-        if (!currentZoneChest)
-        {
-            Debug.Log("No chest found");
-            return;
-        }
             
         currentZoneChest.inventory = zoneData.chestInventory;
+
+        if (zoneData.chestOpened)
+            currentZoneChest.gameObject.GetComponent<SpriteRenderer>().sprite 
+                = Resources.Load<Sprite>("Prefabs/Objects/OpenedBox");
 
         currentZone.Setup(
             position,
@@ -768,6 +771,34 @@ public class MapManager : MonoBehaviour
             newPos.y < mapHeight,
             newPos
         );
+    }
+
+    public void UpdateChestUINetworking(ulong actualPlayerId, Vector2Int position)
+    {
+        map[position.y, position.x].chestOpened = true;
+
+        Player actualPlayer = GetPlayerById(actualPlayerId) == player1 ? player1 : player2;
+        Player otherPlayer = GetOtherPlayer(actualPlayer);
+
+        UpdateChestSprite(actualPlayer, position);
+        UpdateChestSprite(otherPlayer, position);
+    }
+
+    private void UpdateChestSprite(Player player, Vector2Int position)
+    {
+        if (player == null)
+            return;
+
+        if (player.NetworkMapPos.Value != position)
+            return;
+
+        Chest chest = player.currentZone.GetComponentInChildren<Chest>();
+
+        if (chest == null)
+            return;
+
+        chest.GetComponent<SpriteRenderer>().sprite =
+            Resources.Load<Sprite>("Prefabs/Objects/OpenedBox");
     }
 
     private struct PlayerMoveResult

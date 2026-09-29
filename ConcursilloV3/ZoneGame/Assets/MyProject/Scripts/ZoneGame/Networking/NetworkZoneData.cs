@@ -5,6 +5,7 @@ public struct NetworkZoneData : INetworkSerializable
 {
     public ZoneType type;
     public bool riverBridged;
+    public bool chestOpened;
 
     public ItemType[] chestItemTypes;
     public int[] chestAmounts;
@@ -13,6 +14,7 @@ public struct NetworkZoneData : INetworkSerializable
     {
         type = zone.type;
         riverBridged = zone.riverBridged;
+        chestOpened = zone.chestOpened;
 
         chestItemTypes = zone.chestInventory.items.Keys.ToArray();
         chestAmounts = zone.chestInventory.items.Values.ToArray();
@@ -23,6 +25,7 @@ public struct NetworkZoneData : INetworkSerializable
     {
         serializer.SerializeValue(ref type);
         serializer.SerializeValue(ref riverBridged);
+        serializer.SerializeValue(ref chestOpened);
         serializer.SerializeValue(ref chestItemTypes);
         serializer.SerializeValue(ref chestAmounts);
     }

@@ -6,6 +6,7 @@ public abstract class ZoneData
     public ZoneType type;
 
     public Inventory chestInventory = new();
+    public bool chestOpened;
     public bool riverBridged;
     public Vector3[] player1EntryPoints;
     public Vector3[] player2EntryPoints;
@@ -16,6 +17,7 @@ public abstract class ZoneData
     {
         player1EntryPoints = new Vector3[4];
         player2EntryPoints = new Vector3[4];
+        chestOpened = false;
         this.type = type;
         riverBridged = false;
     }

@@ -1,8 +1,8 @@
 using System.Linq;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static Player;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CraftingSystem))]
 public class Player : NetworkBehaviour
@@ -72,6 +72,7 @@ public class Player : NetworkBehaviour
         else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
         {
             nearbyChest.OnOpen(this);
+            UpdateOpenedChestServerRpc();
         }
         else if (Input.GetKeyDown(KeyCode.I))
         {
@@ -123,6 +124,18 @@ public class Player : NetworkBehaviour
         }
 
         riverZone.SwapGameObjectStatusNetworking();
+    }
+
+    [ServerRpc]
+    private void UpdateOpenedChestServerRpc()
+    {
+        UpdateOpenedChestClientRpc(NetworkMapPos.Value);
+    }
+
+    [ClientRpc]
+    private void UpdateOpenedChestClientRpc(Vector2Int position)
+    {
+        MapManager.Instance.UpdateChestUINetworking(OwnerClientId, position);
     }
 
     [ServerRpc]
