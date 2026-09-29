@@ -391,8 +391,10 @@ public class MapManager : MonoBehaviour
         Zone currentZone = zone.GetComponent<Zone>();
 
         Chest currentZoneChest = zone.GetComponentInChildren<Chest>(true);
-            
+
+        currentZoneChest.Init(GameObject.Find("ChestUI").GetComponent<ChestUI>());
         currentZoneChest.inventory = zoneData.chestInventory;
+        currentZoneChest.chestUI.SetInventory(zoneData.chestInventory);
 
         if (zoneData.chestOpened)
             currentZoneChest.gameObject.GetComponent<SpriteRenderer>().sprite 

@@ -38,6 +38,9 @@ public class InventoryUI : MonoBehaviour
         {
             GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
             actualBox.GetComponent<Button>().interactable = status;
+
+            UpdateBoxLock(actualBox);
+
             GameObject itemBox = actualBox.transform.Find("IconBox").gameObject;
             itemBox.SetActive(status);
         }
@@ -94,6 +97,8 @@ public class InventoryUI : MonoBehaviour
         TextMeshProUGUI itemBoxText =
             iconBox.GetComponentInChildren<TextMeshProUGUI>();
 
+        UpdateBoxLock(actualBox, !IsTransferable(itemType));
+
         Image itemImage =
             iconBox.transform.Find("ItemIcon").GetComponent<Image>();
 
@@ -101,6 +106,22 @@ public class InventoryUI : MonoBehaviour
         itemBoxText.text = amount.ToString();
 
         iconBox.SetActive(true);
+    }
+
+    private void UpdateBoxLock(GameObject box, bool isTransferable = false)
+    {
+        Transform lockTrans = box.transform.Find("Lock");
+
+        if (lockTrans == null)
+            return;
+
+        lockTrans.gameObject.SetActive(isTransferable);
+    }
+
+    private bool IsTransferable(ItemType itemType)
+    {
+        return itemType != ItemType.Map && itemType != ItemType.Radar
+            && itemType != ItemType.None;
     }
 
     public void ToggleInventory()

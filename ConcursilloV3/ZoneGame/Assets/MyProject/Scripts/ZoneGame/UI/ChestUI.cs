@@ -26,7 +26,7 @@ public class ChestUI : MonoBehaviour
     {
         ItemType itemType = playerInventoryUI.inventory.GetItemByIndex(index);
 
-        if (itemType == ItemType.None)
+        if (!IsTransferable(itemType))
             return;
 
         if (!chestInventoryUI.inventory.HasSpaceForItem(itemType))
@@ -40,11 +40,10 @@ public class ChestUI : MonoBehaviour
     public void SendAllItemsToChest(int index)
     {
         ItemType itemType = playerInventoryUI.inventory.GetItemByIndex(index);
-
-        if (itemType == ItemType.None)
-            return;
-
         int itemAmount = playerInventoryUI.inventory.GetItemAmount(itemType);
+
+        if (!IsTransferable(itemType))
+            return;
 
         if (!chestInventoryUI.inventory.HasSpaceForItem(itemType))
             return;
@@ -58,7 +57,7 @@ public class ChestUI : MonoBehaviour
     {
         ItemType itemType = chestInventoryUI.inventory.GetItemByIndex(index);
 
-        if (itemType == ItemType.None)
+        if (!IsTransferable(itemType))
             return;
 
         if (!playerInventoryUI.inventory.HasSpaceForItem(itemType))
@@ -72,11 +71,10 @@ public class ChestUI : MonoBehaviour
     public void SendAllItemsToPlayer(int index)
     {
         ItemType itemType = chestInventoryUI.inventory.GetItemByIndex(index);
-
-        if (itemType == ItemType.None)
-            return;
-
         int itemAmount = chestInventoryUI.inventory.GetItemAmount(itemType);
+
+        if (!IsTransferable(itemType))
+            return;
 
         if (!playerInventoryUI.inventory.HasSpaceForItem(itemType))
             return;
@@ -84,6 +82,12 @@ public class ChestUI : MonoBehaviour
         playerInventoryUI.ChangeButtonStatus(true);
         playerInventoryUI.inventory.AddItem(itemType, itemAmount);
         player.RemoveItemToChestServerRpc(itemType, itemAmount);
+    }
+
+    private bool IsTransferable(ItemType itemType)
+    {
+        return itemType != ItemType.Map && itemType != ItemType.Radar 
+            && itemType != ItemType.None;
     }
 
     public void ToggleInventory()

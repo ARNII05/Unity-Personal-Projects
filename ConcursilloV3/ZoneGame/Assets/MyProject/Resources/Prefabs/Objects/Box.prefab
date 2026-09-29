@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37658a6277165314a900893d4117f88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestUI: {fileID: 0}
 --- !u!1 &6567815728356717479
 GameObject:
   m_ObjectHideFlags: 0

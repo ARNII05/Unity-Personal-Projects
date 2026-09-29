@@ -69,12 +69,14 @@ public class Player : NetworkBehaviour
             currentBorderZone = null;
             MapManager.Instance.OnSwapingZone(this, direction);
         }
-        else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F))
+        else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F) 
+            && (State == PlayerState.Trading || State == PlayerState.Normal))
         {
             nearbyChest.OnOpen(this);
             UpdateOpenedChestServerRpc();
         }
-        else if (Input.GetKeyDown(KeyCode.I))
+        else if (Input.GetKeyDown(KeyCode.I) 
+            && (State == PlayerState.Inventory || State == PlayerState.Normal))
         {
             inventoryUI.ToggleInventory();
         }

@@ -6,28 +6,14 @@ public class Chest : MonoBehaviour
     public Inventory inventory = new();
     public ChestUI chestUI;
 
-    private void Start()
+    public void Init(ChestUI chestUI)
     {
-        GameObject chestobj = GameObject.Find("ChestUI");
-        chestUI = chestobj.GetComponent<ChestUI>();
+        this.chestUI = chestUI;
     }
 
     public void OnOpen(Player player)
     {
         chestUI.InitPlayer(player);
-        chestUI.SetInventory(inventory);
         chestUI.ToggleInventory();
-    }
-}
-
-public struct ChestItems
-{
-    public ItemType[] itemTypes;
-    public int[] amounts;
-
-    public ChestItems(ItemType[] itemTypes, int[] amounts)
-    {
-        this.itemTypes = itemTypes;
-        this.amounts = amounts;
     }
 }
