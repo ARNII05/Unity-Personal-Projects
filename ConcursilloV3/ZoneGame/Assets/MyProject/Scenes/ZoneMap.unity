@@ -11626,6 +11626,7 @@ GameObject:
   - component: {fileID: 1347194778}
   - component: {fileID: 1347194780}
   - component: {fileID: 1347194782}
+  - component: {fileID: 1347194783}
   m_Layer: 0
   m_Name: ObjectManager
   m_TagString: Untagged
@@ -11661,6 +11662,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grandmaPos: {x: 0, y: 0}
+  startPos: {x: 0, y: 0}
   player1RealPos: {x: -54.7, y: -3.14, z: -6.2}
   player2RealPos: {x: 203, y: -3.15, z: -6.2}
 --- !u!114 &1347194777
@@ -11715,6 +11717,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   craftingUI: {fileID: 613880954}
+--- !u!114 &1347194783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347194773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6923c04a719313744a7eee9f7079582f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1362850049
 GameObject:
   m_ObjectHideFlags: 0

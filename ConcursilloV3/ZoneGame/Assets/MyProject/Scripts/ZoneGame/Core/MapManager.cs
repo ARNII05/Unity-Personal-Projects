@@ -13,7 +13,7 @@ public class MapManager : MonoBehaviour
     public ZoneData[,] map;
     public Vector2Int grandmaPos;
 
-    private Vector2Int startPos;
+    public Vector2Int startPos;
 
     public const int mapWidth = 7;
     public const int mapHeight = 7;
@@ -154,7 +154,7 @@ public class MapManager : MonoBehaviour
 
                 PrintMap();
                 CreateInitialZones();
-                FillChests();
+                ResourcesGenerator.Instance.Init();
                 IsMapReady = true;
                 StartCoroutine(SendMapNextFrame());
 
@@ -165,24 +165,6 @@ public class MapManager : MonoBehaviour
         Debug.LogError(
             "No se pudo generar un mapa valido despu s de 100 intentos."
         );
-    }
-
-    private void FillChests()
-    {
-        foreach (var zone in map)
-        {
-            int itemsToGenerate = Random.Range(1, 4);
-
-            for (int i = 0; i < itemsToGenerate; i++)
-            {
-                ItemType randomItemType = (ItemType)Random.Range(1, System.Enum.GetValues(typeof(ItemType)).Length);
-
-                Items generatedItem = ItemVault.GenerateItem(randomItemType);
-                generatedItem.amount = Random.Range(1, 4);
-
-                zone.chestInventory.AddItem(randomItemType, generatedItem.amount);
-            }
-        }
     }
 
     private System.Collections.IEnumerator SendMapNextFrame()
@@ -387,6 +369,7 @@ public class MapManager : MonoBehaviour
         );
 
         player.currentZone = zone;
+        player.CurrentZoneMapPos = position;
 
         Zone currentZone = zone.GetComponent<Zone>();
 
@@ -683,8 +666,8 @@ public class MapManager : MonoBehaviour
     }
 
     public void OnSwapingZone(
-    Player player,
-    Direction direction)
+        Player player,
+        Direction direction)
     {
         PlayerMoveResult moveResult =
             CanSwapZone(

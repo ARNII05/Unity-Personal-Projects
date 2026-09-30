@@ -77,11 +77,11 @@ public enum ItemType
 {
     None,
     Flower,
-    Bouquet,
-    Log,
     Branch,
     Meat,
     Coin,
+    Bouquet,
+    Log,
     Radar,
     Map
 }

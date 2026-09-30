@@ -6,8 +6,8 @@ public class CraftingSystem : MonoBehaviour
 {
     Player player;
 
-    public const int flowersForBouquet = 5;
-    public const int branchesForLog = 5;
+    public const int flowersForBouquet = 20;
+    public const int branchesForLog = 12;
     
     private void Awake()
     {

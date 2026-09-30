@@ -40,6 +40,19 @@ public abstract class ZoneData
     }
 
     public abstract void OnEnter(Player player);
+
+    public virtual ChestItems ItemProbInChest(int prob)
+    {
+        return prob switch
+        {
+            <= 15 => ChestItems.None,
+            <= 35 => ChestItems.Meat,
+            <= 50 => ChestItems.Coin,
+            <= 70 => ChestItems.Flower,
+            <= 100 => ChestItems.Branch,
+            _ => throw new System.NotImplementedException(),
+        };
+    }
 }
 public class MomHouse : ZoneData
 {
@@ -61,6 +74,11 @@ public class MomHouse : ZoneData
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la casa de tu Madre. Se escuchan los árboles mover con el viento.");
+    }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return ChestItems.None;
     }
 }
 
@@ -110,6 +128,19 @@ public class SpecialZone : ZoneData
     {
         LogManager.Log("Entrando a una Zona Especial.");
     }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return prob switch
+        {
+            <= 10 => ChestItems.None,   
+            <= 40 => ChestItems.Meat,  
+            <= 70 => ChestItems.Coin,   
+            <= 85 => ChestItems.Flower,
+            <= 100 => ChestItems.Branch, 
+            _ => throw new System.NotImplementedException(),
+        };
+    }
 }
 
 public class WaterPit : ZoneData
@@ -157,6 +188,19 @@ public class FlowerField : ZoneData
     {
         LogManager.Log("Entrando a un Campo Florido.");
     }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return prob switch
+        {
+            <= 5 => ChestItems.None,
+            <= 10 => ChestItems.Meat,
+            <= 15 => ChestItems.Coin,
+            <= 75 => ChestItems.Flower,
+            <= 100 => ChestItems.Branch,
+            _ => throw new System.NotImplementedException(),
+        };
+    }
 }
 
 public class Ruins : ZoneData
@@ -179,6 +223,19 @@ public class Ruins : ZoneData
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a unas Ruinas.");
+    }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return prob switch
+        {
+            <= 50 => ChestItems.None,   
+            <= 60 => ChestItems.Meat,   
+            <= 70 => ChestItems.Coin,   
+            <= 85 => ChestItems.Flower, 
+            <= 100 => ChestItems.Branch, 
+            _ => throw new System.NotImplementedException(),
+        };
     }
 }
 
@@ -226,6 +283,19 @@ public class Village : ZoneData
     {
         LogManager.Log("Entrando a un Pueblo.");
     }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return prob switch
+        {
+            <= 10 => ChestItems.None,
+            <= 20 => ChestItems.Meat,
+            <= 55 => ChestItems.Coin,
+            <= 75 => ChestItems.Flower,
+            <= 100 => ChestItems.Branch,
+            _ => throw new System.NotImplementedException(),
+        };
+    }
 }
 
 public class Camp : ZoneData
@@ -272,6 +342,11 @@ public class VerticalRiver : ZoneData
     {
         LogManager.Log("Entrando a un Río.");
     }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return ChestItems.None;
+    }
 }
 
 public class HorizontalRiver : ZoneData
@@ -294,6 +369,11 @@ public class HorizontalRiver : ZoneData
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Río.");
+    }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return ChestItems.None;
     }
 }
 
@@ -318,6 +398,11 @@ public class GrandmaHouse : ZoneData
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la Casa de la Abuela.");
+    }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return ChestItems.None;
     }
 }
 

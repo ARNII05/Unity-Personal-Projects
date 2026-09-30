@@ -7,9 +7,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CraftingSystem))]
 public class Player : NetworkBehaviour
 {
+    public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
     public GameObject currentZone;
-    private bool skipOtherPlayerVisualFrame;
     private BorderZone currentBorderZone;
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
@@ -80,13 +80,6 @@ public class Player : NetworkBehaviour
             && (State == PlayerState.Inventory || State == PlayerState.Normal))
         {
             inventoryUI.ToggleInventory();
-        }
-
-        if (skipOtherPlayerVisualFrame)
-        {
-            skipOtherPlayerVisualFrame = false;
-            otherPlayerVisualRoot.SetActive(false);
-            return;
         }
 
         UpdateOtherPlayerVisual();
@@ -404,8 +397,6 @@ public class Player : NetworkBehaviour
             return;
 
         MapManager.Instance.CreatePlayerZone(this);
-
-        skipOtherPlayerVisualFrame = true;
     }
 
     private void UpdateOtherPlayerVisual()
@@ -418,7 +409,10 @@ public class Player : NetworkBehaviour
             return;
 
         if (currentZone == null)
+        {
+            otherPlayerVisualRoot.SetActive(false);
             return;
+        }
 
         Player otherPlayer;
 
@@ -428,7 +422,17 @@ public class Player : NetworkBehaviour
             otherPlayer = MapManager.Instance.Player1;
 
         if (otherPlayer.currentZone == null)
+        {
+            otherPlayerVisualRoot.SetActive(false);
             return;
+        }
+
+        if (otherPlayer.CurrentZoneMapPos !=
+            otherPlayer.NetworkMapPos.Value)
+        {
+            otherPlayerVisualRoot.SetActive(false);
+            return;
+        }
 
         bool sameZone =
             NetworkMapPos.Value ==
