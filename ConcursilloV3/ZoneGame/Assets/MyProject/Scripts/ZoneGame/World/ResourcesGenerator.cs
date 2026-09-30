@@ -41,7 +41,7 @@ public class ResourcesGenerator : MonoBehaviour
         {
             for (int j = 0; j < mapWidth; j++)
             {
-                if (map[j, i].ItemProbInChest(100) == ChestItems.None)
+                if (map[i, j].ItemProbInChest(100) == ChestItems.None)
                     continue;
                 
                 allMap.Add(new Vector2Int(j, i));
@@ -51,23 +51,26 @@ public class ResourcesGenerator : MonoBehaviour
         int branchesCount = SetInitialItems(ChestItems.Branch, momPart, CraftingSystem.branchesForLog);
         int flowerCount = SetInitialItems(ChestItems.Flower, allMap, CraftingSystem.flowersForBouquet);
 
-        DistributeAllItems();
+        DistributeAllItems(allMap);
 
-        //Debug.Log($"Initial branches count in mom part: {branchesCount}");
-        //Debug.Log($"Initial flowers count in all map: {flowerCount}");
+        Debug.Log($"Initial branches count in mom part: {branchesCount}");
+        Debug.Log($"Initial flowers count in all map: {flowerCount}");
 
         PrintItems();
     }
 
-    private void DistributeAllItems()
+    private void DistributeAllItems(List<Vector2Int> allMap)
     {
-        foreach (var zone in map)
+        foreach (Vector2Int position in allMap)
         {
+            ZoneData zone = map[position.y, position.x];
+
             int probOfItem = Random.Range(0, 101);
 
             ChestItems item = zone.ItemProbInChest(probOfItem);
 
-            if (item == ChestItems.None) continue;
+            if (item == ChestItems.None)
+                continue;
 
             int amount = Random.Range(1, MaxItemCountPerChest(item) + 1);
 
@@ -179,7 +182,10 @@ public class ResourcesGenerator : MonoBehaviour
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
-            tilesInZone.Add(current);
+            if (map[current.y, current.x].type != ZoneType.MomHouse)
+            {
+                tilesInZone.Add(current);
+            }
 
             foreach (Vector2Int direction in directions)
             {

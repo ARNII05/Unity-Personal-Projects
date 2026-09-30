@@ -373,16 +373,25 @@ public class MapManager : MonoBehaviour
 
         Zone currentZone = zone.GetComponent<Zone>();
 
-        Chest currentZoneChest = zone.GetComponentInChildren<Chest>(true);
+        Chest[] chests = zone.GetComponentsInChildren<Chest>(true);
 
-        currentZoneChest.Init(GameObject.Find("ChestUI").GetComponent<ChestUI>());
-        currentZoneChest.inventory = zoneData.chestInventory;
-        currentZoneChest.chestUI.SetInventory(zoneData.chestInventory);
+        foreach (Chest chest in chests)
+        {
+            chest.Init(GameObject.Find("ChestUI").GetComponent<ChestUI>());
+            chest.inventory = zoneData.chestInventory;
+        }
+
+        chests[0].chestUI.SetInventory(zoneData.chestInventory);
 
         if (zoneData.chestOpened)
-            currentZoneChest.gameObject.GetComponent<SpriteRenderer>().sprite 
+        {
+            foreach (Chest chest in chests)
+            {
+                chest.gameObject.GetComponent<SpriteRenderer>().sprite
                 = Resources.Load<Sprite>("Prefabs/Objects/OpenedBox");
-
+            }
+        }
+           
         currentZone.Setup(
             position,
             map
@@ -445,6 +454,8 @@ public class MapManager : MonoBehaviour
         List<ZoneType> allowedFillTypes =
             new();
 
+        int campZones = 0;
+
         foreach (
             ZoneType type
             in System.Enum.GetValues(
@@ -477,6 +488,15 @@ public class MapManager : MonoBehaviour
 
                 ZoneType selectedType =
                     allowedFillTypes[randomIndex];
+
+                if (campZones >= 5 && selectedType == ZoneType.Camp)
+                {
+                    x--;
+                    continue;
+                }
+
+                if (selectedType == ZoneType.Camp)
+                    campZones++;
 
                 map[y, x] =
                     ZoneVault.GenerateZone(
@@ -667,7 +687,8 @@ public class MapManager : MonoBehaviour
 
     public void OnSwapingZone(
         Player player,
-        Direction direction)
+        Direction direction,
+        Side side)
     {
         PlayerMoveResult moveResult =
             CanSwapZone(
@@ -695,7 +716,8 @@ public class MapManager : MonoBehaviour
                 GetPlayerEntryPoint(
                     player,
                     direction,
-                    newPos
+                    newPos,
+                    side
                 );
 
             player.SetNetworkMapPosServerRpc(newPos);
@@ -710,7 +732,8 @@ public class MapManager : MonoBehaviour
     private Vector3 GetPlayerEntryPoint(
         Player player,
         Direction direction,
-        Vector2Int newPos)
+        Vector2Int newPos,
+        Side side)
     {
         ZoneData currentZoneData =
             map[newPos.y, newPos.x];
@@ -722,7 +745,8 @@ public class MapManager : MonoBehaviour
 
         return currentZoneData.GetEntryPoint(
             direction,
-            entryPoints
+            entryPoints,
+            side
         );
     }
 
@@ -780,13 +804,13 @@ public class MapManager : MonoBehaviour
         if (player.NetworkMapPos.Value != position)
             return;
 
-        Chest chest = player.currentZone.GetComponentInChildren<Chest>();
+        Chest[] chests = player.currentZone.GetComponentsInChildren<Chest>();
 
-        if (chest == null)
-            return;
-
-        chest.GetComponent<SpriteRenderer>().sprite =
-            Resources.Load<Sprite>("Prefabs/Objects/OpenedBox");
+        foreach (var chest in chests)
+        {
+            chest.GetComponent<SpriteRenderer>().sprite =
+                Resources.Load<Sprite>("Prefabs/Objects/OpenedBox");
+        }
     }
 
     private struct PlayerMoveResult

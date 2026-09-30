@@ -5,6 +5,7 @@ using UnityEngine;
 public class BorderZone : MonoBehaviour
 {
     public Direction direction;
+    public Side side;
 }
 
 public enum Direction
@@ -13,4 +14,10 @@ public enum Direction
     South,
     East,
     West
+}
+
+public enum Side
+{
+    Right,
+    Left,
 }

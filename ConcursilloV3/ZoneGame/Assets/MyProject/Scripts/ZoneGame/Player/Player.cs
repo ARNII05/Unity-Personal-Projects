@@ -67,8 +67,9 @@ public class Player : NetworkBehaviour
         else if (currentBorderZone != null && Input.GetKeyDown(KeyCode.F))
         {
             Direction direction = currentBorderZone.direction;
+            Side side = currentBorderZone.side;
             currentBorderZone = null;
-            MapManager.Instance.OnSwapingZone(this, direction);
+            MapManager.Instance.OnSwapingZone(this, direction, side);
         }
         else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F) 
             && (State == PlayerState.Trading || State == PlayerState.Normal))

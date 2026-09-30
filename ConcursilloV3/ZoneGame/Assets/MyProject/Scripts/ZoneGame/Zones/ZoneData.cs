@@ -13,16 +13,16 @@ public abstract class ZoneData
     public Vector3 player1ZonePos;
     public Vector3 player2ZonePos;
 
-    public ZoneData(ZoneType type, int initialFlowers = 1)
+    public ZoneData(ZoneType type)
     {
-        player1EntryPoints = new Vector3[4];
-        player2EntryPoints = new Vector3[4];
+        player1EntryPoints = new Vector3[6];
+        player2EntryPoints = new Vector3[6];
         chestOpened = false;
         this.type = type;
         riverBridged = false;
     }
 
-    public Vector3 GetEntryPoint(Direction direction, Vector3[] entryPoints)
+    public virtual Vector3 GetEntryPoint(Direction direction, Vector3[] entryPoints, Side side)
     {
         return direction switch
         {
@@ -56,7 +56,7 @@ public abstract class ZoneData
 }
 public class MomHouse : ZoneData
 {
-    public MomHouse() : base(ZoneType.MomHouse, initialFlowers: 0)
+    public MomHouse() : base(ZoneType.MomHouse)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -84,7 +84,7 @@ public class MomHouse : ZoneData
 
 public class Forest : ZoneData
 {
-    public Forest() : base(ZoneType.Forest, initialFlowers: 5)
+    public Forest() : base(ZoneType.Forest)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -108,7 +108,7 @@ public class Forest : ZoneData
 
 public class SpecialZone : ZoneData
 {
-    public SpecialZone() : base(ZoneType.SpecialZone, initialFlowers: 5)
+    public SpecialZone() : base(ZoneType.SpecialZone)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -145,7 +145,7 @@ public class SpecialZone : ZoneData
 
 public class WaterPit : ZoneData
 {
-    public WaterPit() : base(ZoneType.WaterPit, initialFlowers: 0)
+    public WaterPit() : base(ZoneType.WaterPit)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -168,7 +168,7 @@ public class WaterPit : ZoneData
 
 public class FlowerField : ZoneData
 {
-    public FlowerField() : base(ZoneType.FlowerField, initialFlowers: 2)
+    public FlowerField() : base(ZoneType.FlowerField)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -205,7 +205,7 @@ public class FlowerField : ZoneData
 
 public class Ruins : ZoneData
 {
-    public Ruins() : base(ZoneType.Ruins, initialFlowers: 0)
+    public Ruins() : base(ZoneType.Ruins)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -241,7 +241,7 @@ public class Ruins : ZoneData
 
 public class Swamp : ZoneData
 {
-    public Swamp() : base(ZoneType.Swamp, initialFlowers: 0)
+    public Swamp() : base(ZoneType.Swamp)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -264,7 +264,7 @@ public class Swamp : ZoneData
 
 public class Village : ZoneData
 {
-    public Village() : base(ZoneType.Village, initialFlowers: 0)
+    public Village() : base(ZoneType.Village)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -300,7 +300,7 @@ public class Village : ZoneData
 
 public class Camp : ZoneData
 {
-    public Camp() : base(ZoneType.Camp, initialFlowers: 0)
+    public Camp() : base(ZoneType.Camp)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -323,21 +323,45 @@ public class Camp : ZoneData
 
 public class VerticalRiver : ZoneData
 {
-    public VerticalRiver() : base(ZoneType.VerticalRiver, initialFlowers: 0)
+    public VerticalRiver() : base(ZoneType.VerticalRiver)
     {
-        player1EntryPoints[0] = new Vector3(43.6f, 26.2f, -6.2f);
-        player1EntryPoints[1] = new Vector3(-127.9f, -32.2f, -6.2f);
-        player1EntryPoints[2] = new Vector3(-62.3f, 3.3f, -6.2f);
+        //Left side entry
+        player1EntryPoints[0] = new Vector3(-85.9f, 15.1f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-121.4f, -20.4f, -6.2f);
+        //East and west
+        player1EntryPoints[2] = new Vector3(44f, 31.6f, -6.2f);
         player1EntryPoints[3] = new Vector3(-136.6f, -11.9f, -6.2f);
+        //Righ side entry
+        player1EntryPoints[4] = new Vector3(26.6f, 46.1f, -6.2f);
+        player1EntryPoints[5] = new Vector3(26.6f, -46.6f, -6.2f);
 
+        //Left side entry
         player2EntryPoints[0] = new Vector3(169.7f, 11.9f, -6.2f);
-        player2EntryPoints[1] = new Vector3(299f, 26.2f, -6.2f);
-        player2EntryPoints[2] = new Vector3(192.3f, 3.3f, -6.2f);
+        player2EntryPoints[1] = new Vector3(133.8f, -19.3f, -6.2f);
+        //East and west
+        player2EntryPoints[2] = new Vector3(299f, 26.2f, -6.2f);
         player2EntryPoints[3] = new Vector3(117.9f, -11.9f, -6.2f);
+
+        //Righ side entry
+        player2EntryPoints[4] = new Vector3(286f, 44.3f, -6.2f);
+        player2EntryPoints[5] = new Vector3(282.6f, -42.4f, -6.2f);
 
         player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
         player2ZonePos = new Vector3(206, 36.6f, 0);
     }
+
+    public override Vector3 GetEntryPoint(Direction direction, Vector3[] entryPoints, Side side)
+    {
+        return direction switch
+        {
+            Direction.North => side == Side.Left ? entryPoints[1] : entryPoints[5],
+            Direction.South => side == Side.Left ? entryPoints[0] : entryPoints[4],
+            Direction.East => entryPoints[3],
+            Direction.West => entryPoints[2],
+            _ => Vector3.zero
+        };
+    }
+
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a un Río.");
@@ -351,7 +375,7 @@ public class VerticalRiver : ZoneData
 
 public class HorizontalRiver : ZoneData
 {
-    public HorizontalRiver() : base(ZoneType.HorizontalRiver, initialFlowers: 0)
+    public HorizontalRiver() : base(ZoneType.HorizontalRiver)
     {
         player1EntryPoints[0] = new Vector3(-85.7f, 12.9f, -6.2f);
         player1EntryPoints[1] = new Vector3(-110.6f, -43.9f, -6.2f);
@@ -379,7 +403,7 @@ public class HorizontalRiver : ZoneData
 
 public class GrandmaHouse : ZoneData
 {
-    public GrandmaHouse() : base(ZoneType.GrandmaHouse, initialFlowers: 0)
+    public GrandmaHouse() : base(ZoneType.GrandmaHouse)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -394,7 +418,7 @@ public class GrandmaHouse : ZoneData
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
     }
-    
+
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la Casa de la Abuela.");
