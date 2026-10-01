@@ -8,6 +8,7 @@ public abstract class ZoneData
     public Inventory chestInventory = new();
     public bool chestOpened;
     public bool riverBridged;
+    public Direction firstRiverDirection;
     public Vector3[] player1EntryPoints;
     public Vector3[] player2EntryPoints;
     public Vector3 player1ZonePos;

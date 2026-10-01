@@ -27,8 +27,6 @@ public class MapManager : MonoBehaviour
     private Player player1;
     private Player player2;
 
-    public Direction firstRiverDirection = Direction.None;
-
     public Player Player1 => player1;
     public Player Player2 => player2;
 
@@ -290,6 +288,9 @@ public class MapManager : MonoBehaviour
         zone.riverBridged =
             networkData.riverBridged;
 
+        zone.firstRiverDirection =
+            networkData.firstRiverDirection;
+
         zone.chestOpened =
             networkData.chestOpened;
 
@@ -399,9 +400,12 @@ public class MapManager : MonoBehaviour
             map
         );
 
-        if (zoneData.type == ZoneType.HorizontalRiver && firstRiverDirection == Direction.None)
+        if ((direction == Direction.North ||
+             direction == Direction.South) &&
+            zoneData.firstRiverDirection == Direction.None 
+            && zoneData.type == ZoneType.HorizontalRiver)
         {
-            firstRiverDirection = direction;
+            SendFirstRiverDirectionServerRpc(position, direction == Direction.North ? Direction.South : Direction.North);
         }
 
         if (zoneData.type == ZoneType.HorizontalRiver ||
@@ -410,6 +414,19 @@ public class MapManager : MonoBehaviour
             River actualRiver = zone.GetComponent<River>();
             actualRiver.Init(position);
         }
+    }
+
+    [ServerRpc]
+    private void SendFirstRiverDirectionServerRpc(Vector2Int position, Direction direction)
+    {
+        map[position.y, position.x].firstRiverDirection = direction;
+        SendFirstRiverDirectionClientRpc(position, direction);
+    }
+    
+    [ClientRpc]
+    private void SendFirstRiverDirectionClientRpc(Vector2Int position, Direction direction)
+    {
+        map[position.y, position.x].firstRiverDirection = direction;
     }
 
     private GameObject LoadZone(ZoneType zoneType)

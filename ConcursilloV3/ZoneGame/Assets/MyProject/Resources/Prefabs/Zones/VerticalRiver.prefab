@@ -11325,7 +11325,6 @@ MonoBehaviour:
   - {fileID: 2778768622100439747}
   riverType: 1
   mapPosition: {x: 0, y: 0}
-  direction: 0
 --- !u!1 &8404768682452051117
 GameObject:
   m_ObjectHideFlags: 0

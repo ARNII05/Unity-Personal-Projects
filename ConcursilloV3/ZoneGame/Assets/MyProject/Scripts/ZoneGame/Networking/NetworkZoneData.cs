@@ -4,6 +4,7 @@ using Unity.Netcode;
 public struct NetworkZoneData : INetworkSerializable
 {
     public ZoneType type;
+    public Direction firstRiverDirection;
     public bool riverBridged;
     public bool chestOpened;
 
@@ -14,6 +15,7 @@ public struct NetworkZoneData : INetworkSerializable
     {
         type = zone.type;
         riverBridged = zone.riverBridged;
+        firstRiverDirection = zone.firstRiverDirection;
         chestOpened = zone.chestOpened;
 
         chestItemTypes = zone.chestInventory.items.Keys.ToArray();

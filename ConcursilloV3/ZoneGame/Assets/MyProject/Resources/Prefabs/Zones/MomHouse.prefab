@@ -1753,6 +1753,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 1
+  side: 0
 --- !u!1 &902608864384075866
 GameObject:
   m_ObjectHideFlags: 0
@@ -2914,6 +2915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37658a6277165314a900893d4117f88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestUI: {fileID: 0}
 --- !u!1 &1257528692942288350
 GameObject:
   m_ObjectHideFlags: 0
@@ -8402,6 +8404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 0
+  side: 0
 --- !u!1 &2799850532791855640
 GameObject:
   m_ObjectHideFlags: 0
@@ -17454,6 +17457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 0
+  side: 0
 --- !u!1 &5840275786516834134
 GameObject:
   m_ObjectHideFlags: 0
@@ -22583,6 +22587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 3
+  side: 0
 --- !u!1 &7206871265873298387
 GameObject:
   m_ObjectHideFlags: 0
@@ -24386,6 +24391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 2
+  side: 0
 --- !u!1 &8015814266067784905
 GameObject:
   m_ObjectHideFlags: 0
@@ -24691,6 +24697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 1
+  side: 0
 --- !u!1 &8053461426975920658
 GameObject:
   m_ObjectHideFlags: 0

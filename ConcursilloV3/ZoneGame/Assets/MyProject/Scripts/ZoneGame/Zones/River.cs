@@ -27,7 +27,7 @@ public class River : MonoBehaviour
 
     private void InitHorizontalRiver()
     {
-        Direction direction = MapManager.Instance.firstRiverDirection;
+        Direction direction = map[mapPosition.y, mapPosition.x].firstRiverDirection;
 
         if (riverType != RiverType.Horizontal)
             return;
