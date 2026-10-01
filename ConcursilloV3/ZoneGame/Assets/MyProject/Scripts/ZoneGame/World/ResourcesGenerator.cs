@@ -92,7 +92,7 @@ public class ResourcesGenerator : MonoBehaviour
 
             Vector2Int randomPos = mapPartTmp[randomPosInt];
 
-            int amount = Random.Range(0, MaxItemCountPerChest(item) + 1);
+            int amount = Random.Range(1, MaxItemCountPerChest(item) + 1);
             itemCount += amount;
 
             map[randomPos.y, randomPos.x].chestInventory.AddItem((ItemType) item, amount);

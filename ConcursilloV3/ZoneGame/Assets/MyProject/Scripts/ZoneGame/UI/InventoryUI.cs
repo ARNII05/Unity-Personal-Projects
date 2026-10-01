@@ -25,10 +25,16 @@ public class InventoryUI : MonoBehaviour
         SetInventory(player.inventory);
     }
 
-    public void SetInventory(Inventory inventory)
+    public void SetInventory(Inventory newInventory)
     {
-        this.inventory = inventory;
-        inventory.OnInventoryChanged += Refresh;
+        if (inventory != null)
+            inventory.OnInventoryChanged -= Refresh;
+
+        inventory = newInventory;
+
+        if (inventory != null)
+            inventory.OnInventoryChanged += Refresh;
+
         Refresh();
     }
 

@@ -198,6 +198,27 @@ public class Player : NetworkBehaviour
         NetworkMapPos.Value = newPos;
     }
 
+    [ServerRpc]
+    public void SendFirstRiverDirectionServerRpc(
+        Vector2Int position,
+        Direction direction)
+    {
+        ZoneData zoneData = MapManager.Instance.map[position.y, position.x];
+
+        if (zoneData.firstRiverDirection != Direction.None)
+            return;
+
+        zoneData.firstRiverDirection = direction;
+
+        SendFirstRiverDirectionClientRpc(position, direction);
+    }
+
+    [ClientRpc]
+    private void SendFirstRiverDirectionClientRpc(Vector2Int position, Direction direction)
+    {
+        MapManager.Instance.map[position.y, position.x].firstRiverDirection = direction;
+    }
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -475,14 +496,21 @@ public class Player : NetworkBehaviour
 
     [ClientRpc]
     public void SendMapClientRpc(
-        NetworkZoneData[] networkMap,
-        Vector2Int serverStartPos,
-        Vector2Int serverGrandmaPos)
+        ZoneType[] zoneTypes,
+        ItemType[] chestItemTypes,
+        int[] chestAmounts,
+        int[] chestItemCounts,
+        Vector2Int[] positions)
     {
+        if (IsServer)
+            return;
+
         MapManager.Instance.ReceiveMapFromServer(
-            networkMap,
-            serverStartPos,
-            serverGrandmaPos
+            zoneTypes,
+            chestItemTypes,
+            chestAmounts,
+            chestItemCounts,
+            positions
         );
     }
 

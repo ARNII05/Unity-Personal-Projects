@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
@@ -167,7 +168,7 @@ public class MapManager : MonoBehaviour
         );
     }
 
-    private System.Collections.IEnumerator SendMapNextFrame()
+    private IEnumerator SendMapNextFrame()
     {
         yield return null;
 
@@ -176,8 +177,17 @@ public class MapManager : MonoBehaviour
 
     private void SendMapToClient()
     {
-        NetworkZoneData[] networkMap =
-            new NetworkZoneData[mapWidth * mapHeight];
+        ZoneType[] zoneTypes =
+            new ZoneType[mapWidth * mapHeight];
+
+        List<ItemType> chestItemTypesList =
+            new List<ItemType>();
+
+        List<int> chestAmountsList =
+            new List<int>();
+
+        int[] chestItemCounts =
+            new int[mapWidth * mapHeight];
 
         int index = 0;
 
@@ -185,40 +195,83 @@ public class MapManager : MonoBehaviour
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                networkMap[index] =
-                    new NetworkZoneData(map[y, x]);
+                ZoneData zone = map[y, x];
+
+                zoneTypes[index] = zone.type;
+
+                int itemCount = zone.chestInventory.items.Count;
+
+                chestItemCounts[index] = itemCount;
+
+                foreach (var item in
+                         zone.chestInventory.items)
+                {
+                    chestItemTypesList.Add(item.Key);
+                    chestAmountsList.Add(item.Value);
+                }
 
                 index++;
             }
         }
 
         player1.SendMapClientRpc(
-            networkMap,
-            startPos,
-            grandmaPos
+            zoneTypes,
+            chestItemTypesList.ToArray(),
+            chestAmountsList.ToArray(),
+            chestItemCounts,
+            new[] { startPos, grandmaPos }
         );
     }
 
     public void ReceiveMapFromServer(
-        NetworkZoneData[] networkMap,
-        Vector2Int serverStartPos,
-        Vector2Int serverGrandmaPos)
+        ZoneType[] zoneTypes,
+        ItemType[] chestItemTypes,
+        int[] chestAmounts,
+        int[] chestItemCounts,
+        Vector2Int[] positions)
     {
         map = new ZoneData[mapHeight, mapWidth];
 
-        startPos = serverStartPos;
-        grandmaPos = serverGrandmaPos;
+        startPos = positions[0];
+        grandmaPos = positions[1];
 
         int index = 0;
+        int chestItemIndex = 0;
 
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                map[y, x] =
-                    CreateZoneFromNetworkData(
-                        networkMap[index]
+                ZoneData zone =
+                    ZoneVault.GenerateZone(zoneTypes[index]);
+
+                if (zone == null)
+                {
+                    index++;
+                    continue;
+                }
+
+                zone.chestInventory = new Inventory();
+
+                int itemCount = chestItemCounts[index];
+
+                for (int i = 0; i < itemCount; i++)
+                {
+                    ItemType item =
+                        chestItemTypes[chestItemIndex];
+
+                    int amount =
+                        chestAmounts[chestItemIndex];
+
+                    zone.chestInventory.AddItem(
+                        item,
+                        amount
                     );
+
+                    chestItemIndex++;
+                }
+
+                map[y, x] = zone;
 
                 index++;
             }
@@ -227,84 +280,10 @@ public class MapManager : MonoBehaviour
         InitPlayersInfo(startPos);
 
         CreateInitialZones();
+
         IsMapReady = true;
 
         PrintMap();
-    }
-
-    private ZoneData CreateZoneFromNetworkData(
-    NetworkZoneData networkData)
-    {
-        ZoneData zone = networkData.type switch
-        {
-            ZoneType.MomHouse =>
-                new MomHouse(),
-
-            ZoneType.Forest =>
-                new Forest(),
-
-            ZoneType.SpecialZone =>
-                new SpecialZone(),
-
-            ZoneType.WaterPit =>
-                new WaterPit(),
-
-            ZoneType.FlowerField =>
-                new FlowerField(),
-
-            ZoneType.Ruins =>
-                new Ruins(),
-
-            ZoneType.Swamp =>
-                new Swamp(),
-
-            ZoneType.Village =>
-                new Village(),
-
-            ZoneType.Camp =>
-                new Camp(),
-
-            ZoneType.VerticalRiver =>
-                new VerticalRiver(),
-
-            ZoneType.HorizontalRiver =>
-                new HorizontalRiver(),
-
-            ZoneType.GrandmaHouse =>
-                new GrandmaHouse(),
-
-            _ => null
-        };
-
-        if (zone == null)
-        {
-            Debug.LogError(
-                $"No se pudo crear la zona {networkData.type}"
-            );
-
-            return null;
-        }
-
-        zone.riverBridged =
-            networkData.riverBridged;
-
-        zone.firstRiverDirection =
-            networkData.firstRiverDirection;
-
-        zone.chestOpened =
-            networkData.chestOpened;
-
-        zone.chestInventory = new Inventory();
-
-        for (int i = 0; i < networkData.chestItemTypes.Length; i++)
-        {
-            zone.chestInventory.AddItem(
-                networkData.chestItemTypes[i],
-                networkData.chestAmounts[i]
-            );
-        }
-
-        return zone;
     }
 
     private void InitPlayersInfo(Vector2Int startPos)
@@ -405,7 +384,7 @@ public class MapManager : MonoBehaviour
             zoneData.firstRiverDirection == Direction.None 
             && zoneData.type == ZoneType.HorizontalRiver)
         {
-            SendFirstRiverDirectionServerRpc(position, direction == Direction.North ? Direction.South : Direction.North);
+            player.SendFirstRiverDirectionServerRpc(position, direction == Direction.North ? Direction.South : Direction.North);
         }
 
         if (zoneData.type == ZoneType.HorizontalRiver ||
@@ -414,19 +393,6 @@ public class MapManager : MonoBehaviour
             River actualRiver = zone.GetComponent<River>();
             actualRiver.Init(position);
         }
-    }
-
-    [ServerRpc]
-    private void SendFirstRiverDirectionServerRpc(Vector2Int position, Direction direction)
-    {
-        map[position.y, position.x].firstRiverDirection = direction;
-        SendFirstRiverDirectionClientRpc(position, direction);
-    }
-    
-    [ClientRpc]
-    private void SendFirstRiverDirectionClientRpc(Vector2Int position, Direction direction)
-    {
-        map[position.y, position.x].firstRiverDirection = direction;
     }
 
     private GameObject LoadZone(ZoneType zoneType)

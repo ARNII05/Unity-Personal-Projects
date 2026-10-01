@@ -18,6 +18,7 @@ public abstract class ZoneData
     {
         player1EntryPoints = new Vector3[6];
         player2EntryPoints = new Vector3[6];
+        firstRiverDirection = Direction.None;
         chestOpened = false;
         this.type = type;
         riverBridged = false;
