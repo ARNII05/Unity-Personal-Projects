@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private float zoneChangeDelay = 0.5f;
 
+    Player player;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -30,8 +32,12 @@ public class UIManager : MonoBehaviour
         transitionVideo.loopPointReached += OnTransitionFinished;
     }
 
-    public void PlayZoneTransition(Action onCovered)
+    public void PlayZoneTransition(Action onCovered, Player player)
     {
+        this.player = player;
+        
+        player.State = PlayerState.Transitioning;
+        
         onTransitionCovered = onCovered;
 
         transitionCanvas.SetActive(true);
@@ -57,6 +63,7 @@ public class UIManager : MonoBehaviour
 
     private void OnTransitionFinished(VideoPlayer videoPlayer)
     {
+        player.State = PlayerState.Normal;
         transitionCanvas.SetActive(false);
     }
 

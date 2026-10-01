@@ -53,10 +53,12 @@ public class ResourcesGenerator : MonoBehaviour
 
         DistributeAllItems(allMap);
 
+        /*
         Debug.Log($"Initial branches count in mom part: {branchesCount}");
         Debug.Log($"Initial flowers count in all map: {flowerCount}");
 
         PrintItems();
+        */
     }
 
     private void DistributeAllItems(List<Vector2Int> allMap)

@@ -16,6 +16,7 @@ public class Player : NetworkBehaviour
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
     private InventoryUI inventoryUI;
+    private Direction lastDirection;
     
     public PlayerState State { get; set; } = PlayerState.Normal;
 
@@ -89,6 +90,9 @@ public class Player : NetworkBehaviour
     [ServerRpc]
     private void RiverInteractionServerRpc()
     {
+        if (currentRiverInteraction == null)
+            return;
+
         bool isBridged = currentRiverInteraction.SendInteractToRiver(this);
         
         if (!isBridged)
@@ -187,8 +191,9 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SetNetworkMapPosServerRpc(Vector2Int newPos)
+    public void SetNetworkMapPosServerRpc(Vector2Int newPos, Direction direction)
     {
+        lastDirection = direction;
         NetworkMapPos.Value = newPos;
     }
 
@@ -345,6 +350,8 @@ public class Player : NetworkBehaviour
 
         else if (Role.Value == PlayerRole.Builder)
             inventory.AddItem(ItemType.Map, 1);
+
+        inventory.AddItem(ItemType.Log, 7);
     }
 
     public void InitRoleSelector()
@@ -397,7 +404,7 @@ public class Player : NetworkBehaviour
         if (!MapManager.Instance.IsMapReady)
             return;
 
-        MapManager.Instance.CreatePlayerZone(this);
+        MapManager.Instance.CreatePlayerZone(this, lastDirection);
     }
 
     private void UpdateOtherPlayerVisual()
@@ -537,6 +544,7 @@ public enum PlayerState
     SelectingRole,
     Inventory,
     Interacting,
+    Transitioning,
     Trading,
     Crafting
 }

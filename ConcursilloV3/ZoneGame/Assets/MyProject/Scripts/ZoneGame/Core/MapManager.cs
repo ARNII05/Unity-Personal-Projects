@@ -339,7 +339,7 @@ public class MapManager : MonoBehaviour
         );
     }
 
-    public void CreatePlayerZone(Player player)
+    public void CreatePlayerZone(Player player, Direction direction = Direction.South)
     {
         if (player.currentZone != null)
         {
@@ -350,6 +350,8 @@ public class MapManager : MonoBehaviour
         ZoneData zoneData = map[position.y, position.x];
 
         GameObject prefab = LoadZone(zoneData.type);
+
+        Debug.Log($"Cargando zona {zoneData.type} para {player.name} en la posición {position}.");
 
         if (prefab == null)
         {
@@ -401,7 +403,10 @@ public class MapManager : MonoBehaviour
             zoneData.type == ZoneType.VerticalRiver)
         {
             River actualRiver = zone.GetComponent<River>();
-            actualRiver.mapPosition = position;
+            actualRiver.SetInfo(
+                position,
+                direction == Direction.North ? Direction.South : Direction.North
+            );
         }
     }
 
@@ -708,25 +713,23 @@ public class MapManager : MonoBehaviour
         Vector2Int newPos =
             moveResult.newPos;
 
-        UIManager.Instance.PlayZoneTransition(() =>
-        {
-            Debug.Log("CAMBIANDO DE ZONA");
-            
-            player.transform.position =
-                GetPlayerEntryPoint(
-                    player,
-                    direction,
-                    newPos,
-                    side
-                );
+        UIManager.Instance.PlayZoneTransition(
+            () =>
+            {
+                Debug.Log("CAMBIANDO DE ZONA");
 
-            player.SetNetworkMapPosServerRpc(newPos);
+                player.transform.position =
+                    GetPlayerEntryPoint(
+                        player,
+                        direction,
+                        newPos,
+                        side
+                    );
 
-            LogManager.Log(
-                $"{player.name} entered zone " +
-                $"NetworkMapPos: {newPos}"
-            );
-        });
+                player.SetNetworkMapPosServerRpc(newPos, direction);
+            },
+            player
+        );
     }
 
     private Vector3 GetPlayerEntryPoint(
