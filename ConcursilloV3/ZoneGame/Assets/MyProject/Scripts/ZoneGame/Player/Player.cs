@@ -3,6 +3,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CraftingSystem))]
 public class Player : NetworkBehaviour
@@ -63,7 +64,15 @@ public class Player : NetworkBehaviour
 
         if (currentRiverInteraction != null && Input.GetKeyDown(KeyCode.F))
         {
-            RiverInteractionServerRpc();
+            bool isBridged =
+                currentRiverInteraction.SendInteractToRiver(this);
+
+            if (isBridged)
+            {
+                inventory.RemoveItem(ItemType.Log, 1);
+
+                RiverInteractionServerRpc(NetworkMapPos.Value);
+            }
         }
         else if (currentBorderZone != null && Input.GetKeyDown(KeyCode.F))
         {
@@ -88,29 +97,26 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void RiverInteractionServerRpc()
-    {
-        if (currentRiverInteraction == null)
-            return;
-
-        bool isBridged = currentRiverInteraction.SendInteractToRiver(this);
-        
-        if (!isBridged)
-            return;
-        
-        RiverInteractionClientRpc(isBridged, NetworkMapPos.Value, OwnerClientId);
-    }
-
-    [ClientRpc]
-    private void RiverInteractionClientRpc(
-        bool isBridged,
-        Vector2Int position,
-        ulong playerId)
+    private void RiverInteractionServerRpc(Vector2Int position)
     {
         MapManager.Instance.map[
             position.y,
             position.x
-        ].riverBridged = isBridged;
+        ].riverBridged = true;
+
+        RiverInteractionClientRpc(
+            position
+        );
+    }
+
+    [ClientRpc]
+    private void RiverInteractionClientRpc(
+        Vector2Int position)
+    {
+        MapManager.Instance.map[
+            position.y,
+            position.x
+        ].riverBridged = true;
 
         if (!NetworkManager.Singleton.LocalClient.PlayerObject
                 .TryGetComponent<Player>(out var localPlayer))
@@ -125,11 +131,6 @@ public class Player : NetworkBehaviour
         if (!localPlayer.currentZone.TryGetComponent<River>(
             out var riverZone))
             return;
-
-        if (NetworkManager.Singleton.LocalClientId == playerId)
-        {
-            localPlayer.inventory.RemoveItem(ItemType.Log, 1);
-        }
 
         riverZone.SwapGameObjectStatusNetworking();
     }

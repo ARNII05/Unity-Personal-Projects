@@ -27,6 +27,8 @@ public class MapManager : MonoBehaviour
     private Player player1;
     private Player player2;
 
+    public Direction firstRiverDirection = Direction.None;
+
     public Player Player1 => player1;
     public Player Player2 => player2;
 
@@ -351,8 +353,6 @@ public class MapManager : MonoBehaviour
 
         GameObject prefab = LoadZone(zoneData.type);
 
-        Debug.Log($"Cargando zona {zoneData.type} para {player.name} en la posición {position}.");
-
         if (prefab == null)
         {
             Debug.LogError($"No se pudo cargar el prefab de {zoneData.type}.");
@@ -399,14 +399,16 @@ public class MapManager : MonoBehaviour
             map
         );
 
+        if (zoneData.type == ZoneType.HorizontalRiver && firstRiverDirection == Direction.None)
+        {
+            firstRiverDirection = direction;
+        }
+
         if (zoneData.type == ZoneType.HorizontalRiver ||
             zoneData.type == ZoneType.VerticalRiver)
         {
             River actualRiver = zone.GetComponent<River>();
-            actualRiver.SetInfo(
-                position,
-                direction == Direction.North ? Direction.South : Direction.North
-            );
+            actualRiver.Init(position);
         }
     }
 

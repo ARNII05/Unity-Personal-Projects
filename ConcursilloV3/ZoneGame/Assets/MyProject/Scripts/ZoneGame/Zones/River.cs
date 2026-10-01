@@ -12,30 +12,30 @@ public class River : MonoBehaviour
     
     public Vector2Int mapPosition;
     private ZoneData[,] map;
-    public Direction direction;
-    
-    void Start()
+
+    public void Init(Vector2Int mapPosition)
     {
+        this.mapPosition = mapPosition;
         map = MapManager.Instance.map;
+        
         SwapGameObjectStatus(map[mapPosition.y, mapPosition.x].riverBridged, bridges);
         SwapGameObjectStatus(!map[mapPosition.y, mapPosition.x].riverBridged, riverInteractors);
         SwapGameObjectStatus(!map[mapPosition.y, mapPosition.x].riverBridged, triggers);
+        
         InitHorizontalRiver();
-    }
-
-    public void SetInfo(Vector2Int mapPosition, Direction direction)
-    {
-        this.mapPosition = mapPosition;
-        this.direction = direction;
     }
 
     private void InitHorizontalRiver()
     {
+        Direction direction = MapManager.Instance.firstRiverDirection;
+
         if (riverType != RiverType.Horizontal)
             return;
 
         if (map[mapPosition.y, mapPosition.x].riverBridged)
             return;
+
+        Debug.Log($"You are in: {direction}");
 
         riverInteractors[0].SetActive(!(direction == Direction.North));
         riverInteractors[1].SetActive(!(direction == Direction.South));

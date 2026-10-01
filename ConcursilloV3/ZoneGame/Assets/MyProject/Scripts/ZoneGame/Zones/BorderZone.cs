@@ -10,6 +10,7 @@ public class BorderZone : MonoBehaviour
 
 public enum Direction
 {
+    None,
     North,
     South,
     East,
