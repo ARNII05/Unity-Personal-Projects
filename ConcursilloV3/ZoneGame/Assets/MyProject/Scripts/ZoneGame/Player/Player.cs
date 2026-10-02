@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -18,7 +19,8 @@ public class Player : NetworkBehaviour
     public CraftingSystem craftingSystem;
     private InventoryUI inventoryUI;
     private Direction lastDirection;
-    
+    private bool waitingForZonePosition;
+
     public PlayerState State { get; set; } = PlayerState.Normal;
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
@@ -28,13 +30,19 @@ public class Player : NetworkBehaviour
 
     private Animator otherPlayerAnimator;
 
+    public NetworkVariable<Vector3> NetworkZoneEntryPosition = new(
+        Vector3.zero,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
     public NetworkVariable<bool> IsWalking = new(
         false,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
 
-    public NetworkVariable<int> NetworkDirection = new(
+    public NetworkVariable<int> NetworkDirection = new( 
         0,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
@@ -192,9 +200,14 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SetNetworkMapPosServerRpc(Vector2Int newPos, Direction direction)
+    public void SetNetworkMapPosServerRpc(
+        Vector2Int newPos,
+        Direction direction,
+        Vector3 entryPosition)
     {
         lastDirection = direction;
+
+        NetworkZoneEntryPosition.Value = entryPosition;
         NetworkMapPos.Value = newPos;
     }
 
@@ -426,7 +439,12 @@ public class Player : NetworkBehaviour
         if (!MapManager.Instance.IsMapReady)
             return;
 
-        MapManager.Instance.CreatePlayerZone(this, lastDirection);
+        waitingForZonePosition = true;
+
+        MapManager.Instance.CreatePlayerZone(
+            this,
+            lastDirection
+        );
     }
 
     private void UpdateOtherPlayerVisual()
@@ -438,12 +456,6 @@ public class Player : NetworkBehaviour
             MapManager.Instance.Player2 == null)
             return;
 
-        if (currentZone == null)
-        {
-            otherPlayerVisualRoot.SetActive(false);
-            return;
-        }
-
         Player otherPlayer;
 
         if (this == MapManager.Instance.Player1)
@@ -451,14 +463,31 @@ public class Player : NetworkBehaviour
         else
             otherPlayer = MapManager.Instance.Player1;
 
-        if (otherPlayer.currentZone == null)
+        if (otherPlayer.waitingForZonePosition)
+        {
+            const float positionTolerance = 0.05f;
+
+            float distance = Vector3.Distance(
+                otherPlayer.transform.position,
+                otherPlayer.NetworkZoneEntryPosition.Value
+            );
+
+            if (distance > positionTolerance)
+            {
+                otherPlayerVisualRoot.SetActive(false);
+                return;
+            }
+
+            otherPlayer.waitingForZonePosition = false;
+        }
+
+        if (currentZone == null)
         {
             otherPlayerVisualRoot.SetActive(false);
             return;
         }
 
-        if (otherPlayer.CurrentZoneMapPos !=
-            otherPlayer.NetworkMapPos.Value)
+        if (otherPlayer.currentZone == null)
         {
             otherPlayerVisualRoot.SetActive(false);
             return;

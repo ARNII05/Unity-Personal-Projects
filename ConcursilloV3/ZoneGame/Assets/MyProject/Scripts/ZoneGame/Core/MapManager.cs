@@ -60,6 +60,7 @@ public class MapManager : MonoBehaviour
     {
         map = new ZoneData[mapHeight, mapWidth];
         IsMapReady = false;
+        CleanMap();
     }
 
     public void RegisterPlayer(Player player, bool isServer)
@@ -82,6 +83,19 @@ public class MapManager : MonoBehaviour
             InitRoleSelector();
             GenerateStartPositions();
             MakeRandomMap();
+        }
+    }
+
+    private void CleanMap()
+    {
+        Zone[] zones = FindObjectsByType<Zone>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None
+        );
+
+        foreach (var zone in zones)
+        {
+            Destroy(zone.gameObject);
         }
     }
     
@@ -119,16 +133,6 @@ public class MapManager : MonoBehaviour
         player1.InitRoleSelector();
     }
 
-    private void GenerateStartPositions()
-    {
-        startPos = new Vector2Int(
-            Random.Range(0, mapWidth),
-            Random.Range(0, mapHeight)
-        );
-
-        grandmaPos = GrandmaHousePos(startPos);
-    }
-
     public void MakeRandomMap()
     {
         const int maxAttempts = 100;
@@ -164,8 +168,18 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.LogError(
-            "No se pudo generar un mapa valido despu s de 100 intentos."
+            "No se pudo generar un mapa valido despues de 100 intentos."
         );
+    }
+
+    private void GenerateStartPositions()
+    {
+        startPos = new Vector2Int(
+            Random.Range(0, mapWidth),
+            Random.Range(0, mapHeight)
+        );
+
+        grandmaPos = GrandmaHousePos(startPos);
     }
 
     private IEnumerator SendMapNextFrame()
@@ -181,10 +195,10 @@ public class MapManager : MonoBehaviour
             new ZoneType[mapWidth * mapHeight];
 
         List<ItemType> chestItemTypesList =
-            new List<ItemType>();
+            new();
 
         List<int> chestAmountsList =
-            new List<int>();
+            new();
 
         int[] chestItemCounts =
             new int[mapWidth * mapHeight];
@@ -302,6 +316,12 @@ public class MapManager : MonoBehaviour
 
         player2.transform.position =
             player2RealPos;
+
+        player1.NetworkZoneEntryPosition.Value =
+            player1.transform.position;
+
+        player2.NetworkZoneEntryPosition.Value =
+            player2.transform.position;
     }
 
     private void CreateInitialZones()
@@ -363,7 +383,10 @@ public class MapManager : MonoBehaviour
             chest.inventory = zoneData.chestInventory;
         }
 
-        chests[0].chestUI.SetInventory(zoneData.chestInventory);
+        if (player.IsOwner)
+        {
+            chests[0].chestUI.SetInventory(zoneData.chestInventory);
+        }
 
         if (zoneData.chestOpened)
         {
@@ -701,9 +724,7 @@ public class MapManager : MonoBehaviour
         UIManager.Instance.PlayZoneTransition(
             () =>
             {
-                Debug.Log("CAMBIANDO DE ZONA");
-
-                player.transform.position =
+                Vector3 entryPosition =
                     GetPlayerEntryPoint(
                         player,
                         direction,
@@ -711,7 +732,13 @@ public class MapManager : MonoBehaviour
                         side
                     );
 
-                player.SetNetworkMapPosServerRpc(newPos, direction);
+                player.transform.position = entryPosition;
+
+                player.SetNetworkMapPosServerRpc(
+                    newPos,
+                    direction,
+                    entryPosition
+                );
             },
             player
         );

@@ -35,7 +35,7 @@ public class UIManager : MonoBehaviour
     public void PlayZoneTransition(Action onCovered, Player player)
     {
         this.player = player;
-        
+
         player.State = PlayerState.Transitioning;
         
         onTransitionCovered = onCovered;
@@ -63,8 +63,9 @@ public class UIManager : MonoBehaviour
 
     private void OnTransitionFinished(VideoPlayer videoPlayer)
     {
-        player.State = PlayerState.Normal;
         transitionCanvas.SetActive(false);
+
+        player.State = PlayerState.Normal;
     }
 
     private void OnDestroy()

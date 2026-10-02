@@ -31,7 +31,11 @@ public class Player1Controller : NetworkBehaviour
             return;
 
         if (player.State != PlayerState.Normal)
+        {
+            movementInput = Vector2.zero;
+            player.IsWalking.Value = false;
             return;
+        }
 
         movementInput.x = Input.GetAxisRaw("Horizontal");
         movementInput.y = Input.GetAxisRaw("Vertical");
@@ -48,6 +52,12 @@ public class Player1Controller : NetworkBehaviour
     {
         if (!IsOwner)
             return;
+
+        if (player.State != PlayerState.Normal)
+        {
+            movementInput = Vector2.zero;
+            return;
+        }
 
         rb.velocity = movementInput * moveSpeed;
     }
