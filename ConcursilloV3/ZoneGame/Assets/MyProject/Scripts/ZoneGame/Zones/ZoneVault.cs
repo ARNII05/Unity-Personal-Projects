@@ -16,7 +16,7 @@ public static class ZoneVault
             ZoneType.Camp => new Camp(),
             ZoneType.VerticalRiver => new VerticalRiver(),
             ZoneType.HorizontalRiver => new HorizontalRiver(),
-            ZoneType.WaterPit => new WaterPit(),
+            ZoneType.Tavern => new Tavern(),
             ZoneType.FlowerField => new FlowerField(),
             ZoneType.Ruins => new Ruins(),
             ZoneType.SpecialZone => new SpecialZone(),

@@ -9,9 +9,8 @@ using UnityEngine.UIElements;
 public class MapManager : MonoBehaviour
 {
     public static MapManager instance { get; private set; }
-    public bool IsMapReady { get; private set; }
+    public bool IsMapReady { get; private set; } = false;
 
-    public ZoneData[,] map;
     public Vector2Int grandmaPos;
 
     public Vector2Int startPos;
@@ -19,6 +18,8 @@ public class MapManager : MonoBehaviour
     public const int mapWidth = 7;
     public const int mapHeight = 7;
     private const int MinAccessibleTilesBeforeRiver = 10;
+
+    public ZoneData[,] map = new ZoneData[mapHeight, mapWidth];
 
     [SerializeField] private Vector3 player1RealPos;
     [SerializeField] private Vector3 player2RealPos;
@@ -54,12 +55,7 @@ public class MapManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
 
-    private void Start()
-    {
-        map = new ZoneData[mapHeight, mapWidth];
-        IsMapReady = false;
         CleanMap();
     }
 
@@ -244,8 +240,6 @@ public class MapManager : MonoBehaviour
         int[] chestItemCounts,
         Vector2Int[] positions)
     {
-        map = new ZoneData[mapHeight, mapWidth];
-
         startPos = positions[0];
         grandmaPos = positions[1];
 
@@ -291,7 +285,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        InitPlayersInfo(startPos);
+        InitPlayersInfo(startPos, false);
 
         CreateInitialZones();
 
@@ -300,7 +294,7 @@ public class MapManager : MonoBehaviour
         PrintMap();
     }
 
-    private void InitPlayersInfo(Vector2Int startPos)
+    private void InitPlayersInfo(Vector2Int startPos, bool IsServer = true)
     {
         if (player1 == null ||
             player2 == null)
@@ -317,6 +311,9 @@ public class MapManager : MonoBehaviour
         player2.transform.position =
             player2RealPos;
 
+        if (!IsServer)
+            return;
+
         player1.NetworkZoneEntryPosition.Value =
             player1.transform.position;
 
@@ -332,13 +329,9 @@ public class MapManager : MonoBehaviour
             return;
         }
 
-        CreatePlayerZone(
-            player1
-        );
+        CreatePlayerZone(player1);
 
-        CreatePlayerZone(
-            player2
-        );
+        CreatePlayerZone(player2);
     }
 
     public void CreatePlayerZone(Player player, Direction direction = Direction.South)
@@ -348,14 +341,17 @@ public class MapManager : MonoBehaviour
             Destroy(player.currentZone);
         }
 
-        Vector2Int position = player.NetworkMapPos.Value;
-        ZoneData zoneData = map[position.y, position.x];
+        Vector2Int position =
+            player.NetworkMapPos.Value;
 
-        GameObject prefab = LoadZone(zoneData.type);
+        ZoneData zoneData =
+            map[position.y, position.x];
+
+        GameObject prefab =
+            LoadZone(zoneData.type);
 
         if (prefab == null)
         {
-            Debug.LogError($"No se pudo cargar el prefab de {zoneData.type}.");
             return;
         }
 
@@ -385,6 +381,7 @@ public class MapManager : MonoBehaviour
 
         if (player.IsOwner)
         {
+            UIManager.Instance.UpdatePlayerUI(position, zoneData.GetName());
             chests[0].chestUI.SetInventory(zoneData.chestInventory);
         }
 
@@ -402,12 +399,14 @@ public class MapManager : MonoBehaviour
             map
         );
 
+        Debug.Log($"Player {player.name} is owner: {player.IsOwner}");
+
         if ((direction == Direction.North ||
              direction == Direction.South) &&
             zoneData.firstRiverDirection == Direction.None 
             && zoneData.type == ZoneType.HorizontalRiver)
         {
-            player.SendFirstRiverDirectionServerRpc(position, direction == Direction.North ? Direction.South : Direction.North);
+            player1.SendFirstRiverDirectionServerRpc(position, direction == Direction.North ? Direction.South : Direction.North);
         }
 
         if (zoneData.type == ZoneType.HorizontalRiver ||

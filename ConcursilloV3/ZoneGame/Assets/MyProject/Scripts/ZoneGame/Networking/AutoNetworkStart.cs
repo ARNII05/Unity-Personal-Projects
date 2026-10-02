@@ -13,6 +13,11 @@ public class AutoNetworkStart : MonoBehaviour
 
     private void Start()
     {
+        StartNetwork();
+    }
+
+    public void StartNetwork()
+    {
         transport =
             NetworkManager.Singleton.GetComponent<UnityTransport>();
 
@@ -21,11 +26,29 @@ public class AutoNetworkStart : MonoBehaviour
             Port
         );
 
+        NetworkManager.Singleton.OnClientConnectedCallback -=
+            OnClientConnected;
+
+        NetworkManager.Singleton.OnClientDisconnectCallback -=
+            OnClientDisconnected;
+
         NetworkManager.Singleton.OnClientConnectedCallback +=
             OnClientConnected;
 
         NetworkManager.Singleton.OnClientDisconnectCallback +=
             OnClientDisconnected;
+
+        clientConnected = false;
+
+        if (NetworkManager.Singleton.IsListening)
+        {
+            Debug.Log(
+                "NetworkManager ya está conectado. " +
+                "No se inicia de nuevo."
+            );
+
+            return;
+        }
 
 #if UNITY_EDITOR
         StartHost();
@@ -43,7 +66,9 @@ public class AutoNetworkStart : MonoBehaviour
 
         if (!started)
         {
-            Debug.LogError("No se pudo iniciar el Host.");
+            Debug.LogError(
+                "No se pudo iniciar el Host."
+            );
         }
     }
 
@@ -51,9 +76,26 @@ public class AutoNetworkStart : MonoBehaviour
     {
         while (!clientConnected)
         {
-            Debug.Log("Intentando conectar al Host...");
+            Debug.Log(
+                "Intentando conectar al Host..."
+            );
 
-            NetworkManager.Singleton.StartClient();
+            bool started =
+                NetworkManager.Singleton.StartClient();
+
+            if (!started)
+            {
+                Debug.Log(
+                    "No se pudo iniciar el Client. " +
+                    "Reintentando..."
+                );
+
+                NetworkManager.Singleton.Shutdown();
+
+                yield return new WaitForSeconds(1f);
+
+                continue;
+            }
 
             float timeout = 2f;
 
@@ -69,7 +111,9 @@ public class AutoNetworkStart : MonoBehaviour
             if (clientConnected)
                 yield break;
 
-            Debug.Log("Host no disponible. Reintentando...");
+            Debug.Log(
+                "Host no disponible. Reintentando..."
+            );
 
             NetworkManager.Singleton.Shutdown();
 
@@ -87,7 +131,9 @@ public class AutoNetworkStart : MonoBehaviour
 
         clientConnected = true;
 
-        Debug.Log("¡Conectado al Host!");
+        Debug.Log(
+            "¡Conectado al Host!"
+        );
     }
 
     private void OnClientDisconnected(ulong clientId)
@@ -100,7 +146,9 @@ public class AutoNetworkStart : MonoBehaviour
 
         clientConnected = false;
 
-        Debug.Log("Desconectado del Host.");
+        Debug.Log(
+            "Desconectado del Host."
+        );
     }
 
     private void OnDestroy()

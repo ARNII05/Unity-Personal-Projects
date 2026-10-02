@@ -3,6 +3,7 @@ using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -371,6 +372,7 @@ public class Player : NetworkBehaviour
 
         RoleSelectorUI.Instance.CloseLobby();
         CraftingUI.Instance.Init();
+        UIManager.Instance.Init();
         State = PlayerState.Normal;
     }
 

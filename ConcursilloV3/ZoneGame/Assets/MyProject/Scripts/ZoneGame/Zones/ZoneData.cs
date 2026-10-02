@@ -55,7 +55,28 @@ public abstract class ZoneData
             _ => throw new System.NotImplementedException(),
         };
     }
+
+    public string GetName()
+    {
+        return type switch
+        {
+            ZoneType.GrandmaHouse => "Casa de la Abuela",
+            ZoneType.MomHouse => "Casa de la Madre",
+            ZoneType.Forest => "Bosque",
+            ZoneType.SpecialZone => "Zona Especial",
+            ZoneType.Tavern => "Taberna",
+            ZoneType.FlowerField => "Campo Florido",
+            ZoneType.Ruins => "Ruinas",
+            ZoneType.Swamp => "Pantano",
+            ZoneType.Village => "Pueblo",
+            ZoneType.Camp => "Campamento",
+            ZoneType.VerticalRiver => "Río",
+            ZoneType.HorizontalRiver => "Río",
+            _ => "Zona Desconocida",
+        };
+    }
 }
+
 public class MomHouse : ZoneData
 {
     public MomHouse() : base(ZoneType.MomHouse)
@@ -145,9 +166,9 @@ public class SpecialZone : ZoneData
     }
 }
 
-public class WaterPit : ZoneData
+public class Tavern : ZoneData
 {
-    public WaterPit() : base(ZoneType.WaterPit)
+    public Tavern() : base(ZoneType.Tavern)
     {
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -164,7 +185,7 @@ public class WaterPit : ZoneData
     }
     public override void OnEnter(Player player)
     {
-        LogManager.Log("Entrando a un Pozo de Agua.");
+        LogManager.Log("Entrando a la Taberna.");
     }
 }
 
@@ -437,7 +458,7 @@ public enum ZoneType
     MomHouse,
     Forest,
     SpecialZone,
-    WaterPit,
+    Tavern,
     FlowerField,
     Ruins,
     Swamp,

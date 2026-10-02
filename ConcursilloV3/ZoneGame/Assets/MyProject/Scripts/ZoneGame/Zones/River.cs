@@ -35,8 +35,6 @@ public class River : MonoBehaviour
         if (map[mapPosition.y, mapPosition.x].riverBridged)
             return;
 
-        Debug.Log($"You are in: {direction}");
-
         riverInteractors[0].SetActive(!(direction == Direction.North));
         riverInteractors[1].SetActive(!(direction == Direction.South));
 
