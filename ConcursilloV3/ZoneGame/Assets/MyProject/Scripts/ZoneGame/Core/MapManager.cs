@@ -401,7 +401,7 @@ public class MapManager : MonoBehaviour
 
         Debug.Log($"Player {player.name} is owner: {player.IsOwner}");
 
-        if ((direction == Direction.North ||
+        if (NetworkManager.Singleton.IsServer && (direction == Direction.North ||
              direction == Direction.South) &&
             zoneData.firstRiverDirection == Direction.None 
             && zoneData.type == ZoneType.HorizontalRiver)

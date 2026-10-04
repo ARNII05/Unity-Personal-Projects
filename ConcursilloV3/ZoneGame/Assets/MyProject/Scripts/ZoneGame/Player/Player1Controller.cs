@@ -56,6 +56,7 @@ public class Player1Controller : NetworkBehaviour
         if (player.State != PlayerState.Normal)
         {
             movementInput = Vector2.zero;
+            rb.velocity = Vector2.zero;
             return;
         }
 

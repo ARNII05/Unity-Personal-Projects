@@ -71,7 +71,18 @@ public class Player : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        if (currentRiverInteraction != null && Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (inventory.GetItemAmount(ItemType.Radar) > 0)
+            {
+                RadarUI.Instance.ToggleRadar(this, NetworkMapPos.Value);
+            }
+            else if (inventory.GetItemAmount(ItemType.Map) > 0)
+            {
+                // Handle map usage here
+            }
+        }
+        else if (currentRiverInteraction != null && Input.GetKeyDown(KeyCode.F))
         {
             bool isBridged =
                 currentRiverInteraction.SendInteractToRiver(this);
@@ -602,6 +613,7 @@ public enum PlayerState
 {
     Normal,
     SelectingRole,
+    UsingRadar,
     Inventory,
     Interacting,
     Transitioning,
