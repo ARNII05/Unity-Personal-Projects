@@ -15,6 +15,8 @@ public class MapManager : MonoBehaviour
 
     public Vector2Int startPos;
 
+    public Vector2Int wolfDenPos;
+
     public const int mapWidth = 7;
     public const int mapHeight = 7;
     private const int MinAccessibleTilesBeforeRiver = 10;
@@ -77,7 +79,6 @@ public class MapManager : MonoBehaviour
             isServer)
         {
             InitRoleSelector();
-            GenerateStartPositions();
             MakeRandomMap();
         }
     }
@@ -229,7 +230,7 @@ public class MapManager : MonoBehaviour
             chestItemTypesList.ToArray(),
             chestAmountsList.ToArray(),
             chestItemCounts,
-            new[] { startPos, grandmaPos }
+            new[] { startPos, grandmaPos, wolfDenPos }
         );
     }
 
@@ -242,6 +243,7 @@ public class MapManager : MonoBehaviour
     {
         startPos = positions[0];
         grandmaPos = positions[1];
+        wolfDenPos = positions[2];
 
         int index = 0;
         int chestItemIndex = 0;
@@ -461,8 +463,54 @@ public class MapManager : MonoBehaviour
         ];
     }
 
+    private void PutWolfDenPos(Vector2Int startPos, Vector2Int grandmaPos)
+    {
+        const int minAxisDistance = 2;
+
+        List<Vector2Int> possiblePositions = new();
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                Vector2Int pos = new(x, y);
+
+                if (pos == startPos || pos == grandmaPos)
+                    continue;
+
+                if (map[y, x].type == ZoneType.HorizontalRiver ||
+                    map[y, x].type == ZoneType.VerticalRiver)
+                {
+                    continue;
+                }
+
+                int dx = Mathf.Abs(startPos.x - x);
+                int dy = Mathf.Abs(startPos.y - y);
+
+                int GrandmaDx = Mathf.Abs(grandmaPos.x - x);
+                int GrandmaDy = Mathf.Abs(grandmaPos.y - y);
+
+                if (dx >= minAxisDistance &&
+                    dy >= minAxisDistance &&
+                    GrandmaDx >= minAxisDistance &&
+                    GrandmaDy >= minAxisDistance)
+                {
+                    possiblePositions.Add(pos);
+                }
+            }
+        }
+
+        wolfDenPos = possiblePositions[
+            Random.Range(0, possiblePositions.Count)
+        ];
+
+        map[wolfDenPos.y, wolfDenPos.x] = new WolfDen();
+    }
+
     private void FillOtherZones()
     {
+        PutWolfDenPos(startPos, grandmaPos);
+
         List<ZoneType> allowedFillTypes =
             new();
 
@@ -477,7 +525,8 @@ public class MapManager : MonoBehaviour
                 type != ZoneType.MomHouse &&
                 type != ZoneType.GrandmaHouse &&
                 type != ZoneType.VerticalRiver &&
-                type != ZoneType.HorizontalRiver)
+                type != ZoneType.HorizontalRiver &&
+                type != ZoneType.WolfDen)
             {
                 allowedFillTypes.Add(type);
             }

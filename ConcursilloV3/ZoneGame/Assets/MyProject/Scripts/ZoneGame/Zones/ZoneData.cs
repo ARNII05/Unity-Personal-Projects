@@ -453,6 +453,35 @@ public class GrandmaHouse : ZoneData
     }
 }
 
+public class WolfDen : ZoneData
+{
+    public WolfDen() : base(ZoneType.WolfDen)
+    {
+        player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
+        player1EntryPoints[2] = new Vector3(47.3f, -0.2f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-144.2f, -0.2f, -6.2f);
+
+        player2EntryPoints[0] = new Vector3(155f, 44.4f, -6.2f);
+        player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
+        player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
+        player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+
+        player1ZonePos = Vector3.zero;
+        player2ZonePos = new Vector3(255, 0, 0);
+    }
+
+    public override void OnEnter(Player player)
+    {
+        LogManager.Log("Entrando a la Guarida del Lobo.");
+    }
+
+    public override ChestItems ItemProbInChest(int prob)
+    {
+        return ChestItems.None;
+    }
+}
+
 public enum ZoneType
 {
     MomHouse,
@@ -466,5 +495,6 @@ public enum ZoneType
     Camp,
     VerticalRiver,
     HorizontalRiver,
-    GrandmaHouse
+    GrandmaHouse,
+    WolfDen
 }
