@@ -79,7 +79,7 @@ public class Player : NetworkBehaviour
             }
             else if (inventory.GetItemAmount(ItemType.Map) > 0)
             {
-                // Handle map usage here
+                MapUI.Instance.ToggleMap(this);
             }
         }
         else if (currentRiverInteraction != null && Input.GetKeyDown(KeyCode.F))
@@ -383,7 +383,6 @@ public class Player : NetworkBehaviour
 
         RoleSelectorUI.Instance.CloseLobby();
         CraftingUI.Instance.Init();
-        UIManager.Instance.Init();
         State = PlayerState.Normal;
     }
 
@@ -614,6 +613,7 @@ public enum PlayerState
     Normal,
     SelectingRole,
     UsingRadar,
+    UsingMap,
     Inventory,
     Interacting,
     Transitioning,

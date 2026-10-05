@@ -11,9 +11,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject transitionCanvas;
     [SerializeField] private VideoPlayer transitionVideo;
 
-    [SerializeField] private TextMeshProUGUI playerPosition;
-    [SerializeField] private TextMeshProUGUI zoneName;
-
     private Action onTransitionCovered;
 
     [SerializeField] private float zoneChangeDelay = 0.5f;
@@ -34,19 +31,6 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         transitionVideo.loopPointReached += OnTransitionFinished;
-        playerPosition.gameObject.SetActive(false);
-        zoneName.gameObject.SetActive(false);
-    }
-    public void Init()
-    {
-        playerPosition.gameObject.SetActive(true);
-        zoneName.gameObject.SetActive(true);
-    }
-    
-    public void UpdatePlayerUI(Vector2Int position, string zone)
-    {
-        playerPosition.text = $"X: {position.x + 1} Y: {position.y + 1}";
-        zoneName.text = zone;
     }
 
     public void PlayZoneTransition(Action onCovered, Player player)

@@ -5,6 +5,7 @@ public abstract class ZoneData
 {
     public ZoneType type;
 
+    public Sprite icon;
     public Inventory chestInventory = new();
     public bool chestOpened;
     public bool riverBridged;
@@ -20,6 +21,7 @@ public abstract class ZoneData
         player2EntryPoints = new Vector3[6];
         firstRiverDirection = Direction.None;
         chestOpened = false;
+        icon = Resources.Load<Sprite>($"Prefabs/ZoneIcons/{type}");
         this.type = type;
         riverBridged = false;
     }
@@ -70,8 +72,8 @@ public abstract class ZoneData
             ZoneType.Swamp => "Pantano",
             ZoneType.Village => "Pueblo",
             ZoneType.Camp => "Campamento",
-            ZoneType.VerticalRiver => "Río",
-            ZoneType.HorizontalRiver => "Río",
+            ZoneType.VerticalRiver => "Rio",
+            ZoneType.HorizontalRiver => "Rio",
             _ => "Zona Desconocida",
         };
     }
@@ -348,6 +350,8 @@ public class VerticalRiver : ZoneData
 {
     public VerticalRiver() : base(ZoneType.VerticalRiver)
     {
+        icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
+
         //Left side entry
         player1EntryPoints[0] = new Vector3(-85.9f, 15.1f, -6.2f);
         player1EntryPoints[1] = new Vector3(-121.4f, -20.4f, -6.2f);
@@ -400,6 +404,8 @@ public class HorizontalRiver : ZoneData
 {
     public HorizontalRiver() : base(ZoneType.HorizontalRiver)
     {
+        icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
+
         player1EntryPoints[0] = new Vector3(-85.7f, 12.9f, -6.2f);
         player1EntryPoints[1] = new Vector3(-110.6f, -43.9f, -6.2f);
         player1EntryPoints[2] = new Vector3(43.7f, -10.5f, -6.2f);

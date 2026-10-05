@@ -383,7 +383,7 @@ public class MapManager : MonoBehaviour
 
         if (player.IsOwner)
         {
-            UIManager.Instance.UpdatePlayerUI(position, zoneData.GetName());
+            MapUI.Instance.UpdateMap(player);
             chests[0].chestUI.SetInventory(zoneData.chestInventory);
         }
 
@@ -395,20 +395,25 @@ public class MapManager : MonoBehaviour
                 = Resources.Load<Sprite>("Prefabs/Objects/OpenedBox");
             }
         }
-           
+
         currentZone.Setup(
             position,
             map
         );
 
-        Debug.Log($"Player {player.name} is owner: {player.IsOwner}");
-
-        if (NetworkManager.Singleton.IsServer && (direction == Direction.North ||
-             direction == Direction.South) &&
-            zoneData.firstRiverDirection == Direction.None 
-            && zoneData.type == ZoneType.HorizontalRiver)
+        if (NetworkManager.Singleton.IsServer &&
+            zoneData.type == ZoneType.HorizontalRiver &&
+            zoneData.firstRiverDirection == Direction.None &&
+            (direction == Direction.North || direction == Direction.South))
         {
-            player1.SendFirstRiverDirectionServerRpc(position, direction == Direction.North ? Direction.South : Direction.North);
+            player1.SendFirstRiverDirectionServerRpc(
+                position,
+                direction switch
+                {
+                    Direction.North => Direction.South,
+                    Direction.South => Direction.North,
+                    _ => direction
+                });
         }
 
         if (zoneData.type == ZoneType.HorizontalRiver ||
@@ -478,8 +483,8 @@ public class MapManager : MonoBehaviour
                 if (pos == startPos || pos == grandmaPos)
                     continue;
 
-                if (map[y, x].type == ZoneType.HorizontalRiver ||
-                    map[y, x].type == ZoneType.VerticalRiver)
+                if (map[y, x] != null && (map[y, x].type == ZoneType.HorizontalRiver ||
+                    map[y, x].type == ZoneType.VerticalRiver))
                 {
                     continue;
                 }

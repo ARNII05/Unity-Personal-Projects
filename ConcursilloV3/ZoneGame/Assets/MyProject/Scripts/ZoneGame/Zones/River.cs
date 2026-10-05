@@ -37,6 +37,7 @@ public class River : MonoBehaviour
 
         riverInteractors[0].SetActive(!(direction == Direction.North));
         riverInteractors[1].SetActive(!(direction == Direction.South));
+        riverInteractors[2].SetActive(direction == Direction.None);
 
         bridges[0].SetActive(direction == Direction.North);
         bridges[1].SetActive(direction == Direction.South);
