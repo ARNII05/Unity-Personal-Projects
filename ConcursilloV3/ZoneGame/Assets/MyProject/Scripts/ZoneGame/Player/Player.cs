@@ -13,9 +13,12 @@ public class Player : NetworkBehaviour
     public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
     public GameObject currentZone;
+    
     private BorderZone currentBorderZone;
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
+    private Grandma nearbyGrandma;
+
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
     private InventoryUI inventoryUI;
@@ -107,13 +110,55 @@ public class Player : NetworkBehaviour
             nearbyChest.OnOpen(this);
             UpdateOpenedChestServerRpc();
         }
-        else if (Input.GetKeyDown(KeyCode.I) 
+        else if (nearbyGrandma != null && Input.GetKeyDown(KeyCode.F))
+        {
+            nearbyGrandma.Interact(this);
+        }
+        else if (Input.GetKeyDown(KeyCode.I)
             && (State == PlayerState.Inventory || State == PlayerState.Normal))
         {
             inventoryUI.ToggleInventory();
         }
 
         UpdateOtherPlayerVisual();
+    }
+
+    [ServerRpc]
+    public void UpdateZoneBouquetsServerRpc(int amount)
+    {     
+        ZoneData zoneData = MapManager.Instance.map[NetworkMapPos.Value.y, NetworkMapPos.Value.x];
+
+        zoneData.bouquetsInInventory += amount;
+
+        UpdateZoneBouquetsClientRpc(amount);
+    }
+
+    [ClientRpc]
+    public void UpdateZoneBouquetsClientRpc(int amount)
+    {
+        if (IsServer)
+            return;
+
+        ZoneData zoneData = MapManager.Instance.map[NetworkMapPos.Value.y, NetworkMapPos.Value.x];
+        zoneData.bouquetsInInventory += amount;
+    }
+
+    [ServerRpc]
+    public void ShowEndGanePanelServerRpc()
+    {
+        State = PlayerState.EndGame;
+        EndgameUI.Instance.ShowEndGamePanel();
+        ShowEndGanePanelClientRpc();
+    }
+    
+    [ClientRpc]
+    private void ShowEndGanePanelClientRpc()
+    {
+        if (IsServer)
+            return;
+        
+        State = PlayerState.EndGame;
+        EndgameUI.Instance.ShowEndGamePanel();
     }
 
     [ServerRpc]
@@ -398,6 +443,7 @@ public class Player : NetworkBehaviour
         else if (Role.Value == PlayerRole.Builder)
             inventory.AddItem(ItemType.Map, 1);
 
+        inventory.AddItem(ItemType.Bouquet, 1);
         inventory.AddItem(ItemType.Log, 7);
     }
 
@@ -573,6 +619,11 @@ public class Player : NetworkBehaviour
                 currentRiverInteraction = 
                     other.GetComponentInParent<RiverInteraction>();
                 break;
+            
+            case "Grandma":
+                nearbyGrandma = 
+                    other.GetComponentInParent<Grandma>();
+                break;
         }
     }
 
@@ -590,6 +641,10 @@ public class Player : NetworkBehaviour
 
             case "RiverInteractor":
                 currentRiverInteraction = null;
+                break;
+
+            case "Grandma":
+                nearbyGrandma = null;
                 break;
         }
     }
@@ -618,5 +673,6 @@ public enum PlayerState
     Interacting,
     Transitioning,
     Trading,
-    Crafting
+    Crafting,
+    EndGame
 }

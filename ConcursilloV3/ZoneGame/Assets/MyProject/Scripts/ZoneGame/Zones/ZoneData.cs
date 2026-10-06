@@ -7,8 +7,9 @@ public abstract class ZoneData
 
     public Sprite icon;
     public Inventory chestInventory = new();
-    public bool chestOpened;
-    public bool riverBridged;
+    public bool chestOpened = false;
+    public bool riverBridged = false;
+    public int bouquetsInInventory = 0;
     public Direction firstRiverDirection;
     public Vector3[] player1EntryPoints;
     public Vector3[] player2EntryPoints;
@@ -20,10 +21,8 @@ public abstract class ZoneData
         player1EntryPoints = new Vector3[6];
         player2EntryPoints = new Vector3[6];
         firstRiverDirection = Direction.None;
-        chestOpened = false;
         icon = Resources.Load<Sprite>($"Prefabs/ZoneIcons/{type}");
         this.type = type;
-        riverBridged = false;
     }
 
     public virtual Vector3 GetEntryPoint(Direction direction, Vector3[] entryPoints, Side side)

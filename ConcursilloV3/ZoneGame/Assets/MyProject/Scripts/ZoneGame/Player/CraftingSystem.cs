@@ -8,7 +8,8 @@ public class CraftingSystem : MonoBehaviour
 
     public const int flowersForBouquet = 20;
     public const int branchesForLog = 12;
-    
+    public const int BouquetsToWin = 2;
+
     private void Awake()
     {
         player = GetComponent<Player>();

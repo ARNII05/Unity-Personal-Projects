@@ -18,6 +18,11 @@ public class MapUI : MonoBehaviour
     private TextMeshProUGUI grandmaHouseCoordinates;
     private TextMeshProUGUI wolfDenCoordinates;
 
+    private Player mapPlayer;
+    private Player otherPlayer;
+
+    ZoneData[,] map;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -51,25 +56,58 @@ public class MapUI : MonoBehaviour
     private void OnOpen(Player player)
     {
         player.State = PlayerState.UsingMap;
+
+        if (mapPlayer == null)
+        {
+            mapPlayer = player;
+            otherPlayer = MapManager.Instance.GetOtherPlayer(player);
+        }
+
+        mapPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
+        otherPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
+
         mapObj.SetActive(true);
+
+        UpdateMap(mapPlayer);
+    }
+
+    private void OnPlayerPositionChanged(
+        Vector2Int oldPos,
+        Vector2Int newPos)
+    {
+        if (mapPlayer == null)
+            return;
+
+        UpdateCoordinates(mapPlayer);
     }
 
     private void OnClose(Player player)
     {
         player.State = PlayerState.Normal;
+
+        if (mapPlayer != null)
+            mapPlayer.NetworkMapPos.OnValueChanged -= OnPlayerPositionChanged;
+
+        if (otherPlayer != null)
+            otherPlayer.NetworkMapPos.OnValueChanged -= OnPlayerPositionChanged;
+
+        mapPlayer = null;
+        otherPlayer = null;
+        map = null;
+
         mapObj.SetActive(false);
     }
 
     public void UpdateMap(Player player)
     {
-        ZoneData[,] map = MapManager.Instance.map;
+        map = MapManager.Instance.map;
 
-        UpdateCoordinates(map, player);
+        UpdateCoordinates(player);
 
-        UpdateZoneIcons(map, player);
+        UpdateZoneIcons(player);
     }
 
-    private void UpdateCoordinates(ZoneData[,] map, Player player)
+    private void UpdateCoordinates(Player player)
     {
         Player otherPlayer = MapManager.Instance.GetOtherPlayer(player);
 
@@ -89,7 +127,7 @@ public class MapUI : MonoBehaviour
         wolfDenCoordinates.text = $"Guarida del lobo\nX: {wolfDenPos.x + 1}\nY: {wolfDenPos.y + 1}";
     }
 
-    private void UpdateZoneIcons(ZoneData[,] map, Player player)
+    private void UpdateZoneIcons(Player player)
     {
         GameObject actualZone = mapZones.transform.Find("ActualZone").gameObject;
         GameObject northZone = mapZones.transform.Find("NorthZone").gameObject;

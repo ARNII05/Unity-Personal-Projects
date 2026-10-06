@@ -140,12 +140,12 @@ public class MapManager : MonoBehaviour
 
             GenerateStartPositions();
 
-            InitPlayersInfo(startPos);
+            InitPlayersInfo();
 
             map[startPos.y, startPos.x] = new MomHouse();
             map[grandmaPos.y, grandmaPos.x] = new GrandmaHouse();
 
-            ImplementRiver(startPos);
+            ImplementRiver();
 
             if (HasEnoughAccessibleTilesBeforeRiver())
             {
@@ -287,7 +287,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        InitPlayersInfo(startPos, false);
+        InitPlayersInfo(false);
 
         CreateInitialZones();
 
@@ -296,7 +296,7 @@ public class MapManager : MonoBehaviour
         PrintMap();
     }
 
-    private void InitPlayersInfo(Vector2Int startPos, bool IsServer = true)
+    private void InitPlayersInfo(bool IsServer = true)
     {
         if (player1 == null ||
             player2 == null)
@@ -470,7 +470,7 @@ public class MapManager : MonoBehaviour
 
     private void PutWolfDenPos(Vector2Int startPos, Vector2Int grandmaPos)
     {
-        const int minAxisDistance = 2;
+        const int minDistance = 3;
 
         List<Vector2Int> possiblePositions = new();
 
@@ -483,26 +483,41 @@ public class MapManager : MonoBehaviour
                 if (pos == startPos || pos == grandmaPos)
                     continue;
 
-                if (map[y, x] != null && (map[y, x].type == ZoneType.HorizontalRiver ||
-                    map[y, x].type == ZoneType.VerticalRiver))
+                if (map[y, x] != null &&
+                    (map[y, x].type == ZoneType.HorizontalRiver ||
+                     map[y, x].type == ZoneType.VerticalRiver))
                 {
                     continue;
                 }
 
-                int dx = Mathf.Abs(startPos.x - x);
-                int dy = Mathf.Abs(startPos.y - y);
+                int startDistance =
+                    Mathf.Abs(startPos.x - x) +
+                    Mathf.Abs(startPos.y - y);
 
-                int GrandmaDx = Mathf.Abs(grandmaPos.x - x);
-                int GrandmaDy = Mathf.Abs(grandmaPos.y - y);
+                int grandmaDistance =
+                    Mathf.Abs(grandmaPos.x - x) +
+                    Mathf.Abs(grandmaPos.y - y);
 
-                if (dx >= minAxisDistance &&
-                    dy >= minAxisDistance &&
-                    GrandmaDx >= minAxisDistance &&
-                    GrandmaDy >= minAxisDistance)
+                if (startDistance >= minDistance &&
+                    grandmaDistance >= minDistance)
                 {
                     possiblePositions.Add(pos);
                 }
             }
+        }
+
+        if (possiblePositions.Count == 0)
+        {
+            possiblePositions = GetFallbackWolfDenPositions(
+                startPos,
+                grandmaPos
+            );
+        }
+
+        if (possiblePositions.Count == 0)
+        {
+            Debug.LogError("No hay ninguna posición posible para WolfDen.");
+            return;
         }
 
         wolfDenPos = possiblePositions[
@@ -510,6 +525,35 @@ public class MapManager : MonoBehaviour
         ];
 
         map[wolfDenPos.y, wolfDenPos.x] = new WolfDen();
+    }
+
+    private List<Vector2Int> GetFallbackWolfDenPositions(
+        Vector2Int startPos,
+        Vector2Int grandmaPos)
+    {
+        List<Vector2Int> possiblePositions = new();
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                Vector2Int pos = new(x, y);
+
+                if (pos == startPos || pos == grandmaPos)
+                    continue;
+
+                if (map[y, x] != null &&
+                    (map[y, x].type == ZoneType.HorizontalRiver ||
+                     map[y, x].type == ZoneType.VerticalRiver))
+                {
+                    continue;
+                }
+
+                possiblePositions.Add(pos);
+            }
+        }
+
+        return possiblePositions;
     }
 
     private void FillOtherZones()
@@ -572,7 +616,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private void ImplementRiver(Vector2Int startPos)
+    private void ImplementRiver()
     {
         int minX = Mathf.Min(startPos.x, grandmaPos.x);
         int maxX = Mathf.Max(startPos.x, grandmaPos.x);

@@ -55,7 +55,7 @@ public class RoleSelectorUI : MonoBehaviour
 
         roleLobbyPanel.SetActive(true);
         background[0].SetActive(true);
-        background[1].SetActive(true);
+        //background[1].SetActive(true);
         startGameObj.SetActive(NetworkManager.Singleton.IsHost);
 
         UpdateStartButton();
