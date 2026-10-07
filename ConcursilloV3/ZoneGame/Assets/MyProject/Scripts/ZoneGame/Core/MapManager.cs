@@ -385,6 +385,7 @@ public class MapManager : MonoBehaviour
         {
             MapUI.Instance.UpdateMap(player);
             chests[0].chestUI.SetInventory(zoneData.chestInventory);
+            player.discoveredZones.Add(position);
         }
 
         if (zoneData.chestOpened)

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -13,7 +14,7 @@ public class Player : NetworkBehaviour
     public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
     public GameObject currentZone;
-    
+
     private BorderZone currentBorderZone;
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
@@ -26,6 +27,7 @@ public class Player : NetworkBehaviour
     private bool waitingForZonePosition;
 
     public PlayerState State { get; set; } = PlayerState.Normal;
+    public HashSet<Vector2Int> discoveredZones = new();
 
     [SerializeField] private GameObject otherPlayerVisualPrefab;
 
@@ -46,7 +48,7 @@ public class Player : NetworkBehaviour
         NetworkVariableWritePermission.Owner
     );
 
-    public NetworkVariable<int> NetworkDirection = new( 
+    public NetworkVariable<int> NetworkDirection = new(
         0,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
@@ -74,59 +76,189 @@ public class Player : NetworkBehaviour
         if (!IsOwner)
             return;
 
+        HandleInput();
+        UpdateOtherPlayerVisual();
+    }
+
+    private void HandleInput()
+    {
+        switch (State)
+        {
+            case PlayerState.Normal:
+                HandleNormalInput();
+                break;
+
+            case PlayerState.Trading:
+                HandleTradingInput();
+                break;
+
+            case PlayerState.Inventory:
+                HandleInventoryInput();
+                break;
+
+            case PlayerState.UsingMap:
+                HandleMapInput();
+                break;
+
+            case PlayerState.UsingRadar:
+                HandleRadarInput();
+                break;
+            
+            case PlayerState.SelectingRole:
+            case PlayerState.Interacting:
+            case PlayerState.Transitioning:
+            case PlayerState.Crafting:
+            case PlayerState.EndGame:
+                break;
+        }
+    }
+
+    private void HandleNormalInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+            HandleTabInput();
+
+        if (Input.GetKeyDown(KeyCode.F))
+            HandleInteractionInput();
+
+        if (Input.GetKeyDown(KeyCode.I))
+            OpenInventory();
+    }
+
+    private void HandleTradingInput()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+            CloseChest();
+    }
+
+    private void HandleInventoryInput()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+            CloseInventory();
+    }
+
+    private void HandleMapInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+            MapUI.Instance.ToggleMap(this);
+    }
+
+    private void HandleRadarInput()
+    {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (inventory.GetItemAmount(ItemType.Radar) > 0)
-            {
-                RadarUI.Instance.ToggleRadar(this, NetworkMapPos.Value);
-            }
-            else if (inventory.GetItemAmount(ItemType.Map) > 0)
-            {
-                MapUI.Instance.ToggleMap(this);
-            }
+            RadarUI.Instance.ToggleRadar(
+                this,
+                NetworkMapPos.Value
+            );
         }
-        else if (currentRiverInteraction != null && Input.GetKeyDown(KeyCode.F))
-        {
-            bool isBridged =
-                currentRiverInteraction.SendInteractToRiver(this);
+    }
 
-            if (isBridged)
-            {
-                inventory.RemoveItem(ItemType.Log, 1);
+    private void HandleTabInput()
+    {
+        if (inventory.GetItemAmount(ItemType.Radar) > 0)
+        {
+            RadarUI.Instance.ToggleRadar(
+                this,
+                NetworkMapPos.Value
+            );
 
-                RiverInteractionServerRpc(NetworkMapPos.Value);
-            }
-        }
-        else if (currentBorderZone != null && Input.GetKeyDown(KeyCode.F))
-        {
-            Direction direction = currentBorderZone.direction;
-            Side side = currentBorderZone.side;
-            currentBorderZone = null;
-            MapManager.Instance.OnSwapingZone(this, direction, side);
-        }
-        else if (nearbyChest != null && Input.GetKeyDown(KeyCode.F) 
-            && (State == PlayerState.Trading || State == PlayerState.Normal))
-        {
-            nearbyChest.OnOpen(this);
-            UpdateOpenedChestServerRpc();
-        }
-        else if (nearbyGrandma != null && Input.GetKeyDown(KeyCode.F))
-        {
-            nearbyGrandma.Interact(this);
-        }
-        else if (Input.GetKeyDown(KeyCode.I)
-            && (State == PlayerState.Inventory || State == PlayerState.Normal))
-        {
-            inventoryUI.ToggleInventory();
+            return;
         }
 
-        UpdateOtherPlayerVisual();
+        if (inventory.GetItemAmount(ItemType.Map) > 0)
+        {
+            MapUI.Instance.ToggleMap(this);
+        }
+    }
+
+    private void HandleInteractionInput()
+    {
+        if (currentRiverInteraction != null)
+        {
+            InteractWithRiver();
+            return;
+        }
+
+        if (currentBorderZone != null)
+        {
+            ChangeZone();
+            return;
+        }
+
+        if (nearbyChest != null)
+        {
+            OpenChest();
+            return;
+        }
+
+        if (nearbyGrandma != null)
+        {
+            InteractWithGrandma();
+        }
+    }
+
+    private void OpenInventory()
+    {
+        inventoryUI.ToggleInventory();
+    }
+
+    private void CloseInventory()
+    {
+        inventoryUI.ToggleInventory();
+    }
+
+    private void OpenChest()
+    {
+        nearbyChest.OnOpen(this);
+        UpdateOpenedChestServerRpc();
+    }
+
+    private void CloseChest()
+    {
+        nearbyChest.OnOpen(this);
+    }
+
+    private void InteractWithRiver()
+    {
+        bool isBridged =
+            currentRiverInteraction.SendInteractToRiver(this);
+
+        if (!isBridged)
+            return;
+
+        inventory.RemoveItem(ItemType.Log, 1);
+
+        RiverInteractionServerRpc(NetworkMapPos.Value);
+    }
+
+    private void ChangeZone()
+    {
+        Direction direction = currentBorderZone.direction;
+        Side side = currentBorderZone.side;
+
+        currentBorderZone = null;
+
+        MapManager.Instance.OnSwapingZone(
+            this,
+            direction,
+            side
+        );
+    }
+
+    private void InteractWithGrandma()
+    {
+        nearbyGrandma.Interact(this);
     }
 
     [ServerRpc]
     public void UpdateZoneBouquetsServerRpc(int amount)
-    {     
-        ZoneData zoneData = MapManager.Instance.map[NetworkMapPos.Value.y, NetworkMapPos.Value.x];
+    {
+        ZoneData zoneData =
+            MapManager.Instance.map[
+                NetworkMapPos.Value.y,
+                NetworkMapPos.Value.x
+            ];
 
         zoneData.bouquetsInInventory += amount;
 
@@ -139,7 +271,12 @@ public class Player : NetworkBehaviour
         if (IsServer)
             return;
 
-        ZoneData zoneData = MapManager.Instance.map[NetworkMapPos.Value.y, NetworkMapPos.Value.x];
+        ZoneData zoneData =
+            MapManager.Instance.map[
+                NetworkMapPos.Value.y,
+                NetworkMapPos.Value.x
+            ];
+
         zoneData.bouquetsInInventory += amount;
     }
 
@@ -147,17 +284,20 @@ public class Player : NetworkBehaviour
     public void ShowEndGanePanelServerRpc()
     {
         State = PlayerState.EndGame;
+
         EndgameUI.Instance.ShowEndGamePanel();
+
         ShowEndGanePanelClientRpc();
     }
-    
+
     [ClientRpc]
     private void ShowEndGanePanelClientRpc()
     {
         if (IsServer)
             return;
-        
+
         State = PlayerState.EndGame;
+
         EndgameUI.Instance.ShowEndGamePanel();
     }
 
@@ -169,14 +309,11 @@ public class Player : NetworkBehaviour
             position.x
         ].riverBridged = true;
 
-        RiverInteractionClientRpc(
-            position
-        );
+        RiverInteractionClientRpc(position);
     }
 
     [ClientRpc]
-    private void RiverInteractionClientRpc(
-        Vector2Int position)
+    private void RiverInteractionClientRpc(Vector2Int position)
     {
         MapManager.Instance.map[
             position.y,
@@ -194,7 +331,7 @@ public class Player : NetworkBehaviour
             return;
 
         if (!localPlayer.currentZone.TryGetComponent<River>(
-            out var riverZone))
+                out var riverZone))
             return;
 
         riverZone.SwapGameObjectStatusNetworking();
@@ -209,11 +346,16 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     private void UpdateOpenedChestClientRpc(Vector2Int position)
     {
-        MapManager.Instance.UpdateChestUINetworking(OwnerClientId, position);
+        MapManager.Instance.UpdateChestUINetworking(
+            OwnerClientId,
+            position
+        );
     }
 
     [ServerRpc]
-    public void SendItemToChestServerRpc(ItemType itemType, int amount)
+    public void SendItemToChestServerRpc(
+        ItemType itemType,
+        int amount)
     {
         UpdateChestInventoryClientRpc(
             itemType,
@@ -223,19 +365,32 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void UpdateChestInventoryClientRpc(ItemType itemType, int amount, Vector2Int position)
+    private void UpdateChestInventoryClientRpc(
+        ItemType itemType,
+        int amount,
+        Vector2Int position)
     {
-        ZoneData zoneData = MapManager.Instance.map[position.y, position.x];
+        ZoneData zoneData =
+            MapManager.Instance.map[
+                position.y,
+                position.x
+            ];
 
-        zoneData.chestInventory.AddItem(itemType, amount);
+        zoneData.chestInventory.AddItem(
+            itemType,
+            amount
+        );
 
-        Chest chest = currentZone.GetComponentInChildren<Chest>();
+        Chest chest =
+            currentZone.GetComponentInChildren<Chest>();
 
         chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
     }
 
     [ServerRpc]
-    public void RemoveItemToChestServerRpc(ItemType itemType, int amount)
+    public void RemoveItemToChestServerRpc(
+        ItemType itemType,
+        int amount)
     {
         RemoveItemFromChestClientRpc(
             itemType,
@@ -245,13 +400,24 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RemoveItemFromChestClientRpc(ItemType itemType, int amount, Vector2Int position)
+    private void RemoveItemFromChestClientRpc(
+        ItemType itemType,
+        int amount,
+        Vector2Int position)
     {
-        ZoneData zoneData = MapManager.Instance.map[position.y, position.x];
+        ZoneData zoneData =
+            MapManager.Instance.map[
+                position.y,
+                position.x
+            ];
 
-        zoneData.chestInventory.RemoveItem(itemType, amount);
+        zoneData.chestInventory.RemoveItem(
+            itemType,
+            amount
+        );
 
-        Chest chest = currentZone.GetComponentInChildren<Chest>();
+        Chest chest =
+            currentZone.GetComponentInChildren<Chest>();
 
         chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
     }
@@ -273,20 +439,32 @@ public class Player : NetworkBehaviour
         Vector2Int position,
         Direction direction)
     {
-        ZoneData zoneData = MapManager.Instance.map[position.y, position.x];
+        ZoneData zoneData =
+            MapManager.Instance.map[
+                position.y,
+                position.x
+            ];
 
         if (zoneData.firstRiverDirection != Direction.None)
             return;
 
         zoneData.firstRiverDirection = direction;
 
-        SendFirstRiverDirectionClientRpc(position, direction);
+        SendFirstRiverDirectionClientRpc(
+            position,
+            direction
+        );
     }
 
     [ClientRpc]
-    private void SendFirstRiverDirectionClientRpc(Vector2Int position, Direction direction)
+    private void SendFirstRiverDirectionClientRpc(
+        Vector2Int position,
+        Direction direction)
     {
-        MapManager.Instance.map[position.y, position.x].firstRiverDirection = direction;
+        MapManager.Instance.map[
+            position.y,
+            position.x
+        ].firstRiverDirection = direction;
     }
 
     public override void OnNetworkSpawn()
@@ -300,14 +478,19 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
             RoleSelectorUI.Instance.InitPlayer(this);
-            GameObject inventoryPanel = GameObject.Find("InventoryPanel");
-            inventoryUI = inventoryPanel.GetComponent<InventoryUI>();
+
+            GameObject inventoryPanel =
+                GameObject.Find("InventoryPanel");
+
+            inventoryUI =
+                inventoryPanel.GetComponent<InventoryUI>();
+
             inventoryUI.SetPlayer(this);
+
             CraftingUI.Instance.SetPlayer(this);
 
-            otherPlayerVisualRoot = new GameObject(
-                "Other Player Visual Root"
-            );
+            otherPlayerVisualRoot =
+                new GameObject("Other Player Visual Root");
 
             otherPlayerVisualRoot.transform.SetPositionAndRotation(
                 transform.position,
@@ -317,10 +500,11 @@ public class Player : NetworkBehaviour
             otherPlayerVisualRoot.transform.localScale =
                 Vector3.one * 1.5f;
 
-            otherPlayerVisual = Instantiate(
-                otherPlayerVisualPrefab,
-                otherPlayerVisualRoot.transform
-            );
+            otherPlayerVisual =
+                Instantiate(
+                    otherPlayerVisualPrefab,
+                    otherPlayerVisualRoot.transform
+                );
 
             otherPlayerAnimator =
                 otherPlayerVisual.GetComponent<Animator>();
@@ -328,14 +512,22 @@ public class Player : NetworkBehaviour
             otherPlayerVisualRoot.SetActive(false);
         }
 
-        MapManager.Instance.RegisterPlayer(this, IsServer);
+        MapManager.Instance.RegisterPlayer(
+            this,
+            IsServer
+        );
     }
 
     [ServerRpc]
     public void DeselectRoleServerRpc(PlayerRole playerRole)
     {
         Role.Value = PlayerRole.None;
-        SelectRoleClientRpc(playerRole, OwnerClientId, SelectionRolType.Deselect);
+
+        SelectRoleClientRpc(
+            playerRole,
+            OwnerClientId,
+            SelectionRolType.Deselect
+        );
     }
 
     [ServerRpc]
@@ -343,58 +535,130 @@ public class Player : NetworkBehaviour
     {
         if (Role.Value != PlayerRole.None)
             return;
-        
+
         Role.Value = playerRole;
-        SelectRoleClientRpc(playerRole, OwnerClientId, SelectionRolType.Select);
+
+        SelectRoleClientRpc(
+            playerRole,
+            OwnerClientId,
+            SelectionRolType.Select
+        );
     }
 
     [ClientRpc]
-    public void SelectRoleClientRpc(PlayerRole playerRole, ulong playerId, SelectionRolType selectionRolType)
+    public void SelectRoleClientRpc(
+        PlayerRole playerRole,
+        ulong playerId,
+        SelectionRolType selectionRolType)
     {
-        RoleSelectorUI.Instance.CommonActions(playerId, playerRole, selectionRolType);
-        
+        RoleSelectorUI.Instance.CommonActions(
+            playerId,
+            playerRole,
+            selectionRolType
+        );
+
         if (NetworkManager.Singleton.LocalClientId != playerId)
-            ActionsWithDifferentId(playerRole, selectionRolType);
+            ActionsWithDifferentId(
+                playerRole,
+                selectionRolType
+            );
         else
-            ActionsWithSameId(playerRole, selectionRolType);
+            ActionsWithSameId(
+                playerRole,
+                selectionRolType
+            );
     }
 
-    private void ActionsWithSameId(PlayerRole playerRole, SelectionRolType selectionRolType)
+    private void ActionsWithSameId(
+        PlayerRole playerRole,
+        SelectionRolType selectionRolType)
     {
         switch (selectionRolType)
         {
             case SelectionRolType.Select:
+
                 if (playerRole == PlayerRole.Gardener)
-                    RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.gardenerRoleObject, true);
-                else RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.builderRoleObject, true);
+                {
+                    RoleSelectorUI.Instance.SwapBox(
+                        RoleSelectorUI.Instance.gardenerRoleObject,
+                        true
+                    );
+                }
+                else
+                {
+                    RoleSelectorUI.Instance.SwapBox(
+                        RoleSelectorUI.Instance.builderRoleObject,
+                        true
+                    );
+                }
+
                 break;
+
             case SelectionRolType.Deselect:
+
                 if (playerRole == PlayerRole.Gardener)
-                    RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.gardenerRoleObject, false);
-                else RoleSelectorUI.Instance.SwapBox(RoleSelectorUI.Instance.builderRoleObject, false);
+                {
+                    RoleSelectorUI.Instance.SwapBox(
+                        RoleSelectorUI.Instance.gardenerRoleObject,
+                        false
+                    );
+                }
+                else
+                {
+                    RoleSelectorUI.Instance.SwapBox(
+                        RoleSelectorUI.Instance.builderRoleObject,
+                        false
+                    );
+                }
+
                 break;
-        }   
+        }
     }
 
-    private void ActionsWithDifferentId(PlayerRole playerRole, SelectionRolType selectionRolType)
+    private void ActionsWithDifferentId(
+        PlayerRole playerRole,
+        SelectionRolType selectionRolType)
     {
         switch (selectionRolType)
         {
             case SelectionRolType.Select:
+
                 if (playerRole == PlayerRole.Gardener)
+                {
                     RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.gardenerRoleObject, true,
-                            $"{name} ha escogido el rol de Gardinero");
-                else RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.builderRoleObject, true,
-                            $"{name} ha escogido el rol de Constructor");
+                        RoleSelectorUI.Instance.gardenerRoleObject,
+                        true,
+                        $"{name} ha escogido el rol de Gardinero"
+                    );
+                }
+                else
+                {
+                    RoleSelectorUI.Instance.SetRoleTextBox(
+                        RoleSelectorUI.Instance.builderRoleObject,
+                        true,
+                        $"{name} ha escogido el rol de Constructor"
+                    );
+                }
+
                 break;
+
             case SelectionRolType.Deselect:
+
                 if (playerRole == PlayerRole.Gardener)
+                {
                     RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.gardenerRoleObject, false);
-                else RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.builderRoleObject, false);
+                        RoleSelectorUI.Instance.gardenerRoleObject,
+                        false
+                    );
+                }
+                else
+                {
+                    RoleSelectorUI.Instance.SetRoleTextBox(
+                        RoleSelectorUI.Instance.builderRoleObject,
+                        false
+                    );
+                }
+
                 break;
         }
     }
@@ -405,7 +669,8 @@ public class Player : NetworkBehaviour
         if (Role.Value == PlayerRole.None)
             return;
 
-        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
+        Player otherPlayer =
+            MapManager.Instance.GetOtherPlayer(this);
 
         if (otherPlayer == null)
             return;
@@ -427,7 +692,9 @@ public class Player : NetworkBehaviour
             return;
 
         RoleSelectorUI.Instance.CloseLobby();
+
         CraftingUI.Instance.Init();
+
         State = PlayerState.Normal;
     }
 
@@ -438,12 +705,19 @@ public class Player : NetworkBehaviour
             return;
 
         if (Role.Value == PlayerRole.Gardener)
-            inventory.AddItem(ItemType.Radar, 1);
-
+            inventory.AddItem(
+                ItemType.Radar,
+                1
+            );
         else if (Role.Value == PlayerRole.Builder)
-            inventory.AddItem(ItemType.Map, 1);
+            inventory.AddItem(
+                ItemType.Map,
+                1
+            );
 
         inventory.AddItem(ItemType.Meat, 1);
+        inventory.AddItem(ItemType.Log, 7);
+        inventory.AddItem(ItemType.Bouquet, 2);
     }
 
     public void InitRoleSelector()
@@ -457,12 +731,16 @@ public class Player : NetworkBehaviour
         RoleSelectorUI.Instance.InitRoleSelector();
     }
 
-    private void OnWalkingChanged(bool oldValue, bool newValue)
+    private void OnWalkingChanged(
+        bool oldValue,
+        bool newValue)
     {
         UpdateAnimator();
     }
 
-    private void OnDirectionChanged(int oldValue, int newValue)
+    private void OnDirectionChanged(
+        int oldValue,
+        int newValue)
     {
         UpdateAnimator();
     }
@@ -524,10 +802,11 @@ public class Player : NetworkBehaviour
         {
             const float positionTolerance = 0.05f;
 
-            float distance = Vector3.Distance(
-                otherPlayer.transform.position,
-                otherPlayer.NetworkZoneEntryPosition.Value
-            );
+            float distance =
+                Vector3.Distance(
+                    otherPlayer.transform.position,
+                    otherPlayer.NetworkZoneEntryPosition.Value
+                );
 
             if (distance > positionTolerance)
             {
@@ -565,7 +844,8 @@ public class Player : NetworkBehaviour
             (otherPlayer.transform.position -
              otherPlayer.currentZone.transform.position);
 
-        otherPlayerVisualRoot.transform.position = visualPosition;
+        otherPlayerVisualRoot.transform.position =
+            visualPosition;
 
         otherPlayerVisualRoot.SetActive(true);
 
@@ -605,23 +885,31 @@ public class Player : NetworkBehaviour
         switch (other.tag)
         {
             case "Border":
+
                 currentBorderZone =
                     other.GetComponent<BorderZone>();
+
                 break;
 
             case "Chest":
+
                 nearbyChest =
                     other.GetComponentInParent<Chest>();
+
                 break;
-            
+
             case "RiverInteractor":
-                currentRiverInteraction = 
+
+                currentRiverInteraction =
                     other.GetComponentInParent<RiverInteraction>();
+
                 break;
-            
+
             case "Grandma":
-                nearbyGrandma = 
+
+                nearbyGrandma =
                     other.GetComponentInParent<Grandma>();
+
                 break;
         }
     }
@@ -631,19 +919,27 @@ public class Player : NetworkBehaviour
         switch (other.tag)
         {
             case "Border":
+
                 currentBorderZone = null;
+
                 break;
 
             case "Chest":
+
                 nearbyChest = null;
+
                 break;
 
             case "RiverInteractor":
+
                 currentRiverInteraction = null;
+
                 break;
 
             case "Grandma":
+
                 nearbyGrandma = null;
+
                 break;
         }
     }
