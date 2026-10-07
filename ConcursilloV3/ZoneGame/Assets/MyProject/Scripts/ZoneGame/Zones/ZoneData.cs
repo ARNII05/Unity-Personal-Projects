@@ -49,7 +49,6 @@ public abstract class ZoneData
         return prob switch
         {
             <= 15 => ChestItems.None,
-            <= 35 => ChestItems.Meat,
             <= 50 => ChestItems.Coin,
             <= 70 => ChestItems.Flower,
             <= 100 => ChestItems.Branch,
@@ -157,8 +156,7 @@ public class SpecialZone : ZoneData
     {
         return prob switch
         {
-            <= 10 => ChestItems.None,   
-            <= 40 => ChestItems.Meat,  
+            <= 10 => ChestItems.None,  
             <= 70 => ChestItems.Coin,   
             <= 85 => ChestItems.Flower,
             <= 100 => ChestItems.Branch, 
@@ -218,7 +216,6 @@ public class FlowerField : ZoneData
         return prob switch
         {
             <= 5 => ChestItems.None,
-            <= 10 => ChestItems.Meat,
             <= 15 => ChestItems.Coin,
             <= 75 => ChestItems.Flower,
             <= 100 => ChestItems.Branch,
@@ -253,8 +250,7 @@ public class Ruins : ZoneData
     {
         return prob switch
         {
-            <= 50 => ChestItems.None,   
-            <= 60 => ChestItems.Meat,   
+            <= 50 => ChestItems.None,     
             <= 70 => ChestItems.Coin,   
             <= 85 => ChestItems.Flower, 
             <= 100 => ChestItems.Branch, 
@@ -313,7 +309,6 @@ public class Village : ZoneData
         return prob switch
         {
             <= 10 => ChestItems.None,
-            <= 20 => ChestItems.Meat,
             <= 55 => ChestItems.Coin,
             <= 75 => ChestItems.Flower,
             <= 100 => ChestItems.Branch,

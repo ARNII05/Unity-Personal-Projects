@@ -8,7 +8,7 @@ public class Inventory
 {
     public Dictionary<ItemType, int> items = new();
     public event Action OnInventoryChanged;
-    public const int maxCapacity = 4;
+    public const int maxCapacity = 5;
 
     public bool AddItem(ItemType itemType, int amount)
     {

@@ -443,8 +443,7 @@ public class Player : NetworkBehaviour
         else if (Role.Value == PlayerRole.Builder)
             inventory.AddItem(ItemType.Map, 1);
 
-        inventory.AddItem(ItemType.Bouquet, 1);
-        inventory.AddItem(ItemType.Log, 7);
+        inventory.AddItem(ItemType.Meat, 1);
     }
 
     public void InitRoleSelector()

@@ -53,13 +53,7 @@ public class ResourcesGenerator : MonoBehaviour
 
         DistributeAllItems(allMap);
 
-        
-        /*
-        Debug.Log($"Initial branches count in mom part: {branchesCount}");
-        Debug.Log($"Initial flowers count in all map: {flowerCount}");
-
         PrintItems();
-        */
     }
 
     private void DistributeAllItems(List<Vector2Int> allMap)
@@ -120,7 +114,6 @@ public class ResourcesGenerator : MonoBehaviour
         {
             ChestItems.Flower => 3,
             ChestItems.Branch => 2,
-            ChestItems.Meat => 1,
             ChestItems.Coin => 2,
             _ => throw new System.NotImplementedException(),
         };
@@ -128,41 +121,28 @@ public class ResourcesGenerator : MonoBehaviour
 
     private void PrintItems()
     {
+        int flowers = 0;
+        int branches = 0;
+        int coins = 0;
+        int meat = 0;
+
         for (int i = 0; i < mapHeight; i++)
         {
             for (int j = 0; j < mapWidth; j++)
             {
                 Inventory inventory = map[i, j].chestInventory;
 
-                string items = "";
-
-                int flowers = inventory.GetItemAmount(ItemType.Flower);
-                int branches = inventory.GetItemAmount(ItemType.Branch);
-                int meat = inventory.GetItemAmount(ItemType.Meat);
-                int coins = inventory.GetItemAmount(ItemType.Coin);
-
-                if (flowers > 0)
-                    items += $"Flower x{flowers}, ";
-
-                if (branches > 0)
-                    items += $"Branch x{branches}, ";
-
-                if (meat > 0)
-                    items += $"Meat x{meat}, ";
-
-                if (coins > 0)
-                    items += $"Coin x{coins}, ";
-
-                if (items == "")
-                    items = "Empty";
-
-                items = items.TrimEnd(' ', ',');
-
-                Debug.Log(
-                    $"Posición ({j}, {i}) [{map[i, j].type}]: {items}"
-                );
+                flowers += inventory.GetItemAmount(ItemType.Flower);
+                branches += inventory.GetItemAmount(ItemType.Branch);
+                coins += inventory.GetItemAmount(ItemType.Coin);
+                meat += inventory.GetItemAmount(ItemType.Meat);
             }
         }
+
+        Debug.Log($"Total flowers: {flowers}");
+        Debug.Log($"Total branches: {branches}");
+        Debug.Log($"Total coins: {coins}");
+        Debug.Log($"Total meat: {meat}");
     }
 
     private List<Vector2Int> TilesBeforeRiver(Vector2Int position)
@@ -219,6 +199,5 @@ public enum ChestItems
     None,
     Flower,
     Branch,
-    Meat,
     Coin,
 }
