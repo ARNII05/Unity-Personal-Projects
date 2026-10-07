@@ -12,6 +12,8 @@ public class ResourcesGenerator : MonoBehaviour
     private int mapHeight;
     private int mapWidth;
 
+    const int extraFlowers = 20;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -48,8 +50,9 @@ public class ResourcesGenerator : MonoBehaviour
             }
         }
 
-        int branchesCount = SetInitialItems(ChestItems.Branch, momPart, CraftingSystem.branchesForLog);
-        int flowerCount = SetInitialItems(ChestItems.Flower, allMap, CraftingSystem.flowersForBouquet);
+        SetInitialItems(ChestItems.Branch, momPart, CraftingSystem.branchesForLog * 3);
+        SetInitialItems(ChestItems.Flower, allMap, 
+            CraftingSystem.flowersForBouquet * CraftingSystem.BouquetsToWin + extraFlowers);
 
         DistributeAllItems(allMap);
 
