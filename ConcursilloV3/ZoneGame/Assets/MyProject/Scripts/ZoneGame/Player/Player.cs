@@ -439,9 +439,11 @@ public class Player : NetworkBehaviour
     public void SetNetworkMapPosServerRpc(
         Vector2Int newPos,
         Direction direction,
-        Vector3 entryPosition)
+        Vector3 entryPosition,
+        bool changeLastDirection = true)
     {
-        lastDirection = direction;
+        if (changeLastDirection)
+            lastDirection = direction;
 
         NetworkZoneEntryPosition.Value = entryPosition;
         NetworkMapPos.Value = newPos;

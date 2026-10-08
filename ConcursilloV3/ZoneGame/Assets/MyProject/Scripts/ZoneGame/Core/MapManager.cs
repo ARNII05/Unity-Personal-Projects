@@ -902,20 +902,15 @@ public class MapManager : MonoBehaviour
         Player player,
         Vector2Int newPos)
     {
-        Vector3 entryPosition =
-            GetPlayerEntryPoint(
-                player,
-                Direction.East,
-                newPos,
-                Side.Right
-            );
+        Vector3 tpPos = map[newPos.y, newPos.x].GetPlayerTpPosition(player == player1);
 
-        player.transform.position = entryPosition;
+        player.transform.position = tpPos;
 
         player.SetNetworkMapPosServerRpc(
             newPos,
             Direction.East,
-            entryPosition
+            tpPos,
+            false
         );
     }
 

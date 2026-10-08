@@ -15,6 +15,8 @@ public abstract class ZoneData
     public Vector3[] player2EntryPoints = new Vector3[6];
     public Vector3 player1ZonePos;
     public Vector3 player2ZonePos;
+    public Vector3 player1TpZonePos;
+    public Vector3 player2TpZonePos;
 
     public ZoneData(ZoneType type)
     {
@@ -33,6 +35,9 @@ public abstract class ZoneData
 
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
+
+        player1TpZonePos = new Vector3(-54.7f, -3.14f, -6.2f);
+        player2TpZonePos = new Vector3(203f, -3.15f, -6.2f);
     }
 
     public virtual Vector3 GetEntryPoint(Direction direction, Vector3[] entryPoints, Side side)
@@ -50,6 +55,11 @@ public abstract class ZoneData
     public Vector3[] GetPlayerEntryPoint(bool isPlayer1)
     {
         return isPlayer1 ? player1EntryPoints : player2EntryPoints;
+    }
+
+    public Vector3 GetPlayerTpPosition(bool isPlayer1)
+    {
+        return isPlayer1 ? player1TpZonePos : player2TpZonePos;
     }
 
     public abstract void OnEnter(Player player);
@@ -120,6 +130,9 @@ public class Forest : ZoneData
 
         player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
         player2ZonePos = new Vector3(206, 36.6f, 0);
+
+        player1TpZonePos = new Vector3(-45.5f, 8.3f, -6.2f);
+        player2TpZonePos = new Vector3(209f, 8.3f, -6.2f);
     }
 
     public override void OnEnter(Player player)
@@ -179,6 +192,9 @@ public class FlowerField : ZoneData
 
         player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
         player2ZonePos = new Vector3(206, 36.6f, 0);
+
+        player1TpZonePos = new Vector3(-35.2f, 7.4f, -6.2f);
+        player2TpZonePos = new Vector3(217f, 7.4f, -6.2f);
     }
 
     public override void OnEnter(Player player)
@@ -272,6 +288,9 @@ public class Camp : ZoneData
 
         player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
         player2ZonePos = new Vector3(206, 36.6f, 0);
+
+        player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
+        player2TpZonePos = new Vector3(189.1f, -4f, -6.2f);
     }
     public override void OnEnter(Player player)
     {

@@ -80,6 +80,8 @@ public class RabbitMapUI : MonoBehaviour
 
     public void TpToZone()
     {
+        CloseMap();
+        
         UIManager.Instance.PlayZoneTransition(
             () =>
             {
