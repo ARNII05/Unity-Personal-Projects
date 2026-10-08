@@ -56,7 +56,7 @@ public class ResourcesGenerator : MonoBehaviour
 
         DistributeAllItems(allMap);
 
-        PrintItems();
+        //PrintItems();
     }
 
     private void DistributeAllItems(List<Vector2Int> allMap)

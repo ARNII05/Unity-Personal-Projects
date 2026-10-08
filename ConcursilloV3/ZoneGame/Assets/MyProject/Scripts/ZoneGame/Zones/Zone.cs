@@ -6,7 +6,6 @@ public class Zone : MonoBehaviour
 {
     [SerializeField] private BorderZone[] borders;
     [SerializeField] private WarHog[] warHogs;
-    [SerializeField] private GameObject chest;
 
     public void Setup(Vector2Int mapPos, ZoneData[,] map)
     {
