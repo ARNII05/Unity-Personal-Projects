@@ -82,6 +82,7 @@ public abstract class ZoneData
             ZoneType.Camp => "Campamento",
             ZoneType.VerticalRiver => "Rio",
             ZoneType.HorizontalRiver => "Rio",
+            ZoneType.WolfDen => "Guardida del Lobo",
             _ => "Zona Desconocida",
         };
     }

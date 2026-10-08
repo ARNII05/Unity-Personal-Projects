@@ -20,6 +20,7 @@ public static class ZoneVault
             ZoneType.FlowerField => new FlowerField(),
             ZoneType.Ruins => new Ruins(),
             ZoneType.SpecialZone => new SpecialZone(),
+            ZoneType.WolfDen => new WolfDen(),
             _ => null,
         };
     }

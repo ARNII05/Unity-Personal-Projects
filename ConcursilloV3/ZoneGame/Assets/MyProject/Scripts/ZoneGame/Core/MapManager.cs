@@ -842,7 +842,7 @@ public class MapManager : MonoBehaviour
         );
     }
 
-    private Vector3 GetPlayerEntryPoint(
+    public Vector3 GetPlayerEntryPoint(
         Player player,
         Direction direction,
         Vector2Int newPos,
@@ -895,6 +895,27 @@ public class MapManager : MonoBehaviour
             newPos.y >= 0 &&
             newPos.y < mapHeight,
             newPos
+        );
+    }
+
+    public void TeleportPlayer(
+        Player player,
+        Vector2Int newPos)
+    {
+        Vector3 entryPosition =
+            GetPlayerEntryPoint(
+                player,
+                Direction.East,
+                newPos,
+                Side.Right
+            );
+
+        player.transform.position = entryPosition;
+
+        player.SetNetworkMapPosServerRpc(
+            newPos,
+            Direction.East,
+            entryPosition
         );
     }
 

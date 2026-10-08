@@ -103,7 +103,11 @@ public class Player : NetworkBehaviour
             case PlayerState.UsingRadar:
                 HandleRadarInput();
                 break;
-            
+
+            case PlayerState.UsingRabbitMap:
+                HandleRabbitMapInput();
+                break;
+
             case PlayerState.SelectingRole:
             case PlayerState.Interacting:
             case PlayerState.Transitioning:
@@ -123,6 +127,9 @@ public class Player : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.I))
             OpenInventory();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            HandleRabbitMapInput();
     }
 
     private void HandleTradingInput()
@@ -141,6 +148,12 @@ public class Player : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
             MapUI.Instance.ToggleMap(this);
+    }
+
+    private void HandleRabbitMapInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            RabbitMapUI.Instance.ToggleRabbitMap();
     }
 
     private void HandleRadarInput()
@@ -695,6 +708,8 @@ public class Player : NetworkBehaviour
 
         CraftingUI.Instance.Init();
 
+        RabbitMapUI.Instance.InitMap(this);
+
         State = PlayerState.Normal;
     }
 
@@ -964,6 +979,7 @@ public enum PlayerState
     SelectingRole,
     UsingRadar,
     UsingMap,
+    UsingRabbitMap,
     Inventory,
     Interacting,
     Transitioning,
