@@ -18,8 +18,7 @@ public class Player : NetworkBehaviour
     private BorderZone currentBorderZone;
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
-    private Grandma nearbyGrandma;
-    private GameObject rabbit;
+    private GameObject rabbit, nearbyGrandma;
 
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
@@ -105,12 +104,13 @@ public class Player : NetworkBehaviour
                 HandleRadarInput();
                 break;
 
-            case PlayerState.UsingRabbitMap:
+            case PlayerState.RabbitMapUI:
                 HandleRabbitMapInput();
                 break;
 
             case PlayerState.SelectingRole:
-            case PlayerState.Interacting:
+            case PlayerState.RabbitDialogueInteraction:
+            case PlayerState.GrandmaDialogueInteraction:
             case PlayerState.Transitioning:
             case PlayerState.Crafting:
             case PlayerState.EndGame:
@@ -150,8 +150,8 @@ public class Player : NetworkBehaviour
 
     private void HandleRabbitMapInput()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-            RabbitMapUI.Instance.ToggleRabbitMap();
+        if (Input.GetKeyDown(KeyCode.Tab))
+            RabbitDialogue.Instance.CloseMap();
     }
 
     private void HandleRadarInput()
@@ -205,13 +205,18 @@ public class Player : NetworkBehaviour
 
         if (nearbyGrandma != null)
         {
+            Debug.Log("Interacted with grandma");
             InteractWithGrandma();
             return;
+        }
+        else
+        {
+            Debug.Log("Grandma is null");
         }
 
         if (rabbit != null)
         {
-            RabbitMapUI.Instance.ToggleRabbitMap();
+            RabbitDialogue.Instance.OpenDialogue();
         }
     }
 
@@ -265,7 +270,7 @@ public class Player : NetworkBehaviour
 
     private void InteractWithGrandma()
     {
-        nearbyGrandma.Interact(this);
+        GrandmaUI.Instance.OpenPanel();
     }
 
     [ServerRpc]
@@ -714,7 +719,9 @@ public class Player : NetworkBehaviour
 
         CraftingUI.Instance.Init();
 
-        RabbitMapUI.Instance.InitMap(this);
+        RabbitDialogue.Instance.Init(this);
+
+        GrandmaUI.Instance.Init(this);
 
         State = PlayerState.Normal;
     }
@@ -928,8 +935,7 @@ public class Player : NetworkBehaviour
 
             case "Grandma":
 
-                nearbyGrandma =
-                    other.GetComponentInParent<Grandma>();
+                nearbyGrandma = other.gameObject;
 
                 break;
 
@@ -995,9 +1001,10 @@ public enum PlayerState
     SelectingRole,
     UsingRadar,
     UsingMap,
-    UsingRabbitMap,
+    RabbitDialogueInteraction,
+    RabbitMapUI,
+    GrandmaDialogueInteraction,
     Inventory,
-    Interacting,
     Transitioning,
     Trading,
     Crafting,

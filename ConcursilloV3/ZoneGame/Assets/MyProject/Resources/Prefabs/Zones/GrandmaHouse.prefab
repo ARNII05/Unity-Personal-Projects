@@ -8989,7 +8989,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4507730994668233031}
   - component: {fileID: 1605238514166484642}
-  - component: {fileID: 3676531374731250480}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Grandma
@@ -9057,18 +9056,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.8011208, y: 17.39103}
   m_EdgeRadius: 0
---- !u!114 &3676531374731250480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3263535976414379050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49d81577371c45d4cb908146f33d6d77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3323702051163647011
 GameObject:
   m_ObjectHideFlags: 0
@@ -17858,7 +17845,6 @@ MonoBehaviour:
   - {fileID: 1949188187170387203}
   - {fileID: 7969316738741369191}
   - {fileID: 6880787801293438366}
-  chest: {fileID: 4250553056100616801}
 --- !u!1 &6176193172608965115
 GameObject:
   m_ObjectHideFlags: 0

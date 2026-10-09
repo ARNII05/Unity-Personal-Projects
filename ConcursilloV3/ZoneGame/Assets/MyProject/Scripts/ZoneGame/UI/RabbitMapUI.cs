@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class RabbitMapUI : MonoBehaviour
 {
-    public static RabbitMapUI Instance { get; private set; }
-
     [SerializeField] private GameObject rabbitMap;
     [SerializeField] private Sprite questionSprite, UserSprite;
     
@@ -26,18 +24,6 @@ public class RabbitMapUI : MonoBehaviour
     private Vector2Int zoneToTp;
 
     private Image selectedImage;
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
 
     private void Start()
     {
@@ -65,7 +51,7 @@ public class RabbitMapUI : MonoBehaviour
 
     private void OpenMap()
     {
-        player.State = PlayerState.UsingRabbitMap;
+        player.State = PlayerState.RabbitMapUI;
 
         SetZoneInfo(false);
         SetZoneIcons();
