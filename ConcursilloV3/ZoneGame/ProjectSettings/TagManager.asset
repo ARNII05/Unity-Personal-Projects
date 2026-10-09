@@ -8,6 +8,7 @@ TagManager:
   - Chest
   - RiverInteractor
   - Grandma
+  - Rabbit
   layers:
   - Default
   - TransparentFX

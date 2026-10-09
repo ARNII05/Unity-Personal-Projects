@@ -19,6 +19,7 @@ public class Player : NetworkBehaviour
     private RiverInteraction currentRiverInteraction;
     private Chest nearbyChest;
     private Grandma nearbyGrandma;
+    private GameObject rabbit;
 
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
@@ -127,9 +128,6 @@ public class Player : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.I))
             OpenInventory();
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-            HandleRabbitMapInput();
     }
 
     private void HandleTradingInput()
@@ -152,7 +150,7 @@ public class Player : NetworkBehaviour
 
     private void HandleRabbitMapInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.F))
             RabbitMapUI.Instance.ToggleRabbitMap();
     }
 
@@ -208,6 +206,12 @@ public class Player : NetworkBehaviour
         if (nearbyGrandma != null)
         {
             InteractWithGrandma();
+            return;
+        }
+
+        if (rabbit != null)
+        {
+            RabbitMapUI.Instance.ToggleRabbitMap();
         }
     }
 
@@ -928,6 +932,11 @@ public class Player : NetworkBehaviour
                     other.GetComponentInParent<Grandma>();
 
                 break;
+
+            case "Rabbit":
+
+                rabbit = other.gameObject;
+                break;
         }
     }
 
@@ -957,6 +966,11 @@ public class Player : NetworkBehaviour
 
                 nearbyGrandma = null;
 
+                break;
+
+            case "Rabbit":
+
+                rabbit = null;
                 break;
         }
     }

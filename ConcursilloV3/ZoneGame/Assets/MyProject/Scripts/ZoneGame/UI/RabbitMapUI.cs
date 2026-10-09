@@ -25,6 +25,8 @@ public class RabbitMapUI : MonoBehaviour
 
     private Vector2Int zoneToTp;
 
+    private Image selectedImage;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -65,7 +67,7 @@ public class RabbitMapUI : MonoBehaviour
     {
         player.State = PlayerState.UsingRabbitMap;
 
-                SetZoneInfo(false);
+        SetZoneInfo(false);
         SetZoneIcons();
 
         rabbitMap.SetActive(true);
@@ -102,8 +104,10 @@ public class RabbitMapUI : MonoBehaviour
 
         bool zoneDiscovered = player.discoveredZones.Contains(zonePos);
 
+        SwapBackGroundColor(zonePos);
+        
         InitTpButton(zoneDiscovered, zonePos == player.NetworkMapPos.Value, 
-            zone.type == ZoneType.HorizontalRiver || zone.type == ZoneType.VerticalRiver, 
+            zone.type == ZoneType.HorizontalRiver || zone.type == ZoneType.VerticalRiver,
             zonePos);
 
         zoneImage.sprite = zoneDiscovered ? map[zonePos.y, zonePos.x].icon : questionSprite;
@@ -115,6 +119,29 @@ public class RabbitMapUI : MonoBehaviour
         };
         zoneState.text = $"Estado: {(zoneDiscovered ? "Descubierta" : "Sin descubrir")}";
         chestState.text = $"Cofre: {(zone.chestOpened ? "Abierto" : "Sin abrir")}";
+    }
+
+    private void SwapBackGroundColor(Vector2Int pos)
+    {
+        GameObject zone = grid.transform.Find($"Zone_{pos.y}_{pos.x}").gameObject;
+
+        if (selectedImage != null)
+        {
+            Color color = selectedImage.color;
+            color.a = 0f;
+            selectedImage.color = color;
+            selectedImage.gameObject.transform.localScale = Vector3.one;
+        }
+
+        Image actualZoneImg = zone.GetComponent<Image>();
+        
+        Color actualColor = actualZoneImg.color;
+        actualColor.a = 0.45f;
+        actualZoneImg.color = actualColor;
+        
+        zone.transform.localScale = Vector3.one * 1.3f;
+
+        selectedImage = actualZoneImg;
     }
 
     private void InitTpButton(bool isDiscovered, bool isSameZoneAsPlayer, bool isRiver, Vector2Int zonePos)
@@ -136,7 +163,7 @@ public class RabbitMapUI : MonoBehaviour
         foreach (Transform child in grid.transform)
         {
             Vector2Int zonePos = GetZonePosition(child.name);
-            child.GetComponent<Image>().sprite = GetZoneIcon(zonePos);
+            child.transform.Find("ZoneIcon").GetComponent<Image>().sprite = GetZoneIcon(zonePos);
         }
     }
 
@@ -168,6 +195,13 @@ public class RabbitMapUI : MonoBehaviour
             {
                 GameObject actualZone =
                     Instantiate(zoneZellPrefab, grid.transform);
+
+                Image zoneImg = actualZone.GetComponent<Image>();
+
+                Color color = zoneImg.color;
+                color.a = 0f;
+
+                zoneImg.color = color;
 
                 Button actualZoneBtn = actualZone.GetComponent<Button>();
 

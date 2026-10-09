@@ -19,7 +19,7 @@ public static class ZoneVault
             ZoneType.Tavern => new Tavern(),
             ZoneType.FlowerField => new FlowerField(),
             ZoneType.Ruins => new Ruins(),
-            ZoneType.SpecialZone => new SpecialZone(),
+            ZoneType.RabbitDen => new RabbitDen(),
             ZoneType.WolfDen => new WolfDen(),
             _ => null,
         };
