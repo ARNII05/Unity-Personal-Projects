@@ -7,7 +7,7 @@ public class Player1Controller : NetworkBehaviour
 {
     public Animator anim;
 
-    [Header("Configuración de Velocidad")]
+    [Header("ConfiguraciÃ³n de Velocidad")]
     private const float moveSpeed = 35;
 
     private Rigidbody2D rb;
@@ -56,11 +56,11 @@ public class Player1Controller : NetworkBehaviour
         if (player.State != PlayerState.Normal)
         {
             movementInput = Vector2.zero;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        rb.velocity = movementInput * moveSpeed;
+        rb.linearVelocity = movementInput * moveSpeed;
     }
 
     private void UpdateDirection()
