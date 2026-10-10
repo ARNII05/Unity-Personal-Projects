@@ -1,3 +1,4 @@
+
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,8 +13,31 @@ public class Player1Controller : NetworkBehaviour
 
     private Rigidbody2D rb;
     private Vector2 movementInput;
-
     private Player player;
+
+    private ZoneGameControls controls;
+
+    private void Awake()
+    {
+        controls = new ZoneGameControls();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+            controls.Gameplay.Enable();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        controls.Gameplay.Disable();
+    }
+
+    public override void OnDestroy()
+    {
+        controls?.Dispose();
+        base.OnDestroy();
+    }
 
     private void Start()
     {
@@ -37,9 +61,7 @@ public class Player1Controller : NetworkBehaviour
             return;
         }
 
-        movementInput.x = Input.GetAxisRaw("Horizontal");
-        movementInput.y = Input.GetAxisRaw("Vertical");
-
+        movementInput = controls.Gameplay.Move.ReadValue<Vector2>();
         movementInput = movementInput.normalized;
 
         player.IsWalking.Value = movementInput != Vector2.zero;
