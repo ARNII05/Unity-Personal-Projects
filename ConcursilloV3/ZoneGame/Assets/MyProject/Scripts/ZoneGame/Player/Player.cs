@@ -25,6 +25,7 @@ public class Player : NetworkBehaviour
     private InventoryUI inventoryUI;
     private Direction lastDirection;
     private bool waitingForZonePosition;
+    private ZoneGameControls controls;
 
     public PlayerState State { get; set; } = PlayerState.Normal;
     public HashSet<Vector2Int> discoveredZones = new();
@@ -68,6 +69,7 @@ public class Player : NetworkBehaviour
 
     private void Awake()
     {
+        controls = new ZoneGameControls();
         craftingSystem = GetComponent<CraftingSystem>();
     }
 
@@ -120,43 +122,43 @@ public class Player : NetworkBehaviour
 
     private void HandleNormalInput()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
             HandleTabInput();
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (controls.Gameplay.Interact.WasPressedThisFrame())
             HandleInteractionInput();
 
-        if (Input.GetKeyDown(KeyCode.I))
+        if (controls.Gameplay.Inventory.WasPressedThisFrame())
             OpenInventory();
     }
 
     private void HandleTradingInput()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (controls.Gameplay.Interact.WasPressedThisFrame())
             CloseChest();
     }
 
     private void HandleInventoryInput()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (controls.Gameplay.Inventory.WasPressedThisFrame())
             CloseInventory();
     }
 
     private void HandleMapInput()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
             MapUI.Instance.ToggleMap(this);
     }
 
     private void HandleRabbitMapInput()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
             RabbitDialogue.Instance.CloseMap();
     }
 
     private void HandleRadarInput()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
         {
             RadarUI.Instance.ToggleRadar(
                 this,
@@ -501,6 +503,8 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
         {
+            controls.Gameplay.Enable();
+            
             RoleSelectorUI.Instance.InitPlayer(this);
 
             GameObject inventoryPanel =
@@ -540,6 +544,18 @@ public class Player : NetworkBehaviour
             this,
             IsServer
         );
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        controls.Gameplay.Disable();
+        base.OnNetworkDespawn();
+    }
+
+    public override void OnDestroy()
+    {
+        controls?.Dispose();
+        base.OnDestroy();
     }
 
     [ServerRpc]

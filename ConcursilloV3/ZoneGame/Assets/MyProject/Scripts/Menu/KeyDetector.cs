@@ -1,16 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class KeyDetector : MonoBehaviour
 {
-    // Update is called once per frame
-    void Update()
+    private ZoneGameControls controls;
+
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            SceneManager.LoadScene(1);
-        }
+        controls = new ZoneGameControls();
+    }
+
+    private void OnEnable()
+    {
+        controls.Gameplay.Confirm.performed += OnConfirm;
+        controls.Gameplay.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Gameplay.Confirm.performed -= OnConfirm;
+        controls.Gameplay.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        controls?.Dispose();
+    }
+
+    private void OnConfirm(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        SceneManager.LoadScene(1);
     }
 }
