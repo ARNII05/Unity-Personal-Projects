@@ -17,7 +17,7 @@ public class Player : NetworkBehaviour
 
     private BorderZone currentBorderZone;
     private RiverInteraction currentRiverInteraction;
-    private Chest nearbyChest;
+    public Chest nearbyChest;
     private GameObject rabbit, nearbyGrandma;
 
     public Inventory inventory = new();

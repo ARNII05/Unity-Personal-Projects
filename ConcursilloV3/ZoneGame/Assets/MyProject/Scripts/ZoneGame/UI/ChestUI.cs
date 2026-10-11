@@ -24,6 +24,9 @@ public class ChestUI : MonoBehaviour
 
     public void SendItemsToChest(int index)
     {
+        if (!player || !player.nearbyChest)
+            return;
+
         ItemType itemType = playerInventoryUI.inventory.GetItemByIndex(index);
 
         if (!IsTransferable(itemType))
@@ -39,6 +42,9 @@ public class ChestUI : MonoBehaviour
 
     public void SendAllItemsToChest(int index)
     {
+        if (!player || !player.nearbyChest)
+            return;
+
         ItemType itemType = playerInventoryUI.inventory.GetItemByIndex(index);
         int itemAmount = playerInventoryUI.inventory.GetItemAmount(itemType);
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Zone : MonoBehaviour
 {
     [SerializeField] private BorderZone[] borders;
-    [SerializeField] private WarHog[] warHogs;
+    [SerializeField] private Protector[] protectors;
 
     public void Setup(Vector2Int mapPos, ZoneData[,] map)
     {
@@ -41,11 +41,11 @@ public class Zone : MonoBehaviour
             }
         }
 
-        foreach (var warHog in warHogs)
+        foreach (var protector in protectors)
         {
-            if (warHog.directionType == direction)
+            if (protector.directionType == direction)
             {
-                warHog.gameObject.SetActive(!active);
+                protector.gameObject.SetActive(!active);
             }
         }
     }

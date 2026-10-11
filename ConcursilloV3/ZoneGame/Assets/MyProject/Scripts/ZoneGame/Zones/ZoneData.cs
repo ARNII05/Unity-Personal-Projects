@@ -418,6 +418,18 @@ public class WolfDen : ZoneData
 {
     public WolfDen() : base(ZoneType.WolfDen)
     {
+
+
+
+
+
+
+
+
+
+
+        player1ZonePos = new Vector3(-0.9222412f, -0.2874908f, 0);
+        player2ZonePos = new Vector3(254.0778f, -0.2874908f, 0);
     }
 
     public override void OnEnter(Player player)
