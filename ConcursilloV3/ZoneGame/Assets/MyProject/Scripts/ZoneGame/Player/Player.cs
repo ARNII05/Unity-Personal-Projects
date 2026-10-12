@@ -11,6 +11,8 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(CraftingSystem))]
 public class Player : NetworkBehaviour
 {
+    private static readonly int DirectionHash = Animator.StringToHash("Direction");
+    private static readonly int IsWalkingHash = Animator.StringToHash("IsWalking");
     public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
     public GameObject currentZone;
@@ -24,7 +26,6 @@ public class Player : NetworkBehaviour
     public CraftingSystem craftingSystem;
     private InventoryUI inventoryUI;
     private Direction lastDirection;
-    private bool waitingForZonePosition;
     private ZoneGameControls controls;
 
     public PlayerState State { get; set; } = PlayerState.Normal;
@@ -35,7 +36,9 @@ public class Player : NetworkBehaviour
     private GameObject otherPlayerVisualRoot;
     private GameObject otherPlayerVisual;
 
-    private Animator otherPlayerAnimator;
+    private Animator otherPlayerAnimator; 
+
+    private Coroutine showOtherPlayerCoroutine;
 
     public NetworkVariable<Vector3> NetworkZoneEntryPosition = new(
         Vector3.zero,
@@ -79,7 +82,9 @@ public class Player : NetworkBehaviour
             return;
 
         HandleInput();
-        UpdateOtherPlayerVisual();
+
+        if (showOtherPlayerCoroutine == null)
+            UpdateOtherPlayerVisual();
     }
 
     private void HandleInput()
@@ -811,10 +816,16 @@ public class Player : NetworkBehaviour
         Vector2Int oldPos,
         Vector2Int newPos)
     {
+        if (!IsOwner)
+        {
+            Player localPlayer = MapManager.Instance.GetPlayerById(NetworkManager.Singleton.LocalClientId);
+
+            if (localPlayer != null)
+                localPlayer.HideOtherPlayerTemporarily(0.15f);
+        }
+
         if (!MapManager.Instance.IsMapReady)
             return;
-
-        waitingForZonePosition = true;
 
         MapManager.Instance.CreatePlayerZone(
             this,
@@ -827,35 +838,10 @@ public class Player : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        if (MapManager.Instance.Player1 == null ||
-            MapManager.Instance.Player2 == null)
+        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
+
+        if (otherPlayer == null)
             return;
-
-        Player otherPlayer;
-
-        if (this == MapManager.Instance.Player1)
-            otherPlayer = MapManager.Instance.Player2;
-        else
-            otherPlayer = MapManager.Instance.Player1;
-
-        if (otherPlayer.waitingForZonePosition)
-        {
-            const float positionTolerance = 0.05f;
-
-            float distance =
-                Vector3.Distance(
-                    otherPlayer.transform.position,
-                    otherPlayer.NetworkZoneEntryPosition.Value
-                );
-
-            if (distance > positionTolerance)
-            {
-                otherPlayerVisualRoot.SetActive(false);
-                return;
-            }
-
-            otherPlayer.waitingForZonePosition = false;
-        }
 
         if (currentZone == null)
         {
@@ -890,14 +876,37 @@ public class Player : NetworkBehaviour
         otherPlayerVisualRoot.SetActive(true);
 
         otherPlayerAnimator.SetInteger(
-            "Direction",
+            DirectionHash,
             otherPlayer.NetworkDirection.Value
         );
 
         otherPlayerAnimator.SetBool(
-            "IsWalking",
+            IsWalkingHash,
             otherPlayer.IsWalking.Value
         );
+    }
+
+    public void HideOtherPlayerTemporarily(float delay = 0.1f)
+    {
+        if (!IsOwner)
+            return;
+
+        if (showOtherPlayerCoroutine != null)
+            StopCoroutine(showOtherPlayerCoroutine);
+
+        otherPlayerVisualRoot.SetActive(false);
+
+        showOtherPlayerCoroutine =
+            StartCoroutine(ShowOtherPlayerAfterDelay(delay));
+    }
+
+    private IEnumerator ShowOtherPlayerAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        UpdateOtherPlayerVisual();
+
+        showOtherPlayerCoroutine = null;
     }
 
     [ClientRpc]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -831,8 +832,19 @@ public class MapManager : MonoBehaviour
                         newPos,
                         side
                     );
-
-                player.transform.position = entryPosition;
+                
+                if (player.TryGetComponent<NetworkTransform>(out var networkTransform))
+                {
+                    networkTransform.Teleport(
+                        entryPosition,
+                        player.transform.rotation,
+                        player.transform.localScale
+                    );
+                }
+                else
+                {
+                    player.transform.position = entryPosition;
+                }
 
                 player.SetNetworkMapPosServerRpc(
                     newPos,
