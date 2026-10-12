@@ -131,8 +131,8 @@ public class Forest : ZoneData
         player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
         player2ZonePos = new Vector3(206, 36.6f, 0);
 
-        player1TpZonePos = new Vector3(-45.5f, 8.3f, -6.2f);
-        player2TpZonePos = new Vector3(209f, 8.3f, -6.2f);
+        player1TpZonePos = new Vector3(-42.5f, 10.3f, -6.2f);
+        player2TpZonePos = new Vector3(212f, 11.3f, -6.2f);
     }
 
     public override void OnEnter(Player player)
@@ -418,18 +418,21 @@ public class WolfDen : ZoneData
 {
     public WolfDen() : base(ZoneType.WolfDen)
     {
+        player1EntryPoints[0] = new Vector3(-34.37933f, 3.65716f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-119.3793f, -40.34284f, -6.2f);
+        player1EntryPoints[2] = new Vector3(25.62067f, 21.65716f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-97.37933f, 28.65716f, -6.2f);
 
+        player2EntryPoints[0] = new Vector3(221.6207f, 2.657158f, -6.2f);
+        player2EntryPoints[1] = new Vector3(135.6207f, -40.34284f, -6.2f);
+        player2EntryPoints[2] = new Vector3(280.6207f, 21.65716f, -6.2f);
+        player2EntryPoints[3] = new Vector3(157.6207f, 28.65716f, -6.2f);
 
-
-
-
-
-
-
-
-
-        player1ZonePos = new Vector3(-0.9222412f, -0.2874908f, 0);
-        player2ZonePos = new Vector3(254.0778f, -0.2874908f, 0);
+        player1ZonePos = new Vector3(-0.9f, -0.2f, 0);
+        player2ZonePos = new Vector3(254f, -0.2f, 0);
+        
+        player1TpZonePos = new Vector3(-23f, -10f, -6.2f);
+        player2TpZonePos = new Vector3(232f, -10f, -6.2f);
     }
 
     public override void OnEnter(Player player)

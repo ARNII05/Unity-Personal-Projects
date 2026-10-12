@@ -151,6 +151,8 @@ public class MapManager : MonoBehaviour
             {
                 FillOtherZones();
 
+                startPos = wolfDenPos;
+
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
 

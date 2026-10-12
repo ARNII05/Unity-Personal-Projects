@@ -211,10 +211,6 @@ public class Player : NetworkBehaviour
             InteractWithGrandma();
             return;
         }
-        else
-        {
-            Debug.Log("Grandma is null");
-        }
 
         if (rabbit != null)
         {
