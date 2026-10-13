@@ -45,30 +45,30 @@ public class MapUI : MonoBehaviour
         mapObj.SetActive(false);
     }
 
-    public void ToggleMap(Player player)
+    public void Init(Player player)
     {
-        if (mapObj.activeSelf)
-            OnClose(player);
-        else
-            OnOpen(player);
-    }
-
-    private void OnOpen(Player player)
-    {
-        player.State = PlayerState.UsingMap;
-
-        if (mapPlayer == null)
-        {
-            mapPlayer = player;
-            otherPlayer = MapManager.Instance.GetOtherPlayer(player);
-        }
+        mapPlayer = player;
+        otherPlayer = MapManager.Instance.GetOtherPlayer(player);
 
         mapPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
         otherPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
 
-        mapObj.SetActive(true);
+        UpdateMap();
+    }
 
-        UpdateMap(mapPlayer);
+    public void ToggleMap()
+    {
+        if (mapObj.activeSelf)
+            OnClose();
+        else
+            OnOpen();
+    }
+
+    private void OnOpen()
+    {
+        mapPlayer.State = PlayerState.UsingMap;
+
+        mapObj.SetActive(true);
     }
 
     private void OnPlayerPositionChanged(
@@ -78,12 +78,12 @@ public class MapUI : MonoBehaviour
         if (mapPlayer == null)
             return;
 
-        UpdateCoordinates(mapPlayer);
+        UpdateMap();
     }
 
-    private void OnClose(Player player)
+    private void OnClose()
     {
-        player.State = PlayerState.Normal;
+        mapPlayer.State = PlayerState.Normal;
 
         if (mapPlayer != null)
             mapPlayer.NetworkMapPos.OnValueChanged -= OnPlayerPositionChanged;
@@ -98,20 +98,18 @@ public class MapUI : MonoBehaviour
         mapObj.SetActive(false);
     }
 
-    public void UpdateMap(Player player)
+    public void UpdateMap()
     {
         map = MapManager.Instance.map;
 
-        UpdateCoordinates(player);
+        UpdateCoordinates();
 
-        UpdateZoneIcons(player);
+        UpdateZoneIcons();
     }
 
-    private void UpdateCoordinates(Player player)
+    private void UpdateCoordinates()
     {
-        Player otherPlayer = MapManager.Instance.GetOtherPlayer(player);
-
-        Vector2Int playerPos = player.NetworkMapPos.Value;
+        Vector2Int playerPos = mapPlayer.NetworkMapPos.Value;
         Vector2Int otherPlayerPos = otherPlayer.NetworkMapPos.Value;
         Vector2Int grandmaHousePos = MapManager.Instance.grandmaPos;
         Vector2Int wolfDenPos = MapManager.Instance.wolfDenPos;
@@ -120,14 +118,14 @@ public class MapUI : MonoBehaviour
 
         zoneName.text = currentZone.GetName();
 
-        p1Coordinates.text = $"{player.name.ToUpper()}\nX: {playerPos.x + 1}\nY: {playerPos.y + 1}";
+        p1Coordinates.text = $"{mapPlayer.name.ToUpper()}\nX: {playerPos.x + 1}\nY: {playerPos.y + 1}";
         p2Coordinates.text = $"{otherPlayer.name.ToUpper()}\nX: {otherPlayerPos.x + 1}\nY: {otherPlayerPos.y + 1}";
 
         grandmaHouseCoordinates.text = $"Casa de la Abuela\nX: {grandmaHousePos.x + 1}\nY: {grandmaHousePos.y + 1}";
         wolfDenCoordinates.text = $"Guarida del lobo\nX: {wolfDenPos.x + 1}\nY: {wolfDenPos.y + 1}";
     }
 
-    private void UpdateZoneIcons(Player player)
+    private void UpdateZoneIcons()
     {
         GameObject actualZone = mapZones.transform.Find("ActualZone").gameObject;
         GameObject northZone = mapZones.transform.Find("NorthZone").gameObject;
@@ -135,7 +133,7 @@ public class MapUI : MonoBehaviour
         GameObject eastZone = mapZones.transform.Find("EastZone").gameObject;
         GameObject westZone = mapZones.transform.Find("WestZone").gameObject;
 
-        Vector2Int playerPos = player.NetworkMapPos.Value;
+        Vector2Int playerPos = mapPlayer.NetworkMapPos.Value;
 
         actualZone.GetComponent<Image>().sprite = map[playerPos.y, playerPos.x].icon;
         northZone.GetComponent<Image>().sprite = GetZoneIcon(Direction.North, map, playerPos);

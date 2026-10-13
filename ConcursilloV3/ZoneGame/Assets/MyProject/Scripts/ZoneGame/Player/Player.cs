@@ -152,7 +152,7 @@ public class Player : NetworkBehaviour
     private void HandleMapInput()
     {
         if (controls.Gameplay.InitialObj.WasPressedThisFrame())
-            MapUI.Instance.ToggleMap(this);
+            MapUI.Instance.ToggleMap();
     }
 
     private void HandleRabbitMapInput()
@@ -165,10 +165,7 @@ public class Player : NetworkBehaviour
     {
         if (controls.Gameplay.InitialObj.WasPressedThisFrame())
         {
-            RadarUI.Instance.ToggleRadar(
-                this,
-                NetworkMapPos.Value
-            );
+            RadarUI.Instance.ToggleRadar();
         }
     }
 
@@ -176,17 +173,13 @@ public class Player : NetworkBehaviour
     {
         if (inventory.GetItemAmount(ItemType.Radar) > 0)
         {
-            RadarUI.Instance.ToggleRadar(
-                this,
-                NetworkMapPos.Value
-            );
-
+            RadarUI.Instance.ToggleRadar();
             return;
         }
 
         if (inventory.GetItemAmount(ItemType.Map) > 0)
         {
-            MapUI.Instance.ToggleMap(this);
+            MapUI.Instance.ToggleMap();
         }
     }
 
@@ -740,6 +733,8 @@ public class Player : NetworkBehaviour
 
         GrandmaUI.Instance.Init(this);
 
+        MapManager.Instance.wolf.Init();
+
         State = PlayerState.Normal;
     }
 
@@ -750,15 +745,21 @@ public class Player : NetworkBehaviour
             return;
 
         if (Role.Value == PlayerRole.Gardener)
+        {
             inventory.AddItem(
                 ItemType.Radar,
                 1
             );
+            RadarUI.Instance.Init(this);
+        }
         else if (Role.Value == PlayerRole.Builder)
+        {
             inventory.AddItem(
                 ItemType.Map,
                 1
             );
+            MapUI.Instance.Init(this);
+        }
 
         inventory.AddItem(ItemType.Meat, 1);
         inventory.AddItem(ItemType.Log, 7);
@@ -918,7 +919,10 @@ public class Player : NetworkBehaviour
         Vector2Int[] positions)
     {
         if (IsServer)
+        {
+            Debug.Log("No envio el mapa 2 veces. Soy el servidor");
             return;
+        }
 
         MapManager.Instance.ReceiveMapFromServer(
             zoneTypes,

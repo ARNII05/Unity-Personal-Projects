@@ -1,0 +1,588 @@
+using System;
+using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEngine;
+using Random = UnityEngine.Random;
+
+public class Wolf : NetworkBehaviour
+{
+    const int moveInterval = 10;
+    const int distanceToChasePlayer = 3;
+    const int distanceToChaseMeat = 3;
+
+    int mapWidth;
+    int mapHeight;
+
+    float time = moveInterval;
+
+    private Player player1, player2;
+
+    private ZoneData[,] map;
+
+    public NetworkVariable<Vector2Int> NetworkPosition = new(
+        Vector2Int.zero,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
+    private WolfState wolfState;
+
+    private bool readyToMove = false;
+
+    public void Init()
+    {
+        player1 = MapManager.Instance.Player1;
+        player2 = MapManager.Instance.Player2;
+        
+        map = MapManager.Instance.map;
+        NetworkPosition.Value = MapManager.Instance.wolfDenPos;
+        mapWidth = MapManager.mapWidth;
+        mapHeight = MapManager.mapHeight;
+
+        readyToMove = true;
+    }
+
+    private void Update()
+    {
+        if (!IsServer || !readyToMove)
+            return;
+
+        time -= Time.deltaTime;
+
+        if (time <= 0)
+        {
+            MoveWolf();
+            time = moveInterval;
+        }
+    }
+
+    private void MoveWolf()
+    {
+        if (wolfState == WolfState.MovingToDen)
+        {
+            Debug.Log($"El lobo se está moviendo hacia su madriguera desde {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
+            MoveToDen();
+            Debug.Log($"Posición del lobo después de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
+            return;
+        }
+
+        Debug.Log($"Posición del lobo antes de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
+
+        MeatMoveResult meatResult = CanMoveToMeat();
+        PlayerMoveResult pMove = CanMoveToPlayer();
+
+        int option = (meatResult.canChase, pMove.canChase) switch
+        {
+            (true, _) => 1,
+            (false, true) => 2,
+            _ => 3
+        };
+
+        switch (option)
+        {
+            case 1:
+                MoveToMeat(meatResult.pos);
+                break;
+            case 2:
+                MoveToPlayer(pMove.player);
+                break;
+            default:
+                MoveRandomly();
+                break;
+        }
+
+        CatchingPlayerMove caught = CheckPlayerCollision();
+
+        if (caught.canGoToDen)
+        {
+            foreach (var player in caught.players)
+            {
+                StealFromPlayer(player);
+            }
+            
+            wolfState = WolfState.MovingToDen;
+        }
+
+        Debug.Log($"Posición del lobo despúes de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
+    }
+
+    private void StealFromPlayer(Player player)
+    {
+        ClientRpcParams rpcParams = new()
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { player.OwnerClientId }
+            }
+        };
+
+        StealFromPlayerClientRpc(
+            player.NetworkObjectId,
+            rpcParams
+        );
+    }
+
+    [ClientRpc]
+    private void StealFromPlayerClientRpc(
+        ulong playerNetworkObjectId,
+        ClientRpcParams rpcParams = default)
+    {
+        if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(
+                playerNetworkObjectId, out NetworkObject playerObject))
+            return;
+
+        Player player = playerObject.GetComponent<Player>();
+
+        if (player == null || !player.IsOwner)
+            return;
+
+        ItemsToSteal(player);
+    }
+
+    private void ItemsToSteal(Player player)
+    {
+        const int maxCountToSteal = 5;
+
+        if (player.inventory.items.Count == 0)
+        {
+            Debug.Log($"El lobo ha pillado a {player.name} pero no tiene items");
+            // Mostrar diálogo de que no tiene objetos.
+            return;
+        }
+
+        int itemIndex = Random.Range(0, player.inventory.items.Count);
+        ItemType item = player.inventory.GetItemByIndex(itemIndex);
+
+        int availableAmount = player.inventory.GetItemAmount(item);
+        int amountToSteal = Random.Range(
+            1,
+            Mathf.Min(maxCountToSteal, availableAmount) + 1
+        );
+
+        player.inventory.RemoveItem(item, amountToSteal);
+
+        AddItemsToWolfDenChestRpc(item, amountToSteal);
+
+        Debug.Log($"El lobo ha pillado a {player.name} y tiene items");
+        // Mostrar diálogo de que ha robado x objetos
+    }
+
+    [Rpc(SendTo.Server)]
+    private void AddItemsToWolfDenChestRpc(ItemType item, int amount)
+    {
+        Vector2Int pos = MapManager.Instance.wolfDenPos;
+        ZoneData wolfDen = map[pos.y, pos.x];
+
+        wolfDen.chestInventory.AddItem(item, amount);
+
+        AddItemsToWolfDenChestClientRpc(item, amount, pos);
+    }
+
+    [ClientRpc]
+    private void AddItemsToWolfDenChestClientRpc(ItemType item, int amount, Vector2Int pos)
+    {
+        if (IsServer)
+            return;
+
+        ZoneData wolfDen = map[pos.y, pos.x];
+
+        wolfDen.chestInventory.AddItem(item, amount);
+    }
+
+    private void MoveToDen()
+    {
+        Vector2Int wolfDenPos = MapManager.Instance.wolfDenPos;
+
+        Debug.Log($"El lobo se está moviendo hacia su cueva en la posicion: {wolfDenPos.y}, {wolfDenPos.x}");
+       
+        Direction direction = MoveTowards(wolfDenPos);
+
+        NetworkPosition.Value = MoveWolfTo(direction);
+
+        if (NetworkPosition.Value == wolfDenPos)
+        {
+            Debug.Log($"El lobo ha llegado a la cueva en la posicion: {wolfDenPos.y}, {wolfDenPos.x}");
+            wolfState = WolfState.MovingRandom;
+        }
+    }
+
+    private void MoveToMeat(Vector2Int meatPos)
+    {
+        Debug.Log($"El lobo se está moviendo hacia una carne en la posicion: {meatPos.y}, {meatPos.x}");
+
+        wolfState = WolfState.MovingToMeat;
+
+        Direction direction = MoveTowards(meatPos);
+
+        NetworkPosition.Value = MoveWolfTo(direction);
+
+        if (NetworkPosition.Value == meatPos)
+        {
+            Debug.Log($"El lobo se ha comido la carne en la posicion: {meatPos.y}, {meatPos.x}");
+            RemoveMeatInZone(meatPos);
+            wolfState = WolfState.MovingToDen;
+        }
+    }
+
+    private void MoveToPlayer(Player player)
+    {
+        Debug.Log($"El lobo se está moviendo hacia {player.name} en la posicion: {player.NetworkMapPos.Value.y}, {player.NetworkMapPos.Value.x}");
+
+        wolfState = WolfState.MovingToPlayer;
+
+        Direction direction = MoveTowards(player.NetworkMapPos.Value);
+
+        NetworkPosition.Value = MoveWolfTo(direction);
+    }
+
+    private void RemoveMeatInZone(Vector2Int meatPos)
+    {
+        ZoneData zone = map[meatPos.y, meatPos.x];
+
+        zone.chestInventory.RemoveItem(ItemType.Meat, 1);
+
+        RemoveMeatInZoneClientRpc(meatPos);
+    }
+
+    [ClientRpc]
+    private void RemoveMeatInZoneClientRpc(Vector2Int meatPos)
+    {
+        if (IsServer)
+            return;
+        
+        ZoneData zone = map[meatPos.y, meatPos.x];
+
+        zone.chestInventory.RemoveItem(ItemType.Meat, 1);
+    }
+
+    private Direction MoveTowards(Vector2Int targetPos)
+    {
+        Vector2Int startPos = NetworkPosition.Value;
+        
+        if (startPos == targetPos)
+            return Direction.None;
+        
+        Queue<Vector2Int> positionsToVisit = new();
+
+        Dictionary<Vector2Int, Vector2Int> previousPositions = new();
+
+        positionsToVisit.Enqueue(startPos);
+        previousPositions[startPos] = startPos;
+
+        Direction[] directions =
+        {
+            Direction.North,
+            Direction.South,
+            Direction.East,
+            Direction.West
+        };
+
+        while (positionsToVisit.Count > 0)
+        {
+            Vector2Int currentPos = positionsToVisit.Dequeue();
+
+            foreach (Direction direction in directions)
+            {
+                ZoneMove move = CanSwapZone(currentPos, direction);
+                
+                if (!move.canMove)
+                    continue;
+
+                Vector2Int nextPos = move.newPos;
+
+                if (previousPositions.ContainsKey(nextPos))
+                    continue;
+                
+                previousPositions[nextPos] = currentPos;
+
+                if (nextPos == targetPos)
+                {
+                    return GetFirstDirection(
+                        startPos,
+                        targetPos,
+                        previousPositions
+                    );
+                }
+
+                positionsToVisit.Enqueue(nextPos);
+            }
+        }
+
+        Debug.LogWarning($"El lobo no encuentra una ruta hasta {targetPos}.");
+
+        return Direction.None;
+    }
+
+    private Direction GetFirstDirection(
+        Vector2Int startPos,
+        Vector2Int targetPos,
+        Dictionary<Vector2Int, Vector2Int> previousPositions)
+    {
+        Vector2Int currentPos = targetPos;
+
+        while (previousPositions[currentPos] != startPos)
+        {
+            currentPos = previousPositions[currentPos];
+        }
+
+        Vector2Int difference = currentPos - startPos;
+
+        if (difference == Vector2Int.up)
+            return Direction.North;
+
+        if (difference == Vector2Int.down)
+            return Direction.South;
+
+        if (difference == Vector2Int.right)
+            return Direction.East;
+
+        if (difference == Vector2Int.left)
+            return Direction.West;
+
+        return Direction.None;
+    }
+
+    private ZoneMove CanMoveTo(Direction direction)
+    {
+        return CanSwapZone(NetworkPosition.Value, direction);
+    }
+
+    private ZoneMove CanSwapZone(
+        Vector2Int position,
+        Direction direction)
+    {
+        Vector2Int newPos = position;
+
+        switch (direction)
+        {
+            case Direction.North:
+                newPos.y++;
+                break;
+
+            case Direction.South:
+                newPos.y--;
+                break;
+
+            case Direction.East:
+                newPos.x++;
+                break;
+
+            case Direction.West:
+                newPos.x--;
+                break;
+        }
+
+        return new ZoneMove(
+            newPos.x >= 0 &&
+            newPos.x < mapWidth &&
+            newPos.y >= 0 &&
+            newPos.y < mapHeight &&
+            map[newPos.y, newPos.x].type != ZoneType.Camp,
+            newPos
+        );
+    }
+
+    private Vector2Int MoveWolfTo(Direction direction)
+    {
+        return direction switch
+        {
+            Direction.North => NetworkPosition.Value + Vector2Int.up,
+            Direction.South => NetworkPosition.Value + Vector2Int.down,
+            Direction.East => NetworkPosition.Value + Vector2Int.right,
+            Direction.West => NetworkPosition.Value + Vector2Int.left,
+            _ => NetworkPosition.Value
+        };
+    }
+
+    private void MoveRandomly()
+    {
+        Debug.Log("El lobo se está moviendo random");
+
+        wolfState = WolfState.MovingRandom;
+
+        Direction[] directions =
+        {
+            Direction.North,
+            Direction.South,
+            Direction.East,
+            Direction.West
+        };
+
+        for (int i = directions.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (directions[i], directions[j]) = (directions[j], directions[i]);
+        }
+       
+        foreach (Direction direction in directions)
+        {
+            var moveResult = CanMoveTo(direction);
+
+            if (!moveResult.canMove)
+                continue;
+
+            NetworkPosition.Value = moveResult.newPos;
+            return;
+        }
+
+        Debug.Log("El lobo no tiene movimientos disponibles.");
+    }
+
+    private MeatMoveResult CanMoveToMeat()
+    {
+        int closestDistance = int.MaxValue;
+        Vector2Int closestPosition = Vector2Int.zero;
+        bool foundMeat = false;
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                ZoneData zone = map[y, x];
+
+                if (zone.type == ZoneType.Camp ||
+                    zone.type == ZoneType.WolfDen ||
+                    zone.chestInventory.GetItemAmount(ItemType.Meat) <= 0)
+                    continue;
+
+                int distanceToMeat =
+                    Mathf.Abs(x - NetworkPosition.Value.x) +
+                    Mathf.Abs(y - NetworkPosition.Value.y);
+
+                if (distanceToMeat > distanceToChaseMeat)
+                    continue;
+
+                if (distanceToMeat < closestDistance)
+                {
+                    closestDistance = distanceToMeat;
+                    closestPosition = new Vector2Int(x, y);
+                    foundMeat = true;
+                }
+            }
+        }
+
+        return new MeatMoveResult(foundMeat, closestPosition);
+    }
+
+    private PlayerMoveResult CanMoveToPlayer()
+    {
+        Vector2Int player1Pos = player1.NetworkMapPos.Value;
+        Vector2Int player2Pos = player2.NetworkMapPos.Value;
+
+        bool player1Safe =
+            map[player1Pos.y, player1Pos.x].type == ZoneType.Camp;
+
+        bool player2Safe =
+            map[player2Pos.y, player2Pos.x].type == ZoneType.Camp;
+
+        int distanceToPlayer1 =
+            Mathf.Abs(player1Pos.x - NetworkPosition.Value.x) +
+            Mathf.Abs(player1Pos.y - NetworkPosition.Value.y);
+
+        int distanceToPlayer2 =
+            Mathf.Abs(player2Pos.x - NetworkPosition.Value.x) +
+            Mathf.Abs(player2Pos.y - NetworkPosition.Value.y);
+
+        bool player1InRange =
+            !player1Safe && distanceToPlayer1 <= distanceToChasePlayer;
+
+        bool player2InRange =
+            !player2Safe && distanceToPlayer2 <= distanceToChasePlayer;
+
+        if (!player1InRange && !player2InRange)
+            return new PlayerMoveResult(false, null);
+
+        if (!player1InRange)
+            return new PlayerMoveResult(true, player2);
+
+        if (!player2InRange)
+            return new PlayerMoveResult(true, player1);
+
+        if (distanceToPlayer1 == distanceToPlayer2)
+            return new PlayerMoveResult(
+                true,
+                Random.Range(0, 2) == 0 ? player1 : player2
+            );
+
+        return new PlayerMoveResult(
+            true,
+            distanceToPlayer1 < distanceToPlayer2 ? player1 : player2
+        );
+    }
+
+    private CatchingPlayerMove CheckPlayerCollision()
+    {
+        Vector2Int p1Pos = player1.NetworkMapPos.Value;
+        Vector2Int p2Pos = player2.NetworkMapPos.Value;
+
+        bool isInSamePosWithP1 = p1Pos == NetworkPosition.Value;
+        bool isInSamePosWithP2 = p2Pos == NetworkPosition.Value;
+
+        return (isInSamePosWithP1, isInSamePosWithP2) switch
+        {
+            (true, true) => new CatchingPlayerMove(true, new[] { player1, player2 }),
+            (true, false) => new CatchingPlayerMove(true, new[] { player1 }),
+            (false, true) => new CatchingPlayerMove(true, new[] { player2 }),
+            _ => new CatchingPlayerMove(false, null)
+        }; 
+    }
+}
+
+public enum WolfState
+{
+    MovingRandom,
+    MovingToPlayer,
+    MovingToMeat,
+    MovingToDen
+}
+
+public struct ZoneMove
+{
+    public bool canMove;
+    public Vector2Int newPos;
+
+    public ZoneMove(
+        bool canMove,
+        Vector2Int newPos)
+    {
+        this.canMove = canMove;
+        this.newPos = newPos;
+    }
+}
+
+public struct PlayerMoveResult
+{
+    public bool canChase;
+    public Player player;
+
+    public PlayerMoveResult(bool canChase, Player player)
+    {
+        this.canChase = canChase;
+        this.player = player;
+    }
+}
+
+public struct MeatMoveResult
+{
+    public bool canChase;
+    public Vector2Int pos;
+
+    public MeatMoveResult(bool canChase, Vector2Int pos)
+    {
+        this.canChase = canChase;
+        this.pos = pos;
+    }
+}
+
+public struct CatchingPlayerMove
+{
+    public bool canGoToDen;
+    public Player[] players;
+    
+    public CatchingPlayerMove(bool canGoToDen, Player[] players)
+    {
+        this.canGoToDen = canGoToDen;
+        this.players = players;
+    }
+}

@@ -9,11 +9,14 @@ public class RadarUI : MonoBehaviour
     public static RadarUI Instance { get; private set; }
 
     [SerializeField] private GameObject radarDevice;
-    [SerializeField] private int distance;
     
     private AudioSource radarAudioSource;
     private VideoPlayer videoPlayer;
     private TextMeshProUGUI radarText;
+
+    private Player playerWithRadar;
+
+    public Wolf wolf;
 
     private void Awake()
     {
@@ -35,6 +38,15 @@ public class RadarUI : MonoBehaviour
         videoPlayer.Prepare();
     }
 
+    public void Init(Player player)
+    {
+        playerWithRadar = player;
+        UpdateRadar(new Vector2Int(0, 0), new Vector2Int(0, 0));
+
+        playerWithRadar.NetworkMapPos.OnValueChanged += UpdateRadar;
+        wolf.NetworkPosition.OnValueChanged += UpdateRadar;
+    }
+
     private void OnVideoPrepared(VideoPlayer vp)
     {
         vp.Play();
@@ -42,19 +54,17 @@ public class RadarUI : MonoBehaviour
         vp.prepareCompleted -= OnVideoPrepared;
     }
 
-    public void ToggleRadar(Player player, Vector2Int wolfPosition)
+    public void ToggleRadar()
     {
         if (radarDevice.activeSelf)
-            OnClose(player);
+            OnClose();
         else
-            OnOpen(player, wolfPosition);
+            OnOpen();
     }
 
-    private void OnOpen(Player player, Vector2Int wolfPosition)
+    private void OnOpen()
     {
-        player.State = PlayerState.UsingRadar;
-
-        UpdateRadar(player.NetworkMapPos.Value, wolfPosition);
+        playerWithRadar.State = PlayerState.UsingRadar;
 
         radarDevice.SetActive(true);
 
@@ -70,19 +80,21 @@ public class RadarUI : MonoBehaviour
         }
     }
 
-    private void OnClose(Player player)
+    private void OnClose()
     {
         radarDevice.SetActive(false);
 
         videoPlayer.Pause();
         radarAudioSource.Pause();
 
-        player.State = PlayerState.Normal;
+        playerWithRadar.State = PlayerState.Normal;
     }
 
-    public void UpdateRadar(Vector2Int playerPosition, Vector2Int wolfPosition)
+    private void UpdateRadar(Vector2Int oldPos,
+        Vector2Int newPos)
     {
-        //int distance = Mathf.Abs(playerPosition.x - wolfPosition.x) + Mathf.Abs(playerPosition.y - wolfPosition.y);
+        int distance = Mathf.Abs(playerWithRadar.NetworkMapPos.Value.y - wolf.NetworkPosition.Value.y) 
+            + Mathf.Abs(playerWithRadar.NetworkMapPos.Value.x - wolf.NetworkPosition.Value.x);
 
         radarText.text = distance switch
         {

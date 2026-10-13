@@ -35,6 +35,8 @@ public class MapManager : MonoBehaviour
     public Player Player1 => player1;
     public Player Player2 => player2;
 
+    public Wolf wolf;
+
     public static MapManager Instance
     {
         get
@@ -150,9 +152,11 @@ public class MapManager : MonoBehaviour
 
             if (HasEnoughAccessibleTilesBeforeRiver())
             {
+                PutWolfDenPos(startPos, grandmaPos);
+                
                 FillOtherZones();
 
-                startPos = wolfDenPos;
+                ImplementCamps();
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
@@ -386,7 +390,6 @@ public class MapManager : MonoBehaviour
 
         if (player.IsOwner)
         {
-            MapUI.Instance.UpdateMap(player);
             chests[0].chestUI.SetInventory(zoneData.chestInventory);
             player.discoveredZones.Add(position);
         }
@@ -562,12 +565,8 @@ public class MapManager : MonoBehaviour
 
     private void FillOtherZones()
     {
-        PutWolfDenPos(startPos, grandmaPos);
-
         List<ZoneType> allowedFillTypes =
             new();
-
-        int campZones = 0;
 
         foreach (
             ZoneType type
@@ -579,7 +578,8 @@ public class MapManager : MonoBehaviour
                 type != ZoneType.GrandmaHouse &&
                 type != ZoneType.VerticalRiver &&
                 type != ZoneType.HorizontalRiver &&
-                type != ZoneType.WolfDen)
+                type != ZoneType.WolfDen &&
+                type != ZoneType.Camp)
             {
                 allowedFillTypes.Add(type);
             }
@@ -603,21 +603,110 @@ public class MapManager : MonoBehaviour
                 ZoneType selectedType =
                     allowedFillTypes[randomIndex];
 
-                if (campZones >= 5 && selectedType == ZoneType.Camp)
-                {
-                    x--;
-                    continue;
-                }
-
-                if (selectedType == ZoneType.Camp)
-                    campZones++;
-
                 map[y, x] =
                     ZoneVault.GenerateZone(
                         selectedType
                     );
             }
         }
+    }
+
+    private void ImplementCamps()
+    {
+        List<ZoneType> allowedFillTypes =
+            new();
+
+        const int minDistance = 3;
+        const int maxCamps = 5;
+
+        foreach (
+            ZoneType type
+            in System.Enum.GetValues(
+                typeof(ZoneType)))
+        {
+            if (
+                type != ZoneType.MomHouse &&
+                type != ZoneType.GrandmaHouse &&
+                type != ZoneType.VerticalRiver &&
+                type != ZoneType.HorizontalRiver &&
+                type != ZoneType.WolfDen)
+            {
+                allowedFillTypes.Add(type);
+            }
+        }
+
+        List<Vector2Int> campsPos = new();
+
+        while (campsPos.Count < maxCamps)
+        {
+            Vector2Int actualPos = new(
+                Random.Range(0, mapWidth),
+                Random.Range(0, mapHeight)
+            );
+
+            bool tooClose = false;
+
+            foreach (var position in campsPos)
+            {
+                int distance = Mathf.Abs(position.y - actualPos.y)
+                             + Mathf.Abs(position.x - actualPos.x);
+
+                if (distance < minDistance)
+                {
+                    tooClose = true;
+                    break;
+                }
+            }
+
+            if (tooClose)
+                continue;
+
+            ZoneData zone = map[actualPos.y, actualPos.x];
+
+            if (!allowedFillTypes.Contains(zone.type))
+                continue;
+
+            campsPos.Add(actualPos);
+        }
+
+        if (!WolfCanLeaveDen(campsPos))
+        {
+            Debug.LogWarning("Distribución de campamentos inválida.");
+            return;
+        }
+
+        foreach (var pos in campsPos)
+        {
+            map[pos.y, pos.x] = new Camp();
+        }
+
+        Debug.Log($"Se han colocado {maxCamps} campamentos.");
+    }
+
+    private bool WolfCanLeaveDen(List<Vector2Int> campsPos)
+    {
+         Direction[] directions =
+         {
+            Direction.North,
+            Direction.South,
+            Direction.East,
+            Direction.West
+         };
+
+        foreach (Direction direction in directions)
+        {
+            var moveResult = CanSwapZone(wolfDenPos, direction);
+
+            if (!moveResult.canMove)
+                continue;
+
+            if (campsPos.Contains(moveResult.newPos))
+                continue;
+
+            return true;
+        }
+
+        return false;
     }
 
     private void ImplementRiver()
@@ -794,7 +883,7 @@ public class MapManager : MonoBehaviour
             mapLayout.AppendLine();
         }
 
-        LogManager.Log(
+        Debug.Log(
             mapLayout.ToString()
         );
     }
@@ -806,7 +895,7 @@ public class MapManager : MonoBehaviour
     {
         PlayerMoveResult moveResult =
             CanSwapZone(
-                player,
+                player.NetworkMapPos.Value,
                 direction
             );
 
@@ -878,11 +967,10 @@ public class MapManager : MonoBehaviour
     }
 
     private PlayerMoveResult CanSwapZone(
-        Player player,
+        Vector2Int position,
         Direction direction)
     {
-        Vector2Int newPos =
-            player.NetworkMapPos.Value;
+        Vector2Int newPos = position;
 
         switch (direction)
         {
