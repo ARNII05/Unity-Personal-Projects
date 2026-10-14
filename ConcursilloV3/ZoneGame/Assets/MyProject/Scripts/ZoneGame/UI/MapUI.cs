@@ -81,19 +81,9 @@ public class MapUI : MonoBehaviour
         UpdateMap();
     }
 
-    private void OnClose()
+    public void OnClose()
     {
         mapPlayer.State = PlayerState.Normal;
-
-        if (mapPlayer != null)
-            mapPlayer.NetworkMapPos.OnValueChanged -= OnPlayerPositionChanged;
-
-        if (otherPlayer != null)
-            otherPlayer.NetworkMapPos.OnValueChanged -= OnPlayerPositionChanged;
-
-        mapPlayer = null;
-        otherPlayer = null;
-        map = null;
 
         mapObj.SetActive(false);
     }

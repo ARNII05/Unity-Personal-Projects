@@ -12,7 +12,7 @@ public class RadarUI : MonoBehaviour
     
     private AudioSource radarAudioSource;
     private VideoPlayer videoPlayer;
-    private TextMeshProUGUI radarText;
+    private TextMeshProUGUI distanceText, wolfStatusText;
 
     private Player playerWithRadar;
 
@@ -34,17 +34,29 @@ public class RadarUI : MonoBehaviour
         radarDevice.SetActive(false);
         radarAudioSource = radarDevice.transform.Find("AudioSource").GetComponent<AudioSource>();
         videoPlayer = radarDevice.transform.Find("ScreenMask").GetComponent<VideoPlayer>();
-        radarText = radarDevice.GetComponentInChildren<TextMeshProUGUI>();
+        distanceText = videoPlayer.transform.Find("DistanceText").GetComponent<TextMeshProUGUI>();
+        wolfStatusText = videoPlayer.transform.Find("StatusText").GetComponent<TextMeshProUGUI>();
         videoPlayer.Prepare();
     }
 
     public void Init(Player player)
     {
         playerWithRadar = player;
-        UpdateRadar(new Vector2Int(0, 0), new Vector2Int(0, 0));
+        UpdateRadar();
 
-        playerWithRadar.NetworkMapPos.OnValueChanged += UpdateRadar;
-        wolf.NetworkPosition.OnValueChanged += UpdateRadar;
+        playerWithRadar.NetworkMapPos.OnValueChanged += OnPlayerAndWolfPosChanged;
+        wolf.NetworkPosition.OnValueChanged += OnPlayerAndWolfPosChanged;
+        wolf.wolfState.OnValueChanged += OnWolfStateChanged;
+    }
+
+    private void OnPlayerAndWolfPosChanged(Vector2Int oldPos, Vector2Int newPos)
+    {
+        UpdateRadar();
+    }
+
+    private void OnWolfStateChanged(WolfState oldState, WolfState newState)
+    {
+        UpdateRadar();
     }
 
     private void OnVideoPrepared(VideoPlayer vp)
@@ -80,7 +92,7 @@ public class RadarUI : MonoBehaviour
         }
     }
 
-    private void OnClose()
+    public void OnClose()
     {
         radarDevice.SetActive(false);
 
@@ -90,19 +102,24 @@ public class RadarUI : MonoBehaviour
         playerWithRadar.State = PlayerState.Normal;
     }
 
-    private void UpdateRadar(Vector2Int oldPos,
-        Vector2Int newPos)
+    private void UpdateRadar()
     {
-        int distance = Mathf.Abs(playerWithRadar.NetworkMapPos.Value.y - wolf.NetworkPosition.Value.y) 
+        UpdateDistanceText();
+        UpdateStatusText();
+    }
+
+    private void UpdateDistanceText()
+    {
+        int distance = Mathf.Abs(playerWithRadar.NetworkMapPos.Value.y - wolf.NetworkPosition.Value.y)
             + Mathf.Abs(playerWithRadar.NetworkMapPos.Value.x - wolf.NetworkPosition.Value.x);
 
-        radarText.text = distance switch
+        distanceText.text = distance switch
         {
-            <= 1 => "Al acecho!!",
-            <= 3 => "Se acerca!",
+            <= 1 => "Al acecho",
+            <= 3 => "Cerca",
             _ => "Sin rastro"
         };
-        radarText.color = distance switch
+        distanceText.color = distance switch
         {
             <= 1 => Color.red,
             <= 3 => Color.yellow,
@@ -120,5 +137,30 @@ public class RadarUI : MonoBehaviour
             <= 3 => 1.5f,
             _ => 1
         };
+    }
+
+    private void UpdateStatusText()
+    {
+        wolfStatusText.color = Color.white;
+        
+        switch (wolf.wolfState.Value)
+        {
+            case WolfState.MovingRandom:
+                wolfStatusText.text = "Merodeando";
+                break;
+
+            case WolfState.MovingToPlayer:
+                wolfStatusText.text = "Persiguiendo a un jugador";
+                wolfStatusText.color = distanceText.color;
+                break;
+
+            case WolfState.MovingToMeat:
+                wolfStatusText.text = "Yendo hacia la carne";
+                break;
+
+            case WolfState.MovingToDen:
+                wolfStatusText.text = "Regresando a la cueva";
+                break;
+        }
     }
 }

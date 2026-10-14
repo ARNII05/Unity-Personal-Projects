@@ -27,6 +27,7 @@ public class Player : NetworkBehaviour
     private InventoryUI inventoryUI;
     private Direction lastDirection;
     private ZoneGameControls controls;
+    private WolfUI wolfUI;
 
     public PlayerState State { get; set; } = PlayerState.Normal;
     public HashSet<Vector2Int> discoveredZones = new();
@@ -115,6 +116,10 @@ public class Player : NetworkBehaviour
                 HandleRabbitMapInput();
                 break;
 
+            case PlayerState.CaughtByWolf:
+                HandleBeingCaughtByWolfInput();
+                break;
+
             case PlayerState.SelectingRole:
             case PlayerState.RabbitDialogueInteraction:
             case PlayerState.GrandmaDialogueInteraction:
@@ -166,6 +171,14 @@ public class Player : NetworkBehaviour
         if (controls.Gameplay.InitialObj.WasPressedThisFrame())
         {
             RadarUI.Instance.ToggleRadar();
+        }
+    }
+
+    private void HandleBeingCaughtByWolfInput()
+    {
+        if (controls.Gameplay.Confirm.WasPressedThisFrame())
+        {
+            wolfUI.CloseUI(this);
         }
     }
 
@@ -510,6 +523,8 @@ public class Player : NetworkBehaviour
             inventoryUI.SetPlayer(this);
 
             CraftingUI.Instance.SetPlayer(this);
+
+            wolfUI = GameObject.Find("WolfManager").GetComponent<WolfUI>();
 
             otherPlayerVisualRoot =
                 new GameObject("Other Player Visual Root");
@@ -1029,6 +1044,7 @@ public enum PlayerState
     RabbitDialogueInteraction,
     RabbitMapUI,
     GrandmaDialogueInteraction,
+    CaughtByWolf,
     Inventory,
     Transitioning,
     Trading,

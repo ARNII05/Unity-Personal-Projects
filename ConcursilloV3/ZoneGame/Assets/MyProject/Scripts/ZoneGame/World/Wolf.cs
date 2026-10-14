@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,18 +8,20 @@ using Random = UnityEngine.Random;
 
 public class Wolf : NetworkBehaviour
 {
-    const int moveInterval = 10;
-    const int distanceToChasePlayer = 3;
-    const int distanceToChaseMeat = 3;
+    private const int moveInterval = 10;
+    private const int distanceToChasePlayer = 3;
+    private const int distanceToChaseMeat = 3;
 
-    int mapWidth;
-    int mapHeight;
+    private int mapWidth;
+    private int mapHeight;
 
-    float time = moveInterval;
+    private float time = moveInterval;
 
     private Player player1, player2;
 
     private ZoneData[,] map;
+
+    private WolfUI wolfUI;
 
     public NetworkVariable<Vector2Int> NetworkPosition = new(
         Vector2Int.zero,
@@ -26,12 +29,18 @@ public class Wolf : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
 
-    private WolfState wolfState;
+    public NetworkVariable<WolfState> wolfState = new(
+        WolfState.MovingRandom,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
 
     private bool readyToMove = false;
 
     public void Init()
     {
+        wolfUI = gameObject.GetComponent<WolfUI>();
+
         player1 = MapManager.Instance.Player1;
         player2 = MapManager.Instance.Player2;
         
@@ -59,7 +68,7 @@ public class Wolf : NetworkBehaviour
 
     private void MoveWolf()
     {
-        if (wolfState == WolfState.MovingToDen)
+        if (wolfState.Value == WolfState.MovingToDen)
         {
             Debug.Log($"El lobo se está moviendo hacia su madriguera desde {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
             MoveToDen();
@@ -100,8 +109,8 @@ public class Wolf : NetworkBehaviour
             {
                 StealFromPlayer(player);
             }
-            
-            wolfState = WolfState.MovingToDen;
+
+            wolfState.Value = WolfState.MovingToDen;
         }
 
         Debug.Log($"Posición del lobo despúes de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
@@ -142,30 +151,68 @@ public class Wolf : NetworkBehaviour
 
     private void ItemsToSteal(Player player)
     {
-        const int maxCountToSteal = 5;
+        const int maxCountToSteal = 2;
+        const int maxItemsToSteal = 4;
 
-        if (player.inventory.items.Count == 0)
+        int itemsToSteal = Random.Range(1, maxItemsToSteal + 1);
+
+        ItemsStolenResult itemsStolen = StealingItems(itemsToSteal, maxCountToSteal, player);
+
+        Debug.Log($"El lobo ha pillado a {player.name} y le ha robado:");
+
+        for (int i = 0; i < itemsStolen.amount.Count; i++)
         {
-            Debug.Log($"El lobo ha pillado a {player.name} pero no tiene items");
-            // Mostrar diálogo de que no tiene objetos.
-            return;
+            ItemType item = itemsStolen.items[i];
+            int amount = itemsStolen.amount[i];
+            Debug.Log($"\n{amount} {item}");
         }
 
-        int itemIndex = Random.Range(0, player.inventory.items.Count);
-        ItemType item = player.inventory.GetItemByIndex(itemIndex);
+        wolfUI.ShowItemsStolen(itemsStolen.items, itemsStolen.amount, player);
+        wolfUI.OpenUI(player);
+    }
 
-        int availableAmount = player.inventory.GetItemAmount(item);
-        int amountToSteal = Random.Range(
-            1,
-            Mathf.Min(maxCountToSteal, availableAmount) + 1
-        );
+    private ItemsStolenResult StealingItems(
+        int itemsToSteal,
+        int maxCountToSteal,
+        Player player)
+    {
+        List<ItemType> stolenItems = new();
+        List<int> amount = new();
 
-        player.inventory.RemoveItem(item, amountToSteal);
+        for (int i = 0; i < itemsToSteal; i++)
+        {
+            ItemType[] validItems = player.inventory.items.Keys
+                .Where(item => CanStealItem(item))
+                .ToArray();
 
-        AddItemsToWolfDenChestRpc(item, amountToSteal);
+            if (validItems.Length == 0)
+                break;
 
-        Debug.Log($"El lobo ha pillado a {player.name} y tiene items");
-        // Mostrar diálogo de que ha robado x objetos
+            int itemIndex = Random.Range(0, validItems.Length);
+            ItemType item = validItems[itemIndex];
+
+            int availableAmount = player.inventory.GetItemAmount(item);
+
+            int amountToSteal = Random.Range(
+                1,
+                Mathf.Min(maxCountToSteal, availableAmount) + 1
+            );
+
+            player.inventory.RemoveItem(item, amountToSteal);
+
+            AddItemsToWolfDenChestRpc(item, amountToSteal);
+            
+            stolenItems.Add(item);
+            amount.Add(amountToSteal);
+        }
+
+        return new ItemsStolenResult(stolenItems, amount);
+    }
+
+    private bool CanStealItem(ItemType item)
+    {
+        return item != ItemType.Bouquet && item != ItemType.Log
+            && item != ItemType.Map && item != ItemType.Radar;
     }
 
     [Rpc(SendTo.Server)]
@@ -203,7 +250,7 @@ public class Wolf : NetworkBehaviour
         if (NetworkPosition.Value == wolfDenPos)
         {
             Debug.Log($"El lobo ha llegado a la cueva en la posicion: {wolfDenPos.y}, {wolfDenPos.x}");
-            wolfState = WolfState.MovingRandom;
+            wolfState.Value = WolfState.MovingRandom;
         }
     }
 
@@ -211,7 +258,7 @@ public class Wolf : NetworkBehaviour
     {
         Debug.Log($"El lobo se está moviendo hacia una carne en la posicion: {meatPos.y}, {meatPos.x}");
 
-        wolfState = WolfState.MovingToMeat;
+        wolfState.Value = WolfState.MovingToMeat;
 
         Direction direction = MoveTowards(meatPos);
 
@@ -221,7 +268,7 @@ public class Wolf : NetworkBehaviour
         {
             Debug.Log($"El lobo se ha comido la carne en la posicion: {meatPos.y}, {meatPos.x}");
             RemoveMeatInZone(meatPos);
-            wolfState = WolfState.MovingToDen;
+            wolfState.Value = WolfState.MovingToDen;
         }
     }
 
@@ -229,7 +276,7 @@ public class Wolf : NetworkBehaviour
     {
         Debug.Log($"El lobo se está moviendo hacia {player.name} en la posicion: {player.NetworkMapPos.Value.y}, {player.NetworkMapPos.Value.x}");
 
-        wolfState = WolfState.MovingToPlayer;
+        wolfState.Value = WolfState.MovingToPlayer;
 
         Direction direction = MoveTowards(player.NetworkMapPos.Value);
 
@@ -399,7 +446,7 @@ public class Wolf : NetworkBehaviour
     {
         Debug.Log("El lobo se está moviendo random");
 
-        wolfState = WolfState.MovingRandom;
+        wolfState.Value = WolfState.MovingRandom;
 
         Direction[] directions =
         {
@@ -535,6 +582,18 @@ public enum WolfState
     MovingToPlayer,
     MovingToMeat,
     MovingToDen
+}
+
+public struct ItemsStolenResult
+{
+    public List<ItemType> items;
+    public List<int> amount;
+
+    public ItemsStolenResult(List<ItemType> items, List<int> amount)
+    {
+        this.items = items;
+        this.amount = amount;
+    }
 }
 
 public struct ZoneMove
