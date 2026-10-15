@@ -81,7 +81,7 @@ public class MapUI : MonoBehaviour
         UpdateMap();
     }
 
-    public void OnClose()
+    private void OnClose()
     {
         mapPlayer.State = PlayerState.Normal;
 
@@ -108,11 +108,11 @@ public class MapUI : MonoBehaviour
 
         zoneName.text = currentZone.GetName();
 
-        p1Coordinates.text = $"{mapPlayer.name.ToUpper()}\nX: {playerPos.x + 1}\nY: {playerPos.y + 1}";
-        p2Coordinates.text = $"{otherPlayer.name.ToUpper()}\nX: {otherPlayerPos.x + 1}\nY: {otherPlayerPos.y + 1}";
+        p1Coordinates.text = $"{mapPlayer.name.ToUpper()}\nY: {playerPos.y + 1}\nX: {playerPos.x + 1}";
+        p2Coordinates.text = $"{otherPlayer.name.ToUpper()}\nY: {otherPlayerPos.y + 1}\nX: {otherPlayerPos.x + 1}";
 
-        grandmaHouseCoordinates.text = $"Casa de la Abuela\nX: {grandmaHousePos.x + 1}\nY: {grandmaHousePos.y + 1}";
-        wolfDenCoordinates.text = $"Guarida del lobo\nX: {wolfDenPos.x + 1}\nY: {wolfDenPos.y + 1}";
+        grandmaHouseCoordinates.text = $"Casa de la Abuela\nY: {grandmaHousePos.y + 1}\nX: {grandmaHousePos.x + 1}";
+        wolfDenCoordinates.text = $"Guarida del lobo\nY: {wolfDenPos.y + 1}\nX: {wolfDenPos.x + 1}";
     }
 
     private void UpdateZoneIcons()

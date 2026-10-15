@@ -168,7 +168,6 @@ public class Wolf : NetworkBehaviour
         }
 
         wolfUI.ShowItemsStolen(itemsStolen.items, itemsStolen.amount, player);
-        wolfUI.OpenUI(player);
     }
 
     private ItemsStolenResult StealingItems(
@@ -283,6 +282,40 @@ public class Wolf : NetworkBehaviour
         NetworkPosition.Value = MoveWolfTo(direction);
     }
 
+    private void MoveRandomly()
+    {
+        Debug.Log("El lobo se está moviendo random");
+
+        wolfState.Value = WolfState.MovingRandom;
+
+        Direction[] directions =
+        {
+            Direction.North,
+            Direction.South,
+            Direction.East,
+            Direction.West
+        };
+
+        for (int i = directions.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (directions[i], directions[j]) = (directions[j], directions[i]);
+        }
+
+        foreach (Direction direction in directions)
+        {
+            ZoneMove moveResult = CanSwapZone(NetworkPosition.Value, direction);
+
+            if (!moveResult.canMove)
+                continue;
+
+            NetworkPosition.Value = moveResult.newPos;
+            return;
+        }
+
+        Debug.Log("El lobo no tiene movimientos disponibles.");
+    }
+
     private void RemoveMeatInZone(Vector2Int meatPos)
     {
         ZoneData zone = map[meatPos.y, meatPos.x];
@@ -390,11 +423,6 @@ public class Wolf : NetworkBehaviour
         return Direction.None;
     }
 
-    private ZoneMove CanMoveTo(Direction direction)
-    {
-        return CanSwapZone(NetworkPosition.Value, direction);
-    }
-
     private ZoneMove CanSwapZone(
         Vector2Int position,
         Direction direction)
@@ -440,40 +468,6 @@ public class Wolf : NetworkBehaviour
             Direction.West => NetworkPosition.Value + Vector2Int.left,
             _ => NetworkPosition.Value
         };
-    }
-
-    private void MoveRandomly()
-    {
-        Debug.Log("El lobo se está moviendo random");
-
-        wolfState.Value = WolfState.MovingRandom;
-
-        Direction[] directions =
-        {
-            Direction.North,
-            Direction.South,
-            Direction.East,
-            Direction.West
-        };
-
-        for (int i = directions.Length - 1; i > 0; i--)
-        {
-            int j = Random.Range(0, i + 1);
-            (directions[i], directions[j]) = (directions[j], directions[i]);
-        }
-       
-        foreach (Direction direction in directions)
-        {
-            var moveResult = CanMoveTo(direction);
-
-            if (!moveResult.canMove)
-                continue;
-
-            NetworkPosition.Value = moveResult.newPos;
-            return;
-        }
-
-        Debug.Log("El lobo no tiene movimientos disponibles.");
     }
 
     private MeatMoveResult CanMoveToMeat()

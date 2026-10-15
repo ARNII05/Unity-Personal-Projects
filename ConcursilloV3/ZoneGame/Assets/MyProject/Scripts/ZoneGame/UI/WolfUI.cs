@@ -8,6 +8,10 @@ public class WolfUI : MonoBehaviour
     [SerializeField] private GameObject wolfPanel;
     private GameObject canStealItems, cantStealItems, grid;
 
+    private PlayerState previousPlayerState;
+
+    private Player player;
+
     void Start()
     {
         wolfPanel.SetActive(false);
@@ -21,45 +25,40 @@ public class WolfUI : MonoBehaviour
         grid.SetActive(true);
     }
 
-    public void OpenUI(Player player)
+    private void OpenUI()
     {
         player.State = PlayerState.CaughtByWolf;
         
         wolfPanel.SetActive(true);
     }
 
-    public void CloseUI(Player player)
+    public void CloseUI()
     {
-        Debug.Log(
-            $"ANTES: {player.name} | ID: {player.GetInstanceID()} | Estado: {player.State}"
-        );
+        player.State = previousPlayerState;
 
-        player.State = PlayerState.Normal;
-
-        Debug.Log(
-            $"DESPUÉS: {player.name} | ID: {player.GetInstanceID()} | Estado: {player.State}"
-        );
+        if (player.State == PlayerState.UsingRadar)
+            RadarUI.Instance.PlayVideoAndSound();
 
         wolfPanel.SetActive(false);
     }
 
     public void ShowItemsStolen(List<ItemType> items, List<int> amount, Player player)
     {
+        this.player = player;
+
+        previousPlayerState = player.State;
+
         canStealItems.SetActive(false);
         cantStealItems.SetActive(false);
         
         if (player.inventory.GetItemAmount(ItemType.Radar) > 0)
-            RadarUI.Instance.OnClose();
-        else if (player.inventory.GetItemAmount(ItemType.Map) > 0)
-            MapUI.Instance.OnClose();
+            RadarUI.Instance.StopVideoAndSound();
 
         if (items.Count == 0)
-        {
             cantStealItems.SetActive(true);
-            return;
-        }
+        else CanStoleItemsUI(items, amount);
 
-        CanStoleItemsUI(items, amount);
+        OpenUI();
     }
     
     private void CanStoleItemsUI(List<ItemType> items, List<int> amount)

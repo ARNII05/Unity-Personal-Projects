@@ -178,7 +178,7 @@ public class Player : NetworkBehaviour
     {
         if (controls.Gameplay.Confirm.WasPressedThisFrame())
         {
-            wolfUI.CloseUI(this);
+            wolfUI.CloseUI();
         }
     }
 
@@ -777,8 +777,9 @@ public class Player : NetworkBehaviour
         }
 
         inventory.AddItem(ItemType.Meat, 1);
-        inventory.AddItem(ItemType.Log, 7);
-        inventory.AddItem(ItemType.Bouquet, 2);
+        inventory.AddItem(ItemType.Branch, 4);
+        inventory.AddItem(ItemType.Flower, 2);
+        inventory.AddItem(ItemType.Bouquet, 1);
     }
 
     public void InitRoleSelector()

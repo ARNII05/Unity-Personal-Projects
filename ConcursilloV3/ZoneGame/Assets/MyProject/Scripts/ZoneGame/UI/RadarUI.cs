@@ -16,7 +16,7 @@ public class RadarUI : MonoBehaviour
 
     private Player playerWithRadar;
 
-    public Wolf wolf;
+    private Wolf wolf;
 
     private void Awake()
     {
@@ -31,6 +31,8 @@ public class RadarUI : MonoBehaviour
 
     void Start()
     {
+        wolf = GameObject.Find("WolfManager").GetComponent<Wolf>();
+
         radarDevice.SetActive(false);
         radarAudioSource = radarDevice.transform.Find("AudioSource").GetComponent<AudioSource>();
         videoPlayer = radarDevice.transform.Find("ScreenMask").GetComponent<VideoPlayer>();
@@ -92,7 +94,7 @@ public class RadarUI : MonoBehaviour
         }
     }
 
-    public void OnClose()
+    private void OnClose()
     {
         radarDevice.SetActive(false);
 
@@ -100,6 +102,18 @@ public class RadarUI : MonoBehaviour
         radarAudioSource.Pause();
 
         playerWithRadar.State = PlayerState.Normal;
+    }
+
+    public void StopVideoAndSound()
+    {
+        videoPlayer.Pause();
+        radarAudioSource.Pause();
+    }
+
+    public void PlayVideoAndSound()
+    {
+        videoPlayer.Play();
+        radarAudioSource.Play();
     }
 
     private void UpdateRadar()
