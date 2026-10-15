@@ -63,6 +63,8 @@ public class WolfUI : MonoBehaviour
     
     private void CanStoleItemsUI(List<ItemType> items, List<int> amount)
     {
+        Dictionary<ItemType, int> itemsStolen = new();
+
         canStealItems.SetActive(true);
         
         for (int i = 0; i < grid.transform.childCount; i++)
@@ -73,14 +75,29 @@ public class WolfUI : MonoBehaviour
 
         for (int i = 0; i < items.Count; i++)
         {
-            GameObject zell = grid.transform.GetChild(i).gameObject;
+            if (itemsStolen.ContainsKey(items[i]))
+            {
+                itemsStolen[items[i]] += amount[i];
+                continue;
+            }
+
+            itemsStolen[items[i]] = amount[i];
+        }
+
+        int j = 0;
+
+        foreach (var item in itemsStolen)
+        {
+            GameObject zell = grid.transform.GetChild(j).gameObject;
             zell.SetActive(true);
 
             Image zellImg = zell.GetComponentInChildren<Image>();
             TextMeshProUGUI zellText = zell.GetComponentInChildren<TextMeshProUGUI>();
 
-            zellImg.sprite = ItemVault.GenerateItem(items[i]).sprite;
-            zellText.text = $"x {amount[i]}";
+            zellImg.sprite = ItemVault.GenerateItem(item.Key).sprite;
+            zellText.text = $"x {item.Value}";
+
+            j++;
         }
     }
 }

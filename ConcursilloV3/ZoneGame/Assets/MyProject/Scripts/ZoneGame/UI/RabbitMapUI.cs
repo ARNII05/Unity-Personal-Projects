@@ -66,6 +66,14 @@ public class RabbitMapUI : MonoBehaviour
         rabbitMap.SetActive(false);
     }
 
+    public void UpdateZoneInfo()
+    {
+        if (!rabbitMap.activeSelf)
+            return;
+
+        SetZoneInfo(false);
+    }
+
     public void TpToZone()
     {
         CloseMap();

@@ -37,6 +37,8 @@ public class MapManager : MonoBehaviour
 
     public Wolf wolf;
 
+    private RabbitMapUI rabbitMapUI;
+
     public static MapManager Instance
     {
         get
@@ -62,6 +64,11 @@ public class MapManager : MonoBehaviour
         }
 
         CleanMap();
+    }
+
+    public void InitRabbitMapUI(RabbitMapUI rabbitMapUI)
+    {
+        this.rabbitMapUI = rabbitMapUI;
     }
 
     public void RegisterPlayer(Player player, bool isServer)
@@ -1019,6 +1026,8 @@ public class MapManager : MonoBehaviour
     public void UpdateChestUINetworking(ulong actualPlayerId, Vector2Int position)
     {
         map[position.y, position.x].chestOpened = true;
+
+        rabbitMapUI.UpdateZoneInfo();
 
         Player actualPlayer = GetPlayerById(actualPlayerId) == player1 ? player1 : player2;
         Player otherPlayer = GetOtherPlayer(actualPlayer);

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(RabbitMapUI))]
 public class RabbitDialogue : MonoBehaviour
 {
     public static RabbitDialogue Instance { get; private set; }
@@ -22,6 +23,7 @@ public class RabbitDialogue : MonoBehaviour
 
         Instance = this;
         rabbitMapUI = GetComponent<RabbitMapUI>();
+        MapManager.Instance.InitRabbitMapUI(rabbitMapUI);
     }
 
     void Start()

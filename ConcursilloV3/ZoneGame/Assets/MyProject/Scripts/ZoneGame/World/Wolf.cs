@@ -10,7 +10,7 @@ public class Wolf : NetworkBehaviour
 {
     private const int moveInterval = 10;
     private const int distanceToChasePlayer = 3;
-    private const int distanceToChaseMeat = 3;
+    private const int distanceToChaseMeat = 5;
 
     private int mapWidth;
     private int mapHeight;

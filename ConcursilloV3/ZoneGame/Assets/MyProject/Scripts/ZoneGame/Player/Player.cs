@@ -218,7 +218,6 @@ public class Player : NetworkBehaviour
 
         if (nearbyGrandma != null)
         {
-            Debug.Log("Interacted with grandma");
             InteractWithGrandma();
             return;
         }
@@ -936,7 +935,6 @@ public class Player : NetworkBehaviour
     {
         if (IsServer)
         {
-            Debug.Log("No envio el mapa 2 veces. Soy el servidor");
             return;
         }
 

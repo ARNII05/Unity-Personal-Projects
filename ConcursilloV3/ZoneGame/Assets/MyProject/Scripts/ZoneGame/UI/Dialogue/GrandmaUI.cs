@@ -16,8 +16,8 @@ public class GrandmaUI : MonoBehaviour
 
     private GameObject denyTextObj;
 
-    Player player;
-    Player otherPlayer;
+    private Player player;
+    private Player otherPlayer;
 
     private void Awake()
     {
@@ -47,16 +47,18 @@ public class GrandmaUI : MonoBehaviour
     {
         this.player = player;
         otherPlayer = MapManager.Instance.GetOtherPlayer(player);
+
+        player.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
+        otherPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
     }
 
-    public void OpenPanel()
+    private void OnPlayerPositionChanged(Vector2Int oldPos, Vector2Int newPos)
     {
-        Debug.Log("Panel activated");
+        UpdateGrandmaPanel();
+    }
 
-        player.State = PlayerState.GrandmaDialogueInteraction;
-
-        grandmaPanel.SetActive(true);
-        
+    private void UpdateGrandmaPanel()
+    {
         int bouquetCount = player.inventory.GetItemAmount(ItemType.Bouquet);
         int bouquetsToWin = CraftingSystem.BouquetsToWin;
         bool canWin = CanWin(bouquetCount, bouquetsToWin);
@@ -68,6 +70,13 @@ public class GrandmaUI : MonoBehaviour
 
         denyTextObj.SetActive(!canWin);
         acceptBtn.interactable = canWin;
+    }
+    
+    public void OpenPanel()
+    {
+        player.State = PlayerState.GrandmaDialogueInteraction;
+
+        grandmaPanel.SetActive(true);
     }
 
     public void EndGame()
