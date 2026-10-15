@@ -12,9 +12,13 @@ public class InventoryUI : MonoBehaviour
 
     private Player player;
 
-    private void Start()
+    private void Awake()
     {
         inventoryUI = gameObject.transform.GetChild(0).gameObject;
+    }
+
+    private void Start()
+    {
         ChangeItemBoxStatus(false);
         inventoryUI.SetActive(false);
     }

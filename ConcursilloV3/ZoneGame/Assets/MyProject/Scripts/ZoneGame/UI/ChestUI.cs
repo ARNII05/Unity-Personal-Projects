@@ -6,7 +6,6 @@ public class ChestUI : MonoBehaviour
 {
     [SerializeField] private InventoryUI playerInventoryUI;
     public InventoryUI chestInventoryUI;
-
     private Vector3 playerInventoryBasePos = Vector3.zero;
     private Vector3 playerInventoryChangedPos = new(-460, -1, 0);
 
@@ -26,6 +25,12 @@ public class ChestUI : MonoBehaviour
     {
         if (!player || !player.nearbyChest)
             return;
+
+        if (!playerInventoryUI)
+        {
+            Debug.Log("Player inventoryUI es null");
+            return;
+        }
 
         ItemType itemType = playerInventoryUI.inventory.GetItemByIndex(index);
 

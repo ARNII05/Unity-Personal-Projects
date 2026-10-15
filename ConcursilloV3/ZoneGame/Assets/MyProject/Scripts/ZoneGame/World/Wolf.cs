@@ -156,18 +156,30 @@ public class Wolf : NetworkBehaviour
 
         int itemsToSteal = Random.Range(1, maxItemsToSteal + 1);
 
-        ItemsStolenResult itemsStolen = StealingItems(itemsToSteal, maxCountToSteal, player);
+        Dictionary<ItemType, int> itemsStolen = SoltenItemsToDic(StealingItems(itemsToSteal, maxCountToSteal, player));
 
-        Debug.Log($"El lobo ha pillado a {player.name} y le ha robado:");
+        wolfUI.ShowItemsStolen(itemsStolen, player);
+    }
+    
+    private Dictionary<ItemType, int> SoltenItemsToDic(ItemsStolenResult itemsStolen)
+    {
+        List<ItemType> items = new(itemsStolen.items);
+        List<int> amount = new(itemsStolen.amount);
 
-        for (int i = 0; i < itemsStolen.amount.Count; i++)
+        Dictionary<ItemType, int> ItemsStolenDic = new();
+
+        for (int i = 0; i < items.Count; i++)
         {
-            ItemType item = itemsStolen.items[i];
-            int amount = itemsStolen.amount[i];
-            Debug.Log($"\n{amount} {item}");
+            if (ItemsStolenDic.ContainsKey(items[i]))
+            {
+                ItemsStolenDic[items[i]] += amount[i];
+                continue;
+            }
+
+            ItemsStolenDic[items[i]] = amount[i];
         }
 
-        wolfUI.ShowItemsStolen(itemsStolen.items, itemsStolen.amount, player);
+        return ItemsStolenDic;
     }
 
     private ItemsStolenResult StealingItems(
@@ -177,11 +189,13 @@ public class Wolf : NetworkBehaviour
     {
         List<ItemType> stolenItems = new();
         List<int> amount = new();
+        HashSet<ItemType> forbbidenItems = new() { ItemType.Bouquet, ItemType.Log, 
+            ItemType.Map, ItemType.Radar};
 
         for (int i = 0; i < itemsToSteal; i++)
         {
             ItemType[] validItems = player.inventory.items.Keys
-                .Where(item => CanStealItem(item))
+                .Where(item => !forbbidenItems.Contains(item))
                 .ToArray();
 
             if (validItems.Length == 0)
@@ -200,18 +214,13 @@ public class Wolf : NetworkBehaviour
             player.inventory.RemoveItem(item, amountToSteal);
 
             AddItemsToWolfDenChestRpc(item, amountToSteal);
-            
+
+            forbbidenItems.Add(item);
             stolenItems.Add(item);
             amount.Add(amountToSteal);
         }
 
         return new ItemsStolenResult(stolenItems, amount);
-    }
-
-    private bool CanStealItem(ItemType item)
-    {
-        return item != ItemType.Bouquet && item != ItemType.Log
-            && item != ItemType.Map && item != ItemType.Radar;
     }
 
     [Rpc(SendTo.Server)]

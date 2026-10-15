@@ -42,7 +42,7 @@ public class WolfUI : MonoBehaviour
         wolfPanel.SetActive(false);
     }
 
-    public void ShowItemsStolen(List<ItemType> items, List<int> amount, Player player)
+    public void ShowItemsStolen(Dictionary<ItemType, int> stolenItems, Player player)
     {
         this.player = player;
 
@@ -54,17 +54,15 @@ public class WolfUI : MonoBehaviour
         if (player.inventory.GetItemAmount(ItemType.Radar) > 0)
             RadarUI.Instance.StopVideoAndSound();
 
-        if (items.Count == 0)
+        if (stolenItems.Count == 0)
             cantStealItems.SetActive(true);
-        else CanStoleItemsUI(items, amount);
+        else CanStoleItemsUI(stolenItems);
 
         OpenUI();
     }
     
-    private void CanStoleItemsUI(List<ItemType> items, List<int> amount)
+    private void CanStoleItemsUI(Dictionary<ItemType, int> stolenItems)
     {
-        Dictionary<ItemType, int> itemsStolen = new();
-
         canStealItems.SetActive(true);
         
         for (int i = 0; i < grid.transform.childCount; i++)
@@ -73,20 +71,9 @@ public class WolfUI : MonoBehaviour
             zell.SetActive(false);
         }
 
-        for (int i = 0; i < items.Count; i++)
-        {
-            if (itemsStolen.ContainsKey(items[i]))
-            {
-                itemsStolen[items[i]] += amount[i];
-                continue;
-            }
-
-            itemsStolen[items[i]] = amount[i];
-        }
-
         int j = 0;
 
-        foreach (var item in itemsStolen)
+        foreach (var item in stolenItems)
         {
             GameObject zell = grid.transform.GetChild(j).gameObject;
             zell.SetActive(true);

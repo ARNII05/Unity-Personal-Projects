@@ -4,11 +4,22 @@ using UnityEngine.EventSystems;
 public class InventoryButton : MonoBehaviour, IPointerClickHandler
 {
     public int index;
-    public ChestUI chestUI;
+    private ChestUI chestUI;
     public int toWho;
+
+    private void Start()
+    {
+        chestUI = GameObject.Find("ChestUI").GetComponent<ChestUI>();
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!chestUI)
+        {
+            Debug.Log("ChestUI es null");
+            return;
+        }
+
         switch (toWho)
         {
             case 0:

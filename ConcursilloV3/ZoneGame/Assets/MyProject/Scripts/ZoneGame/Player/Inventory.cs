@@ -12,17 +12,11 @@ public class Inventory
 
     public bool AddItem(ItemType itemType, int amount)
     {
-        if (items.ContainsKey(itemType))
-        {
-            items[itemType] += amount;
-            OnInventoryChanged?.Invoke();
-            return true;
-        }
-
-        if (items.Count >= maxCapacity)
+        if (items.Count >= maxCapacity && items.GetValueOrDefault(itemType) == 0)
             return false;
 
-        items[itemType] = amount;
+        items[itemType] = items.GetValueOrDefault(itemType) + amount;
+
         OnInventoryChanged?.Invoke();
 
         return true;

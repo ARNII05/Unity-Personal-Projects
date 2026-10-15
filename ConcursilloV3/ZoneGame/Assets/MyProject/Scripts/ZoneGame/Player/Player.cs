@@ -778,7 +778,7 @@ public class Player : NetworkBehaviour
         inventory.AddItem(ItemType.Meat, 1);
         inventory.AddItem(ItemType.Branch, 4);
         inventory.AddItem(ItemType.Flower, 2);
-        inventory.AddItem(ItemType.Bouquet, 1);
+        inventory.AddItem(ItemType.Coin, 3);
     }
 
     public void InitRoleSelector()
