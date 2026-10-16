@@ -86,6 +86,9 @@ public class WolfUI : MonoBehaviour
 
         foreach (var item in stolenItems)
         {
+            if (j >= grid.transform.childCount)
+                break;
+
             GameObject zell = grid.transform.GetChild(j).gameObject;
             zell.SetActive(true);
 

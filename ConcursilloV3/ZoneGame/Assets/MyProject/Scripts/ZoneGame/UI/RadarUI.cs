@@ -131,24 +131,28 @@ public class RadarUI : MonoBehaviour
         {
             <= 1 => "Al acecho",
             <= 3 => "Cerca",
+            <= 5 => "Lobo detectado",
             _ => "Sin rastro"
         };
         distanceText.color = distance switch
         {
             <= 1 => Color.red,
-            <= 3 => Color.yellow,
-            _ => Color.white
+            <= 3 => Color.orange,
+            <= 5 => Color.yellow,
+            _ => Color.green
         };
         videoPlayer.playbackSpeed = distance switch
         {
             <= 1 => 2,
             <= 3 => 1.5f,
+            <= 5 => 1.25f,
             _ => 1
         };
         radarAudioSource.pitch = distance switch
         {
             <= 1 => 2,
             <= 3 => 1.5f,
+            <= 5 => 1.25f,
             _ => 1
         };
     }

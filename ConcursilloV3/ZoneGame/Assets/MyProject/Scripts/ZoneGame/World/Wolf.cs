@@ -12,6 +12,8 @@ public class Wolf : NetworkBehaviour
     private const int moveInterval = 10;
     private const int distanceToChasePlayer = 3;
     private const int distanceToChaseMeat = 5;
+    private const int maxCountToSteal = 2;
+    private const int maxItemsToSteal = 4;
 
     private int mapWidth;
     private int mapHeight;
@@ -100,7 +102,7 @@ public class Wolf : NetworkBehaviour
                 MoveToPlayer(pMove.player);
                 break;
             default:
-                MoveRandomly();
+                NetworkPosition.Value = MoveRandomly();
                 break;
         }
 
@@ -154,9 +156,6 @@ public class Wolf : NetworkBehaviour
 
     private void ItemsToSteal(Player player)
     {
-        const int maxCountToSteal = 2;
-        const int maxItemsToSteal = 4;
-
         int itemsToSteal = Random.Range(1, maxItemsToSteal + 1);
 
         ItemsStolenResult itemsStolen = StealingItems(itemsToSteal, maxCountToSteal, player);
@@ -207,14 +206,18 @@ public class Wolf : NetworkBehaviour
             if (validItems.Length == 0)
                 break;
 
-            int itemIndex = Random.Range(0, validItems.Length);
-            ItemType item = validItems[itemIndex];
+            ItemType[] validItemsInWolfDen = player.inventory.items.Keys
+                .Where(item => SpaceInWolfDenChest(item))
+                .ToArray();
 
-            if (!SpaceInWolfDenChest(item))
+            if (validItemsInWolfDen.Length == 0)
             {
                 chestIsFull = true;
                 break;
             }
+
+            int itemIndex = Random.Range(0, validItems.Length);
+            ItemType item = validItems[itemIndex];
 
             int availableAmount = player.inventory.GetItemAmount(item);
 
@@ -311,7 +314,7 @@ public class Wolf : NetworkBehaviour
         NetworkPosition.Value = MoveWolfTo(direction);
     }
 
-    private void MoveRandomly()
+    private Vector2Int MoveRandomly()
     {
         Debug.Log("El lobo se está moviendo random");
 
@@ -338,11 +341,12 @@ public class Wolf : NetworkBehaviour
             if (!moveResult.canMove)
                 continue;
 
-            NetworkPosition.Value = moveResult.newPos;
-            return;
+            return moveResult.newPos;
         }
 
         Debug.Log("El lobo no tiene movimientos disponibles.");
+
+        return NetworkPosition.Value;
     }
 
     private void RemoveMeatInZone(Vector2Int meatPos)
@@ -495,7 +499,7 @@ public class Wolf : NetworkBehaviour
             Direction.South => NetworkPosition.Value + Vector2Int.down,
             Direction.East => NetworkPosition.Value + Vector2Int.right,
             Direction.West => NetworkPosition.Value + Vector2Int.left,
-            _ => NetworkPosition.Value
+            _ => MoveRandomly()
         };
     }
 
