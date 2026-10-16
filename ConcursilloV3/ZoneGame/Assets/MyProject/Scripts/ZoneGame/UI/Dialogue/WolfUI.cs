@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class WolfUI : MonoBehaviour
 {
     [SerializeField] private GameObject wolfPanel;
-    private GameObject canStealItems, cantStealItems, grid;
+    private GameObject canStealItems, cantStealItems, noSpaceInChest, grid;
 
     private PlayerState previousPlayerState;
 
@@ -17,11 +17,10 @@ public class WolfUI : MonoBehaviour
         wolfPanel.SetActive(false);
         canStealItems = wolfPanel.transform.Find("CanStealItems").gameObject;
         cantStealItems = wolfPanel.transform.Find("CantStealItems").gameObject;
-        
+        noSpaceInChest = wolfPanel.transform.Find("NoSpaceInChest").gameObject;
+
         grid = canStealItems.transform.Find("Grid").gameObject;
 
-        canStealItems.SetActive(false);
-        cantStealItems.SetActive(false);
         grid.SetActive(true);
     }
 
@@ -42,21 +41,33 @@ public class WolfUI : MonoBehaviour
         wolfPanel.SetActive(false);
     }
 
-    public void ShowItemsStolen(Dictionary<ItemType, int> stolenItems, Player player)
+    public void ShowItemsStolen(Dictionary<ItemType, int> stolenItems, Player player, bool chestIsFull)
     {
         this.player = player;
 
-        previousPlayerState = player.State;
+        previousPlayerState = player.State == PlayerState.CaughtByWolf ? previousPlayerState : player.State;
 
         canStealItems.SetActive(false);
         cantStealItems.SetActive(false);
-        
+        noSpaceInChest.SetActive(false);
+
         if (player.inventory.GetItemAmount(ItemType.Radar) > 0)
             RadarUI.Instance.StopVideoAndSound();
 
-        if (stolenItems.Count == 0)
-            cantStealItems.SetActive(true);
-        else CanStoleItemsUI(stolenItems);
+        switch (chestIsFull, stolenItems.Count == 0)
+        {
+            case (true, true):
+                noSpaceInChest.SetActive(true);
+                break;
+
+            case (false, true):
+                cantStealItems.SetActive(true);
+                break;
+
+            default:
+                CanStoleItemsUI(stolenItems);
+                break;
+        }
 
         OpenUI();
     }

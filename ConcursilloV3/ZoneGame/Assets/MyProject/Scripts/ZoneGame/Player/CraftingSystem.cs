@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Player))]
 public class CraftingSystem : MonoBehaviour
 {
     Player player;
@@ -33,7 +34,6 @@ public class CraftingSystem : MonoBehaviour
     {
         if (!CanCraftBouquet())
         {
-            Debug.Log("Can't build Bouquet");
             return;
         }
 
@@ -45,7 +45,6 @@ public class CraftingSystem : MonoBehaviour
     {
         if (!CanCraftLog())
         {
-            Debug.Log("Can't build Log");
             return;
         }
 
