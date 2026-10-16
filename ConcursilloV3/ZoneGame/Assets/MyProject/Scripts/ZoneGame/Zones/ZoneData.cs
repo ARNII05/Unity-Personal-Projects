@@ -268,6 +268,21 @@ public class Village : ZoneData
 {
     public Village() : base(ZoneType.Village)
     {
+        player1EntryPoints[0] = new Vector3(-54.7f, 8.5f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-36.7f, -49.5f, -6.2f);
+        player1EntryPoints[2] = new Vector3(43.3f, -11.5f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-141.7f, -29.5f, -6.2f);
+
+        player2EntryPoints[0] = new Vector3(200.3f, 7.5f, -6.2f);
+        player2EntryPoints[1] = new Vector3(218.3f, -48.5f, -6.2f);
+        player2EntryPoints[2] = new Vector3(295.3f, -11.5f, -6.2f);
+        player2EntryPoints[3] = new Vector3(115.3f, -28.5f, -6.2f);
+
+        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
+        player2ZonePos = new Vector3(206, 36.6f, 0);
+
+        player1TpZonePos = new Vector3(-36.7f, -15.5f, -6.2f);
+        player2TpZonePos = new Vector3(218f, -14.6f, -6.2f);
     }
     public override void OnEnter(Player player)
     {
