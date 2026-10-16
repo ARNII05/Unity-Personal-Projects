@@ -119,10 +119,10 @@ public class MapManager : MonoBehaviour
 
     public Player GetPlayerById(ulong playerId)
     {
-        if (playerId == player1.OwnerClientId)
+        if (player1 != null && playerId == player1.OwnerClientId)
             return player1;
 
-        if (playerId == player2.OwnerClientId)
+        if (player2 != null && playerId == player2.OwnerClientId)
             return player2;
 
         return null;
