@@ -120,6 +120,10 @@ public class Player : NetworkBehaviour
                 HandleBeingCaughtByWolfInput();
                 break;
 
+            case PlayerState.TradeUI:
+                HandleTradeInput();
+                break;
+
             case PlayerState.SelectingRole:
             case PlayerState.RabbitDialogueInteraction:
             case PlayerState.GrandmaDialogueInteraction:
@@ -179,6 +183,14 @@ public class Player : NetworkBehaviour
         if (controls.Gameplay.Confirm.WasPressedThisFrame())
         {
             wolfUI.CloseUI();
+        }
+    }
+
+    private void HandleTradeInput()
+    {
+        if (controls.Gameplay.Confirm.WasPressedThisFrame())
+        {
+            TradeUI.Instance.CloseUI();
         }
     }
 
@@ -1042,6 +1054,7 @@ public enum PlayerState
     UsingMap,
     RabbitDialogueInteraction,
     RabbitMapUI,
+    TradeUI,
     GrandmaDialogueInteraction,
     CaughtByWolf,
     Inventory,
