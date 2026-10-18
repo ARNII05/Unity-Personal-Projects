@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(WolfUI))]
@@ -83,10 +84,10 @@ public class Wolf : NetworkBehaviour
 
         Debug.Log($"Posición del lobo antes de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
 
-        MeatMoveResult meatResult = CanMoveToMeat();
-        PlayerMoveResult pMove = CanMoveToPlayer();
+        Vector2Int meatPos = CanMoveToMeat();
+        Player playerToChase = CanMoveToPlayer();
 
-        int option = (meatResult.canChase, pMove.canChase) switch
+        int option = (meatPos.x != -1, playerToChase != null) switch
         {
             (true, _) => 1,
             (false, true) => 2,
@@ -96,21 +97,21 @@ public class Wolf : NetworkBehaviour
         switch (option)
         {
             case 1:
-                MoveToMeat(meatResult.pos);
+                MoveToMeat(meatPos);
                 break;
             case 2:
-                MoveToPlayer(pMove.player);
+                MoveToPlayer(playerToChase);
                 break;
             default:
                 NetworkPosition.Value = MoveRandomly();
                 break;
         }
 
-        CatchingPlayerMove caught = CheckPlayerCollision();
+        Player[] playersCaught = CheckPlayerCollision();
 
-        if (caught.canGoToDen)
+        if (playersCaught != null)
         {
-            foreach (var player in caught.players)
+            foreach (var player in playersCaught)
             {
                 StealFromPlayer(player);
             }
@@ -276,7 +277,7 @@ public class Wolf : NetworkBehaviour
        
         Direction direction = MoveTowards(wolfDenPos);
 
-        NetworkPosition.Value = MoveWolfTo(direction);
+        NetworkPosition.Value = MoveWolfTo(direction, wolfDenPos);
 
         if (NetworkPosition.Value == wolfDenPos)
         {
@@ -293,7 +294,7 @@ public class Wolf : NetworkBehaviour
 
         Direction direction = MoveTowards(meatPos);
 
-        NetworkPosition.Value = MoveWolfTo(direction);
+        NetworkPosition.Value = MoveWolfTo(direction, meatPos);
 
         if (NetworkPosition.Value == meatPos)
         {
@@ -311,7 +312,7 @@ public class Wolf : NetworkBehaviour
 
         Direction direction = MoveTowards(player.NetworkMapPos.Value);
 
-        NetworkPosition.Value = MoveWolfTo(direction);
+        NetworkPosition.Value = MoveWolfTo(direction, player.NetworkMapPos.Value);
     }
 
     private Vector2Int MoveRandomly()
@@ -336,17 +337,29 @@ public class Wolf : NetworkBehaviour
 
         foreach (Direction direction in directions)
         {
-            ZoneMove moveResult = CanSwapZone(NetworkPosition.Value, direction);
+            Vector2Int newPos = CanSwapZone(NetworkPosition.Value, direction);
 
-            if (!moveResult.canMove)
+            if (newPos.x == -1)
                 continue;
 
-            return moveResult.newPos;
+            return newPos;
         }
 
         Debug.Log("El lobo no tiene movimientos disponibles.");
 
         return NetworkPosition.Value;
+    }
+    
+    private Vector2Int MoveWolfTo(Direction direction, Vector2Int targetPos)
+    {
+        return direction switch
+        {
+            Direction.North => NetworkPosition.Value + Vector2Int.up,
+            Direction.South => NetworkPosition.Value + Vector2Int.down,
+            Direction.East => NetworkPosition.Value + Vector2Int.right,
+            Direction.West => NetworkPosition.Value + Vector2Int.left,
+            _ => NetworkPosition.Value == targetPos ? NetworkPosition.Value : MoveRandomly()
+        };
     }
 
     private void RemoveMeatInZone(Vector2Int meatPos)
@@ -397,12 +410,12 @@ public class Wolf : NetworkBehaviour
 
             foreach (Direction direction in directions)
             {
-                ZoneMove move = CanSwapZone(currentPos, direction);
+                Vector2Int move = CanSwapZone(currentPos, direction);
                 
-                if (!move.canMove)
+                if (move.x == -1)
                     continue;
 
-                Vector2Int nextPos = move.newPos;
+                Vector2Int nextPos = move;
 
                 if (previousPositions.ContainsKey(nextPos))
                     continue;
@@ -456,7 +469,7 @@ public class Wolf : NetworkBehaviour
         return Direction.None;
     }
 
-    private ZoneMove CanSwapZone(
+    private Vector2Int CanSwapZone(
         Vector2Int position,
         Direction direction)
     {
@@ -481,33 +494,19 @@ public class Wolf : NetworkBehaviour
                 break;
         }
 
-        return new ZoneMove(
-            newPos.x >= 0 &&
+        bool canMove = newPos.x >= 0 &&
             newPos.x < mapWidth &&
             newPos.y >= 0 &&
             newPos.y < mapHeight &&
-            map[newPos.y, newPos.x].type != ZoneType.Camp,
-            newPos
-        );
+            map[newPos.y, newPos.x].type != ZoneType.Camp;
+
+        return canMove ? newPos : new Vector2Int(-1, -1);
     }
 
-    private Vector2Int MoveWolfTo(Direction direction)
-    {
-        return direction switch
-        {
-            Direction.North => NetworkPosition.Value + Vector2Int.up,
-            Direction.South => NetworkPosition.Value + Vector2Int.down,
-            Direction.East => NetworkPosition.Value + Vector2Int.right,
-            Direction.West => NetworkPosition.Value + Vector2Int.left,
-            _ => MoveRandomly()
-        };
-    }
-
-    private MeatMoveResult CanMoveToMeat()
+    private Vector2Int CanMoveToMeat()
     {
         int closestDistance = int.MaxValue;
-        Vector2Int closestPosition = Vector2Int.zero;
-        bool foundMeat = false;
+        Vector2Int closestPosition = new(-1, -1);
 
         for (int y = 0; y < mapHeight; y++)
         {
@@ -531,15 +530,14 @@ public class Wolf : NetworkBehaviour
                 {
                     closestDistance = distanceToMeat;
                     closestPosition = new Vector2Int(x, y);
-                    foundMeat = true;
                 }
             }
         }
 
-        return new MeatMoveResult(foundMeat, closestPosition);
+        return closestPosition;
     }
 
-    private PlayerMoveResult CanMoveToPlayer()
+    private Player CanMoveToPlayer()
     {
         Vector2Int player1Pos = player1.NetworkMapPos.Value;
         Vector2Int player2Pos = player2.NetworkMapPos.Value;
@@ -564,28 +562,17 @@ public class Wolf : NetworkBehaviour
         bool player2InRange =
             !player2Safe && distanceToPlayer2 <= distanceToChasePlayer;
 
-        if (!player1InRange && !player2InRange)
-            return new PlayerMoveResult(false, null);
-
-        if (!player1InRange)
-            return new PlayerMoveResult(true, player2);
-
-        if (!player2InRange)
-            return new PlayerMoveResult(true, player1);
-
-        if (distanceToPlayer1 == distanceToPlayer2)
-            return new PlayerMoveResult(
-                true,
-                Random.Range(0, 2) == 0 ? player1 : player2
-            );
-
-        return new PlayerMoveResult(
-            true,
-            distanceToPlayer1 < distanceToPlayer2 ? player1 : player2
-        );
+        return (player1InRange, player2InRange, distanceToPlayer1 == distanceToPlayer2) switch
+        {
+            (false, false, _) => null,
+            (false, _, _) => player2,
+            (_, false, _) => player1,
+            (_, _, true) => Random.Range(0, 2) == 0 ? player1 : player2,
+            _ => distanceToPlayer1 < distanceToPlayer2 ? player1 : player2
+        };
     }
 
-    private CatchingPlayerMove CheckPlayerCollision()
+    private Player[] CheckPlayerCollision()
     {
         Vector2Int p1Pos = player1.NetworkMapPos.Value;
         Vector2Int p2Pos = player2.NetworkMapPos.Value;
@@ -595,10 +582,10 @@ public class Wolf : NetworkBehaviour
 
         return (isInSamePosWithP1, isInSamePosWithP2) switch
         {
-            (true, true) => new CatchingPlayerMove(true, new[] { player1, player2 }),
-            (true, false) => new CatchingPlayerMove(true, new[] { player1 }),
-            (false, true) => new CatchingPlayerMove(true, new[] { player2 }),
-            _ => new CatchingPlayerMove(false, null)
+            (true, true) => new[] { player1, player2 },
+            (true, false) => new[] { player1 },
+            (false, true) => new[] { player2 },
+            _ => null
         }; 
     }
 }
@@ -623,55 +610,5 @@ public struct ItemsStolenResult
         this.items = items;
         this.amount = amount;
         this.chestIsFull = chestIsFull;
-    }
-}
-
-public struct ZoneMove
-{
-    public bool canMove;
-    public Vector2Int newPos;
-
-    public ZoneMove(
-        bool canMove,
-        Vector2Int newPos)
-    {
-        this.canMove = canMove;
-        this.newPos = newPos;
-    }
-}
-
-public struct PlayerMoveResult
-{
-    public bool canChase;
-    public Player player;
-
-    public PlayerMoveResult(bool canChase, Player player)
-    {
-        this.canChase = canChase;
-        this.player = player;
-    }
-}
-
-public struct MeatMoveResult
-{
-    public bool canChase;
-    public Vector2Int pos;
-
-    public MeatMoveResult(bool canChase, Vector2Int pos)
-    {
-        this.canChase = canChase;
-        this.pos = pos;
-    }
-}
-
-public struct CatchingPlayerMove
-{
-    public bool canGoToDen;
-    public Player[] players;
-    
-    public CatchingPlayerMove(bool canGoToDen, Player[] players)
-    {
-        this.canGoToDen = canGoToDen;
-        this.players = players;
     }
 }
