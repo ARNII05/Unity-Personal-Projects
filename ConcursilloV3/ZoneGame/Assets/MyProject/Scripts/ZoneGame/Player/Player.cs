@@ -498,6 +498,39 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
+    public void CraftCoreItemServerRpc(ItemType itemToAdd, int amountToAdd,
+        ItemType itemToRemove, int amountToRemove)
+    {
+        bool hasEnoughMats = itemToRemove == ItemType.Flower ?
+            craftingSystem.CanCraftBouquet() : craftingSystem.CanCraftLog();
+
+        if (!hasEnoughMats)
+            return;
+
+        if (!inventory.AddItem(itemToAdd, amountToAdd))
+            return;
+
+        if (!inventory.RemoveItem(itemToRemove, amountToRemove))
+        {
+            inventory.RemoveItem(itemToAdd, amountToAdd);
+            return;
+        }
+
+        CraftCoreItemClientRpc(itemToAdd, amountToAdd, itemToRemove, amountToRemove);
+    }
+
+    [ClientRpc]
+    public void CraftCoreItemClientRpc(ItemType itemToAdd, int amountToAdd,
+        ItemType itemToRemove, int amountToRemove)
+    {
+        if (IsServer || !IsOwner)
+            return;
+
+        inventory.AddItem(itemToAdd, amountToAdd);
+        inventory.RemoveItem(itemToRemove, amountToRemove);
+    }
+
+    [ServerRpc]
     public void SetNetworkMapPosServerRpc(
         Vector2Int newPos,
         Direction direction,
@@ -797,9 +830,11 @@ public class Player : NetworkBehaviour
         }
 
         inventory.AddItem(ItemType.Meat, 1);
-        inventory.AddItem(ItemType.Branch, 4);
-        inventory.AddItem(ItemType.Flower, 2);
+        /*
+        inventory.AddItem(ItemType.Branch, 30);
+        inventory.AddItem(ItemType.Flower, 30);
         inventory.AddItem(ItemType.Coin, 3);
+        */
     }
 
     [ClientRpc]

@@ -33,22 +33,16 @@ public class CraftingSystem : MonoBehaviour
     public void CraftBouquet()
     {
         if (!CanCraftBouquet())
-        {
             return;
-        }
 
-        player.inventory.AddItem(ItemType.Bouquet, 1);
-        player.inventory.RemoveItem(ItemType.Flower, flowersForBouquet);
+        player.CraftCoreItemServerRpc(ItemType.Bouquet, 1, ItemType.Flower, flowersForBouquet);
     }
 
     public void CraftLog()
     {
         if (!CanCraftLog())
-        {
             return;
-        }
 
-        player.inventory.AddItem(ItemType.Log, 1);
-        player.inventory.RemoveItem(ItemType.Branch, branchesForLog);
+        player.CraftCoreItemServerRpc(ItemType.Log, 1, ItemType.Branch, branchesForLog);
     }
 }
