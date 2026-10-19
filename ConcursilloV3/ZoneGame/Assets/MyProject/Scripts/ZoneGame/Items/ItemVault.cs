@@ -19,4 +19,10 @@ public static class ItemVault
             _ => null,
         };
     }
+
+    public static bool IsTransferable(ItemType itemType)
+    {
+        return itemType != ItemType.Map && itemType != ItemType.Radar
+            && itemType != ItemType.None;
+    }
 }

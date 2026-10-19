@@ -107,7 +107,7 @@ public class InventoryUI : MonoBehaviour
         TextMeshProUGUI itemBoxText =
             iconBox.GetComponentInChildren<TextMeshProUGUI>();
 
-        UpdateBoxLock(actualBox, !IsTransferable(itemType));
+        UpdateBoxLock(actualBox, !ItemVault.IsTransferable(itemType));
 
         Image itemImage =
             iconBox.transform.Find("ItemIcon").GetComponent<Image>();
@@ -126,12 +126,6 @@ public class InventoryUI : MonoBehaviour
             return;
 
         lockTrans.gameObject.SetActive(isTransferable);
-    }
-
-    private bool IsTransferable(ItemType itemType)
-    {
-        return itemType != ItemType.Map && itemType != ItemType.Radar
-            && itemType != ItemType.None;
     }
 
     public void ToggleInventory()

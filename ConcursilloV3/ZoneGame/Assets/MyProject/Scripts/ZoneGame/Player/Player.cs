@@ -388,80 +388,113 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     private void UpdateOpenedChestClientRpc(Vector2Int position)
     {
-        MapManager.Instance.UpdateChestUINetworking(
-            OwnerClientId,
-            position
-        );
+        MapManager.Instance.UpdateChestUINetworking(position);
     }
 
     [ServerRpc]
-    public void SendItemToChestServerRpc(
-        ItemType itemType,
-        int amount)
+    public void SendItemsToChestServerRpc(ItemType item, int amount)
     {
-        UpdateChestInventoryClientRpc(
-            itemType,
-            amount,
-            NetworkMapPos.Value
-        );
+        Vector2Int pos = NetworkMapPos.Value;
+
+        ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
+
+        if (!ItemVault.IsTransferable(item))
+            return;
+
+        if (amount <= 0 || inventory.GetItemAmount(item) < amount)
+            return;
+
+        if (!zone.chestInventory.HasSpaceForItem(item))
+            return;
+
+        if (!zone.chestInventory.AddItem(item, amount))
+            return;
+
+        if (!inventory.RemoveItem(item, amount))
+        {
+            zone.chestInventory.RemoveItem(item, amount);
+            return;
+        }
+
+        SendItemsToChestClientRpc(item, amount, pos);
     }
 
     [ClientRpc]
-    private void UpdateChestInventoryClientRpc(
-        ItemType itemType,
-        int amount,
-        Vector2Int position)
+    private void SendItemsToChestClientRpc(
+        ItemType item, int amount, Vector2Int pos)
     {
-        ZoneData zoneData =
-            MapManager.Instance.map[
-                position.y,
-                position.x
-            ];
+        if (!IsServer)
+        {
+            ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
+            zone.chestInventory.AddItem(item, amount);
 
-        zoneData.chestInventory.AddItem(
-            itemType,
-            amount
-        );
+            if (IsOwner)
+                inventory.RemoveItem(item, amount);
+        }
 
-        Chest chest =
-            currentZone.GetComponentInChildren<Chest>();
+        Player localPlayer = MapManager.Instance.GetLocalPlayer();
 
-        chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
+        if (localPlayer != null && localPlayer.NetworkMapPos.Value == pos)
+        {
+            Chest chest = localPlayer.currentZone.GetComponentInChildren<Chest>();
+
+            if (chest != null)
+                chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
+        }
+
+        if (IsOwner)
+            inventoryUI.ChangeButtonStatus(true);
     }
 
     [ServerRpc]
-    public void RemoveItemToChestServerRpc(
-        ItemType itemType,
-        int amount)
+    public void SendItemsToPlayerServerRpc(ItemType item, int amount)
     {
-        RemoveItemFromChestClientRpc(
-            itemType,
-            amount,
-            NetworkMapPos.Value
-        );
+        Vector2Int pos = NetworkMapPos.Value;
+
+        ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
+
+        if (!inventory.HasSpaceForItem(item))
+            return;
+
+        if (amount <= 0 || zone.chestInventory.GetItemAmount(item) < amount)
+            return;
+
+        if (!inventory.AddItem(item, amount))
+            return;
+
+        if (!zone.chestInventory.RemoveItem(item, amount))
+        {
+            inventory.RemoveItem(item, amount);
+            return;
+        }
+
+        SendItemsToPlayerClientRpc(item, amount, pos);
     }
 
     [ClientRpc]
-    private void RemoveItemFromChestClientRpc(
-        ItemType itemType,
-        int amount,
-        Vector2Int position)
+    private void SendItemsToPlayerClientRpc(ItemType item, int amount, Vector2Int pos)
     {
-        ZoneData zoneData =
-            MapManager.Instance.map[
-                position.y,
-                position.x
-            ];
+        if (!IsServer)
+        {
+            ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
+            zone.chestInventory.RemoveItem(item, amount);
 
-        zoneData.chestInventory.RemoveItem(
-            itemType,
-            amount
-        );
+            if (IsOwner)
+                inventory.AddItem(item, amount);
+        }
 
-        Chest chest =
-            currentZone.GetComponentInChildren<Chest>();
+        Player localPlayer = MapManager.Instance.GetLocalPlayer();
 
-        chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
+        if (localPlayer != null && localPlayer.NetworkMapPos.Value == pos)
+        {
+            Chest chest = localPlayer.currentZone.GetComponentInChildren<Chest>();
+
+            if (chest != null)
+                chest.chestUI.chestInventoryUI.ChangeButtonStatus(true);
+        }
+
+        if (IsOwner)
+            inventoryUI.ChangeButtonStatus(true);
     }
 
     [ServerRpc]
@@ -770,7 +803,7 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amount)
+    private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts)
     {
         if (!IsOwner)
             return;
@@ -781,7 +814,7 @@ public class Player : NetworkBehaviour
 
             for (int i = 0; i < itemTypes.Length; i++)
             {
-                inventory.AddItem(itemTypes[i], amount[i]);
+                inventory.AddItem(itemTypes[i], amounts[i]);
             }
         }
 
@@ -867,7 +900,7 @@ public class Player : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            Player localPlayer = MapManager.Instance.GetPlayerById(NetworkManager.Singleton.LocalClientId);
+            Player localPlayer = MapManager.Instance.GetLocalPlayer();
 
             if (localPlayer != null)
                 localPlayer.HideOtherPlayerTemporarily(0.15f);

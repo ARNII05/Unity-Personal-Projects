@@ -128,6 +128,17 @@ public class MapManager : MonoBehaviour
         return null;
     }
 
+    public Player GetLocalPlayer()
+    {
+        if (Player1 != null && Player1.IsOwner)
+            return Player1;
+
+        if (Player2 != null && Player2.IsOwner)
+            return Player2;
+
+        return null;
+    }
+
     private void InitRoleSelector()
     {
         StartCoroutine(InitRoleSelectorCoroutine());
@@ -1023,13 +1034,13 @@ public class MapManager : MonoBehaviour
         );
     }
 
-    public void UpdateChestUINetworking(ulong actualPlayerId, Vector2Int position)
+    public void UpdateChestUINetworking(Vector2Int position)
     {
         map[position.y, position.x].chestOpened = true;
 
         rabbitMapUI.UpdateZoneInfo();
 
-        Player actualPlayer = GetPlayerById(actualPlayerId) == player1 ? player1 : player2;
+        Player actualPlayer = GetLocalPlayer();
         Player otherPlayer = GetOtherPlayer(actualPlayer);
 
         UpdateChestSprite(actualPlayer, position);

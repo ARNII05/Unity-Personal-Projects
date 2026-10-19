@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChestUI : MonoBehaviour
 {
-    [SerializeField] private InventoryUI playerInventoryUI;
+    public InventoryUI playerInventoryUI;
     public InventoryUI chestInventoryUI;
     private Vector3 playerInventoryBasePos = Vector3.zero;
     private Vector3 playerInventoryChangedPos = new(-460, -1, 0);
@@ -28,15 +28,13 @@ public class ChestUI : MonoBehaviour
 
         ItemType itemType = playerInventoryUI.inventory.GetItemByIndex(index);
 
-        if (!IsTransferable(itemType))
+        if (!ItemVault.IsTransferable(itemType))
             return;
 
         if (!chestInventoryUI.inventory.HasSpaceForItem(itemType))
             return;
 
-        playerInventoryUI.ChangeButtonStatus(true);
-        playerInventoryUI.inventory.RemoveItem(itemType, 1);
-        player.SendItemToChestServerRpc(itemType, 1);
+        player.SendItemsToChestServerRpc(itemType, 1);
     }
 
     public void SendAllItemsToChest(int index)
@@ -47,15 +45,13 @@ public class ChestUI : MonoBehaviour
         ItemType itemType = playerInventoryUI.inventory.GetItemByIndex(index);
         int itemAmount = playerInventoryUI.inventory.GetItemAmount(itemType);
 
-        if (!IsTransferable(itemType))
+        if (!ItemVault.IsTransferable(itemType))
             return;
 
         if (!chestInventoryUI.inventory.HasSpaceForItem(itemType))
             return;
 
-        playerInventoryUI.ChangeButtonStatus(true);
-        playerInventoryUI.inventory.RemoveItem(itemType, itemAmount);
-        player.SendItemToChestServerRpc(itemType, itemAmount);
+        player.SendItemsToChestServerRpc(itemType, itemAmount);
     }
 
     public void SendItemsToPlayer(int index)
@@ -65,15 +61,13 @@ public class ChestUI : MonoBehaviour
 
         ItemType itemType = chestInventoryUI.inventory.GetItemByIndex(index);
 
-        if (!IsTransferable(itemType))
+        if (!ItemVault.IsTransferable(itemType))
             return;
 
         if (!playerInventoryUI.inventory.HasSpaceForItem(itemType))
             return;
 
-        playerInventoryUI.ChangeButtonStatus(true);
-        playerInventoryUI.inventory.AddItem(itemType, 1);
-        player.RemoveItemToChestServerRpc(itemType, 1);
+        player.SendItemsToPlayerServerRpc(itemType, 1);
     }
 
     public void SendAllItemsToPlayer(int index)
@@ -84,21 +78,13 @@ public class ChestUI : MonoBehaviour
         ItemType itemType = chestInventoryUI.inventory.GetItemByIndex(index);
         int itemAmount = chestInventoryUI.inventory.GetItemAmount(itemType);
 
-        if (!IsTransferable(itemType))
+        if (!ItemVault.IsTransferable(itemType))
             return;
 
         if (!playerInventoryUI.inventory.HasSpaceForItem(itemType))
             return;
 
-        playerInventoryUI.ChangeButtonStatus(true);
-        playerInventoryUI.inventory.AddItem(itemType, itemAmount);
-        player.RemoveItemToChestServerRpc(itemType, itemAmount);
-    }
-
-    private bool IsTransferable(ItemType itemType)
-    {
-        return itemType != ItemType.Map && itemType != ItemType.Radar 
-            && itemType != ItemType.None;
+        player.SendItemsToPlayerServerRpc(itemType, itemAmount);
     }
 
     public void ToggleInventory()

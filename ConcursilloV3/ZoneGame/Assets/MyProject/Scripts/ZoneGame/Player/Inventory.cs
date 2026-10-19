@@ -48,7 +48,8 @@ public class Inventory
 
     public bool RemoveItem(ItemType itemType, int amount)
     {
-        if (!items.ContainsKey(itemType))
+        if (!items.ContainsKey(itemType) || amount <= 0 
+            || GetItemAmount(itemType) < amount)
         {
             return false;
         }
