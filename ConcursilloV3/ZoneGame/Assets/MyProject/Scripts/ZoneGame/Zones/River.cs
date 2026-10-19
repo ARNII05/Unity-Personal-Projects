@@ -51,12 +51,6 @@ public class River : MonoBehaviour
         if (player.inventory.GetItemAmount(ItemType.Log) <= 0)
             return false;
 
-        SwapGameObjectStatus(false, riverInteractors);
-        SwapGameObjectStatus(false, triggers);
-        SwapGameObjectStatus(true, bridges);
-        
-        map[mapPosition.y, mapPosition.x].riverBridged = true;
-
         return true;
     }
 
@@ -68,7 +62,7 @@ public class River : MonoBehaviour
         }
     }
 
-    public void SwapGameObjectStatusNetworking()
+    public void SwapGameObjectStatus()
     {
         SwapGameObjectStatus(false, riverInteractors);
         SwapGameObjectStatus(false, triggers);

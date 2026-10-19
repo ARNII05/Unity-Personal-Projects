@@ -18,9 +18,8 @@ public class Player : NetworkBehaviour
     public GameObject currentZone;
 
     private BorderZone currentBorderZone;
-    private RiverInteraction currentRiverInteraction;
     public Chest nearbyChest;
-    private GameObject rabbit, nearbyGrandma;
+    private GameObject rabbit, nearbyGrandma, currentRiverInteraction;
 
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
@@ -212,7 +211,7 @@ public class Player : NetworkBehaviour
     {
         if (currentRiverInteraction != null)
         {
-            InteractWithRiver();
+            RiverInteractionServerRpc(NetworkMapPos.Value);
             return;
         }
 
@@ -261,17 +260,53 @@ public class Player : NetworkBehaviour
         nearbyChest.OnOpen(this);
     }
 
-    private void InteractWithRiver()
+    [ServerRpc]
+    private void RiverInteractionServerRpc(Vector2Int pos)
     {
-        bool isBridged =
-            currentRiverInteraction.SendInteractToRiver(this);
+        if (MapManager.Instance.map[pos.y, pos.x].type != ZoneType.HorizontalRiver &&
+            MapManager.Instance.map[pos.y, pos.x].type != ZoneType.VerticalRiver)
+            return;
+
+        if (!currentZone.TryGetComponent<River>(out var river))
+            return;
+
+        bool isBridged = river.Interact(this);
 
         if (!isBridged)
             return;
 
-        inventory.RemoveItem(ItemType.Log, 1);
+        if (!inventory.RemoveItem(ItemType.Log, 1))
+            return;
 
-        RiverInteractionServerRpc(NetworkMapPos.Value);
+        RiverInteractionClientRpc(pos);
+    }
+
+    [ClientRpc]
+    private void RiverInteractionClientRpc(Vector2Int position)
+    {
+        MapManager.Instance.map[position.y, position.x].riverBridged = true;
+
+        if (IsOwner && !IsServer)
+        {
+            inventory.RemoveItem(ItemType.Log, 1);
+        }
+
+        Player localPlayer = MapManager.Instance.GetLocalPlayer();
+
+        if (localPlayer == null)
+            return;
+
+        if (localPlayer.NetworkMapPos.Value != position)
+            return;
+
+        if (localPlayer.currentZone == null)
+            return;
+
+        if (!localPlayer.currentZone.TryGetComponent<River>(
+                out var riverZone))
+            return;
+
+        riverZone.SwapGameObjectStatus();
     }
 
     private void ChangeZone()
@@ -294,35 +329,6 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void UpdateZoneBouquetsServerRpc(int amount)
-    {
-        ZoneData zoneData =
-            MapManager.Instance.map[
-                NetworkMapPos.Value.y,
-                NetworkMapPos.Value.x
-            ];
-
-        zoneData.bouquetsInInventory += amount;
-
-        UpdateZoneBouquetsClientRpc(amount);
-    }
-
-    [ClientRpc]
-    public void UpdateZoneBouquetsClientRpc(int amount)
-    {
-        if (IsServer)
-            return;
-
-        ZoneData zoneData =
-            MapManager.Instance.map[
-                NetworkMapPos.Value.y,
-                NetworkMapPos.Value.x
-            ];
-
-        zoneData.bouquetsInInventory += amount;
-    }
-
-    [ServerRpc]
     public void ShowEndGanePanelServerRpc()
     {
         State = PlayerState.EndGame;
@@ -341,42 +347,6 @@ public class Player : NetworkBehaviour
         State = PlayerState.EndGame;
 
         EndgameUI.Instance.ShowEndGamePanel();
-    }
-
-    [ServerRpc]
-    private void RiverInteractionServerRpc(Vector2Int position)
-    {
-        MapManager.Instance.map[
-            position.y,
-            position.x
-        ].riverBridged = true;
-
-        RiverInteractionClientRpc(position);
-    }
-
-    [ClientRpc]
-    private void RiverInteractionClientRpc(Vector2Int position)
-    {
-        MapManager.Instance.map[
-            position.y,
-            position.x
-        ].riverBridged = true;
-
-        if (!NetworkManager.Singleton.LocalClient.PlayerObject
-                .TryGetComponent<Player>(out var localPlayer))
-            return;
-
-        if (localPlayer.NetworkMapPos.Value != position)
-            return;
-
-        if (localPlayer.currentZone == null)
-            return;
-
-        if (!localPlayer.currentZone.TryGetComponent<River>(
-                out var riverZone))
-            return;
-
-        riverZone.SwapGameObjectStatusNetworking();
     }
 
     [ServerRpc]
@@ -830,11 +800,8 @@ public class Player : NetworkBehaviour
         }
 
         inventory.AddItem(ItemType.Meat, 1);
-        /*
-        inventory.AddItem(ItemType.Branch, 30);
-        inventory.AddItem(ItemType.Flower, 30);
-        inventory.AddItem(ItemType.Coin, 3);
-        */
+        inventory.AddItem(ItemType.Bouquet, 7);
+        inventory.AddItem(ItemType.Log, 7);
     }
 
     [ClientRpc]
@@ -1068,8 +1035,7 @@ public class Player : NetworkBehaviour
 
             case "RiverInteractor":
 
-                currentRiverInteraction =
-                    other.GetComponentInParent<RiverInteraction>();
+                currentRiverInteraction = other.gameObject;
 
                 break;
 
