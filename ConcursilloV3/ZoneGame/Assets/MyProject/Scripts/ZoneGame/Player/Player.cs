@@ -738,11 +738,61 @@ public class Player : NetworkBehaviour
         if (otherPlayer.Role.Value == PlayerRole.None)
             return;
 
-        GiveStartingItemClientRpc();
-        otherPlayer.GiveStartingItemClientRpc();
+        GiveStartingItemsOnServer();
+        otherPlayer.GiveStartingItemsOnServer();
+
+        GiveStartingItemClientRpc(inventory.items.Keys.ToArray(), 
+            inventory.items.Values.ToArray());
+        otherPlayer.GiveStartingItemClientRpc(otherPlayer.inventory.items.Keys.ToArray(), 
+            otherPlayer.inventory.items.Values.ToArray());
 
         StartGameClientRpc();
         otherPlayer.StartGameClientRpc();
+    }
+
+    private void GiveStartingItemsOnServer()
+    {
+        inventory.items.Clear();
+
+        if (Role.Value == PlayerRole.Gardener)
+        {
+            inventory.AddItem(ItemType.Radar, 1);
+        }
+        else if (Role.Value == PlayerRole.Builder)
+        {
+            inventory.AddItem(ItemType.Map, 1);
+        }
+
+        inventory.AddItem(ItemType.Meat, 1);
+        inventory.AddItem(ItemType.Branch, 4);
+        inventory.AddItem(ItemType.Flower, 2);
+        inventory.AddItem(ItemType.Coin, 3);
+    }
+
+    [ClientRpc]
+    private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amount)
+    {
+        if (!IsOwner)
+            return;
+
+        if (!IsServer)
+        {
+            inventory.items.Clear();
+
+            for (int i = 0; i < itemTypes.Length; i++)
+            {
+                inventory.AddItem(itemTypes[i], amount[i]);
+            }
+        }
+
+        if (Role.Value == PlayerRole.Gardener)
+        {
+            RadarUI.Instance.Init(this);
+        }
+        else if (Role.Value == PlayerRole.Builder)
+        {
+            MapUI.Instance.Init(this);
+        }
     }
 
     [ClientRpc]
@@ -762,35 +812,6 @@ public class Player : NetworkBehaviour
         MapManager.Instance.wolf.Init();
 
         State = PlayerState.Normal;
-    }
-
-    [ClientRpc]
-    private void GiveStartingItemClientRpc()
-    {
-        if (!IsOwner)
-            return;
-
-        if (Role.Value == PlayerRole.Gardener)
-        {
-            inventory.AddItem(
-                ItemType.Radar,
-                1
-            );
-            RadarUI.Instance.Init(this);
-        }
-        else if (Role.Value == PlayerRole.Builder)
-        {
-            inventory.AddItem(
-                ItemType.Map,
-                1
-            );
-            MapUI.Instance.Init(this);
-        }
-
-        inventory.AddItem(ItemType.Meat, 1);
-        inventory.AddItem(ItemType.Branch, 4);
-        inventory.AddItem(ItemType.Flower, 2);
-        inventory.AddItem(ItemType.Coin, 3);
     }
 
     public void InitRoleSelector()
