@@ -9,10 +9,11 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CraftingSystem))]
+[RequireComponent(typeof(OtherPlayerVisual))]
 public class Player : NetworkBehaviour
 {
-    private static readonly int DirectionHash = Animator.StringToHash("Direction");
-    private static readonly int IsWalkingHash = Animator.StringToHash("IsWalking");
+    [SerializeField] private OtherPlayerVisual otherPlayerVisualController;
+    
     public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
     public GameObject currentZone;
@@ -30,15 +31,6 @@ public class Player : NetworkBehaviour
 
     public PlayerState State { get; set; } = PlayerState.Normal;
     public HashSet<Vector2Int> discoveredZones = new();
-
-    [SerializeField] private GameObject otherPlayerVisualPrefab;
-
-    private GameObject otherPlayerVisualRoot;
-    private GameObject otherPlayerVisual;
-
-    private Animator otherPlayerAnimator; 
-
-    private Coroutine showOtherPlayerCoroutine;
 
     public NetworkVariable<Vector3> NetworkZoneEntryPosition = new(
         Vector3.zero,
@@ -74,6 +66,7 @@ public class Player : NetworkBehaviour
     {
         controls = new ZoneGameControls();
         craftingSystem = GetComponent<CraftingSystem>();
+        otherPlayerVisualController = GetComponent<OtherPlayerVisual>();
     }
 
     private void Update()
@@ -83,8 +76,8 @@ public class Player : NetworkBehaviour
 
         HandleInput();
 
-        if (showOtherPlayerCoroutine == null)
-            UpdateOtherPlayerVisual();
+        if (otherPlayerVisualController != null)
+            otherPlayerVisualController.UpdateVisual();
     }
 
     private void HandleInput()
@@ -574,27 +567,8 @@ public class Player : NetworkBehaviour
 
             wolfUI = GameObject.Find("WolfManager").GetComponent<WolfUI>();
 
-            otherPlayerVisualRoot =
-                new GameObject("Other Player Visual Root");
-
-            otherPlayerVisualRoot.transform.SetPositionAndRotation(
-                transform.position,
-                transform.rotation
-            );
-
-            otherPlayerVisualRoot.transform.localScale =
-                Vector3.one * 1.5f;
-
-            otherPlayerVisual =
-                Instantiate(
-                    otherPlayerVisualPrefab,
-                    otherPlayerVisualRoot.transform
-                );
-
-            otherPlayerAnimator =
-                otherPlayerVisual.GetComponent<Animator>();
-
-            otherPlayerVisualRoot.SetActive(false);
+            if (otherPlayerVisualController != null)
+                otherPlayerVisualController.Initialize(this);
         }
 
         MapManager.Instance.RegisterPlayer(
@@ -928,8 +902,11 @@ public class Player : NetworkBehaviour
         {
             Player localPlayer = MapManager.Instance.GetLocalPlayer();
 
-            if (localPlayer != null)
-                localPlayer.HideOtherPlayerTemporarily(0.15f);
+            if (localPlayer != null &&
+                localPlayer.otherPlayerVisualController != null)
+            {
+                localPlayer.otherPlayerVisualController.HideTemporarily(0.15f);
+            }
         }
 
         if (!MapManager.Instance.IsMapReady)
@@ -939,82 +916,6 @@ public class Player : NetworkBehaviour
             this,
             lastDirection
         );
-    }
-
-    private void UpdateOtherPlayerVisual()
-    {
-        if (!IsOwner)
-            return;
-
-        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
-
-        if (otherPlayer == null)
-            return;
-
-        if (currentZone == null)
-        {
-            otherPlayerVisualRoot.SetActive(false);
-            return;
-        }
-
-        if (otherPlayer.currentZone == null)
-        {
-            otherPlayerVisualRoot.SetActive(false);
-            return;
-        }
-
-        bool sameZone =
-            NetworkMapPos.Value ==
-            otherPlayer.NetworkMapPos.Value;
-
-        if (!sameZone)
-        {
-            otherPlayerVisualRoot.SetActive(false);
-            return;
-        }
-
-        Vector3 visualPosition =
-            currentZone.transform.position +
-            (otherPlayer.transform.position -
-             otherPlayer.currentZone.transform.position);
-
-        otherPlayerVisualRoot.transform.position =
-            visualPosition;
-
-        otherPlayerVisualRoot.SetActive(true);
-
-        otherPlayerAnimator.SetInteger(
-            DirectionHash,
-            otherPlayer.NetworkDirection.Value
-        );
-
-        otherPlayerAnimator.SetBool(
-            IsWalkingHash,
-            otherPlayer.IsWalking.Value
-        );
-    }
-
-    public void HideOtherPlayerTemporarily(float delay = 0.1f)
-    {
-        if (!IsOwner)
-            return;
-
-        if (showOtherPlayerCoroutine != null)
-            StopCoroutine(showOtherPlayerCoroutine);
-
-        otherPlayerVisualRoot.SetActive(false);
-
-        showOtherPlayerCoroutine =
-            StartCoroutine(ShowOtherPlayerAfterDelay(delay));
-    }
-
-    private IEnumerator ShowOtherPlayerAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-
-        UpdateOtherPlayerVisual();
-
-        showOtherPlayerCoroutine = null;
     }
 
     [ClientRpc]
