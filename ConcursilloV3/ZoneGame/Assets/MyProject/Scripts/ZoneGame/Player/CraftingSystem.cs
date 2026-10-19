@@ -35,7 +35,7 @@ public class CraftingSystem : MonoBehaviour
         if (!CanCraftBouquet())
             return;
 
-        player.CraftCoreItemServerRpc(ItemType.Bouquet, 1, ItemType.Flower, flowersForBouquet);
+        player.CraftCoreItemServerRpc();
     }
 
     public void CraftLog()
@@ -43,6 +43,6 @@ public class CraftingSystem : MonoBehaviour
         if (!CanCraftLog())
             return;
 
-        player.CraftCoreItemServerRpc(ItemType.Log, 1, ItemType.Branch, branchesForLog);
+        player.CraftCoreItemServerRpc();
     }
 }
