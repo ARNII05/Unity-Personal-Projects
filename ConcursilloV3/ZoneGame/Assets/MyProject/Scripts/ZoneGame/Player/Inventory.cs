@@ -9,6 +9,16 @@ public class Inventory
     public Dictionary<ItemType, int> items = new();
     public event Action OnInventoryChanged;
     public const int maxCapacity = 5;
+    
+    public void SetInventory(ItemType[] itemTypes, int[] amounts)
+    {
+        items.Clear();
+
+        for (int i = 0; i < itemTypes.Length; i++)
+            items[itemTypes[i]] = amounts[i];
+
+        OnInventoryChanged?.Invoke();
+    }
 
     public bool AddItem(ItemType itemType, int amount)
     {

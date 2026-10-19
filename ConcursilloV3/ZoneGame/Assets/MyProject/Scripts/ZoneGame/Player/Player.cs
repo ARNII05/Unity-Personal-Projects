@@ -812,12 +812,7 @@ public class Player : NetworkBehaviour
 
         if (!IsServer)
         {
-            inventory.items.Clear();
-
-            for (int i = 0; i < itemTypes.Length; i++)
-            {
-                inventory.AddItem(itemTypes[i], amounts[i]);
-            }
+            inventory.SetInventory(itemTypes, amounts);
         }
 
         if (Role.Value == PlayerRole.Gardener)
