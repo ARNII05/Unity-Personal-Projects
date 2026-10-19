@@ -5,6 +5,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(WolfUI))]
@@ -124,6 +125,8 @@ public class Wolf : NetworkBehaviour
 
     private void StealFromPlayer(Player player)
     {
+        ItemsStolenResult itemsStolen = ItemsToSteal(player);
+
         ClientRpcParams rpcParams = new()
         {
             Send = new ClientRpcSendParams
@@ -133,6 +136,9 @@ public class Wolf : NetworkBehaviour
         };
 
         StealFromPlayerClientRpc(
+            itemsStolen.items.ToArray(),
+            itemsStolen.amount.ToArray(),
+            itemsStolen.chestIsFull,
             player.NetworkObjectId,
             rpcParams
         );
@@ -140,48 +146,45 @@ public class Wolf : NetworkBehaviour
 
     [ClientRpc]
     private void StealFromPlayerClientRpc(
+        ItemType[] items,
+        int[] amounts,
+        bool chestIsFull,
         ulong playerNetworkObjectId,
         ClientRpcParams rpcParams = default)
     {
         if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(
-                playerNetworkObjectId, out NetworkObject playerObject))
+            playerNetworkObjectId, out NetworkObject playerObject))
             return;
 
-        Player player = playerObject.GetComponent<Player>();
-
-        if (player == null || !player.IsOwner)
+        if (!playerObject.TryGetComponent<Player>(out var player))
             return;
 
-        ItemsToSteal(player);
+        Dictionary<ItemType, int> itemsStolenDic =
+            SoltenItemsToDic(items, amounts);
+
+        wolfUI.ShowItemsStolen(itemsStolenDic, player, chestIsFull);
     }
 
-    private void ItemsToSteal(Player player)
+    private ItemsStolenResult ItemsToSteal(Player player)
     {
         int itemsToSteal = Random.Range(1, maxItemsToSteal + 1);
 
-        ItemsStolenResult itemsStolen = StealingItems(itemsToSteal, maxCountToSteal, player);
-
-        Dictionary<ItemType, int> itemsStolenDic = SoltenItemsToDic(itemsStolen);
-
-        wolfUI.ShowItemsStolen(itemsStolenDic, player, itemsStolen.chestIsFull);
+        return StealingItems(itemsToSteal, maxCountToSteal, player);
     }
     
-    private Dictionary<ItemType, int> SoltenItemsToDic(ItemsStolenResult itemsStolen)
+    private Dictionary<ItemType, int> SoltenItemsToDic(ItemType[] items, int[] amounts)
     {
-        List<ItemType> items = new(itemsStolen.items);
-        List<int> amount = new(itemsStolen.amount);
-
         Dictionary<ItemType, int> ItemsStolenDic = new();
 
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < items.Length; i++)
         {
             if (ItemsStolenDic.ContainsKey(items[i]))
             {
-                ItemsStolenDic[items[i]] += amount[i];
+                ItemsStolenDic[items[i]] += amounts[i];
                 continue;
             }
 
-            ItemsStolenDic[items[i]] = amount[i];
+            ItemsStolenDic[items[i]] = amounts[i];
         }
 
         return ItemsStolenDic;
@@ -207,7 +210,7 @@ public class Wolf : NetworkBehaviour
             if (validItems.Length == 0)
                 break;
 
-            ItemType[] validItemsInWolfDen = player.inventory.items.Keys
+            ItemType[] validItemsInWolfDen = validItems
                 .Where(item => SpaceInWolfDenChest(item))
                 .ToArray();
 
@@ -217,8 +220,8 @@ public class Wolf : NetworkBehaviour
                 break;
             }
 
-            int itemIndex = Random.Range(0, validItems.Length);
-            ItemType item = validItems[itemIndex];
+            int itemIndex = Random.Range(0, validItemsInWolfDen.Length);
+            ItemType item = validItemsInWolfDen[itemIndex];
 
             int availableAmount = player.inventory.GetItemAmount(item);
 
@@ -227,9 +230,11 @@ public class Wolf : NetworkBehaviour
                 Mathf.Min(maxCountToSteal, availableAmount) + 1
             );
 
-            player.inventory.RemoveItem(item, amountToSteal);
+            if (!player.inventory.RemoveItem(item, amountToSteal))
+                continue;
 
-            AddItemsToWolfDenChestRpc(item, amountToSteal);
+            if (!AddItemsToWolfDenChest(item, amountToSteal, player))
+                continue;
 
             forbbidenItems.Add(item);
             stolenItems.Add(item);
@@ -247,15 +252,20 @@ public class Wolf : NetworkBehaviour
         return wolfDen.chestInventory.HasSpaceForItem(item);
     }
 
-    [Rpc(SendTo.Server)]
-    private void AddItemsToWolfDenChestRpc(ItemType item, int amount)
+    private bool AddItemsToWolfDenChest(ItemType item, int amount, Player player)
     {
         Vector2Int pos = MapManager.Instance.wolfDenPos;
         ZoneData wolfDen = map[pos.y, pos.x];
 
-        wolfDen.chestInventory.AddItem(item, amount);
+        if (!wolfDen.chestInventory.AddItem(item, amount))
+        {
+            player.inventory.AddItem(item, amount);
+            return false;
+        }
 
         AddItemsToWolfDenChestClientRpc(item, amount, pos);
+
+        return true;
     }
 
     [ClientRpc]
