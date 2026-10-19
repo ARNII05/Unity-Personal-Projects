@@ -1,18 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CraftingSystem))]
 [RequireComponent(typeof(OtherPlayerVisual))]
 public class Player : NetworkBehaviour
 {
-    [SerializeField] private OtherPlayerVisual otherPlayerVisualController;
+    private OtherPlayerVisual otherPlayerVisualController;
     
     public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
@@ -579,7 +574,12 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        NetworkMapPos.OnValueChanged -= OnNetworkMapPosChanged;
+        IsWalking.OnValueChanged -= OnWalkingChanged;
+        NetworkDirection.OnValueChanged -= OnDirectionChanged;
+
         controls.Gameplay.Disable();
+
         base.OnNetworkDespawn();
     }
 
