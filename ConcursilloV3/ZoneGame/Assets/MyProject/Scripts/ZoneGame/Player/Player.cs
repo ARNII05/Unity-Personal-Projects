@@ -278,6 +278,8 @@ public class Player : NetworkBehaviour
         if (!inventory.RemoveItem(ItemType.Log, 1))
             return;
 
+        SetInventory();
+
         RiverInteractionClientRpc(pos);
     }
 
@@ -285,11 +287,6 @@ public class Player : NetworkBehaviour
     private void RiverInteractionClientRpc(Vector2Int position)
     {
         MapManager.Instance.map[position.y, position.x].riverBridged = true;
-
-        if (IsOwner && !IsServer)
-        {
-            inventory.RemoveItem(ItemType.Log, 1);
-        }
 
         Player localPlayer = MapManager.Instance.GetLocalPlayer();
 
@@ -386,6 +383,8 @@ public class Player : NetworkBehaviour
             return;
         }
 
+        SetInventory();
+
         SendItemsToChestClientRpc(item, amount, pos);
     }
 
@@ -397,9 +396,6 @@ public class Player : NetworkBehaviour
         {
             ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
             zone.chestInventory.AddItem(item, amount);
-
-            if (IsOwner)
-                inventory.RemoveItem(item, amount);
         }
 
         Player localPlayer = MapManager.Instance.GetLocalPlayer();
@@ -438,6 +434,8 @@ public class Player : NetworkBehaviour
             return;
         }
 
+        SetInventory();
+
         SendItemsToPlayerClientRpc(item, amount, pos);
     }
 
@@ -448,9 +446,6 @@ public class Player : NetworkBehaviour
         {
             ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
             zone.chestInventory.RemoveItem(item, amount);
-
-            if (IsOwner)
-                inventory.AddItem(item, amount);
         }
 
         Player localPlayer = MapManager.Instance.GetLocalPlayer();
@@ -486,18 +481,7 @@ public class Player : NetworkBehaviour
             return;
         }
 
-        CraftCoreItemClientRpc(itemToAdd, amountToAdd, itemToRemove, amountToRemove);
-    }
-
-    [ClientRpc]
-    public void CraftCoreItemClientRpc(ItemType itemToAdd, int amountToAdd,
-        ItemType itemToRemove, int amountToRemove)
-    {
-        if (IsServer || !IsOwner)
-            return;
-
-        inventory.AddItem(itemToAdd, amountToAdd);
-        inventory.RemoveItem(itemToRemove, amountToRemove);
+        SetInventory();
     }
 
     [ServerRpc]
