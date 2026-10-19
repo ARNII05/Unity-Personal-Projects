@@ -5,7 +5,6 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(WolfUI))]

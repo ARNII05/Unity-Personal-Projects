@@ -419,6 +419,9 @@ public class Player : NetworkBehaviour
 
         ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
 
+        if (!ItemVault.IsTransferable(item))
+            return;
+
         if (!inventory.HasSpaceForItem(item))
             return;
 
