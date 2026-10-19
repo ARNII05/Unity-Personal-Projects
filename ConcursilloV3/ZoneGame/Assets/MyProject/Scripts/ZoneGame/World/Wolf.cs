@@ -127,6 +127,8 @@ public class Wolf : NetworkBehaviour
     {
         ItemsStolenResult itemsStolen = ItemsToSteal(player);
 
+        player.SetInventory();
+
         ClientRpcParams rpcParams = new()
         {
             Send = new ClientRpcSendParams
@@ -263,20 +265,7 @@ public class Wolf : NetworkBehaviour
             return false;
         }
 
-        AddItemsToWolfDenChestClientRpc(item, amount, pos);
-
         return true;
-    }
-
-    [ClientRpc]
-    private void AddItemsToWolfDenChestClientRpc(ItemType item, int amount, Vector2Int pos)
-    {
-        if (IsServer)
-            return;
-
-        ZoneData wolfDen = map[pos.y, pos.x];
-
-        wolfDen.chestInventory.AddItem(item, amount);
     }
 
     private void MoveToDen()

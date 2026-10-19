@@ -807,13 +807,10 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts)
     {
-        if (!IsOwner)
+        if (!IsOwner || IsServer)
             return;
-
-        if (!IsServer)
-        {
-            inventory.SetInventory(itemTypes, amounts);
-        }
+        
+        inventory.SetInventory(itemTypes, amounts);
 
         if (Role.Value == PlayerRole.Gardener)
         {
@@ -842,6 +839,37 @@ public class Player : NetworkBehaviour
         MapManager.Instance.wolf.Init();
 
         State = PlayerState.Normal;
+    }
+
+    public void SetInventory()
+    {
+        if (!IsServer)
+            return;
+
+        ItemType[] items = inventory.items.Keys.ToArray();
+        int[] amounts = inventory.items.Values.ToArray();
+
+        ClientRpcParams rpcParams = new()
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { OwnerClientId }
+            }
+        };
+
+        SetInventoryClientRpc(items, amounts, rpcParams);
+    }
+
+    [ClientRpc]
+    private void SetInventoryClientRpc(
+        ItemType[] items,
+        int[] amounts,
+        ClientRpcParams rpcParams = default)
+    {
+        if (IsServer)
+            return;
+
+        inventory.SetInventory(items, amounts);
     }
 
     public void InitRoleSelector()
