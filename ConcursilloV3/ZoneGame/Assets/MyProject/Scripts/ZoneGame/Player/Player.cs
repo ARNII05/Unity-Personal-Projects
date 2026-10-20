@@ -457,31 +457,32 @@ public class Player : NetworkBehaviour
         StartCoroutine(recoverySystemUI.ShowRecoverySystemPanelInfo(items, amounts));
     }
 
-    [Rpc(SendTo.Server)]
-    public void StartGameServerRpc()
+    public bool StartGame()
     {
         if (Role.Value == PlayerRole.None)
-            return;
+            return false;
 
         Player otherPlayer =
             MapManager.Instance.GetOtherPlayer(this);
 
         if (otherPlayer == null)
-            return;
+            return false;
 
         if (otherPlayer.Role.Value == PlayerRole.None)
-            return;
+            return false;
 
         GiveStartingItemsOnServer();
         otherPlayer.GiveStartingItemsOnServer();
 
-        GiveStartingItemClientRpc(inventory.items.Keys.ToArray(), 
-            inventory.items.Values.ToArray());
+        ResourcesGenerator.Instance.Init();
+
         otherPlayer.GiveStartingItemClientRpc(otherPlayer.inventory.items.Keys.ToArray(), 
             otherPlayer.inventory.items.Values.ToArray());
 
         StartGameClientRpc();
         otherPlayer.StartGameClientRpc();
+
+        return true;
     }
 
     private void GiveStartingItemsOnServer()
@@ -507,12 +508,9 @@ public class Player : NetworkBehaviour
         */
     }
 
-    [Rpc(SendTo.NotServer)]
+    [Rpc(SendTo.Owner)]
     private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts)
     {
-        if (!IsOwner)
-            return;
-        
         inventory.SetInventory(itemTypes, amounts);
 
         if (Role.Value == PlayerRole.Gardener)
@@ -537,11 +535,6 @@ public class Player : NetworkBehaviour
         GrandmaUI.Instance.Init(this);
 
         MapManager.Instance.wolf.Init();
-
-        if (IsServer)
-        {
-            ResourcesGenerator.Instance.Init();
-        }
 
         State = PlayerState.Normal;
     }

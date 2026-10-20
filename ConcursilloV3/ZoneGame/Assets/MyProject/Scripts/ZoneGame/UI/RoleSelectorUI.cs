@@ -19,6 +19,8 @@ public class RoleSelectorUI : MonoBehaviour
 
     private Player player;
     private Player otherPlayer;
+
+    private bool gameStarted = false;
     
     private void Awake()
     {
@@ -56,7 +58,7 @@ public class RoleSelectorUI : MonoBehaviour
         roleLobbyPanel.SetActive(true);
         background[0].SetActive(true);
         //background[1].SetActive(true);
-        startGameObj.SetActive(NetworkManager.Singleton.IsHost);
+        startGameObj.SetActive(NetworkManager.Singleton.IsServer);
 
         UpdateStartButton();
         UpdateInfoBoxText();
@@ -122,7 +124,8 @@ public class RoleSelectorUI : MonoBehaviour
 
     public void StartGame()
     {
-        player.StartGameServerRpc();
+        if (!gameStarted && NetworkManager.Singleton.IsServer)
+            gameStarted = player.StartGame();
     }
     
     public void CloseLobby()

@@ -54,6 +54,9 @@ public class ResourcesGenerator : MonoBehaviour
 
     public void Init()
     {
+        allMap.Clear();
+        momPart.Clear();
+
         canActivateRecoveryTimer = true;
 
         localPlayer = MapManager.Instance.GetLocalPlayer();
@@ -232,9 +235,12 @@ public class ResourcesGenerator : MonoBehaviour
             Vector2Int randomPos = mapPartTmp[randomPosInt];
 
             int amount = Random.Range(1, MaxItemCountPerChest(item) + 1);
-            itemCount += amount;
-
-            map[randomPos.y, randomPos.x].chestInventory.AddItem((ItemType) item, amount);
+            
+            if (map[randomPos.y, randomPos.x]
+                 .chestInventory.AddItem((ItemType)item, amount))
+            {
+                itemCount += amount;
+            }
 
             mapPartTmp.RemoveAt(randomPosInt);
         }
