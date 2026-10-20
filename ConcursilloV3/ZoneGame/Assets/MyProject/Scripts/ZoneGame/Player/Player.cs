@@ -6,10 +6,12 @@ using UnityEngine;
 [RequireComponent(typeof(CraftingSystem))]
 [RequireComponent(typeof(OtherPlayerVisual))]
 [RequireComponent(typeof(PlayerNearbyObjects))]
+[RequireComponent(typeof(ChestTransferSystem))]
 public class Player : NetworkBehaviour
 {
     private OtherPlayerVisual otherPlayerVisualController;
     private PlayerNearbyObjects nearbyObjects;
+    private ChestTransferSystem chestTransferSystem;
 
     public Chest nearbyChest => nearbyObjects.NearbyChest;
     public Vector2Int CurrentZoneMapPos;
@@ -62,6 +64,7 @@ public class Player : NetworkBehaviour
         craftingSystem = GetComponent<CraftingSystem>();
         otherPlayerVisualController = GetComponent<OtherPlayerVisual>();
         nearbyObjects = GetComponent<PlayerNearbyObjects>();
+        chestTransferSystem = GetComponent<ChestTransferSystem>();
     }
 
     private void Update()
@@ -347,27 +350,9 @@ public class Player : NetworkBehaviour
     [ServerRpc]
     public void SendItemsToChestServerRpc(ItemType item, int amount)
     {
-        Vector2Int pos = NetworkMapPos.Value;
-
-        ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
-
-        if (!ItemVault.IsTransferable(item))
+        if (!chestTransferSystem.TrySendItemsToChest(
+                item, amount, out Vector2Int pos))
             return;
-
-        if (amount <= 0 || inventory.GetItemAmount(item) < amount)
-            return;
-
-        if (!zone.chestInventory.HasSpaceForItem(item))
-            return;
-
-        if (!zone.chestInventory.AddItem(item, amount))
-            return;
-
-        if (!inventory.RemoveItem(item, amount))
-        {
-            zone.chestInventory.RemoveItem(item, amount);
-            return;
-        }
 
         SetInventory();
 
@@ -401,27 +386,9 @@ public class Player : NetworkBehaviour
     [ServerRpc]
     public void SendItemsToPlayerServerRpc(ItemType item, int amount)
     {
-        Vector2Int pos = NetworkMapPos.Value;
-
-        ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
-
-        if (!ItemVault.IsTransferable(item))
+        if (!chestTransferSystem.TrySendItemsToPlayer(
+                item, amount, out Vector2Int pos))
             return;
-
-        if (!inventory.HasSpaceForItem(item))
-            return;
-
-        if (amount <= 0 || zone.chestInventory.GetItemAmount(item) < amount)
-            return;
-
-        if (!inventory.AddItem(item, amount))
-            return;
-
-        if (!zone.chestInventory.RemoveItem(item, amount))
-        {
-            inventory.RemoveItem(item, amount);
-            return;
-        }
 
         SetInventory();
 
@@ -748,6 +715,7 @@ public class Player : NetworkBehaviour
         inventory.AddItem(ItemType.Meat, 1);
         inventory.AddItem(ItemType.Bouquet, 7);
         inventory.AddItem(ItemType.Log, 7);
+        inventory.AddItem(ItemType.Coin, 7);
     }
 
     [ClientRpc]
