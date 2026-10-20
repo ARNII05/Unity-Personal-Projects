@@ -120,7 +120,7 @@ public class Player : NetworkBehaviour
         RiverInteractionServerRpc(NetworkMapPos.Value);
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void RiverInteractionServerRpc(Vector2Int pos)
     {
         if (MapManager.Instance.map[pos.y, pos.x].type != ZoneType.HorizontalRiver &&
@@ -143,7 +143,7 @@ public class Player : NetworkBehaviour
         RiverInteractionClientRpc(pos);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     private void RiverInteractionClientRpc(Vector2Int position)
     {
         MapManager.Instance.map[position.y, position.x].riverBridged = true;
@@ -183,7 +183,7 @@ public class Player : NetworkBehaviour
         GrandmaUI.Instance.OpenPanel();
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void ShowEndGanePanelServerRpc()
     {
         State = PlayerState.EndGame;
@@ -193,30 +193,27 @@ public class Player : NetworkBehaviour
         ShowEndGanePanelClientRpc();
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.NotServer)]
     private void ShowEndGanePanelClientRpc()
     {
-        if (IsServer)
-            return;
-
         State = PlayerState.EndGame;
 
         EndgameUI.Instance.ShowEndGamePanel();
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void UpdateOpenedChestServerRpc()
     {
         UpdateOpenedChestClientRpc(NetworkMapPos.Value);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     private void UpdateOpenedChestClientRpc(Vector2Int position)
     {
         MapManager.Instance.UpdateChestUINetworking(position);
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void SendItemsToChestServerRpc(ItemType item, int amount)
     {
         if (!chestTransferSystem.TrySendItemsToChest(
@@ -228,7 +225,7 @@ public class Player : NetworkBehaviour
         SendItemsToChestClientRpc(item, amount, pos);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     private void SendItemsToChestClientRpc(
         ItemType item, int amount, Vector2Int pos)
     {
@@ -252,7 +249,7 @@ public class Player : NetworkBehaviour
             inventoryUI.ChangeButtonStatus(true);
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void SendItemsToPlayerServerRpc(ItemType item, int amount)
     {
         if (!chestTransferSystem.TrySendItemsToPlayer(
@@ -264,7 +261,7 @@ public class Player : NetworkBehaviour
         SendItemsToPlayerClientRpc(item, amount, pos);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     private void SendItemsToPlayerClientRpc(ItemType item, int amount, Vector2Int pos)
     {
         if (!IsServer)
@@ -287,7 +284,7 @@ public class Player : NetworkBehaviour
             inventoryUI.ChangeButtonStatus(true);
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void CraftCoreItemServerRpc()
     {
         if (!craftingSystem.TryCraftCoreItem())
@@ -296,7 +293,7 @@ public class Player : NetworkBehaviour
         SetInventory();
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void SetNetworkMapPosServerRpc(
         Vector2Int newPos,
         Direction direction,
@@ -310,7 +307,7 @@ public class Player : NetworkBehaviour
         NetworkMapPos.Value = newPos;
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void SendFirstRiverDirectionServerRpc(
         Vector2Int position,
         Direction direction)
@@ -332,7 +329,7 @@ public class Player : NetworkBehaviour
         );
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     private void SendFirstRiverDirectionClientRpc(
         Vector2Int position,
         Direction direction)
@@ -396,7 +393,7 @@ public class Player : NetworkBehaviour
         base.OnDestroy();
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void DeselectRoleServerRpc(PlayerRole playerRole)
     {
         Role.Value = PlayerRole.None;
@@ -408,7 +405,7 @@ public class Player : NetworkBehaviour
         );
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void SelectRoleServerRpc(PlayerRole playerRole)
     {
         if (Role.Value != PlayerRole.None)
@@ -423,7 +420,7 @@ public class Player : NetworkBehaviour
         );
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     public void SelectRoleClientRpc(
         PlayerRole playerRole,
         ulong playerId,
@@ -452,7 +449,15 @@ public class Player : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Everyone)]
+    public void ShowRecoverySystemPanelInfoClientRpc(ItemType[] items, int[] amounts)
+    {
+        RecoverySystemUI recoverySystemUI = ResourcesGenerator.Instance.recoverySystemUI;
+
+        StartCoroutine(recoverySystemUI.ShowRecoverySystemPanelInfo(items, amounts));
+    }
+
+    [Rpc(SendTo.Server)]
     public void StartGameServerRpc()
     {
         if (Role.Value == PlayerRole.None)
@@ -494,16 +499,18 @@ public class Player : NetworkBehaviour
             MapUI.Instance.Init(this);
         }
 
+        /*
         inventory.AddItem(ItemType.Meat, 1);
         inventory.AddItem(ItemType.Bouquet, 7);
         inventory.AddItem(ItemType.Log, 7);
         inventory.AddItem(ItemType.Coin, 7);
+        */
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.NotServer)]
     private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts)
     {
-        if (!IsOwner || IsServer)
+        if (!IsOwner)
             return;
         
         inventory.SetInventory(itemTypes, amounts);
@@ -518,12 +525,9 @@ public class Player : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Owner)]
     private void StartGameClientRpc()
     {
-        if (!IsOwner)
-            return;
-
         RoleSelectorUI.Instance.CloseLobby();
 
         CraftingUI.Instance.Init();
@@ -533,6 +537,8 @@ public class Player : NetworkBehaviour
         GrandmaUI.Instance.Init(this);
 
         MapManager.Instance.wolf.Init();
+
+        ResourcesGenerator.Instance.Init();
 
         State = PlayerState.Normal;
     }
@@ -545,26 +551,15 @@ public class Player : NetworkBehaviour
         ItemType[] items = inventory.items.Keys.ToArray();
         int[] amounts = inventory.items.Values.ToArray();
 
-        ClientRpcParams rpcParams = new()
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { OwnerClientId }
-            }
-        };
-
-        SetInventoryClientRpc(items, amounts, rpcParams);
+        SetInventoryClientRpc(items, amounts, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.SpecifiedInParams)]
     private void SetInventoryClientRpc(
         ItemType[] items,
         int[] amounts,
-        ClientRpcParams rpcParams = default)
+        RpcParams rpcParams = default)
     {
-        if (IsServer)
-            return;
-
         inventory.SetInventory(items, amounts);
     }
 
@@ -573,7 +568,7 @@ public class Player : NetworkBehaviour
         InitRoleSelectorClientRpc();
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     private void InitRoleSelectorClientRpc()
     {
         RoleSelectorUI.Instance.InitRoleSelector();
@@ -613,7 +608,7 @@ public class Player : NetworkBehaviour
         );
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.NotServer)]
     public void SendMapClientRpc(
         ZoneType[] zoneTypes,
         ItemType[] chestItemTypes,
@@ -621,11 +616,6 @@ public class Player : NetworkBehaviour
         int[] chestItemCounts,
         Vector2Int[] positions)
     {
-        if (IsServer)
-        {
-            return;
-        }
-
         MapManager.Instance.ReceiveMapFromServer(
             zoneTypes,
             chestItemTypes,

@@ -95,7 +95,7 @@ public class WolfUI : MonoBehaviour
             Image zellImg = zell.GetComponentInChildren<Image>();
             TextMeshProUGUI zellText = zell.GetComponentInChildren<TextMeshProUGUI>();
 
-            zellImg.sprite = ItemVault.GenerateItem(item.Key).sprite;
+            zellImg.sprite = ItemVault.GetItemSprite(item.Key);
             zellText.text = $"x {item.Value}";
 
             j++;

@@ -112,7 +112,7 @@ public class InventoryUI : MonoBehaviour
         Image itemImage =
             iconBox.transform.Find("ItemIcon").GetComponent<Image>();
 
-        itemImage.sprite = ItemVault.GenerateItem(itemType).sprite;
+        itemImage.sprite = ItemVault.GetItemSprite(itemType);
         itemBoxText.text = amount.ToString();
 
         iconBox.SetActive(true);

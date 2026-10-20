@@ -128,30 +128,22 @@ public class Wolf : NetworkBehaviour
 
         player.SetInventory();
 
-        ClientRpcParams rpcParams = new()
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { player.OwnerClientId }
-            }
-        };
-
-        StealFromPlayerClientRpc(
+        StealFromPlayerRpc(
             itemsStolen.items.ToArray(),
             itemsStolen.amount.ToArray(),
             itemsStolen.chestIsFull,
             player.NetworkObjectId,
-            rpcParams
+            RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp)
         );
     }
 
-    [ClientRpc]
-    private void StealFromPlayerClientRpc(
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void StealFromPlayerRpc(
         ItemType[] items,
         int[] amounts,
         bool chestIsFull,
         ulong playerNetworkObjectId,
-        ClientRpcParams rpcParams = default)
+        RpcParams rpcParams = default)
     {
         if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(
             playerNetworkObjectId, out NetworkObject playerObject))
@@ -369,12 +361,9 @@ public class Wolf : NetworkBehaviour
         RemoveMeatInZoneClientRpc(meatPos);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.NotServer)]
     private void RemoveMeatInZoneClientRpc(Vector2Int meatPos)
     {
-        if (IsServer)
-            return;
-        
         ZoneData zone = map[meatPos.y, meatPos.x];
 
         zone.chestInventory.RemoveItem(ItemType.Meat, 1);

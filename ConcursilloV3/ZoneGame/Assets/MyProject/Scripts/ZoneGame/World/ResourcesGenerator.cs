@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Linq;
 
+[RequireComponent(typeof(RecoverySystemUI))]
 public class ResourcesGenerator : MonoBehaviour
 {
     public static ResourcesGenerator Instance { get; private set; }
-    
+
+    public RecoverySystemUI recoverySystemUI;
+
     private ZoneData[,] map;
     
     private int mapHeight;
     private int mapWidth;
+    private float recoveryTimer;
+    private const float recoveryInterval = 20f;
 
-    const int extraFlowers = 20;
+    public bool canActivateRecoveryTimer = false;
+
+    List<Vector2Int> momPart = new();
+    private readonly List<Vector2Int> allMap = new();
+
+    private Player localPlayer;
 
     private void Awake()
     {
@@ -23,21 +34,40 @@ public class ResourcesGenerator : MonoBehaviour
         }
 
         Instance = this;
+
+        recoverySystemUI = GetComponent<RecoverySystemUI>();
     }
 
-    private void Start()
+    private void Update()
     {
-        mapHeight = MapManager.mapHeight;
-        mapWidth = MapManager.mapWidth;
+        if (!canActivateRecoveryTimer || localPlayer == null || !localPlayer.IsServer)
+            return;
+
+        recoveryTimer += Time.deltaTime;
+
+        if (recoveryTimer >= recoveryInterval)
+        {
+            recoveryTimer = 0f;
+            CheckResources();
+        }
     }
 
     public void Init()
-    {   
+    {
+        canActivateRecoveryTimer = true;
+
+        localPlayer = MapManager.Instance.GetLocalPlayer();
+
+        const int extraFlowers = 20;
+        const int totalBranchesToCraft = CraftingSystem.branchesForLog * 3;
+        const int totalFlowersToCraft = CraftingSystem.flowersForBouquet * CraftingSystem.BouquetsToWin + extraFlowers;
+
+        mapHeight = MapManager.mapHeight;
+        mapWidth = MapManager.mapWidth;
+
         map = MapManager.Instance.map;
 
-        List<Vector2Int> allMap = new();
-        
-        List<Vector2Int> momPart = TilesBeforeRiver(MapManager.Instance.startPos);
+        momPart = TilesBeforeRiver(MapManager.Instance.startPos);
 
         for (int i = 0; i < mapHeight; i++)
         {
@@ -45,18 +75,129 @@ public class ResourcesGenerator : MonoBehaviour
             {
                 if (map[i, j].ItemProbInChest(100) == ChestItems.None)
                     continue;
-                
+
                 allMap.Add(new Vector2Int(j, i));
             }
         }
 
-        SetInitialItems(ChestItems.Branch, momPart, CraftingSystem.branchesForLog * 3);
-        SetInitialItems(ChestItems.Flower, allMap, 
-            CraftingSystem.flowersForBouquet * CraftingSystem.BouquetsToWin + extraFlowers);
+        SetInitialItems(ChestItems.Branch, momPart, totalBranchesToCraft);
+        SetInitialItems(ChestItems.Flower, allMap, totalFlowersToCraft);
 
         DistributeAllItems(allMap);
+    }
 
-        //PrintItems();
+    private void CheckResources()
+    {
+        int bouquetsInTotal = SearchForItem(ItemType.Bouquet, allMap);
+        int flowersInTotal = SearchForItem(ItemType.Flower, allMap) + (bouquetsInTotal * CraftingSystem.flowersForBouquet);
+
+        int logsInTotal = SearchForItem(ItemType.Log, momPart, false);
+        int branchesInTotal = SearchForItem(ItemType.Branch, momPart, false) + (logsInTotal * CraftingSystem.branchesForLog);
+
+        int flowersToGenerate = FlowersToGenerate(flowersInTotal);
+        int branchesToGenerate = BranchesToGenerate(branchesInTotal);
+
+        if (flowersToGenerate == 0 && branchesToGenerate == 0)
+            return;
+
+        List<ItemType> items = new();
+        List<int> amounts = new();
+
+        if (flowersToGenerate > 0)
+        {
+            int flowersGenerated = SetInitialItems(
+                ChestItems.Flower, allMap, flowersToGenerate);
+
+            items.Add(ItemType.Flower);
+            amounts.Add(flowersGenerated);
+        }
+
+        if (branchesToGenerate > 0)
+        {
+            int branchesGenerated = SetInitialItems(
+                ChestItems.Branch, momPart, branchesToGenerate);
+
+            items.Add(ItemType.Branch);
+            amounts.Add(branchesGenerated);
+        }
+
+        localPlayer.ShowRecoverySystemPanelInfoClientRpc(items.ToArray(), amounts.ToArray());
+    }
+
+    private int FlowersToGenerate(int flowersInTotal)
+    {
+        int necessaryFlowers = CraftingSystem.flowersForBouquet * CraftingSystem.BouquetsToWin;
+
+        return flowersInTotal >= necessaryFlowers ? 0 : necessaryFlowers - flowersInTotal;
+    }
+
+    private int BranchesToGenerate(int branchesInTotal)
+    {
+        int necessaryBranches =
+            CraftingSystem.branchesForLog * CraftingSystem.logsForBridge;
+
+        if (branchesInTotal >= necessaryBranches)
+            return 0;
+
+        int logsInWolfDen = map.Cast<ZoneData>()
+            .Where(zone => zone.type == ZoneType.WolfDen)
+            .Sum(zone => zone.chestInventory.GetItemAmount(ItemType.Log));
+
+        int branchesInWolfDen = map.Cast<ZoneData>()
+            .Where(zone => zone.type == ZoneType.WolfDen)
+            .Sum(zone => zone.chestInventory.GetItemAmount(ItemType.Branch))
+            + logsInWolfDen * CraftingSystem.branchesForLog;
+
+        bool wolfDenIsInMomPart =
+            momPart.Contains(MapManager.Instance.wolfDenPos);
+
+        bool hasRiverBridged =
+            map.Cast<ZoneData>().Any(zone => zone.riverBridged);
+
+        if (wolfDenIsInMomPart)
+        {
+            if (branchesInTotal + branchesInWolfDen >= necessaryBranches)
+                return 0;
+
+            return necessaryBranches - branchesInTotal - branchesInWolfDen;
+        }
+
+        if (hasRiverBridged)
+            return 0;
+
+        return necessaryBranches - branchesInTotal;
+    }
+
+    private int SearchForItem(ItemType itemType, List<Vector2Int> mapPart, bool checkWolfDen = true)
+    {
+        int itemCount = 0;
+
+        foreach (Vector2Int pos in mapPart)
+        {
+            ZoneData zone = map[pos.y, pos.x];
+
+            if (zone.type == ZoneType.WolfDen && !checkWolfDen)
+                continue;
+
+            foreach (var item in zone.chestInventory.items)
+            {
+                if (item.Key == itemType)
+                    itemCount += item.Value;
+            }
+        }
+
+        Player[] players = new[] { MapManager.Instance.Player1, MapManager.Instance.Player2 };
+
+        foreach (Player player in players)
+        {
+            foreach (var item in player.inventory.items)
+            {
+                if (item.Key == itemType)
+                    itemCount += item.Value;
+            }
+        }
+
+        return itemCount;
     }
 
     private void DistributeAllItems(List<Vector2Int> allMap)

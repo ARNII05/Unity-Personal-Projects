@@ -30,8 +30,8 @@ public abstract class ZoneData
 
         player2EntryPoints[0] = new Vector3(155f, 44.4f, -6.2f);
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
-        player2EntryPoints[2] = new Vector3(300f, 0.5f, -6.2f);
-        player2EntryPoints[3] = new Vector3(108f, 0.5f, -6.2f);
+        player2EntryPoints[2] = new Vector3(300f, -6.2f);
+        player2EntryPoints[3] = new Vector3(108f, -6.2f);
 
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
@@ -128,8 +128,8 @@ public class Forest : ZoneData
         player2EntryPoints[2] = new Vector3(287.7f, 5.7f, -6.2f);
         player2EntryPoints[3] = new Vector3(121.5f, 5.7f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
 
         player1TpZonePos = new Vector3(-42.5f, 10.3f, -6.2f);
         player2TpZonePos = new Vector3(212f, 11.3f, -6.2f);
@@ -155,8 +155,8 @@ public class RabbitDen : ZoneData
         player2EntryPoints[2] = new Vector3(287.7f, 5.7f, -6.2f);
         player2EntryPoints[3] = new Vector3(121.5f, 5.7f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
 
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(189.1f, -4f, -6.2f);
@@ -205,8 +205,8 @@ public class FlowerField : ZoneData
         player2EntryPoints[2] = new Vector3(287.7f, 5.7f, -6.2f);
         player2EntryPoints[3] = new Vector3(121.5f, 5.7f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
 
         player1TpZonePos = new Vector3(-35.2f, 7.4f, -6.2f);
         player2TpZonePos = new Vector3(217f, 7.4f, -6.2f);
@@ -278,8 +278,8 @@ public class Village : ZoneData
         player2EntryPoints[2] = new Vector3(295.3f, -11.5f, -6.2f);
         player2EntryPoints[3] = new Vector3(115.3f, -28.5f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
 
         player1TpZonePos = new Vector3(-36.7f, -15.5f, -6.2f);
         player2TpZonePos = new Vector3(218f, -14.6f, -6.2f);
@@ -316,8 +316,8 @@ public class Camp : ZoneData
         player2EntryPoints[2] = new Vector3(287.7f, 5.7f, -6.2f);
         player2EntryPoints[3] = new Vector3(121.5f, 5.7f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
 
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(189.1f, -4f, -6.2f);
@@ -355,8 +355,8 @@ public class VerticalRiver : ZoneData
         player2EntryPoints[4] = new Vector3(286f, 44.3f, -6.2f);
         player2EntryPoints[5] = new Vector3(282.6f, -42.4f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
     }
 
     public override Vector3 GetEntryPoint(Direction direction, Vector3[] entryPoints, Side side)
@@ -398,8 +398,8 @@ public class HorizontalRiver : ZoneData
         player2EntryPoints[2] = new Vector3(298.2f, -10.6f, -6.2f);
         player2EntryPoints[3] = new Vector3(111.9f, -10.6f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
     }
     public override void OnEnter(Player player)
     {
@@ -443,8 +443,8 @@ public class WolfDen : ZoneData
         player2EntryPoints[2] = new Vector3(286.1f, -7.2f, -6.2f);
         player2EntryPoints[3] = new Vector3(122.1f, -7.2f, -6.2f);
 
-        player1ZonePos = new Vector3(-49.1f, 36.6f, 0);
-        player2ZonePos = new Vector3(206, 36.6f, 0);
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
 
         player1TpZonePos = new Vector3(-64.9f, -7.3f, -6.2f);
         player2TpZonePos = new Vector3(189.1f, -4f, -6.2f);

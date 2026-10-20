@@ -4,20 +4,11 @@ using UnityEngine;
 
 public static class ItemVault
 {
-    public static Items GenerateItem(ItemType itemType)
+    private const string baseSpritePath = "Prefabs/ItemsImg/";
+    
+    public static Sprite GetItemSprite(ItemType itemType)
     {
-        return itemType switch
-        {
-            ItemType.Flower => new Flower(),
-            ItemType.Bouquet => new Bouquet(),
-            ItemType.Log => new Log(),
-            ItemType.Branch => new Branch(),
-            ItemType.Meat => new Meat(),
-            ItemType.Coin => new Coin(),
-            ItemType.Radar => new Radar(),
-            ItemType.Map => new Map(),
-            _ => null,
-        };
+        return Resources.Load<Sprite>(baseSpritePath + itemType.ToString());
     }
 
     public static bool IsTransferable(ItemType itemType)
@@ -25,4 +16,17 @@ public static class ItemVault
         return itemType != ItemType.Map && itemType != ItemType.Radar
             && itemType != ItemType.None;
     }
+}
+
+public enum ItemType
+{
+    None,
+    Flower,
+    Branch,
+    Coin,
+    Meat,
+    Bouquet,
+    Log,
+    Radar,
+    Map
 }

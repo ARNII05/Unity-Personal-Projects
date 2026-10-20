@@ -48,7 +48,7 @@ public class River : MonoBehaviour
         if (map[mapPosition.y, mapPosition.x].riverBridged)
             return false;
 
-        if (player.inventory.GetItemAmount(ItemType.Log) <= 0)
+        if (player.inventory.GetItemAmount(ItemType.Log) < CraftingSystem.logsForBridge)
             return false;
 
         return true;

@@ -181,7 +181,6 @@ public class MapManager : MonoBehaviour
 
                 PrintMap();
                 CreateInitialZones();
-                ResourcesGenerator.Instance.Init();
                 IsMapReady = true;
                 StartCoroutine(SendMapNextFrame());
 
