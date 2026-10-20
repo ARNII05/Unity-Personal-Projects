@@ -7,11 +7,13 @@ using UnityEngine;
 [RequireComponent(typeof(OtherPlayerVisual))]
 [RequireComponent(typeof(PlayerNearbyObjects))]
 [RequireComponent(typeof(ChestTransferSystem))]
+[RequireComponent(typeof(PlayerAnimationController))]
 public class Player : NetworkBehaviour
 {
     private OtherPlayerVisual otherPlayerVisualController;
     private PlayerNearbyObjects nearbyObjects;
     private ChestTransferSystem chestTransferSystem;
+    private PlayerAnimationController playerAnimationController;
 
     public Chest nearbyChest => nearbyObjects.NearbyChest;
     public Vector2Int CurrentZoneMapPos;
@@ -65,6 +67,7 @@ public class Player : NetworkBehaviour
         otherPlayerVisualController = GetComponent<OtherPlayerVisual>();
         nearbyObjects = GetComponent<PlayerNearbyObjects>();
         chestTransferSystem = GetComponent<ChestTransferSystem>();
+        playerAnimationController = GetComponent<PlayerAnimationController>();
     }
 
     private void Update()
@@ -797,40 +800,14 @@ public class Player : NetworkBehaviour
         RoleSelectorUI.Instance.InitRoleSelector();
     }
 
-    private void OnWalkingChanged(
-        bool oldValue,
-        bool newValue)
+    private void OnWalkingChanged(bool oldValue, bool newValue)
     {
-        UpdateAnimator();
+        playerAnimationController.UpdateAnimator();
     }
 
-    private void OnDirectionChanged(
-        int oldValue,
-        int newValue)
+    private void OnDirectionChanged(int oldValue, int newValue)
     {
-        UpdateAnimator();
-    }
-
-    private void UpdateAnimator()
-    {
-        if (!IsOwner)
-            return;
-
-        Player1Controller controller =
-            GetComponent<Player1Controller>();
-
-        if (controller == null || controller.anim == null)
-            return;
-
-        controller.anim.SetInteger(
-            "Direction",
-            NetworkDirection.Value
-        );
-
-        controller.anim.SetBool(
-            "IsWalking",
-            IsWalking.Value
-        );
+        playerAnimationController.UpdateAnimator();
     }
 
     private void OnNetworkMapPosChanged(
