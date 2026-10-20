@@ -45,4 +45,41 @@ public class CraftingSystem : MonoBehaviour
 
         player.CraftCoreItemServerRpc();
     }
+
+    public bool TryCraftCoreItem()
+    {
+        if (player.Role.Value != PlayerRole.Gardener &&
+            player.Role.Value != PlayerRole.Builder)
+            return false;
+
+        ItemType itemToRemove = player.Role.Value == PlayerRole.Gardener
+            ? ItemType.Flower
+            : ItemType.Branch;
+
+        int amountToRemove = player.Role.Value == PlayerRole.Gardener
+            ? flowersForBouquet
+            : branchesForLog;
+
+        ItemType itemToAdd = player.Role.Value == PlayerRole.Gardener
+            ? ItemType.Bouquet
+            : ItemType.Log;
+
+        bool canCraft = player.Role.Value == PlayerRole.Gardener
+            ? CanCraftBouquet()
+            : CanCraftLog();
+
+        if (!canCraft)
+            return false;
+
+        if (!player.inventory.AddItem(itemToAdd, 1))
+            return false;
+
+        if (!player.inventory.RemoveItem(itemToRemove, amountToRemove))
+        {
+            player.inventory.RemoveItem(itemToAdd, 1);
+            return false;
+        }
+
+        return true;
+    }
 }

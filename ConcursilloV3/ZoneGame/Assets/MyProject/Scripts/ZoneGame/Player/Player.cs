@@ -454,35 +454,8 @@ public class Player : NetworkBehaviour
     [ServerRpc]
     public void CraftCoreItemServerRpc()
     {
-        if (Role.Value != PlayerRole.Gardener &&
-            Role.Value != PlayerRole.Builder)
+        if (!craftingSystem.TryCraftCoreItem())
             return;
-        
-        ItemType itemToRemove = Role.Value == PlayerRole.Gardener
-            ? ItemType.Flower : ItemType.Branch;
-
-        int amountToRemove = Role.Value == PlayerRole.Gardener
-            ? CraftingSystem.flowersForBouquet : CraftingSystem.branchesForLog;
-
-        ItemType itemToAdd = Role.Value == PlayerRole.Gardener
-            ? ItemType.Bouquet : ItemType.Log;
-        
-        int amountToAdd = 1;
-
-        bool hasEnoughMats = itemToRemove == ItemType.Flower ?
-            craftingSystem.CanCraftBouquet() : craftingSystem.CanCraftLog();
-
-        if (!hasEnoughMats)
-            return;
-
-        if (!inventory.AddItem(itemToAdd, amountToAdd))
-            return;
-
-        if (!inventory.RemoveItem(itemToRemove, amountToRemove))
-        {
-            inventory.RemoveItem(itemToAdd, amountToAdd);
-            return;
-        }
 
         SetInventory();
     }
