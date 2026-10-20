@@ -9,6 +9,7 @@ using UnityEngine;
 [RequireComponent(typeof(ChestTransferSystem))]
 [RequireComponent(typeof(PlayerAnimationController))]
 [RequireComponent(typeof(PlayerInputHandler))]
+[RequireComponent(typeof(PlayerRoleSelectionVisuals))]
 public class Player : NetworkBehaviour
 {
     private OtherPlayerVisual otherPlayerVisualController;
@@ -16,6 +17,7 @@ public class Player : NetworkBehaviour
     private ChestTransferSystem chestTransferSystem;
     private PlayerAnimationController playerAnimationController;
     private PlayerInputHandler playerInputHandler;
+    private PlayerRoleSelectionVisuals roleSelectionVisuals;
 
     public Chest nearbyChest => nearbyObjects.NearbyChest;
     public PlayerNearbyObjects NearbyObjects => nearbyObjects;
@@ -73,6 +75,7 @@ public class Player : NetworkBehaviour
         playerAnimationController = GetComponent<PlayerAnimationController>();
         playerInputHandler = GetComponent<PlayerInputHandler>();
         playerInputHandler.Initialize(controls);
+        roleSelectionVisuals = GetComponent<PlayerRoleSelectionVisuals>();
     }
 
     private void Update()
@@ -433,108 +436,19 @@ public class Player : NetworkBehaviour
         );
 
         if (NetworkManager.Singleton.LocalClientId != playerId)
-            ActionsWithDifferentId(
-                playerRole,
-                selectionRolType
-            );
-        else
-            ActionsWithSameId(
-                playerRole,
-                selectionRolType
-            );
-    }
-
-    private void ActionsWithSameId(
-        PlayerRole playerRole,
-        SelectionRolType selectionRolType)
-    {
-        switch (selectionRolType)
         {
-            case SelectionRolType.Select:
-
-                if (playerRole == PlayerRole.Gardener)
-                {
-                    RoleSelectorUI.Instance.SwapBox(
-                        RoleSelectorUI.Instance.gardenerRoleObject,
-                        true
-                    );
-                }
-                else
-                {
-                    RoleSelectorUI.Instance.SwapBox(
-                        RoleSelectorUI.Instance.builderRoleObject,
-                        true
-                    );
-                }
-
-                break;
-
-            case SelectionRolType.Deselect:
-
-                if (playerRole == PlayerRole.Gardener)
-                {
-                    RoleSelectorUI.Instance.SwapBox(
-                        RoleSelectorUI.Instance.gardenerRoleObject,
-                        false
-                    );
-                }
-                else
-                {
-                    RoleSelectorUI.Instance.SwapBox(
-                        RoleSelectorUI.Instance.builderRoleObject,
-                        false
-                    );
-                }
-
-                break;
+            roleSelectionVisuals.UpdateDifferentPlayer(
+                playerRole,
+                selectionRolType,
+                name
+            );
         }
-    }
-
-    private void ActionsWithDifferentId(
-        PlayerRole playerRole,
-        SelectionRolType selectionRolType)
-    {
-        switch (selectionRolType)
+        else
         {
-            case SelectionRolType.Select:
-
-                if (playerRole == PlayerRole.Gardener)
-                {
-                    RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.gardenerRoleObject,
-                        true,
-                        $"{name} ha escogido el rol de Gardinero"
-                    );
-                }
-                else
-                {
-                    RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.builderRoleObject,
-                        true,
-                        $"{name} ha escogido el rol de Constructor"
-                    );
-                }
-
-                break;
-
-            case SelectionRolType.Deselect:
-
-                if (playerRole == PlayerRole.Gardener)
-                {
-                    RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.gardenerRoleObject,
-                        false
-                    );
-                }
-                else
-                {
-                    RoleSelectorUI.Instance.SetRoleTextBox(
-                        RoleSelectorUI.Instance.builderRoleObject,
-                        false
-                    );
-                }
-
-                break;
+            roleSelectionVisuals.UpdateSamePlayer(
+                playerRole,
+                selectionRolType
+            );
         }
     }
 
