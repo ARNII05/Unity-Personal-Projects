@@ -75,12 +75,58 @@ public class PlayerInputHandler : MonoBehaviour
     private void HandleNormalInput()
     {
         if (controls.Gameplay.InitialObj.WasPressedThisFrame())
-            player.HandleTabInput();
+            HandleTabInput();
 
         if (controls.Gameplay.Interact.WasPressedThisFrame())
-            player.HandleInteractionInput();
+            HandleInteractionInput();
 
         if (controls.Gameplay.Inventory.WasPressedThisFrame())
             player.OpenInventory();
+    }
+
+    private void HandleTabInput()
+    {
+        if (player.inventory.GetItemAmount(ItemType.Radar) > 0)
+        {
+            RadarUI.Instance.ToggleRadar();
+            return;
+        }
+
+        if (player.inventory.GetItemAmount(ItemType.Map) > 0)
+        {
+            MapUI.Instance.ToggleMap();
+        }
+    }
+
+    private void HandleInteractionInput()
+    {
+        if (player.NearbyObjects.CurrentRiverInteraction != null)
+        {
+            player.InteractWithRiver();
+            return;
+        }
+
+        if (player.NearbyObjects.CurrentBorderZone != null)
+        {
+            player.ChangeZone();
+            return;
+        }
+
+        if (player.NearbyObjects.NearbyChest != null)
+        {
+            player.OpenChest();
+            return;
+        }
+
+        if (player.NearbyObjects.NearbyGrandma != null)
+        {
+            player.InteractWithGrandma();
+            return;
+        }
+
+        if (player.NearbyObjects.Rabbit != null)
+        {
+            RabbitDialogue.Instance.OpenDialogue();
+        }
     }
 }

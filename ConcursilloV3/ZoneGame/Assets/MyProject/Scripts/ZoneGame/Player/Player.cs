@@ -18,6 +18,7 @@ public class Player : NetworkBehaviour
     private PlayerInputHandler playerInputHandler;
 
     public Chest nearbyChest => nearbyObjects.NearbyChest;
+    public PlayerNearbyObjects NearbyObjects => nearbyObjects;
     public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
     public GameObject currentZone;
@@ -85,52 +86,6 @@ public class Player : NetworkBehaviour
             otherPlayerVisualController.UpdateVisual();
     }
 
-    public void HandleTabInput()
-    {
-        if (inventory.GetItemAmount(ItemType.Radar) > 0)
-        {
-            RadarUI.Instance.ToggleRadar();
-            return;
-        }
-
-        if (inventory.GetItemAmount(ItemType.Map) > 0)
-        {
-            MapUI.Instance.ToggleMap();
-        }
-    }
-
-    public void HandleInteractionInput()
-    {
-        if (nearbyObjects.CurrentRiverInteraction != null)
-        {
-            RiverInteractionServerRpc(NetworkMapPos.Value);
-            return;
-        }
-
-        if (nearbyObjects.CurrentBorderZone != null)
-        {
-            ChangeZone();
-            return;
-        }
-
-        if (nearbyObjects.NearbyChest != null)
-        {
-            OpenChest();
-            return;
-        }
-
-        if (nearbyObjects.NearbyGrandma != null)
-        {
-            InteractWithGrandma();
-            return;
-        }
-
-        if (nearbyObjects.Rabbit != null)
-        {
-            RabbitDialogue.Instance.OpenDialogue();
-        }
-    }
-
     public void OpenInventory()
     {
         inventoryUI.ToggleInventory();
@@ -141,7 +96,7 @@ public class Player : NetworkBehaviour
         inventoryUI.ToggleInventory();
     }
 
-    private void OpenChest()
+    public void OpenChest()
     {
         nearbyObjects.NearbyChest.OnOpen(this);
         UpdateOpenedChestServerRpc();
@@ -155,6 +110,11 @@ public class Player : NetworkBehaviour
     public void CloseWolfUI()
     {
         wolfUI.CloseUI();
+    }
+
+    public void InteractWithRiver()
+    {
+        RiverInteractionServerRpc(NetworkMapPos.Value);
     }
 
     [ServerRpc]
@@ -203,7 +163,7 @@ public class Player : NetworkBehaviour
         riverZone.SwapGameObjectStatus();
     }
 
-    private void ChangeZone()
+    public void ChangeZone()
     {
         Direction direction = nearbyObjects.CurrentBorderZone.direction;
         Side side = nearbyObjects.CurrentBorderZone.side;
@@ -215,7 +175,7 @@ public class Player : NetworkBehaviour
         );
     }
 
-    private void InteractWithGrandma()
+    public void InteractWithGrandma()
     {
         GrandmaUI.Instance.OpenPanel();
     }
