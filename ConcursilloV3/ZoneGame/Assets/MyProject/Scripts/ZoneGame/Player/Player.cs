@@ -5,17 +5,16 @@ using UnityEngine;
 
 [RequireComponent(typeof(CraftingSystem))]
 [RequireComponent(typeof(OtherPlayerVisual))]
+[RequireComponent(typeof(PlayerNearbyObjects))]
 public class Player : NetworkBehaviour
 {
     private OtherPlayerVisual otherPlayerVisualController;
-    
+    private PlayerNearbyObjects nearbyObjects;
+
+    public Chest nearbyChest => nearbyObjects.NearbyChest;
     public Vector2Int CurrentZoneMapPos;
     public Vector2Int initialPos;
     public GameObject currentZone;
-
-    private BorderZone currentBorderZone;
-    public Chest nearbyChest;
-    private GameObject rabbit, nearbyGrandma, currentRiverInteraction;
 
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
@@ -62,6 +61,7 @@ public class Player : NetworkBehaviour
         controls = new ZoneGameControls();
         craftingSystem = GetComponent<CraftingSystem>();
         otherPlayerVisualController = GetComponent<OtherPlayerVisual>();
+        nearbyObjects = GetComponent<PlayerNearbyObjects>();
     }
 
     private void Update()
@@ -197,31 +197,31 @@ public class Player : NetworkBehaviour
 
     private void HandleInteractionInput()
     {
-        if (currentRiverInteraction != null)
+        if (nearbyObjects.CurrentRiverInteraction != null)
         {
             RiverInteractionServerRpc(NetworkMapPos.Value);
             return;
         }
 
-        if (currentBorderZone != null)
+        if (nearbyObjects.CurrentBorderZone != null)
         {
             ChangeZone();
             return;
         }
 
-        if (nearbyChest != null)
+        if (nearbyObjects.NearbyChest != null)
         {
             OpenChest();
             return;
         }
 
-        if (nearbyGrandma != null)
+        if (nearbyObjects.NearbyGrandma != null)
         {
             InteractWithGrandma();
             return;
         }
 
-        if (rabbit != null)
+        if (nearbyObjects.Rabbit != null)
         {
             RabbitDialogue.Instance.OpenDialogue();
         }
@@ -239,13 +239,13 @@ public class Player : NetworkBehaviour
 
     private void OpenChest()
     {
-        nearbyChest.OnOpen(this);
+        nearbyObjects.NearbyChest.OnOpen(this);
         UpdateOpenedChestServerRpc();
     }
 
     private void CloseChest()
     {
-        nearbyChest.OnOpen(this);
+        nearbyObjects.NearbyChest.OnOpen(this);
     }
 
     [ServerRpc]
@@ -296,10 +296,8 @@ public class Player : NetworkBehaviour
 
     private void ChangeZone()
     {
-        Direction direction = currentBorderZone.direction;
-        Side side = currentBorderZone.side;
-
-        currentBorderZone = null;
+        Direction direction = nearbyObjects.CurrentBorderZone.direction;
+        Side side = nearbyObjects.CurrentBorderZone.side;
 
         MapManager.Instance.OnSwapingZone(
             this,
@@ -938,78 +936,6 @@ public class Player : NetworkBehaviour
             chestItemCounts,
             positions
         );
-    }
-
-    public void OnTriggerEnter2D(Collider2D other)
-    {
-        switch (other.tag)
-        {
-            case "Border":
-
-                currentBorderZone =
-                    other.GetComponent<BorderZone>();
-
-                break;
-
-            case "Chest":
-
-                nearbyChest =
-                    other.GetComponentInParent<Chest>();
-
-                break;
-
-            case "RiverInteractor":
-
-                currentRiverInteraction = other.gameObject;
-
-                break;
-
-            case "Grandma":
-
-                nearbyGrandma = other.gameObject;
-
-                break;
-
-            case "Rabbit":
-
-                rabbit = other.gameObject;
-                break;
-        }
-    }
-
-    public void OnTriggerExit2D(Collider2D other)
-    {
-        switch (other.tag)
-        {
-            case "Border":
-
-                currentBorderZone = null;
-
-                break;
-
-            case "Chest":
-
-                nearbyChest = null;
-
-                break;
-
-            case "RiverInteractor":
-
-                currentRiverInteraction = null;
-
-                break;
-
-            case "Grandma":
-
-                nearbyGrandma = null;
-
-                break;
-
-            case "Rabbit":
-
-                rabbit = null;
-                break;
-        }
     }
 }
 
