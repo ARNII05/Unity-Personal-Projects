@@ -538,7 +538,10 @@ public class Player : NetworkBehaviour
 
         MapManager.Instance.wolf.Init();
 
-        ResourcesGenerator.Instance.Init();
+        if (IsServer)
+        {
+            ResourcesGenerator.Instance.Init();
+        }
 
         State = PlayerState.Normal;
     }
