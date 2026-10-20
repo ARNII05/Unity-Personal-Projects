@@ -54,7 +54,7 @@ public class Wolf : NetworkBehaviour
             player2 = MapManager.Instance.Player2;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = false;
+            readyToMove = true;
         }
     }
 

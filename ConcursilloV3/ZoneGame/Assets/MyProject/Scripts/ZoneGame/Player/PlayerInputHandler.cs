@@ -1,0 +1,86 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Player))]
+public class PlayerInputHandler : MonoBehaviour
+{
+    private Player player;
+    private ZoneGameControls controls;
+
+    private void Awake()
+    {
+        player = GetComponent<Player>();
+    }
+
+    public void Initialize(ZoneGameControls playerControls)
+    {
+        controls = playerControls;
+    }
+
+    public void HandleInput()
+    {
+        if (controls == null)
+            return;
+
+        switch (player.State)
+        {
+            case PlayerState.Normal:
+                HandleNormalInput();
+                break;
+
+            case PlayerState.Trading:
+                if (controls.Gameplay.Interact.WasPressedThisFrame())
+                    player.CloseChest();
+                break;
+
+            case PlayerState.Inventory:
+                if (controls.Gameplay.Inventory.WasPressedThisFrame())
+                    player.CloseInventory();
+                break;
+
+            case PlayerState.UsingMap:
+                if (controls.Gameplay.InitialObj.WasPressedThisFrame())
+                    MapUI.Instance.ToggleMap();
+                break;
+
+            case PlayerState.UsingRadar:
+                if (controls.Gameplay.InitialObj.WasPressedThisFrame())
+                    RadarUI.Instance.ToggleRadar();
+                break;
+
+            case PlayerState.RabbitMapUI:
+                if (controls.Gameplay.InitialObj.WasPressedThisFrame())
+                    RabbitDialogue.Instance.CloseMap();
+                break;
+
+            case PlayerState.CaughtByWolf:
+                if (controls.Gameplay.Confirm.WasPressedThisFrame())
+                    player.CloseWolfUI();
+                break;
+
+            case PlayerState.TradeUI:
+                if (controls.Gameplay.Confirm.WasPressedThisFrame())
+                    TradeUI.Instance.CloseUI();
+                break;
+
+            case PlayerState.SelectingRole:
+            case PlayerState.RabbitDialogueInteraction:
+            case PlayerState.GrandmaDialogueInteraction:
+            case PlayerState.Transitioning:
+            case PlayerState.Crafting:
+            case PlayerState.EndGame:
+                break;
+        }
+    }
+
+    private void HandleNormalInput()
+    {
+        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
+            player.HandleTabInput();
+
+        if (controls.Gameplay.Interact.WasPressedThisFrame())
+            player.HandleInteractionInput();
+
+        if (controls.Gameplay.Inventory.WasPressedThisFrame())
+            player.OpenInventory();
+    }
+}

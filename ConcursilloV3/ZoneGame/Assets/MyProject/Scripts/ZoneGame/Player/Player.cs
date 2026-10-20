@@ -8,12 +8,14 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerNearbyObjects))]
 [RequireComponent(typeof(ChestTransferSystem))]
 [RequireComponent(typeof(PlayerAnimationController))]
+[RequireComponent(typeof(PlayerInputHandler))]
 public class Player : NetworkBehaviour
 {
     private OtherPlayerVisual otherPlayerVisualController;
     private PlayerNearbyObjects nearbyObjects;
     private ChestTransferSystem chestTransferSystem;
     private PlayerAnimationController playerAnimationController;
+    private PlayerInputHandler playerInputHandler;
 
     public Chest nearbyChest => nearbyObjects.NearbyChest;
     public Vector2Int CurrentZoneMapPos;
@@ -68,6 +70,8 @@ public class Player : NetworkBehaviour
         nearbyObjects = GetComponent<PlayerNearbyObjects>();
         chestTransferSystem = GetComponent<ChestTransferSystem>();
         playerAnimationController = GetComponent<PlayerAnimationController>();
+        playerInputHandler = GetComponent<PlayerInputHandler>();
+        playerInputHandler.Initialize(controls);
     }
 
     private void Update()
@@ -75,119 +79,13 @@ public class Player : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        HandleInput();
+        playerInputHandler.HandleInput();
 
         if (otherPlayerVisualController != null)
             otherPlayerVisualController.UpdateVisual();
     }
 
-    private void HandleInput()
-    {
-        switch (State)
-        {
-            case PlayerState.Normal:
-                HandleNormalInput();
-                break;
-
-            case PlayerState.Trading:
-                HandleTradingInput();
-                break;
-
-            case PlayerState.Inventory:
-                HandleInventoryInput();
-                break;
-
-            case PlayerState.UsingMap:
-                HandleMapInput();
-                break;
-
-            case PlayerState.UsingRadar:
-                HandleRadarInput();
-                break;
-
-            case PlayerState.RabbitMapUI:
-                HandleRabbitMapInput();
-                break;
-
-            case PlayerState.CaughtByWolf:
-                HandleBeingCaughtByWolfInput();
-                break;
-
-            case PlayerState.TradeUI:
-                HandleTradeInput();
-                break;
-
-            case PlayerState.SelectingRole:
-            case PlayerState.RabbitDialogueInteraction:
-            case PlayerState.GrandmaDialogueInteraction:
-            case PlayerState.Transitioning:
-            case PlayerState.Crafting:
-            case PlayerState.EndGame:
-                break;
-        }
-    }
-
-    private void HandleNormalInput()
-    {
-        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
-            HandleTabInput();
-
-        if (controls.Gameplay.Interact.WasPressedThisFrame())
-            HandleInteractionInput();
-
-        if (controls.Gameplay.Inventory.WasPressedThisFrame())
-            OpenInventory();
-    }
-
-    private void HandleTradingInput()
-    {
-        if (controls.Gameplay.Interact.WasPressedThisFrame())
-            CloseChest();
-    }
-
-    private void HandleInventoryInput()
-    {
-        if (controls.Gameplay.Inventory.WasPressedThisFrame())
-            CloseInventory();
-    }
-
-    private void HandleMapInput()
-    {
-        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
-            MapUI.Instance.ToggleMap();
-    }
-
-    private void HandleRabbitMapInput()
-    {
-        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
-            RabbitDialogue.Instance.CloseMap();
-    }
-
-    private void HandleRadarInput()
-    {
-        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
-        {
-            RadarUI.Instance.ToggleRadar();
-        }
-    }
-
-    private void HandleBeingCaughtByWolfInput()
-    {
-        if (controls.Gameplay.Confirm.WasPressedThisFrame())
-        {
-            wolfUI.CloseUI();
-        }
-    }
-
-    private void HandleTradeInput()
-    {
-        if (controls.Gameplay.Confirm.WasPressedThisFrame())
-        {
-            TradeUI.Instance.CloseUI();
-        }
-    }
-
-    private void HandleTabInput()
+    public void HandleTabInput()
     {
         if (inventory.GetItemAmount(ItemType.Radar) > 0)
         {
@@ -201,7 +99,7 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void HandleInteractionInput()
+    public void HandleInteractionInput()
     {
         if (nearbyObjects.CurrentRiverInteraction != null)
         {
@@ -233,12 +131,12 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void OpenInventory()
+    public void OpenInventory()
     {
         inventoryUI.ToggleInventory();
     }
 
-    private void CloseInventory()
+    public void CloseInventory()
     {
         inventoryUI.ToggleInventory();
     }
@@ -249,9 +147,14 @@ public class Player : NetworkBehaviour
         UpdateOpenedChestServerRpc();
     }
 
-    private void CloseChest()
+    public void CloseChest()
     {
         nearbyObjects.NearbyChest.OnOpen(this);
+    }
+
+    public void CloseWolfUI()
+    {
+        wolfUI.CloseUI();
     }
 
     [ServerRpc]
@@ -709,10 +612,12 @@ public class Player : NetworkBehaviour
         if (Role.Value == PlayerRole.Gardener)
         {
             inventory.AddItem(ItemType.Radar, 1);
+            RadarUI.Instance.Init(this);
         }
         else if (Role.Value == PlayerRole.Builder)
         {
             inventory.AddItem(ItemType.Map, 1);
+            MapUI.Instance.Init(this);
         }
 
         inventory.AddItem(ItemType.Meat, 1);
