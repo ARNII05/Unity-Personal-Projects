@@ -9915,6 +9915,7 @@ GameObject:
   - component: {fileID: 484654994}
   - component: {fileID: 484654993}
   - component: {fileID: 484654996}
+  - component: {fileID: 484654997}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -10017,11 +10018,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484654992}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a448c2600fb6b594ba6cf859778898b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &484654997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484654992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f49fa8e0a3e614e90515f2217a1a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RelayPingMonitor
 --- !u!1 &487292318
 GameObject:
   m_ObjectHideFlags: 0

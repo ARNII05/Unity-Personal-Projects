@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CraftingSystem))]
 [RequireComponent(typeof(OtherPlayerVisual))]
@@ -31,6 +32,8 @@ public class Player : NetworkBehaviour
     private Direction lastDirection;
     private ZoneGameControls controls;
     private WolfUI wolfUI;
+
+    private bool gameplayInitialized;
 
     public PlayerState State { get; set; } = PlayerState.Normal;
     public HashSet<Vector2Int> discoveredZones = new();
@@ -353,10 +356,48 @@ public class Player : NetworkBehaviour
         IsWalking.OnValueChanged += OnWalkingChanged;
         NetworkDirection.OnValueChanged += OnDirectionChanged;
 
+        // Esperar a que se cargue la escena del juego.
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // Si ZoneMap ya está cargada, inicializar directamente.
+        TryInitializeGameplay();
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "ZoneMap")
+        {
+            TryInitializeGameplay();
+        }
+    }
+
+    private void TryInitializeGameplay()
+    {
+        if (gameplayInitialized || !IsSpawned)
+            return;
+
+        if (SceneManager.GetActiveScene().name != "ZoneMap")
+            return;
+
+        // Evitar continuar si la escena todavía no tiene su gestor.
+        if (MapManager.Instance == null)
+        {
+            Debug.LogWarning(
+                "Player: ZoneMap está activa, pero MapManager todavía no está disponible."
+            );
+            return;
+        }
+
+        gameplayInitialized = true;
+
+        InitializeGameplay();
+    }
+
+    private void InitializeGameplay()
+    {
         if (IsOwner)
         {
             controls.Gameplay.Enable();
-            
+
             RoleSelectorUI.Instance.InitPlayer(this);
 
             GameObject inventoryPanel =
@@ -371,25 +412,24 @@ public class Player : NetworkBehaviour
 
             TradeUI.Instance.Init(this);
 
-            wolfUI = GameObject.Find("WolfManager").GetComponent<WolfUI>();
+            wolfUI =
+                GameObject.Find("WolfManager").GetComponent<WolfUI>();
 
             if (otherPlayerVisualController != null)
                 otherPlayerVisualController.Initialize(this);
         }
 
-        MapManager.Instance.RegisterPlayer(
-            this,
-            IsServer
-        );
+        MapManager.Instance.RegisterPlayer(this, IsServer);
     }
+
 
     public override void OnNetworkDespawn()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
         NetworkMapPos.OnValueChanged -= OnNetworkMapPosChanged;
         IsWalking.OnValueChanged -= OnWalkingChanged;
         NetworkDirection.OnValueChanged -= OnDirectionChanged;
-
-        controls.Gameplay.Disable();
 
         base.OnNetworkDespawn();
     }
@@ -507,8 +547,8 @@ public class Player : NetworkBehaviour
             MapUI.Instance.Init(this);
         }
 
-        /*
         inventory.AddItem(ItemType.Meat, 1);
+        /*
         inventory.AddItem(ItemType.Bouquet, 7);
         inventory.AddItem(ItemType.Log, 7);
         inventory.AddItem(ItemType.Coin, 7);
@@ -591,6 +631,11 @@ public class Player : NetworkBehaviour
         Vector2Int oldPos,
         Vector2Int newPos)
     {
+        MapManager mapManager = MapManager.Instance;
+
+        if (mapManager == null)
+            return;
+
         if (!IsOwner)
         {
             Player localPlayer = MapManager.Instance.GetLocalPlayer();

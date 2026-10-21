@@ -1,4 +1,4 @@
-
+using UnityEngine.SceneManagement;
 using System;
 using System.Threading.Tasks;
 using TMPro;
@@ -20,6 +20,7 @@ public class RelayManager : MonoBehaviour
     [SerializeField] private TMP_Text relayCodeText;
     [SerializeField] private TMP_InputField joinCodeInput;
 
+    private bool isLoadingRoleScene;
     private bool servicesReady;
 
     private float pingTimer;
@@ -204,10 +205,55 @@ public class RelayManager : MonoBehaviour
         {
             relayCodeText.text = "¡Conectado correctamente!";
         }
+
+        // Solo el host decide cuándo pasar a la selección de roles.
+        if (!NetworkManager.Singleton.IsServer ||
+            isLoadingRoleScene)
+        {
+            return;
+        }
+
+        // El host cuenta como un cliente conectado.
+        if (NetworkManager.Singleton.ConnectedClientsIds.Count < 2)
+        {
+            return;
+        }
+
+        isLoadingRoleScene = true;
+
+        Debug.Log("Los dos jugadores están conectados. Cargando ZoneMap...");
+
+        var status = NetworkManager.Singleton.SceneManager.LoadScene(
+            "ZoneMap",
+            LoadSceneMode.Single
+        );
+
+        if (status != Unity.Netcode.SceneEventProgressStatus.Started)
+        {
+            Debug.LogError($"No se pudo iniciar la carga de ZoneMap. Estado: {status}");
+            isLoadingRoleScene = false;
+        }
     }
 
     private void OnClientDisconnected(ulong clientId)
     {
         Debug.LogError($"Cliente desconectado. ID: {clientId}");
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log("[RelayManager] Se ha destruido RelayManager.");
+
+        if (NetworkManager.Singleton == null)
+        {
+            Debug.Log("[RelayManager] NetworkManager.Singleton es NULL.");
+            return;
+        }
+
+        Debug.Log(
+            $"[RelayManager] NetworkManager activo: " +
+            $"{NetworkManager.Singleton.name}, " +
+            $"IsListening: {NetworkManager.Singleton.IsListening}"
+        );
     }
 }

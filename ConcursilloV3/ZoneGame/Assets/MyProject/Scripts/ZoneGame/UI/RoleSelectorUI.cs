@@ -31,11 +31,9 @@ public class RoleSelectorUI : MonoBehaviour
         }
 
         Instance = this;
-    }
 
-    private void Start()
-    {
         roleLobbyPanel = transform.Find("RoleLobbyPanel").gameObject;
+
         roleLobbyPanel.SetActive(false);
         background[0].SetActive(false);
         background[1].SetActive(false);
@@ -57,7 +55,6 @@ public class RoleSelectorUI : MonoBehaviour
 
         roleLobbyPanel.SetActive(true);
         background[0].SetActive(true);
-        //background[1].SetActive(true);
         startGameObj.SetActive(NetworkManager.Singleton.IsServer);
 
         UpdateStartButton();
