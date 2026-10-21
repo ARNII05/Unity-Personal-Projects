@@ -61,8 +61,9 @@ public class ResourcesGenerator : MonoBehaviour
 
         localPlayer = MapManager.Instance.GetLocalPlayer();
 
-        const int extraFlowers = 20;
-        const int totalBranchesToCraft = CraftingSystem.branchesForLog * 3;
+        const int extraFlowers = 0;
+        const int extraBranches = 10;
+        const int totalBranchesToCraft = CraftingSystem.branchesForLog + extraBranches;
         const int totalFlowersToCraft = CraftingSystem.flowersForBouquet * CraftingSystem.BouquetsToWin + extraFlowers;
 
         mapHeight = MapManager.mapHeight;
@@ -76,7 +77,7 @@ public class ResourcesGenerator : MonoBehaviour
         {
             for (int j = 0; j < mapWidth; j++)
             {
-                if (map[i, j].ItemProbInChest(100) == ChestItems.None)
+                if (!map[i, j].canHaveChest)
                     continue;
 
                 allMap.Add(new Vector2Int(j, i));
@@ -84,9 +85,17 @@ public class ResourcesGenerator : MonoBehaviour
         }
 
         SetInitialItems(ChestItems.Branch, momPart, totalBranchesToCraft);
+        Debug.Log("Items después de añadir ramas");
+        PrintItems();
+        
         SetInitialItems(ChestItems.Flower, allMap, totalFlowersToCraft);
-
+        Debug.Log("Items después de añadir flores");
+        PrintItems();
+        
         DistributeAllItems(allMap);
+
+        Debug.Log("Items después de añadir items aleatorios por el mapa entero");
+        PrintItems();
     }
 
     private void CheckResources()
@@ -209,7 +218,7 @@ public class ResourcesGenerator : MonoBehaviour
         {
             ZoneData zone = map[position.y, position.x];
 
-            int probOfItem = Random.Range(0, 101);
+            int probOfItem = Random.Range(0, 100);
 
             ChestItems item = zone.ItemProbInChest(probOfItem);
 
@@ -222,37 +231,37 @@ public class ResourcesGenerator : MonoBehaviour
         }
     }
 
-    private int SetInitialItems(ChestItems item, 
-        List<Vector2Int> mapPart, int totalItemsToCraft,
-        int itemCount = 0)
+    private int SetInitialItems(
+        ChestItems item,
+        List<Vector2Int> mapPart,
+        int totalItemsToCraft)
     {
-        List<Vector2Int> mapPartTmp = new(mapPart);
+        int itemCount = 0;
+        List<Vector2Int> availablePositions = new(mapPart);
 
-        while (mapPartTmp.Count > 0 && itemCount < totalItemsToCraft)
+        while (itemCount < totalItemsToCraft)
         {
-            int randomPosInt = Random.Range(0, mapPartTmp.Count);
+            if (availablePositions.Count == 0)
+            {
+                availablePositions = new List<Vector2Int>(mapPart);
+            }
 
-            Vector2Int randomPos = mapPartTmp[randomPosInt];
+            int randomIndex = Random.Range(0, availablePositions.Count);
+            Vector2Int position = availablePositions[randomIndex];
+            availablePositions.RemoveAt(randomIndex);
 
-            int amount = Random.Range(1, MaxItemCountPerChest(item) + 1);
-            
-            if (map[randomPos.y, randomPos.x]
-                 .chestInventory.AddItem((ItemType)item, amount))
+            int maxAmount = MaxItemCountPerChest(item);
+
+            if (maxAmount <= 0)
+                continue;
+
+            int amount = Random.Range(1, maxAmount + 1);
+
+            if (map[position.y, position.x].chestInventory.AddItem(
+                    (ItemType)item, amount))
             {
                 itemCount += amount;
             }
-
-            mapPartTmp.RemoveAt(randomPosInt);
-        }
-
-        if (itemCount < totalItemsToCraft)
-        {
-            return SetInitialItems(
-                item,
-                mapPart,
-                totalItemsToCraft,
-                itemCount
-            );
         }
 
         return itemCount;
@@ -262,10 +271,10 @@ public class ResourcesGenerator : MonoBehaviour
     {
         return item switch
         {
-            ChestItems.Flower => 3,
+            ChestItems.Flower => 2,
             ChestItems.Branch => 2,
-            ChestItems.Coin => 2,
-            _ => throw new System.NotImplementedException(),
+            ChestItems.Coin => 3,
+            _ => 0
         };
     }
 
@@ -274,7 +283,6 @@ public class ResourcesGenerator : MonoBehaviour
         int flowers = 0;
         int branches = 0;
         int coins = 0;
-        int meat = 0;
 
         for (int i = 0; i < mapHeight; i++)
         {
@@ -285,14 +293,12 @@ public class ResourcesGenerator : MonoBehaviour
                 flowers += inventory.GetItemAmount(ItemType.Flower);
                 branches += inventory.GetItemAmount(ItemType.Branch);
                 coins += inventory.GetItemAmount(ItemType.Coin);
-                meat += inventory.GetItemAmount(ItemType.Meat);
             }
         }
 
         Debug.Log($"Total flowers: {flowers}");
         Debug.Log($"Total branches: {branches}");
         Debug.Log($"Total coins: {coins}");
-        Debug.Log($"Total meat: {meat}");
     }
 
     private List<Vector2Int> TilesBeforeRiver(Vector2Int position)
@@ -315,7 +321,7 @@ public class ResourcesGenerator : MonoBehaviour
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
-            if (map[current.y, current.x].type != ZoneType.MomHouse)
+            if (map[current.y, current.x].canHaveChest)
             {
                 tilesInZone.Add(current);
             }

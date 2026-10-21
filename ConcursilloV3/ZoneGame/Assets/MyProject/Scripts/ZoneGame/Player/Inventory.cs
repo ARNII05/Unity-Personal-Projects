@@ -22,6 +22,9 @@ public class Inventory
 
     public bool AddItem(ItemType itemType, int amount)
     {
+        if (amount == 0)
+            return false;
+        
         if (items.Count >= maxCapacity && items.GetValueOrDefault(itemType) == 0)
             return false;
 

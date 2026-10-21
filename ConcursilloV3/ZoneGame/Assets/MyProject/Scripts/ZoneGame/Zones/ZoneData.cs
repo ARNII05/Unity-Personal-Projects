@@ -9,6 +9,7 @@ public abstract class ZoneData
     public Inventory chestInventory = new();
     public bool chestOpened = false;
     public bool riverBridged = false;
+    public bool canHaveChest = true;
     public int bouquetsInInventory = 0;
     public Direction firstRiverDirection = Direction.None;
     public Vector3[] player1EntryPoints = new Vector3[6];
@@ -68,11 +69,11 @@ public abstract class ZoneData
     {
         return prob switch
         {
-            <= 15 => ChestItems.None,
-            <= 50 => ChestItems.Coin,
-            <= 70 => ChestItems.Flower,
-            <= 100 => ChestItems.Branch,
-            _ => throw new System.NotImplementedException(),
+            < 15 => ChestItems.None,    //15%
+            < 70 => ChestItems.Coin,    //55%
+            < 85 => ChestItems.Flower,  //15%
+            < 100 => ChestItems.Branch, //15%
+            _ => ChestItems.None
         };
     }
 
@@ -102,15 +103,11 @@ public class MomHouse : ZoneData
 {
     public MomHouse() : base(ZoneType.MomHouse)
     {
+        canHaveChest = false;
     }
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la casa de tu Madre. Se escuchan los árboles mover con el viento.");
-    }
-
-    public override ChestItems ItemProbInChest(int prob)
-    {
-        return ChestItems.None;
     }
 }
 
@@ -171,11 +168,11 @@ public class RabbitDen : ZoneData
     {
         return prob switch
         {
-            <= 10 => ChestItems.None,  
-            <= 70 => ChestItems.Coin,   
-            <= 85 => ChestItems.Flower,
-            <= 100 => ChestItems.Branch, 
-            _ => throw new System.NotImplementedException(),
+            < 10 => ChestItems.None,   // 10 %
+            < 70 => ChestItems.Coin,   // 60 %
+            < 85 => ChestItems.Flower, // 15 %
+            < 100 => ChestItems.Branch,// 15 %
+            _ => ChestItems.None
         };
     }
 }
@@ -221,11 +218,11 @@ public class FlowerField : ZoneData
     {
         return prob switch
         {
-            <= 5 => ChestItems.None,
-            <= 15 => ChestItems.Coin,
-            <= 75 => ChestItems.Flower,
-            <= 100 => ChestItems.Branch,
-            _ => throw new System.NotImplementedException(),
+            < 5 => ChestItems.None,     // 5 %
+            < 25 => ChestItems.Coin,    // 20 %
+            < 80 => ChestItems.Flower,  // 55 %
+            < 100 => ChestItems.Branch, // 20 %
+            _ => ChestItems.None
         };
     }
 }
@@ -244,11 +241,11 @@ public class Ruins : ZoneData
     {
         return prob switch
         {
-            <= 50 => ChestItems.None,     
-            <= 70 => ChestItems.Coin,   
-            <= 85 => ChestItems.Flower, 
-            <= 100 => ChestItems.Branch, 
-            _ => throw new System.NotImplementedException(),
+            < 40 => ChestItems.None,    //40%
+            < 70 => ChestItems.Coin,    //30%
+            < 85 => ChestItems.Flower,  //15%
+            < 100 => ChestItems.Branch, //15%
+            _ => ChestItems.None
         };
     }
 }
@@ -293,11 +290,11 @@ public class Village : ZoneData
     {
         return prob switch
         {
-            <= 10 => ChestItems.None,
-            <= 55 => ChestItems.Coin,
-            <= 75 => ChestItems.Flower,
-            <= 100 => ChestItems.Branch,
-            _ => throw new System.NotImplementedException(),
+            < 10 => ChestItems.None,    //10%
+            < 55 => ChestItems.Coin,    //45%
+            < 75 => ChestItems.Flower,  //25%
+            < 100 => ChestItems.Branch, //25%
+            _ => ChestItems.None
         };
     }
 }
@@ -332,6 +329,7 @@ public class VerticalRiver : ZoneData
 {
     public VerticalRiver() : base(ZoneType.VerticalRiver)
     {
+        canHaveChest = false;
         icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
 
         //Left side entry
@@ -375,17 +373,13 @@ public class VerticalRiver : ZoneData
     {
         LogManager.Log("Entrando a un Río.");
     }
-
-    public override ChestItems ItemProbInChest(int prob)
-    {
-        return ChestItems.None;
-    }
 }
 
 public class HorizontalRiver : ZoneData
 {
     public HorizontalRiver() : base(ZoneType.HorizontalRiver)
     {
+        canHaveChest = false;
         icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
 
         player1EntryPoints[0] = new Vector3(-85.7f, 12.9f, -6.2f);
@@ -405,27 +399,18 @@ public class HorizontalRiver : ZoneData
     {
         LogManager.Log("Entrando a un Río.");
     }
-
-    public override ChestItems ItemProbInChest(int prob)
-    {
-        return ChestItems.None;
-    }
 }
 
 public class GrandmaHouse : ZoneData
 {
     public GrandmaHouse() : base(ZoneType.GrandmaHouse)
     {
+        canHaveChest = false;
     }
 
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la Casa de la Abuela.");
-    }
-
-    public override ChestItems ItemProbInChest(int prob)
-    {
-        return ChestItems.None;
     }
 }
 
@@ -433,6 +418,8 @@ public class WolfDen : ZoneData
 {
     public WolfDen() : base(ZoneType.WolfDen)
     {
+        canHaveChest = false;
+        
         player1EntryPoints[0] = new Vector3(-59.9f, 12.7f, -6.2f);
         player1EntryPoints[1] = new Vector3(-49.9f, -44.3f, -6.2f);
         player1EntryPoints[2] = new Vector3(34.1f, -7.2f, -6.2f);
@@ -453,11 +440,6 @@ public class WolfDen : ZoneData
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a la Guarida del Lobo.");
-    }
-
-    public override ChestItems ItemProbInChest(int prob)
-    {
-        return ChestItems.None;
     }
 }
 
