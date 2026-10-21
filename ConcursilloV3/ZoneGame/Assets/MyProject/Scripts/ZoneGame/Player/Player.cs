@@ -183,6 +183,11 @@ public class Player : NetworkBehaviour
         GrandmaUI.Instance.OpenPanel();
     }
 
+    public void InteractWithTrade()
+    {
+        TradeUI.Instance.OpenUI();
+    }
+
     [Rpc(SendTo.Server)]
     public void ShowEndGanePanelServerRpc()
     {
@@ -363,6 +368,8 @@ public class Player : NetworkBehaviour
             inventoryUI.SetPlayer(this);
 
             CraftingUI.Instance.SetPlayer(this);
+
+            TradeUI.Instance.Init(this);
 
             wolfUI = GameObject.Find("WolfManager").GetComponent<WolfUI>();
 

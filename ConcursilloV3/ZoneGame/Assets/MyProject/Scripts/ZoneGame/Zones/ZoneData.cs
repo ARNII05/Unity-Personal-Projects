@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class ZoneData
 {
     public ZoneType type;
-
+    public string name;
     public Sprite icon;
     public Inventory chestInventory = new();
     public bool chestOpened = false;
@@ -19,10 +19,11 @@ public abstract class ZoneData
     public Vector3 player1TpZonePos;
     public Vector3 player2TpZonePos;
 
-    public ZoneData(ZoneType type)
+    public ZoneData(ZoneType type, string name)
     {
         icon = Resources.Load<Sprite>($"Prefabs/ZoneIcons/{type}");
         this.type = type;
+        this.name = name;
 
         player1EntryPoints[0] = new Vector3(-100.1f, 44.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-100.1f, -44.4f, -6.2f);
@@ -31,8 +32,8 @@ public abstract class ZoneData
 
         player2EntryPoints[0] = new Vector3(155f, 44.4f, -6.2f);
         player2EntryPoints[1] = new Vector3(155f, -44.4f, -6.2f);
-        player2EntryPoints[2] = new Vector3(300f, -6.2f);
-        player2EntryPoints[3] = new Vector3(108f, -6.2f);
+        player2EntryPoints[2] = new Vector3(300f, -1.2f, -6.2f);
+        player2EntryPoints[3] = new Vector3(112f, -0.2f, -6.2f);
 
         player1ZonePos = Vector3.zero;
         player2ZonePos = new Vector3(255, 0, 0);
@@ -76,32 +77,11 @@ public abstract class ZoneData
             _ => ChestItems.None
         };
     }
-
-    public string GetName()
-    {
-        return type switch
-        {
-            ZoneType.GrandmaHouse => "Casa de la Abuela",
-            ZoneType.MomHouse => "Casa de la Madre",
-            ZoneType.Forest => "Bosque",
-            ZoneType.RabbitDen => "Madriguera del conejo",
-            ZoneType.Tavern => "Taberna",
-            ZoneType.FlowerField => "Campo Florido",
-            ZoneType.Ruins => "Ruinas",
-            ZoneType.Swamp => "Pantano",
-            ZoneType.Village => "Pueblo",
-            ZoneType.Camp => "Campamento",
-            ZoneType.VerticalRiver => "Rio",
-            ZoneType.HorizontalRiver => "Rio",
-            ZoneType.WolfDen => "Guardida del Lobo",
-            _ => "Zona Desconocida",
-        };
-    }
 }
 
 public class MomHouse : ZoneData
 {
-    public MomHouse() : base(ZoneType.MomHouse)
+    public MomHouse() : base(ZoneType.MomHouse, "Casa de la Madre")
     {
         canHaveChest = false;
     }
@@ -113,7 +93,7 @@ public class MomHouse : ZoneData
 
 public class Forest : ZoneData
 {
-    public Forest() : base(ZoneType.Forest)
+    public Forest() : base(ZoneType.Forest, "Bosque")
     {
         player1EntryPoints[0] = new Vector3(-49.2f, 39.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-49.2f, -41.4f, -6.2f);
@@ -140,7 +120,7 @@ public class Forest : ZoneData
 
 public class RabbitDen : ZoneData
 {
-    public RabbitDen() : base(ZoneType.RabbitDen)
+    public RabbitDen() : base(ZoneType.RabbitDen, "Madriguera del conejo")
     {
         player1EntryPoints[0] = new Vector3(-49.2f, 39.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-49.2f, -41.4f, -6.2f);
@@ -179,7 +159,7 @@ public class RabbitDen : ZoneData
 
 public class Tavern : ZoneData
 {
-    public Tavern() : base(ZoneType.Tavern)
+    public Tavern() : base(ZoneType.Tavern, "Taberna")
     {
     }
     public override void OnEnter(Player player)
@@ -190,7 +170,7 @@ public class Tavern : ZoneData
 
 public class FlowerField : ZoneData
 {
-    public FlowerField() : base(ZoneType.FlowerField)
+    public FlowerField() : base(ZoneType.FlowerField, "Campo florido")
     {
         player1EntryPoints[0] = new Vector3(-49.2f, 39.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-49.2f, -41.4f, -6.2f);
@@ -229,7 +209,7 @@ public class FlowerField : ZoneData
 
 public class Ruins : ZoneData
 {
-    public Ruins() : base(ZoneType.Ruins)
+    public Ruins() : base(ZoneType.Ruins, "Ruinas")
     {
     }
     public override void OnEnter(Player player)
@@ -252,7 +232,7 @@ public class Ruins : ZoneData
 
 public class Swamp : ZoneData
 {
-    public Swamp() : base(ZoneType.Swamp)
+    public Swamp() : base(ZoneType.Swamp, "Pantano")
     {
     }
     public override void OnEnter(Player player)
@@ -263,7 +243,7 @@ public class Swamp : ZoneData
 
 public class Village : ZoneData
 {
-    public Village() : base(ZoneType.Village)
+    public Village() : base(ZoneType.Village, "Pueblo")
     {
         player1EntryPoints[0] = new Vector3(-54.7f, 8.5f, -6.2f);
         player1EntryPoints[1] = new Vector3(-36.7f, -49.5f, -6.2f);
@@ -301,7 +281,7 @@ public class Village : ZoneData
 
 public class Camp : ZoneData
 {
-    public Camp() : base(ZoneType.Camp)
+    public Camp() : base(ZoneType.Camp, "Campamento")
     {
         player1EntryPoints[0] = new Vector3(-49.2f, 39.4f, -6.2f);
         player1EntryPoints[1] = new Vector3(-49.2f, -41.4f, -6.2f);
@@ -327,7 +307,7 @@ public class Camp : ZoneData
 
 public class VerticalRiver : ZoneData
 {
-    public VerticalRiver() : base(ZoneType.VerticalRiver)
+    public VerticalRiver() : base(ZoneType.VerticalRiver, "Rio")
     {
         canHaveChest = false;
         icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
@@ -377,7 +357,7 @@ public class VerticalRiver : ZoneData
 
 public class HorizontalRiver : ZoneData
 {
-    public HorizontalRiver() : base(ZoneType.HorizontalRiver)
+    public HorizontalRiver() : base(ZoneType.HorizontalRiver, "Rio")
     {
         canHaveChest = false;
         icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
@@ -403,7 +383,7 @@ public class HorizontalRiver : ZoneData
 
 public class GrandmaHouse : ZoneData
 {
-    public GrandmaHouse() : base(ZoneType.GrandmaHouse)
+    public GrandmaHouse() : base(ZoneType.GrandmaHouse, "Casa de la abuela")
     {
         canHaveChest = false;
     }
@@ -416,7 +396,7 @@ public class GrandmaHouse : ZoneData
 
 public class WolfDen : ZoneData
 {
-    public WolfDen() : base(ZoneType.WolfDen)
+    public WolfDen() : base(ZoneType.WolfDen, "Guarida del lobo")
     {
         canHaveChest = false;
         

@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Trade))]
 public class TradeUI : MonoBehaviour
 {
-    [SerializeField] private GameObject tradeUI;
+    [SerializeField] private GameObject tradeDialogue;
 
     public static TradeUI Instance { get; private set; }
 
@@ -27,9 +27,8 @@ public class TradeUI : MonoBehaviour
 
     void Start()
     {
-        tradeUI.SetActive(false);
+        tradeDialogue.SetActive(false);
     }
-
 
     public void Init(Player player)
     {
@@ -39,25 +38,29 @@ public class TradeUI : MonoBehaviour
 
     public void OpenUI()
     {
-        tradeUI.SetActive(true);
+        tradeDialogue.SetActive(true);
 
         player.State = PlayerState.TradeUI;
     }
 
     public void CloseUI()
     {
-        tradeUI.SetActive(false);
+        tradeDialogue.SetActive(false);
+
+        trade.ClosePanel();
 
         player.State = PlayerState.Normal;
     }
 
-    private void OpenTradeObjects()
+    public void OpenTradeObjectsWithCoins()
     {
-
+        tradeDialogue.SetActive(false);
+        trade.OpenTradeObjectsWithCoins();
     }
 
-    private void OpenTradeObjectsWithCoins()
+    public void OpenTradeObjects()
     {
-
+        tradeDialogue.SetActive(false);
+        trade.OpenTradeObjects();
     }
 }

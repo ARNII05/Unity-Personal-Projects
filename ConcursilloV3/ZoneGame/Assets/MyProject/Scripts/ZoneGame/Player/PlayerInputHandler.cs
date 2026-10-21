@@ -128,5 +128,11 @@ public class PlayerInputHandler : MonoBehaviour
         {
             RabbitDialogue.Instance.OpenDialogue();
         }
+
+        if (player.NearbyObjects.tradeCollider != null)
+        {
+            player.InteractWithTrade();
+            return;
+        }
     }
 }

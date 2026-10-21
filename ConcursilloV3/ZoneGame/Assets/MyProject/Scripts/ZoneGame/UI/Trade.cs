@@ -19,6 +19,7 @@ public class Trade : MonoBehaviour
 
     void Start()
     {
+        tradePanel.SetActive(false);
         tradeObject.SetActive(false);
         tradeObjectWithCoins.SetActive(false);
     }
@@ -30,21 +31,20 @@ public class Trade : MonoBehaviour
 
     public void OpenTradeObjects()
     {
+        tradePanel.SetActive(true);
         tradeObject.SetActive(true);
     }
 
     public void OpenTradeObjectsWithCoins()
     {
+        tradePanel.SetActive(true);
         tradeObjectWithCoins.SetActive(true);
     }
     
-    private void CloseTradeObjects()
+    public void ClosePanel()
     {
-        tradeObject.SetActive(false);
-    }
-
-    private void CloseTradeObjectsWithCins()
-    {
+        tradePanel.SetActive(false);
         tradeObjectWithCoins.SetActive(false);
+        tradeObject.SetActive(false);
     }
 }

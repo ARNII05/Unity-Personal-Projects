@@ -10,6 +10,8 @@ public class PlayerNearbyObjects : MonoBehaviour
     public GameObject NearbyGrandma { get; private set; }
     public GameObject CurrentRiverInteraction { get; private set; }
 
+    public GameObject tradeCollider { get; private set; }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         switch (other.tag)
@@ -32,6 +34,10 @@ public class PlayerNearbyObjects : MonoBehaviour
 
             case "Rabbit":
                 Rabbit = other.gameObject;
+                break;
+
+            case "Trade":
+                tradeCollider = other.gameObject;
                 break;
         }
     }
@@ -58,6 +64,10 @@ public class PlayerNearbyObjects : MonoBehaviour
 
             case "Rabbit":
                 Rabbit = null;
+                break;
+
+            case "Trade":
+                tradeCollider = null;
                 break;
         }
     }

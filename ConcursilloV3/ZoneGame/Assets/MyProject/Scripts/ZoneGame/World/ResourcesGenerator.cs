@@ -77,25 +77,25 @@ public class ResourcesGenerator : MonoBehaviour
         {
             for (int j = 0; j < mapWidth; j++)
             {
-                if (!map[i, j].canHaveChest)
-                    continue;
-
-                allMap.Add(new Vector2Int(j, i));
+                if (map[i, j].canHaveChest)
+                    allMap.Add(new Vector2Int(j, i));
             }
         }
-
+       
         SetInitialItems(ChestItems.Branch, momPart, totalBranchesToCraft);
-        Debug.Log("Items después de añadir ramas");
-        PrintItems();
+        //Debug.Log("Items después de añadir ramas");
+        //PrintItems();
         
         SetInitialItems(ChestItems.Flower, allMap, totalFlowersToCraft);
-        Debug.Log("Items después de añadir flores");
-        PrintItems();
+        //Debug.Log("Items después de añadir flores");
+        //PrintItems();
         
         DistributeAllItems(allMap);
 
-        Debug.Log("Items después de añadir items aleatorios por el mapa entero");
-        PrintItems();
+        //Debug.Log("Items después de añadir items aleatorios por el mapa entero");
+        //PrintItems();
+
+        //PrintEmptyZones();
     }
 
     private void CheckResources()
@@ -276,6 +276,21 @@ public class ResourcesGenerator : MonoBehaviour
             ChestItems.Coin => 3,
             _ => 0
         };
+    }
+
+    private void PrintEmptyZones()
+    {
+        Debug.Log("Zonas sin items");
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                ZoneData zone = map[y, x];
+                if (zone.chestInventory.items.Count == 0)
+                    Debug.Log($"{zone.name} ({y + 1}, {x + 1})\n" +
+                        $"Puede tener items: {zone.canHaveChest}\n");
+            }
+        }
     }
 
     private void PrintItems()

@@ -106,7 +106,7 @@ public class MapUI : MonoBehaviour
 
         ZoneData currentZone = map[playerPos.y, playerPos.x];
 
-        zoneName.text = currentZone.GetName();
+        zoneName.text = currentZone.name;
 
         p1Coordinates.text = $"{mapPlayer.name.ToUpper()}\nY: {playerPos.y + 1}\nX: {playerPos.x + 1}";
         p2Coordinates.text = $"{otherPlayer.name.ToUpper()}\nY: {otherPlayerPos.y + 1}\nX: {otherPlayerPos.x + 1}";

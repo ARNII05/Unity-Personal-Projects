@@ -108,8 +108,8 @@ public class RabbitMapUI : MonoBehaviour
         
         zoneName.text = zoneDiscovered switch
         {
-            true => $"{zone.GetName()} ({zonePos.y}, {zonePos.x})",
-            _ => $"Zona desconocida ({zonePos.y}, {zonePos.x})"
+            true => $"{zone.name} ({zonePos.y + 1}, {zonePos.x + 1})",
+            _ => $"Zona desconocida ({zonePos.y + 1}, {zonePos.x + 1})"
         };
         zoneState.text = $"Estado: {(zoneDiscovered ? "Descubierta" : "Sin descubrir")}";
         chestState.text = $"Cofre: {(zone.chestOpened ? "Abierto" : "Sin abrir")}";
