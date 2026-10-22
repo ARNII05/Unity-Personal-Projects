@@ -54,7 +54,7 @@ public class Wolf : NetworkBehaviour
             player2 = MapManager.Instance.Player2;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = true;
+            readyToMove = false;
         }
     }
 
@@ -575,11 +575,13 @@ public class Wolf : NetworkBehaviour
         bool isInSamePosWithP1 = p1Pos == NetworkPosition.Value;
         bool isInSamePosWithP2 = p2Pos == NetworkPosition.Value;
 
-        bool player1IsInForbbidenState = player1.State.Value == PlayerState.Transitioning || player1.State.Value == PlayerState.EndGame;
-        bool player2IsInForbbidenState = player2.State.Value == PlayerState.Transitioning || player2.State.Value == PlayerState.EndGame;
+        bool player1IsInForbiddenState = player1.State.Value == PlayerState.Transitioning || player1.State.Value == PlayerState.EndGame;
+        bool player2IsInForbiddenState = player2.State.Value == PlayerState.Transitioning || player2.State.Value == PlayerState.EndGame;
 
-        return (isInSamePosWithP1, isInSamePosWithP2, player1IsInForbbidenState, player2IsInForbbidenState) switch
+        return (isInSamePosWithP1, isInSamePosWithP2, player1IsInForbiddenState, player2IsInForbiddenState) switch
         {
+            (true, true, false, true) => new[] { player1},
+            (true, true, true, false) => new[] { player2 },
             (true, true, false, false) => new[] { player1, player2 },
             (true, false, false, _) => new[] { player1 },
             (false, true, _, false) => new[] { player2 },

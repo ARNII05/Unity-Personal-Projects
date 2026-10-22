@@ -8,6 +8,7 @@ public class RelayPingMonitor : MonoBehaviour
     private UnityTransport transport;
     private float pingTimer;
 
+    /*
     private void Update()
     {
         if (NetworkManager.Singleton == null)
@@ -48,4 +49,5 @@ public class RelayPingMonitor : MonoBehaviour
             Debug.Log($"[CLIENTE] RTT hacia el host: {rtt} ms");
         }
     }
+    */
 }

@@ -50,6 +50,7 @@ public class GrandmaUI : MonoBehaviour
 
         player.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
         otherPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
+        player.inventory.OnInventoryChanged += UpdateGrandmaPanel;
     }
 
     private void OnPlayerPositionChanged(Vector2Int oldPos, Vector2Int newPos)

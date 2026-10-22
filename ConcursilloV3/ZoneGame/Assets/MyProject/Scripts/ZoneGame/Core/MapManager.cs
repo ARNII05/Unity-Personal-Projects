@@ -179,6 +179,8 @@ public class MapManager : MonoBehaviour
 
                 ImplementCamps();
 
+                startPos = GoTo(ZoneType.Village, startPos);
+
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
 
@@ -195,6 +197,22 @@ public class MapManager : MonoBehaviour
         Debug.LogError(
             "No se pudo generar un mapa valido despues de 100 intentos."
         );
+    }
+
+    private Vector2Int GoTo(ZoneType zoneType, Vector2Int initialPos)
+    {
+        for (int y = 0; y < mapWidth; y++)
+        {
+            for (int x = 0; x < mapHeight; x++)
+            {
+                ZoneData zone = map[y, x];
+
+                if (zone.type == zoneType)
+                    return new Vector2Int(x, y);
+            }
+        }
+
+        return initialPos;
     }
 
     private void GenerateStartPositions()
