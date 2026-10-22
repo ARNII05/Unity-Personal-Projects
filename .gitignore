@@ -94,4 +94,7 @@ crashlytics-build.properties
 # =========================
 QuizGameExe/
 ZoneGameExe/
+*Exe/
+*_Exe/
 *.zip
+/ConcursilloV3/Hello, grandma_Exe/
