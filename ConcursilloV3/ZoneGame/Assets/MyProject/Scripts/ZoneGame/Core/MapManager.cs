@@ -12,6 +12,9 @@ public class MapManager : MonoBehaviour
     public static MapManager instance { get; private set; }
     public bool IsMapReady { get; private set; } = false;
 
+    public bool ArePlayersRegistered =>
+        player1 != null && player2 != null;
+
     public Vector2Int grandmaPos;
 
     public Vector2Int startPos;
@@ -181,6 +184,7 @@ public class MapManager : MonoBehaviour
 
                 PrintMap();
                 CreateInitialZones();
+                ResourcesGenerator.Instance.Init();
                 IsMapReady = true;
                 StartCoroutine(SendMapNextFrame());
 
@@ -927,6 +931,9 @@ public class MapManager : MonoBehaviour
 
         Vector2Int newPos =
             moveResult.newPos;
+
+        if (player.State.Value == PlayerState.Transitioning)
+            return;
 
         UIManager.Instance.PlayZoneTransition(
             () =>

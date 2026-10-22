@@ -96,7 +96,7 @@ public class ChestUI : MonoBehaviour
 
     public void OpenInventory()
     {
-        player.State = PlayerState.Trading;
+        player.SetNewStateRpc(PlayerState.Trading);
         playerInventoryUI.transform.localPosition = playerInventoryChangedPos;
         
         playerInventoryUI.ChangeButtonStatus(true);
@@ -108,7 +108,7 @@ public class ChestUI : MonoBehaviour
 
     public void CloseInventory()
     {
-        player.State = PlayerState.Normal;
+        player.SetNewStateRpc(PlayerState.Normal);
         playerInventoryUI.transform.localPosition = playerInventoryBasePos;
 
         playerInventoryUI.ChangeButtonStatus(false);

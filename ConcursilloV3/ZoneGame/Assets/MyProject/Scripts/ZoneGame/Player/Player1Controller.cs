@@ -54,7 +54,7 @@ public class Player1Controller : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        if (player.State != PlayerState.Normal)
+        if (player.State.Value != PlayerState.Normal)
         {
             movementInput = Vector2.zero;
             player.IsWalking.Value = false;
@@ -75,7 +75,7 @@ public class Player1Controller : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        if (player.State != PlayerState.Normal)
+        if (player.State.Value != PlayerState.Normal)
         {
             movementInput = Vector2.zero;
             rb.linearVelocity = Vector2.zero;

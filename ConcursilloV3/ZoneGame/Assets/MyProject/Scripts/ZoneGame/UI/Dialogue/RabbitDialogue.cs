@@ -39,13 +39,13 @@ public class RabbitDialogue : MonoBehaviour
 
     public void OpenDialogue()
     {
-        player.State = PlayerState.RabbitDialogueInteraction;
+        player.SetNewStateRpc(PlayerState.RabbitDialogueInteraction);
         rabbitPanel.SetActive(true);
     }
 
     public void CloseDialogue()
     {
-        player.State = PlayerState.Normal;
+        player.SetNewStateRpc(PlayerState.Normal);
         rabbitPanel.SetActive(false);
     }
     

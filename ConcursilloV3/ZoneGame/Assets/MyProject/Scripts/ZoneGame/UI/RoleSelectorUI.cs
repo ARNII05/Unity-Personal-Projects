@@ -9,6 +9,8 @@ public class RoleSelectorUI : MonoBehaviour
 {
     public static RoleSelectorUI Instance { get; private set; }
 
+    public bool IsPlayerInitialized => player != null;
+
     [SerializeField] private GameObject lockObj, startGameObj;
     [SerializeField] private CanvasGroup canvasGroup;
 
@@ -48,7 +50,7 @@ public class RoleSelectorUI : MonoBehaviour
     {
         otherPlayer = MapManager.Instance.GetOtherPlayer(player);
 
-        player.State = PlayerState.SelectingRole;
+        player.SetNewStateRpc(PlayerState.SelectingRole);
 
         player.Role.OnValueChanged += OnRoleChanged;
         otherPlayer.Role.OnValueChanged += OnRoleChanged;

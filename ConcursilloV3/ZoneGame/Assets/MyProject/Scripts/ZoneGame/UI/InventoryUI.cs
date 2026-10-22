@@ -136,14 +136,14 @@ public class InventoryUI : MonoBehaviour
 
     public void OpenInventory()
     {
-        player.State = PlayerState.Inventory;
+        player.SetNewStateRpc(PlayerState.Inventory);
         ShowInventory();
         //CursorManager.Instance.UnlockCursor();
     }
 
     public void CloseInventory()
     {
-        player.State = PlayerState.Normal;
+        player.SetNewStateRpc(PlayerState.Normal);
         HideInventory();
         //CursorManager.Instance.LockCursor();
     }

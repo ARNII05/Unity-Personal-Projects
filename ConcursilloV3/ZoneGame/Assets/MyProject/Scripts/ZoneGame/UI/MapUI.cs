@@ -66,9 +66,9 @@ public class MapUI : MonoBehaviour
 
     private void OnOpen()
     {
-        mapPlayer.State = PlayerState.UsingMap;
+		mapPlayer.SetNewStateRpc(PlayerState.UsingMap);
 
-        mapObj.SetActive(true);
+		mapObj.SetActive(true);
     }
 
     private void OnPlayerPositionChanged(
@@ -83,9 +83,9 @@ public class MapUI : MonoBehaviour
 
     private void OnClose()
     {
-        mapPlayer.State = PlayerState.Normal;
+		mapPlayer.SetNewStateRpc(PlayerState.Normal);
 
-        mapObj.SetActive(false);
+		mapObj.SetActive(false);
     }
 
     public void UpdateMap()

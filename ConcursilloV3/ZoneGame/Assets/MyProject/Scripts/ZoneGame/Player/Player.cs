@@ -3,6 +3,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 [RequireComponent(typeof(CraftingSystem))]
 [RequireComponent(typeof(OtherPlayerVisual))]
@@ -35,9 +36,14 @@ public class Player : NetworkBehaviour
 
     private bool gameplayInitialized;
 
-    public PlayerState State { get; set; } = PlayerState.Normal;
     public HashSet<Vector2Int> discoveredZones = new();
 
+    public NetworkVariable<PlayerState> State = new(
+        PlayerState.Normal,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+     
     public NetworkVariable<Vector3> NetworkZoneEntryPosition = new(
         Vector3.zero,
         NetworkVariableReadPermission.Everyone,
@@ -122,6 +128,12 @@ public class Player : NetworkBehaviour
     {
         RiverInteractionServerRpc(NetworkMapPos.Value);
     }
+    
+    [Rpc(SendTo.Server)]
+    public void SetNewStateRpc(PlayerState newState)
+    {
+        State.Value = newState;
+    }
 
     [Rpc(SendTo.Server)]
     private void RiverInteractionServerRpc(Vector2Int pos)
@@ -171,6 +183,9 @@ public class Player : NetworkBehaviour
 
     public void ChangeZone()
     {
+        if (State.Value == PlayerState.Transitioning)
+            return;
+
         Direction direction = nearbyObjects.CurrentBorderZone.direction;
         Side side = nearbyObjects.CurrentBorderZone.side;
 
@@ -194,9 +209,15 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void ShowEndGanePanelServerRpc()
     {
-        State = PlayerState.EndGame;
+        State.Value = PlayerState.EndGame;
+
+        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
+
+        otherPlayer.State.Value = PlayerState.EndGame;
 
         EndgameUI.Instance.ShowEndGamePanel();
+
+        MapManager.Instance.wolf.SetReadyToMove(false);
 
         ShowEndGanePanelClientRpc();
     }
@@ -204,8 +225,6 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.NotServer)]
     private void ShowEndGanePanelClientRpc()
     {
-        State = PlayerState.EndGame;
-
         EndgameUI.Instance.ShowEndGamePanel();
     }
 
@@ -356,10 +375,8 @@ public class Player : NetworkBehaviour
         IsWalking.OnValueChanged += OnWalkingChanged;
         NetworkDirection.OnValueChanged += OnDirectionChanged;
 
-        // Esperar a que se cargue la escena del juego.
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        // Si ZoneMap ya está cargada, inicializar directamente.
         TryInitializeGameplay();
     }
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -378,7 +395,6 @@ public class Player : NetworkBehaviour
         if (SceneManager.GetActiveScene().name != "ZoneMap")
             return;
 
-        // Evitar continuar si la escena todavía no tiene su gestor.
         if (MapManager.Instance == null)
         {
             Debug.LogWarning(
@@ -521,13 +537,14 @@ public class Player : NetworkBehaviour
         GiveStartingItemsOnServer();
         otherPlayer.GiveStartingItemsOnServer();
 
-        ResourcesGenerator.Instance.Init();
-
         otherPlayer.GiveStartingItemClientRpc(otherPlayer.inventory.items.Keys.ToArray(), 
             otherPlayer.inventory.items.Values.ToArray());
 
         StartGameClientRpc();
         otherPlayer.StartGameClientRpc();
+
+        State.Value = PlayerState.Normal;
+        otherPlayer.State.Value = PlayerState.Normal;
 
         return true;
     }
@@ -551,6 +568,7 @@ public class Player : NetworkBehaviour
         /*
         inventory.AddItem(ItemType.Bouquet, 7);
         inventory.AddItem(ItemType.Log, 7);
+        
         inventory.AddItem(ItemType.Coin, 7);
         */
     }
@@ -582,8 +600,6 @@ public class Player : NetworkBehaviour
         GrandmaUI.Instance.Init(this);
 
         MapManager.Instance.wolf.Init();
-
-        State = PlayerState.Normal;
     }
 
     public void SetInventory()
@@ -614,6 +630,22 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     private void InitRoleSelectorClientRpc()
     {
+        StartCoroutine(InitRoleSelectorWhenReady());
+    }
+
+    private IEnumerator InitRoleSelectorWhenReady()
+    {
+        // Esperar a que la escena y la interfaz estén preparadas.
+        while (RoleSelectorUI.Instance == null ||
+               MapManager.Instance == null ||
+               !RoleSelectorUI.Instance.IsPlayerInitialized ||
+               !MapManager.Instance.ArePlayersRegistered ||
+               MapManager.Instance.GetOtherPlayer(
+                   MapManager.Instance.GetLocalPlayer()) == null)
+        {
+            yield return null;
+        }
+
         RoleSelectorUI.Instance.InitRoleSelector();
     }
 
@@ -664,6 +696,29 @@ public class Player : NetworkBehaviour
         int[] chestItemCounts,
         Vector2Int[] positions)
     {
+        StartCoroutine(ReceiveMapWhenReady(
+            zoneTypes,
+            chestItemTypes,
+            chestAmounts,
+            chestItemCounts,
+            positions
+        ));
+    }
+
+    private IEnumerator ReceiveMapWhenReady(
+        ZoneType[] zoneTypes,
+        ItemType[] chestItemTypes,
+        int[] chestAmounts,
+        int[] chestItemCounts,
+        Vector2Int[] positions)
+    {
+        // No procesar los datos hasta que el gestor y ambos jugadores existan.
+        while (MapManager.Instance == null ||
+               !MapManager.Instance.ArePlayersRegistered)
+        {
+            yield return null;
+        }
+
         MapManager.Instance.ReceiveMapFromServer(
             zoneTypes,
             chestItemTypes,
@@ -701,6 +756,5 @@ public enum PlayerState
     Inventory,
     Transitioning,
     Trading,
-    Crafting,
     EndGame
 }

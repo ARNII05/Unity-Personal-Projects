@@ -74,7 +74,7 @@ public class GrandmaUI : MonoBehaviour
     
     public void OpenPanel()
     {
-        player.State = PlayerState.GrandmaDialogueInteraction;
+        player.SetNewStateRpc(PlayerState.GrandmaDialogueInteraction);
 
         grandmaPanel.SetActive(true);
     }
@@ -90,7 +90,7 @@ public class GrandmaUI : MonoBehaviour
 
     public void CloseUI()
     {
-        player.State = PlayerState.Normal;
+        player.SetNewStateRpc(PlayerState.Normal);
         grandmaPanel.SetActive(false);
     }
 

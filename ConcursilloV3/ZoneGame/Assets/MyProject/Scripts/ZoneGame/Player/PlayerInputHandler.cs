@@ -21,7 +21,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (controls == null)
             return;
 
-        switch (player.State)
+        switch (player.State.Value)
         {
             case PlayerState.Normal:
                 HandleNormalInput();
@@ -66,7 +66,6 @@ public class PlayerInputHandler : MonoBehaviour
             case PlayerState.RabbitDialogueInteraction:
             case PlayerState.GrandmaDialogueInteraction:
             case PlayerState.Transitioning:
-            case PlayerState.Crafting:
             case PlayerState.EndGame:
                 break;
         }

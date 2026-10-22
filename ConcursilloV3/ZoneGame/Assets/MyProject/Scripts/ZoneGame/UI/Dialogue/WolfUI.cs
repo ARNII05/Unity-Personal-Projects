@@ -26,16 +26,16 @@ public class WolfUI : MonoBehaviour
 
     private void OpenUI()
     {
-        player.State = PlayerState.CaughtByWolf;
+        player.SetNewStateRpc(PlayerState.CaughtByWolf);
         
         wolfPanel.SetActive(true);
     }
 
     public void CloseUI()
     {
-        player.State = previousPlayerState;
+        player.SetNewStateRpc(previousPlayerState);
 
-        if (player.State == PlayerState.UsingRadar)
+        if (player.State.Value == PlayerState.UsingRadar)
             RadarUI.Instance.PlayVideoAndSound();
 
         wolfPanel.SetActive(false);
@@ -45,7 +45,8 @@ public class WolfUI : MonoBehaviour
     {
         this.player = player;
 
-        previousPlayerState = player.State == PlayerState.CaughtByWolf ? previousPlayerState : player.State;
+        previousPlayerState = player.State.Value == PlayerState.CaughtByWolf || player.State.Value == PlayerState.Transitioning 
+            ? previousPlayerState : player.State.Value;
 
         canStealItems.SetActive(false);
         cantStealItems.SetActive(false);
