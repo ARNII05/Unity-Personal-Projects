@@ -10,7 +10,7 @@ public class TradeUI : MonoBehaviour
 
     private Player player;
 
-    private TradeObjectsWithCoins tradeWithCoins;
+    public TradeObjectsWithCoins tradeWithCoins;
 
     private void Awake()
     {

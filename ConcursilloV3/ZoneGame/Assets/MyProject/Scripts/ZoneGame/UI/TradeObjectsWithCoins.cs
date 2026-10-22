@@ -6,22 +6,12 @@ using UnityEngine.UI;
 
 public class TradeObjectsWithCoins : MonoBehaviour
 {
-    private static WaitForSeconds _waitForSeconds1 = new WaitForSeconds(1f);
+    private static readonly WaitForSeconds _waitForSeconds3 = new(3f);
     [SerializeField] private GameObject tradePanel;
-
-    private const int flowerCost = 2;
-    private const int branchCost = 4;
-    private const int meatCost = 3;
-
-    private const int maxFlowers = 5;
-    private const int maxBranches = 5;
-    private const int maxMeats = 5;
-
-    private int flowersLeft = maxFlowers;
-    private int branchesLeft = maxBranches;
-    private int meatsLeft = maxMeats;
-
+    
     private int actualAmount = 1;
+
+    bool isWritingAdvice = false;
 
     private ItemType[] comercialItems = {ItemType.Flower, ItemType.Branch, ItemType.Meat, ItemType.None };
 
@@ -44,8 +34,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
         buyBoxItemsGrid = gridUI.transform.Find("ItemsGrid").gameObject;
         adviceText = buyBox.transform.Find("AdviceText").GetComponent<TextMeshProUGUI>();
 
-        UpdateComercialBox();
-        UpdateBuyBox();
+        UpdateUI();
     }
 
     public void Init(Player player)
@@ -55,7 +44,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
         tradePanel.SetActive(false);
         tradeObjectWithCoins.SetActive(false);
 
-        player.inventory.OnInventoryChanged += UpdateCoinsText;
+        player.inventory.OnInventoryChanged += UpdateUI;
     }
 
     public void OpenTrade()
@@ -63,8 +52,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
         tradePanel.SetActive(true);
         tradeObjectWithCoins.SetActive(true);
 
-        UpdateComercialBox();
-        UpdateBuyBox();
+        UpdateUI();
     }
     
     public void ClosePanel()
@@ -81,9 +69,14 @@ public class TradeObjectsWithCoins : MonoBehaviour
         UpdateBuyBox();
     }
 
-    private void UpdateCoinsText()
+    public void UpdateUI()
     {
+        if (!tradePanel.activeSelf)
+            return;
+        
         playerCoinsText.text = $"x{player.inventory.GetItemAmount(ItemType.Coin)}";
+        UpdateComercialBox();
+        UpdateBuyBox();
     }
 
     private void UpdateComercialBoxItemGrid(int index)
@@ -126,7 +119,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
 
         item.GetComponent<Image>().sprite = ItemVault.GetItemSprite(selectedItem);
         item.GetComponentInChildren<TextMeshProUGUI>().text = $"x{actualAmount}";
-        coin.GetComponentInChildren<TextMeshProUGUI>().text = $"x{actualAmount * GetItemPrice(selectedItem)}";
+        coin.GetComponentInChildren<TextMeshProUGUI>().text = $"x{actualAmount * PurchaseSystem.Instance.GetItemPrice(selectedItem)}";
 
         UpdateBuyButton();
     }
@@ -137,36 +130,49 @@ public class TradeObjectsWithCoins : MonoBehaviour
         Button buyButton = canvasGroup.transform.Find("BuyButton").GetComponent<Button>();
         GameObject lockObj = buyBox.transform.Find("ButtonUI").Find("Lock").gameObject;
 
-        bool hasEnoughCoins = player.inventory.GetItemAmount(ItemType.Coin) >= GetItemPrice(selectedItem) * actualAmount;
-        bool hasEnoughAmount = GetAmountLeft(selectedItem) >= actualAmount;
-        bool hasSpaceInInventory = player.inventory.HasSpaceForItem(selectedItem);
+        PurchaseResult purchaseResult = PurchaseSystem.Instance.CanBuyItem(selectedItem, actualAmount, player);
 
-        bool canBuyObject = hasEnoughCoins && hasEnoughAmount && hasSpaceInInventory;
+        bool canBuyObject = purchaseResult == PurchaseResult.Success;
 
         lockObj.SetActive(!canBuyObject);
 
         canvasGroup.alpha = canBuyObject ? 1f : 0.4f;
         buyButton.interactable = canBuyObject;
-
-        if (!canBuyObject)
-            StartCoroutine(WriteOnAdviceText(hasSpaceInInventory, hasEnoughCoins, hasEnoughAmount));
     }
 
-    private IEnumerator WriteOnAdviceText(bool hasSpaceInInventory, bool hasEnoughCoins, bool hasEnoughAmount)
+    public void BuyItem()
     {
-        adviceText.gameObject.SetActive(true);
+        PurchaseResult purchaseResult = PurchaseSystem.Instance.CanBuyItem(selectedItem, actualAmount, player);
 
-        adviceText.text = (hasSpaceInInventory, hasEnoughCoins, hasEnoughAmount) switch
+        if (purchaseResult != PurchaseResult.Success)
+            return;
+        
+        player.PurchaseItemRpc(selectedItem, actualAmount);
+    }
+
+    public IEnumerator WriteOnAdviceText(PurchaseResult purchaseResult)
+    {
+        if (isWritingAdvice)
+            yield break;
+
+        isWritingAdvice = true;
+
+        adviceText.text = (purchaseResult) switch
         {
-            (false, _, _) => "Sin espacio en el inventario",
-            (true, false, _) => "No tienes monedas suficientes",
-            (true, true, false) => "No hay stock suficiente",
-            _ => ""
+            (PurchaseResult.InventoryFull) => "Sin espacio en el inventario",
+            (PurchaseResult.NotEnoughCoins) => "No tienes monedas suficientes",
+            (PurchaseResult.OutOfStock) => "No hay stock suficiente",
+            (PurchaseResult.InvalidAmount) => "Cantidad inválida",
+            (PurchaseResult.Success) => "Se ha completado la compra",
+            _ => "Ha ocurrido un error"
         };
 
-        yield return _waitForSeconds1;
+        adviceText.gameObject.SetActive(true);
+
+        yield return _waitForSeconds3;
 
         adviceText.gameObject.SetActive(false);
+        isWritingAdvice = false;
     }
 
     private void UpdateComercialBox()
@@ -181,8 +187,8 @@ public class TradeObjectsWithCoins : MonoBehaviour
             if (background != null)
                 background.SetActive(false);
             
-            maxItemAmount.text = $"x{GetAmountLeft(itemType)}";
-            itemCost.text = $"x{GetItemPrice(itemType)}";
+            maxItemAmount.text = $"x{PurchaseSystem.Instance.GetAmountLeft(itemType)}";
+            itemCost.text = $"x{PurchaseSystem.Instance.GetItemPrice(itemType)}";
         }
     }
 
@@ -191,7 +197,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
         if (selectedItem == ItemType.None)
             return;
 
-        int amountLeft = GetAmountLeft(selectedItem);
+        int amountLeft = PurchaseSystem.Instance.GetAmountLeft(selectedItem);
 
         if (amountLeft == 0 || actualAmount >= amountLeft)
             return;
@@ -212,27 +218,5 @@ public class TradeObjectsWithCoins : MonoBehaviour
         actualAmount--;
 
         UpdateBuyBox();
-    }
-
-    private int GetItemPrice(ItemType item)
-    {
-        return item switch
-        {
-            ItemType.Flower => flowerCost,
-            ItemType.Branch => branchCost,
-            ItemType.Meat => meatCost,
-            _ => 0
-        };
-    }
-
-    private int GetAmountLeft(ItemType item)
-    {
-        return item switch
-        {
-            ItemType.Flower => flowersLeft,
-            ItemType.Branch => branchesLeft,
-            ItemType.Meat => meatsLeft,
-            _ => 0
-        };
     }
 }

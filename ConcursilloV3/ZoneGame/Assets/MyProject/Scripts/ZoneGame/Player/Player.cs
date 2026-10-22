@@ -1,9 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 [RequireComponent(typeof(CraftingSystem))]
 [RequireComponent(typeof(OtherPlayerVisual))]
@@ -133,6 +133,31 @@ public class Player : NetworkBehaviour
     public void SetNewStateRpc(PlayerState newState)
     {
         State.Value = newState;
+    }
+
+    [Rpc(SendTo.Server)]
+    public void PurchaseItemRpc(ItemType item, int actualAmount)
+    {
+        PurchaseResult result = PurchaseSystem.Instance.BuyItem(item, actualAmount, this);
+
+        if (result == PurchaseResult.Success)
+            PurchaseSystem.Instance.UpdateStock(item, actualAmount);
+
+        PurchaseItemClientRpc(result, item, actualAmount);
+
+        SetInventory();
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void PurchaseItemClientRpc(PurchaseResult result, ItemType item, int actualAmount)
+    {
+        if (result == PurchaseResult.Success && !IsServer)
+            PurchaseSystem.Instance.UpdateStock(item, actualAmount);
+
+        TradeUI.Instance.tradeWithCoins.UpdateUI();
+
+        if (IsOwner)
+            StartCoroutine(TradeUI.Instance.tradeWithCoins.WriteOnAdviceText(result));
     }
 
     [Rpc(SendTo.Server)]
@@ -565,11 +590,10 @@ public class Player : NetworkBehaviour
         }
 
         inventory.AddItem(ItemType.Meat, 1);
+        inventory.AddItem(ItemType.Coin, 99);
         /*
         inventory.AddItem(ItemType.Bouquet, 7);
         inventory.AddItem(ItemType.Log, 7);
-        
-        inventory.AddItem(ItemType.Coin, 7);
         */
     }
 
