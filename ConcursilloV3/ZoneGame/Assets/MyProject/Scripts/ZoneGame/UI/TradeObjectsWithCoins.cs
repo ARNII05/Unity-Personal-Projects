@@ -10,10 +10,9 @@ public class TradeObjectsWithCoins : MonoBehaviour
     [SerializeField] private GameObject tradePanel;
     
     private int actualAmount = 1;
+    private Coroutine adviceCoroutine;
 
-    bool isWritingAdvice = false;
-
-    private ItemType[] comercialItems = {ItemType.Flower, ItemType.Branch, ItemType.Meat, ItemType.None };
+    private readonly ItemType[] comercialItems = {ItemType.Flower, ItemType.Branch, ItemType.Meat, ItemType.None };
 
     private ItemType selectedItem = ItemType.None;
 
@@ -34,7 +33,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
         buyBoxItemsGrid = gridUI.transform.Find("ItemsGrid").gameObject;
         adviceText = buyBox.transform.Find("AdviceText").GetComponent<TextMeshProUGUI>();
 
-        UpdateUI();
+        adviceText.text = "";
     }
 
     public void Init(Player player)
@@ -43,8 +42,6 @@ public class TradeObjectsWithCoins : MonoBehaviour
 
         tradePanel.SetActive(false);
         tradeObjectWithCoins.SetActive(false);
-
-        player.inventory.OnInventoryChanged += UpdateUI;
     }
 
     public void OpenTrade()
@@ -69,13 +66,20 @@ public class TradeObjectsWithCoins : MonoBehaviour
         UpdateBuyBox();
     }
 
-    public void UpdateUI()
+    public void DeselectItem()
+    {
+        actualAmount = 1;
+        selectedItem = ItemType.None;
+        gridUI.SetActive(false);
+    }
+
+    public void UpdateUI(bool callingInRpc = false)
     {
         if (!tradePanel.activeSelf)
             return;
         
         playerCoinsText.text = $"x{player.inventory.GetItemAmount(ItemType.Coin)}";
-        UpdateComercialBox();
+        UpdateComercialBox(callingInRpc);
         UpdateBuyBox();
     }
 
@@ -86,20 +90,41 @@ public class TradeObjectsWithCoins : MonoBehaviour
             GameObject background = child.Find("Background").gameObject;
 
             if (background == null)
-                return;
+                continue;
 
             background.SetActive(false);
         }
 
         ItemType newSelection = comercialItems[index];
 
-        GameObject actualChild = comercialBoxItemsGrid.transform.GetChild(index).gameObject;
-        GameObject actualBackground = actualChild.transform.Find("Background").gameObject;
-
         bool wasSameItem = selectedItem == newSelection;
 
         selectedItem = wasSameItem ? ItemType.None : newSelection;
+
+        if (newSelection == ItemType.None)
+            return;
+
+        GameObject actualChild = comercialBoxItemsGrid.transform.GetChild(index).gameObject;
+        GameObject actualBackground = actualChild.transform.Find("Background").gameObject;
+
         actualBackground.SetActive(!wasSameItem);
+    }
+
+    private void UpdateComercialBox(bool callingInRpc = false)
+    {
+        foreach (Transform child in comercialBoxItemsGrid.transform)
+        {
+            ItemType itemType = (ItemType)Enum.Parse(typeof(ItemType), child.name);
+            TextMeshProUGUI maxItemAmount = child.Find("MaxAmount").GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI itemCost = child.Find("Coin").GetComponentInChildren<TextMeshProUGUI>();
+            GameObject background = child.Find("Background").gameObject;
+
+            if (background != null && !callingInRpc)
+                background.SetActive(false);
+
+            maxItemAmount.text = $"x{PurchaseSystem.Instance.GetAmountLeft(itemType)}";
+            itemCost.text = $"x{PurchaseSystem.Instance.GetItemPrice(itemType)}";
+        }
     }
 
     private void UpdateBuyBox()
@@ -138,6 +163,48 @@ public class TradeObjectsWithCoins : MonoBehaviour
 
         canvasGroup.alpha = canBuyObject ? 1f : 0.4f;
         buyButton.interactable = canBuyObject;
+
+        WriteOnAdviceText(purchaseResult);
+    }
+
+    public void WriteOnAdviceText(
+        PurchaseResult purchaseResult,
+        bool callingInRpc = false)
+    {
+        string newMessage = purchaseResult switch
+        {
+            PurchaseResult.InventoryFull => "Sin espacio en el inventario",
+            PurchaseResult.NotEnoughCoins => "No tienes monedas suficientes",
+            PurchaseResult.OutOfStock => "No hay stock suficiente",
+            PurchaseResult.InvalidAmount => "Cantidad inválida",
+            PurchaseResult.Success => callingInRpc ? "Se ha completado la compra" : "",
+            _ => "Ha ocurrido un error"
+        };
+
+        if (adviceCoroutine != null)
+        {
+            StopCoroutine(adviceCoroutine);
+            adviceCoroutine = null;
+        }
+
+        if (string.IsNullOrEmpty(newMessage))
+        {
+            adviceText.gameObject.SetActive(false);
+            return;
+        }
+
+        adviceText.text = newMessage;
+        adviceText.gameObject.SetActive(true);
+
+        adviceCoroutine = StartCoroutine(HideAdviceText());
+    }
+
+    private IEnumerator HideAdviceText()
+    {
+        yield return _waitForSeconds3;
+        
+        adviceText.gameObject.SetActive(false);
+        adviceCoroutine = null;
     }
 
     public void BuyItem()
@@ -150,57 +217,18 @@ public class TradeObjectsWithCoins : MonoBehaviour
         player.PurchaseItemRpc(selectedItem, actualAmount);
     }
 
-    public IEnumerator WriteOnAdviceText(PurchaseResult purchaseResult)
-    {
-        if (isWritingAdvice)
-            yield break;
-
-        isWritingAdvice = true;
-
-        adviceText.text = (purchaseResult) switch
-        {
-            (PurchaseResult.InventoryFull) => "Sin espacio en el inventario",
-            (PurchaseResult.NotEnoughCoins) => "No tienes monedas suficientes",
-            (PurchaseResult.OutOfStock) => "No hay stock suficiente",
-            (PurchaseResult.InvalidAmount) => "Cantidad inválida",
-            (PurchaseResult.Success) => "Se ha completado la compra",
-            _ => "Ha ocurrido un error"
-        };
-
-        adviceText.gameObject.SetActive(true);
-
-        yield return _waitForSeconds3;
-
-        adviceText.gameObject.SetActive(false);
-        isWritingAdvice = false;
-    }
-
-    private void UpdateComercialBox()
-    {
-        foreach (Transform child in comercialBoxItemsGrid.transform)
-        {
-            ItemType itemType = (ItemType)Enum.Parse(typeof(ItemType), child.name);
-            TextMeshProUGUI maxItemAmount = child.Find("MaxAmount").GetComponent<TextMeshProUGUI>();
-            TextMeshProUGUI itemCost = child.Find("Coin").GetComponentInChildren<TextMeshProUGUI>();
-            GameObject background = child.Find("Background").gameObject;
-
-            if (background != null)
-                background.SetActive(false);
-            
-            maxItemAmount.text = $"x{PurchaseSystem.Instance.GetAmountLeft(itemType)}";
-            itemCost.text = $"x{PurchaseSystem.Instance.GetItemPrice(itemType)}";
-        }
-    }
-
     public void SumAmount()
     {
         if (selectedItem == ItemType.None)
             return;
 
-        int amountLeft = PurchaseSystem.Instance.GetAmountLeft(selectedItem);
+        PurchaseResult purchaseResult = PurchaseSystem.Instance.CanBuyItem(selectedItem, actualAmount, player);
 
-        if (amountLeft == 0 || actualAmount >= amountLeft)
+        if (purchaseResult != PurchaseResult.Success)
+        {
+            WriteOnAdviceText(purchaseResult);
             return;
+        }
 
         actualAmount++;
 

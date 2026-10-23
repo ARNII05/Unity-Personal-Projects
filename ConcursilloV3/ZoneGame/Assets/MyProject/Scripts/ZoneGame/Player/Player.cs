@@ -151,13 +151,18 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     private void PurchaseItemClientRpc(PurchaseResult result, ItemType item, int actualAmount)
     {
-        if (result == PurchaseResult.Success && !IsServer)
+        bool purchaseIsASuccess = result == PurchaseResult.Success;
+
+        if (purchaseIsASuccess && !IsServer)
             PurchaseSystem.Instance.UpdateStock(item, actualAmount);
 
-        TradeUI.Instance.tradeWithCoins.UpdateUI();
+        TradeUI.Instance.tradeWithCoins.UpdateUI(true);
 
         if (IsOwner)
-            StartCoroutine(TradeUI.Instance.tradeWithCoins.WriteOnAdviceText(result));
+        {
+            TradeUI.Instance.tradeWithCoins.WriteOnAdviceText(result, true);
+            //TradeUI.Instance.tradeWithCoins.DeselectItem();
+        }
     }
 
     [Rpc(SendTo.Server)]
@@ -591,10 +596,8 @@ public class Player : NetworkBehaviour
 
         inventory.AddItem(ItemType.Meat, 1);
         inventory.AddItem(ItemType.Coin, 99);
-        /*
         inventory.AddItem(ItemType.Bouquet, 7);
         inventory.AddItem(ItemType.Log, 7);
-        */
     }
 
     [Rpc(SendTo.Owner)]
