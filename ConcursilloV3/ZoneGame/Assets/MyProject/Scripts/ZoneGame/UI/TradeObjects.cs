@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TradeObjectsWithCoins : MonoBehaviour
+public class TradeObjects : MonoBehaviour
 {
     private static readonly WaitForSeconds _waitForSeconds3 = new(3f);
     [SerializeField] private GameObject tradePanel;
@@ -16,19 +16,24 @@ public class TradeObjectsWithCoins : MonoBehaviour
 
     private ItemType selectedItem = ItemType.None;
 
-    private GameObject tradeObjectWithCoins, comercialBox,
+    private GameObject comercialBox,
         comercialBoxItemsGrid, buyBox, gridUI, buyBoxItemsGrid;
-    private TextMeshProUGUI playerCoinsText, adviceText;
+    private TextMeshProUGUI playerCoinsText, adviceText, shopText;
+
+    private Button tradeButton;
 
     private Player player;
 
+    private TradeMode tradeMode; 
+
     private void Awake()
     {
-        tradeObjectWithCoins = tradePanel.transform.Find("TradeObjectsWithCoins").gameObject;
-        playerCoinsText = tradeObjectWithCoins.transform.Find("PlayerCoins").GetComponentInChildren<TextMeshProUGUI>();
-        comercialBox = tradeObjectWithCoins.transform.Find("ComercialBox").gameObject;
+        shopText = tradePanel.transform.Find("TextPanel").GetComponentInChildren<TextMeshProUGUI>();
+        playerCoinsText = tradePanel.transform.Find("PlayerCoins").GetComponentInChildren<TextMeshProUGUI>();
+        comercialBox = tradePanel.transform.Find("ComercialBox").gameObject;
         comercialBoxItemsGrid = comercialBox.transform.Find("ItemsGrid").gameObject;
         buyBox = comercialBox.transform.Find("BuyBox").gameObject;
+        tradeButton = buyBox.transform.Find("ButtonUI").Find("CanvasGroup").Find("BuyButton").GetComponent<Button>();
         gridUI = buyBox.transform.Find("GridUI").gameObject;
         buyBoxItemsGrid = gridUI.transform.Find("ItemsGrid").gameObject;
         adviceText = buyBox.transform.Find("AdviceText").GetComponent<TextMeshProUGUI>();
@@ -41,21 +46,36 @@ public class TradeObjectsWithCoins : MonoBehaviour
         this.player = player;
 
         tradePanel.SetActive(false);
-        tradeObjectWithCoins.SetActive(false);
+        tradePanel.SetActive(false);
     }
 
-    public void OpenTrade()
+    public void OpenTrade(TradeMode tradeMode)
     {
         tradePanel.SetActive(true);
-        tradeObjectWithCoins.SetActive(true);
+        tradePanel.SetActive(true);
+        this.tradeMode = tradeMode;
+
+        shopText.text = tradeMode switch
+        {
+            TradeMode.Buy => "Comprar objetos",
+            _ => "Vender objetos"
+        };
+
+        tradeButton.transform.GetComponentInChildren<TextMeshProUGUI>().text = tradeMode switch
+        {
+            TradeMode.Buy => "Comprar",
+            _ => "Vender"
+        };
 
         UpdateUI();
     }
     
     public void ClosePanel()
     {
+        selectedItem = ItemType.None;
+        
         tradePanel.SetActive(false);
-        tradeObjectWithCoins.SetActive(false);
+        tradePanel.SetActive(false);
     }
 
     public void SelectItem(int index)
@@ -122,7 +142,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
             if (background != null && !callingInRpc)
                 background.SetActive(false);
 
-            maxItemAmount.text = $"x{PurchaseSystem.Instance.GetAmountLeft(itemType)}";
+            maxItemAmount.text = $"x{PurchaseSystem.Instance.GetAmountLeft(itemType, tradeMode)}";
             itemCost.text = $"x{PurchaseSystem.Instance.GetItemPrice(itemType)}";
         }
     }
@@ -155,7 +175,7 @@ public class TradeObjectsWithCoins : MonoBehaviour
         Button buyButton = canvasGroup.transform.Find("BuyButton").GetComponent<Button>();
         GameObject lockObj = buyBox.transform.Find("ButtonUI").Find("Lock").gameObject;
 
-        PurchaseResult purchaseResult = PurchaseSystem.Instance.CanBuyItem(selectedItem, actualAmount, player);
+        PurchaseResult purchaseResult = GetPurchaseResult();
 
         bool canBuyObject = purchaseResult == PurchaseResult.Success;
 
@@ -174,10 +194,10 @@ public class TradeObjectsWithCoins : MonoBehaviour
         string newMessage = purchaseResult switch
         {
             PurchaseResult.InventoryFull => "Sin espacio en el inventario",
-            PurchaseResult.NotEnoughCoins => "No tienes monedas suficientes",
             PurchaseResult.OutOfStock => "No hay stock suficiente",
             PurchaseResult.InvalidAmount => "Cantidad inválida",
             PurchaseResult.Success => callingInRpc ? "Se ha completado la compra" : "",
+            PurchaseResult.NotEnoughItems => "No tienes objetos suficientes",
             _ => "Ha ocurrido un error"
         };
 
@@ -207,14 +227,17 @@ public class TradeObjectsWithCoins : MonoBehaviour
         adviceCoroutine = null;
     }
 
-    public void BuyItem()
+    public void TradeItem()
     {
-        PurchaseResult purchaseResult = PurchaseSystem.Instance.CanBuyItem(selectedItem, actualAmount, player);
+        PurchaseResult purchaseResult = GetPurchaseResult();
 
         if (purchaseResult != PurchaseResult.Success)
             return;
-        
-        player.PurchaseItemRpc(selectedItem, actualAmount);
+
+        ItemType itemToRemove = tradeMode == TradeMode.Buy ? ItemType.Coin : selectedItem;
+        ItemType itemToAdd = tradeMode == TradeMode.Buy ? selectedItem : ItemType.Coin;
+
+        player.TradeItemRpc(selectedItem, itemToAdd, itemToRemove, actualAmount, tradeMode);
     }
 
     public void SumAmount()
@@ -222,16 +245,17 @@ public class TradeObjectsWithCoins : MonoBehaviour
         if (selectedItem == ItemType.None)
             return;
 
-        PurchaseResult purchaseResult = PurchaseSystem.Instance.CanBuyItem(selectedItem, actualAmount, player);
+        actualAmount++;
+
+        PurchaseResult purchaseResult = GetPurchaseResult();
 
         if (purchaseResult != PurchaseResult.Success)
         {
+            actualAmount--;
             WriteOnAdviceText(purchaseResult);
             return;
         }
-
-        actualAmount++;
-
+            
         UpdateBuyBox();
     }
 
@@ -246,5 +270,13 @@ public class TradeObjectsWithCoins : MonoBehaviour
         actualAmount--;
 
         UpdateBuyBox();
+    }
+
+    private PurchaseResult GetPurchaseResult()
+    {
+        ItemType itemToRemove = tradeMode == TradeMode.Buy ? ItemType.Coin : selectedItem;
+        ItemType itemToAdd = tradeMode == TradeMode.Buy ? selectedItem : ItemType.Coin;
+
+        return PurchaseSystem.Instance.CanTradeItem(selectedItem, itemToAdd, itemToRemove, actualAmount, tradeMode, player);
     }
 }

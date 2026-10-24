@@ -136,31 +136,31 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void PurchaseItemRpc(ItemType item, int actualAmount)
+    public void TradeItemRpc(ItemType item, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode)
     {
-        PurchaseResult result = PurchaseSystem.Instance.BuyItem(item, actualAmount, this);
-
-        if (result == PurchaseResult.Success)
-            PurchaseSystem.Instance.UpdateStock(item, actualAmount);
-
-        PurchaseItemClientRpc(result, item, actualAmount);
+        PurchaseResult result = PurchaseSystem.Instance.TradeItem(item, itemToAdd, itemToRemove, actualAmount, tradeMode, this);
 
         SetInventory();
+
+        if (result == PurchaseResult.Success)
+            PurchaseSystem.Instance.UpdateStock(tradeMode, item, actualAmount);
+
+        TradeItemClientRpc(result, item, actualAmount, tradeMode);
     }
 
     [Rpc(SendTo.Everyone)]
-    private void PurchaseItemClientRpc(PurchaseResult result, ItemType item, int actualAmount)
+    private void TradeItemClientRpc(PurchaseResult result, ItemType item, int actualAmount, TradeMode tradeMode)
     {
         bool purchaseIsASuccess = result == PurchaseResult.Success;
 
         if (purchaseIsASuccess && !IsServer)
-            PurchaseSystem.Instance.UpdateStock(item, actualAmount);
+            PurchaseSystem.Instance.UpdateStock(tradeMode, item, actualAmount);
 
-        TradeUI.Instance.tradeWithCoins.UpdateUI(true);
+        TradeUI.Instance.tradeObjects.UpdateUI(true);
 
         if (IsOwner)
         {
-            TradeUI.Instance.tradeWithCoins.WriteOnAdviceText(result, true);
+            TradeUI.Instance.tradeObjects.WriteOnAdviceText(result, true);
             //TradeUI.Instance.tradeWithCoins.DeselectItem();
         }
     }
@@ -593,11 +593,15 @@ public class Player : NetworkBehaviour
             inventory.AddItem(ItemType.Map, 1);
             MapUI.Instance.Init(this);
         }
-
+        
         inventory.AddItem(ItemType.Meat, 1);
+
+        /*
         inventory.AddItem(ItemType.Coin, 99);
-        inventory.AddItem(ItemType.Bouquet, 7);
+        inventory.AddItem(ItemType.Branch, 99);
+        inventory.AddItem(ItemType.Flower, 99);
         inventory.AddItem(ItemType.Log, 7);
+        */
     }
 
     [Rpc(SendTo.Owner)]

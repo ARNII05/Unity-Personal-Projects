@@ -12,9 +12,13 @@ public class PurchaseSystem : MonoBehaviour
     public const int maxBranches = 5;
     public const int maxMeats = 5;
 
-    private int flowersLeft = maxFlowers;
-    private int branchesLeft = maxBranches;
-    private int meatsLeft = maxMeats;
+    private int buyingFlowersLeft = maxFlowers;
+    private int buyingBranchesLeft = maxBranches;
+    private int buyingMeatsLeft = maxMeats;
+
+    private int sellingFlowersLeft = maxFlowers;
+    private int sellingBranchesLeft = maxBranches;
+    private int sellingMeatsLeft = maxMeats;
 
     private void Awake()
     {
@@ -27,50 +31,67 @@ public class PurchaseSystem : MonoBehaviour
         Instance = this;
     }
 
-    public PurchaseResult CanBuyItem(ItemType item, int actualAmount, Player player)
+    public PurchaseResult CanTradeItem(ItemType itemToPrice, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode, Player player)
     {
-        if (item == ItemType.None || actualAmount <= 0)
+        if (itemToPrice == ItemType.None || itemToRemove == ItemType.None || itemToAdd == ItemType.None || actualAmount <= 0)
             return PurchaseResult.Error;
 
-        bool hasEnoughCoins = player.inventory.GetItemAmount(ItemType.Coin) >= GetItemPrice(item) * actualAmount;
-        bool hasEnoughAmount = GetAmountLeft(item) >= actualAmount;
-        bool hasSpaceInInventory = player.inventory.HasSpaceForItem(item);
+        bool hasEnoughItems = player.inventory.GetItemAmount(itemToRemove) >= GetItemPrice(itemToPrice) * actualAmount;
+        bool hasEnoughAmount = GetAmountLeft(itemToPrice, tradeMode) >= actualAmount;
+        bool hasSpaceInInventory = tradeMode == TradeMode.Sell ||
+            player.inventory.HasSpaceForItem(itemToAdd);
 
-        return (hasSpaceInInventory, hasEnoughCoins, hasEnoughAmount) switch
+        return (hasSpaceInInventory, hasEnoughItems, hasEnoughAmount) switch
         {
             (false, _, _) => PurchaseResult.InventoryFull,
-            (true, false, _) => PurchaseResult.NotEnoughCoins,
+            (true, false, _) => PurchaseResult.NotEnoughItems,
             (true, true, false) => PurchaseResult.OutOfStock,
             _ => PurchaseResult.Success
         };
     }
 
-    public PurchaseResult BuyItem(ItemType item, int actualAmount, Player player)
+    public PurchaseResult TradeItem(ItemType item, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode, Player player)
     {
-        PurchaseResult purchaseResult = CanBuyItem(item, actualAmount, player);
+        PurchaseResult purchaseResult = CanTradeItem(item, itemToAdd, itemToRemove, actualAmount, tradeMode, player);
         
         if (purchaseResult != PurchaseResult.Success)
             return purchaseResult;
 
-        int coinsToRemove = GetItemPrice(item) * actualAmount;
+        int amountToRemove = itemToRemove == ItemType.Coin ? GetItemPrice(item) * actualAmount : actualAmount;
+        int amountToAdd = itemToAdd == ItemType.Coin ? GetItemPrice(item) * actualAmount : actualAmount;
 
-        if (!player.inventory.RemoveItem(ItemType.Coin, coinsToRemove))
+        if (!player.inventory.RemoveItem(itemToRemove, amountToRemove))
             return PurchaseResult.Error;
 
-        if (!player.inventory.AddItem(item, actualAmount))
+        if (!player.inventory.AddItem(itemToAdd, amountToAdd))
         {
-            if (!player.inventory.AddItem(ItemType.Coin, coinsToRemove))
+            if (!player.inventory.AddItem(itemToRemove, amountToRemove))
                 return PurchaseResult.Error;
         }
 
         return PurchaseResult.Success;
     }
 
-    public void UpdateStock(ItemType item, int actualAmount)
+    public void UpdateStock(TradeMode tradeMode, ItemType item, int actualAmount)
     {
-        flowersLeft = item == ItemType.Flower ? flowersLeft - actualAmount : flowersLeft;
-        branchesLeft = item == ItemType.Branch ? branchesLeft - actualAmount : branchesLeft;
-        meatsLeft = item == ItemType.Meat ? meatsLeft - actualAmount : meatsLeft;
+        if (tradeMode == TradeMode.Buy)
+            UpdateBuyStock(item, actualAmount);
+        else
+            UpdateSellStock(item, actualAmount);
+    }
+
+    private void UpdateBuyStock(ItemType item, int actualAmount)
+    {
+        buyingFlowersLeft = item == ItemType.Flower ? buyingFlowersLeft - actualAmount : buyingFlowersLeft;
+        buyingBranchesLeft = item == ItemType.Branch ? buyingBranchesLeft - actualAmount : buyingBranchesLeft;
+        buyingMeatsLeft = item == ItemType.Meat ? buyingMeatsLeft - actualAmount : buyingMeatsLeft;
+    }
+
+    private void UpdateSellStock(ItemType item, int actualAmount)
+    {
+        sellingFlowersLeft = item == ItemType.Flower ? sellingFlowersLeft - actualAmount : sellingFlowersLeft;
+        sellingBranchesLeft = item == ItemType.Branch ? sellingBranchesLeft - actualAmount : sellingBranchesLeft;
+        sellingMeatsLeft = item == ItemType.Meat ? sellingMeatsLeft - actualAmount : sellingMeatsLeft;
     }
 
     public int GetItemPrice(ItemType item)
@@ -84,13 +105,13 @@ public class PurchaseSystem : MonoBehaviour
         };
     }
 
-    public int GetAmountLeft(ItemType item)
+    public int GetAmountLeft(ItemType item, TradeMode tradeMode)
     {
         return item switch
         {
-            ItemType.Flower => flowersLeft,
-            ItemType.Branch => branchesLeft,
-            ItemType.Meat => meatsLeft,
+            ItemType.Flower => tradeMode == TradeMode.Buy ? buyingFlowersLeft : sellingFlowersLeft,
+            ItemType.Branch => tradeMode == TradeMode.Buy ? buyingBranchesLeft : sellingBranchesLeft,
+            ItemType.Meat => tradeMode == TradeMode.Buy ? buyingMeatsLeft : sellingMeatsLeft,
             _ => 0
         };
     }
@@ -101,7 +122,13 @@ public enum PurchaseResult
     Error,
     Success,
     InvalidAmount,
-    NotEnoughCoins,
+    NotEnoughItems,
     OutOfStock,
-    InventoryFull
+    InventoryFull,
+}
+
+public enum TradeMode
+{
+    Buy,
+    Sell
 }

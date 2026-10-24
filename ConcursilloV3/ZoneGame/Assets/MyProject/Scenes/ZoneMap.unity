@@ -2637,7 +2637,7 @@ RectTransform:
   - {fileID: 1159490495}
   - {fileID: 65384922}
   - {fileID: 406935162}
-  - {fileID: 611584730}
+  - {fileID: 1646500290}
   - {fileID: 161814885}
   - {fileID: 1612510534}
   - {fileID: 1404388687}
@@ -5606,7 +5606,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 237045994}
         m_TargetAssemblyTypeName: TradeObjectsWithCoins, Assembly-CSharp
-        m_MethodName: BuyItem
+        m_MethodName: TradeItem
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5783,7 +5783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd58faea3209a604dac7e7fa006500fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Trade
-  tradePanel: {fileID: 611584729}
+  tradePanel: {fileID: 1646500289}
 --- !u!224 &237045996
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5816,7 +5816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TradeUI
   tradeDialogue: {fileID: 2073040021}
-  tradeWithCoins: {fileID: 0}
+  tradeObjects: {fileID: 0}
 --- !u!1 &237305981
 GameObject:
   m_ObjectHideFlags: 0
@@ -5868,7 +5868,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6618,11 +6618,11 @@ MonoBehaviour:
       - m_Target: {fileID: 237045997}
         m_TargetAssemblyTypeName: TradeUI, Assembly-CSharp
         m_MethodName: OpenTradeObjects
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -10100,7 +10100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -11938,43 +11938,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595157851}
   m_CullTransparentMesh: 1
---- !u!1 &611584729
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 611584730}
-  m_Layer: 5
-  m_Name: TradePanel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &611584730
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 611584729}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1646500290}
-  - {fileID: 1814422802}
-  m_Father: {fileID: 121941804}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &612385468
 GameObject:
   m_ObjectHideFlags: 0
@@ -13007,8 +12970,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 237045997}
         m_TargetAssemblyTypeName: TradeUI, Assembly-CSharp
-        m_MethodName: OpenTradeObjectsWithCoins
-        m_Mode: 1
+        m_MethodName: OpenTradeObjects
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -15465,7 +15428,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -17727,7 +17690,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.7677, y: 4.7775}
+  m_AnchoredPosition: {x: -1.7677, y: 11.2775}
   m_SizeDelta: {x: 175.8745, y: 105.3551}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &885409336
@@ -17750,7 +17713,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Intercambiar objetos
+  m_text: Vender objetos
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 45d5eca9a2960774db127d5a81a8898b, type: 2}
   m_sharedMaterial: {fileID: 1716754388878471839, guid: 45d5eca9a2960774db127d5a81a8898b, type: 2}
@@ -17777,7 +17740,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
+  m_fontSize: 41.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -29288,12 +29251,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1646500290}
   m_Layer: 5
-  m_Name: TradeObjectsWithCoins
+  m_Name: TradePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1646500290
 RectTransform:
   m_ObjectHideFlags: 0
@@ -29301,7 +29264,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1646500289}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -29311,7 +29274,7 @@ RectTransform:
   - {fileID: 1268929323}
   - {fileID: 2053934640}
   - {fileID: 442496251}
-  m_Father: {fileID: 611584730}
+  m_Father: {fileID: 121941804}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -31832,41 +31795,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 3
   toWho: 0
---- !u!1 &1814422801
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1814422802}
-  m_Layer: 5
-  m_Name: TradeObjects
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1814422802
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1814422801}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 611584730}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1817992933
 GameObject:
   m_ObjectHideFlags: 0
@@ -37018,8 +36946,8 @@ RectTransform:
   - {fileID: 978599868}
   - {fileID: 701832139}
   - {fileID: 1557444413}
-  - {fileID: 281237574}
   - {fileID: 650380590}
+  - {fileID: 281237574}
   - {fileID: 231047693}
   m_Father: {fileID: 161814885}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

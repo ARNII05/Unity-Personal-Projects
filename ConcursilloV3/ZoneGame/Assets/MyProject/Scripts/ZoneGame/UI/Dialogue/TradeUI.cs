@@ -1,7 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
-[RequireComponent(typeof(TradeObjectsWithCoins))]
+[RequireComponent(typeof(TradeObjects))]
 public class TradeUI : MonoBehaviour
 {
     [SerializeField] private GameObject tradeDialogue;
@@ -10,7 +10,7 @@ public class TradeUI : MonoBehaviour
 
     private Player player;
 
-    public TradeObjectsWithCoins tradeWithCoins;
+    public TradeObjects tradeObjects;
 
     private void Awake()
     {
@@ -22,7 +22,7 @@ public class TradeUI : MonoBehaviour
 
         Instance = this;
 
-        tradeWithCoins = GetComponent<TradeObjectsWithCoins>();
+        tradeObjects = GetComponent<TradeObjects>();
     }
 
     void Start()
@@ -33,7 +33,7 @@ public class TradeUI : MonoBehaviour
     public void Init(Player player)
     {
         this.player = player;
-        tradeWithCoins.Init(player);
+        tradeObjects.Init(player);
     }
 
     public void OpenUI()
@@ -47,19 +47,14 @@ public class TradeUI : MonoBehaviour
     {
         tradeDialogue.SetActive(false);
 
-        tradeWithCoins.ClosePanel();
+        tradeObjects.ClosePanel();
 
         player.SetNewStateRpc(PlayerState.Normal);
     }
 
-    public void OpenTradeObjectsWithCoins()
+    public void OpenTradeObjects(int type)
     {
         tradeDialogue.SetActive(false);
-        tradeWithCoins.OpenTrade();
-    }
-
-    public void OpenTradeObjects()
-    {
-        tradeDialogue.SetActive(false);
+        tradeObjects.OpenTrade(type == 0 ? TradeMode.Buy : TradeMode.Sell);
     }
 }
