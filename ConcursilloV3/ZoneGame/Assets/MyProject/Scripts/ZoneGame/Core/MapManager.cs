@@ -429,7 +429,10 @@ public class MapManager : MonoBehaviour
 
         if (player.IsOwner)
         {
-            chests[0].chestUI.SetInventory(zoneData.chestInventory);
+            if (chests.Length > 0)
+                chests[0].chestUI.SetInventory(
+                    zoneData.chestInventory);
+
             player.discoveredZones.Add(position);
         }
 

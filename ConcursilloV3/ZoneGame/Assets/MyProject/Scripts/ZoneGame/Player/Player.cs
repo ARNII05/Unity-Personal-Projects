@@ -168,6 +168,9 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void RiverInteractionServerRpc(Vector2Int pos)
     {
+        if (pos != NetworkMapPos.Value)
+            return;
+
         if (MapManager.Instance.map[pos.y, pos.x].type != ZoneType.HorizontalRiver &&
             MapManager.Instance.map[pos.y, pos.x].type != ZoneType.VerticalRiver)
             return;

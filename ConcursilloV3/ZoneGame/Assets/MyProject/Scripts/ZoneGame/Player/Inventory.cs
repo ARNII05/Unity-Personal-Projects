@@ -40,6 +40,23 @@ public class Inventory
         return items.ContainsKey(itemType) || items.Count < maxCapacity;
     }
 
+    public bool HasSpaceAfterRemovingItem(
+        ItemType itemToRemove,
+        int amountToRemove,
+        ItemType itemToAdd)
+    {
+        bool alreadyHasItem = items.ContainsKey(itemToAdd);
+
+        if (alreadyHasItem)
+            return true;
+
+        int remainingAmount = GetItemAmount(itemToRemove) - amountToRemove;
+
+        bool freesSlot = remainingAmount <= 0;
+
+        return items.Count - (freesSlot ? 1 : 0) < maxCapacity;
+    }
+
     public int GetItemAmount(ItemType itemType)
     {
         return items.TryGetValue(itemType, out int amount) ? amount : 0;

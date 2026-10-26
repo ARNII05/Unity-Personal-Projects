@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class PurchaseSystem : MonoBehaviour
 {
@@ -36,10 +37,27 @@ public class PurchaseSystem : MonoBehaviour
         if (itemToPrice == ItemType.None || itemToRemove == ItemType.None || itemToAdd == ItemType.None || actualAmount <= 0)
             return PurchaseResult.Error;
 
-        bool hasEnoughItems = player.inventory.GetItemAmount(itemToRemove) >= GetItemPrice(itemToPrice) * actualAmount;
+        if (tradeMode != TradeMode.Buy && tradeMode != TradeMode.Sell)
+            return PurchaseResult.Error;
+
+        if (!ItemToPriceIsValid(itemToPrice) || !ItemsSendedAreValid(itemToPrice, itemToAdd, itemToRemove, tradeMode))
+            return PurchaseResult.Error;
+
+        int amountToRemove = itemToRemove == ItemType.Coin
+            ? GetItemPrice(itemToPrice) * actualAmount
+            : actualAmount;
+
+        bool hasEnoughItems =
+            player.inventory.GetItemAmount(itemToRemove) >= amountToRemove;
         bool hasEnoughAmount = GetAmountLeft(itemToPrice, tradeMode) >= actualAmount;
-        bool hasSpaceInInventory = tradeMode == TradeMode.Sell ||
-            player.inventory.HasSpaceForItem(itemToAdd);
+        bool hasSpaceInInventory = tradeMode switch
+        {
+            TradeMode.Buy => player.inventory.HasSpaceForItem(itemToAdd),
+            _ => player.inventory.HasSpaceAfterRemovingItem(
+            itemToRemove,
+            amountToRemove,
+            itemToAdd)
+        };
 
         return (hasSpaceInInventory, hasEnoughItems, hasEnoughAmount) switch
         {
@@ -65,8 +83,8 @@ public class PurchaseSystem : MonoBehaviour
 
         if (!player.inventory.AddItem(itemToAdd, amountToAdd))
         {
-            if (!player.inventory.AddItem(itemToRemove, amountToRemove))
-                return PurchaseResult.Error;
+            player.inventory.AddItem(itemToRemove, amountToRemove);
+            return PurchaseResult.Error;
         }
 
         return PurchaseResult.Success;
@@ -92,6 +110,26 @@ public class PurchaseSystem : MonoBehaviour
         sellingFlowersLeft = item == ItemType.Flower ? sellingFlowersLeft - actualAmount : sellingFlowersLeft;
         sellingBranchesLeft = item == ItemType.Branch ? sellingBranchesLeft - actualAmount : sellingBranchesLeft;
         sellingMeatsLeft = item == ItemType.Meat ? sellingMeatsLeft - actualAmount : sellingMeatsLeft;
+    }
+
+    private bool ItemToPriceIsValid(ItemType itemToPrice)
+    {
+        return itemToPrice == ItemType.Flower || itemToPrice == ItemType.Branch || itemToPrice == ItemType.Meat;
+    }
+
+    private bool ItemsSendedAreValid(ItemType item, ItemType itemToAdd, ItemType itemToRemove, TradeMode tradeMode)
+    {
+        ItemType expectedToRemove =
+            tradeMode == TradeMode.Buy ? ItemType.Coin : item;
+
+        ItemType expectedToAdd =
+            tradeMode == TradeMode.Buy ? item : ItemType.Coin;
+
+        if (itemToRemove != expectedToRemove ||
+            itemToAdd != expectedToAdd)
+            return false;
+
+        return true;
     }
 
     public int GetItemPrice(ItemType item)
@@ -130,5 +168,6 @@ public enum PurchaseResult
 public enum TradeMode
 {
     Buy,
-    Sell
+    Sell,
+    None
 }
