@@ -571,7 +571,8 @@ public class Player : NetworkBehaviour
         otherPlayer.GiveStartingItemsOnServer();
 
         otherPlayer.GiveStartingItemClientRpc(otherPlayer.inventory.items.Keys.ToArray(), 
-            otherPlayer.inventory.items.Values.ToArray());
+            otherPlayer.inventory.items.Values.ToArray(),
+             otherPlayer.inventory.inventoryOrder.ToArray());
 
         StartGameClientRpc();
         otherPlayer.StartGameClientRpc();
@@ -608,9 +609,9 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Owner)]
-    private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts)
+    private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts, ItemType[] order)
     {
-        inventory.SetInventory(itemTypes, amounts);
+        inventory.SetInventory(itemTypes, amounts, order);
 
         if (Role.Value == PlayerRole.Gardener)
         {
@@ -638,22 +639,24 @@ public class Player : NetworkBehaviour
 
     public void SetInventory()
     {
-        if (!IsServer)
+        if (!IsServer || OwnerClientId == NetworkManager.ServerClientId)
             return;
 
         ItemType[] items = inventory.items.Keys.ToArray();
         int[] amounts = inventory.items.Values.ToArray();
+        ItemType[] order = inventory.inventoryOrder.ToArray();
 
-        SetInventoryClientRpc(items, amounts, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
+        SetInventoryClientRpc(items, amounts, order, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
     private void SetInventoryClientRpc(
         ItemType[] items,
         int[] amounts,
+        ItemType[] order,
         RpcParams rpcParams = default)
     {
-        inventory.SetInventory(items, amounts);
+        inventory.SetInventory(items, amounts, order);
     }
 
     public void InitRoleSelector()

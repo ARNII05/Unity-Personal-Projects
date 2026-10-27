@@ -7,28 +7,37 @@ using UnityEngine;
 public class Inventory
 {
     public Dictionary<ItemType, int> items = new();
+    public List<ItemType> inventoryOrder = new();
     public event Action OnInventoryChanged;
     public const int maxCapacity = 5;
     
-    public void SetInventory(ItemType[] itemTypes, int[] amounts)
+    public void SetInventory(ItemType[] itemTypes, int[] amounts, ItemType[] order)
     {
         items.Clear();
+        inventoryOrder.Clear();
 
         for (int i = 0; i < itemTypes.Length; i++)
             items[itemTypes[i]] = amounts[i];
+
+        inventoryOrder.AddRange(order);
 
         OnInventoryChanged?.Invoke();
     }
 
     public bool AddItem(ItemType itemType, int amount)
     {
-        if (amount == 0)
+        if (amount <= 0 || itemType == ItemType.None)
             return false;
         
         if (items.Count >= maxCapacity && items.GetValueOrDefault(itemType) == 0)
             return false;
 
+        bool isNewItem = !items.ContainsKey(itemType);
+
         items[itemType] = items.GetValueOrDefault(itemType) + amount;
+
+        if (isNewItem)
+            inventoryOrder.Add(itemType);
 
         OnInventoryChanged?.Invoke();
 
@@ -64,16 +73,10 @@ public class Inventory
 
     public ItemType GetItemByIndex(int index)
     {
-        int i = 0;
+        if (index < 0 || index >= inventoryOrder.Count)
+            return ItemType.None;
 
-        foreach (var item in items)
-        {
-            if (index == i)
-                return item.Key;
-            i++;
-        }
-
-        return ItemType.None;
+        return inventoryOrder[index];
     }
 
     public bool RemoveItem(ItemType itemType, int amount)
@@ -88,6 +91,7 @@ public class Inventory
         if (items[itemType] <= 0)
         {
             items.Remove(itemType);
+            inventoryOrder.Remove(itemType);
         }
 
         OnInventoryChanged?.Invoke();

@@ -89,9 +89,9 @@ public class InventoryUI : MonoBehaviour
 
         int i = 0;
 
-        foreach (var item in inventory.items)
+        foreach (var item in inventory.inventoryOrder)
         {
-            UpdateItemBox(i, item.Key, item.Value);
+            UpdateItemBox(i, item, inventory.items[item]);
             i++;
         }
     }

@@ -645,10 +645,26 @@ public class MapManager : MonoBehaviour
                 ZoneType selectedType =
                     allowedFillTypes[randomIndex];
 
+                if (selectedType == ZoneType.Village)
+                    allowedFillTypes.Remove(selectedType);
+
                 map[y, x] =
                     ZoneVault.GenerateZone(
                         selectedType
                     );
+            }
+        }
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                ZoneData zone = map[y, x];
+
+                if (zone.type == ZoneType.Village)
+                {
+                    Debug.Log($"Pueblo encontrado en {y}, {x}");
+                }
             }
         }
     }
@@ -1083,6 +1099,9 @@ public class MapManager : MonoBehaviour
             return;
 
         Chest[] chests = player.currentZone.GetComponentsInChildren<Chest>();
+
+        if (chests == null)
+            return;
 
         foreach (var chest in chests)
         {
