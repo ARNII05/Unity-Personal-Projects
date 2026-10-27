@@ -234,6 +234,8 @@ public class Swamp : ZoneData
 {
     public Swamp() : base(ZoneType.Swamp, "Pantano")
     {
+        player1TpZonePos = new Vector3(-49.7f, -2.14f, -6.2f);
+        player2TpZonePos = new Vector3(205.3f, -2.14f, -6.2f);
     }
     public override void OnEnter(Player player)
     {

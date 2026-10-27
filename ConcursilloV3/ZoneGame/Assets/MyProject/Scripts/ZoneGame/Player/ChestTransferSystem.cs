@@ -56,7 +56,7 @@ public class ChestTransferSystem : MonoBehaviour
             return false;
 
         if (amount <= 0 ||
-            zoneChestAmount(position, item) < amount)
+            ZoneChestAmount(position, item) < amount)
             return false;
 
         if (!player.inventory.HasSpaceForItem(item))
@@ -79,7 +79,7 @@ public class ChestTransferSystem : MonoBehaviour
         return true;
     }
 
-    private int zoneChestAmount(Vector2Int position, ItemType item)
+    private int ZoneChestAmount(Vector2Int position, ItemType item)
     {
         ZoneData zone = MapManager.Instance.map[
             position.y,

@@ -179,7 +179,7 @@ public class MapManager : MonoBehaviour
 
                 ImplementCamps();
 
-                startPos = GoTo(ZoneType.Village, startPos);
+                startPos = GoTo(ZoneType.Swamp, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
@@ -652,19 +652,6 @@ public class MapManager : MonoBehaviour
                     ZoneVault.GenerateZone(
                         selectedType
                     );
-            }
-        }
-
-        for (int y = 0; y < mapHeight; y++)
-        {
-            for (int x = 0; x < mapWidth; x++)
-            {
-                ZoneData zone = map[y, x];
-
-                if (zone.type == ZoneType.Village)
-                {
-                    Debug.Log($"Pueblo encontrado en {y}, {x}");
-                }
             }
         }
     }
