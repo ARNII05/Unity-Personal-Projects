@@ -234,6 +234,8 @@ public class Swamp : ZoneData
 {
     public Swamp() : base(ZoneType.Swamp, "Pantano")
     {
+        player1EntryPoints[2] = new Vector3(42.3f, -2.2f, -6.2f);
+        player2EntryPoints[2] = new Vector3(289.3f, -2.2f, -6.2f);
         player1TpZonePos = new Vector3(-49.7f, -2.14f, -6.2f);
         player2TpZonePos = new Vector3(205.3f, -2.14f, -6.2f);
     }

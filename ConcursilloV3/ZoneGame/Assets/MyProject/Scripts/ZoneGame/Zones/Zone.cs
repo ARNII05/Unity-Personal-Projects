@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class Zone : MonoBehaviour
 {
-    [SerializeField] private BorderZone[] borders;
-    [SerializeField] private Protector[] protectors;
+    private BorderZone[] borders;
+    private Protector[] protectors;
+
+    private void Awake()
+    {
+        borders = GetComponentsInChildren<BorderZone>(true);
+        protectors = GetComponentsInChildren<Protector>(true);
+    }
 
     public void Setup(Vector2Int mapPos, ZoneData[,] map)
     {
