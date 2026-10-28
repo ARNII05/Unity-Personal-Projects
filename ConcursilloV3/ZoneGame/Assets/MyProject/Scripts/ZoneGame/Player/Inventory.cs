@@ -11,7 +11,7 @@ public class Inventory
     public event Action OnInventoryChanged;
     public const int maxCapacity = 5;
     
-    public void SetInventory(ItemType[] itemTypes, int[] amounts, ItemType[] order)
+    public void SetContents(ItemType[] itemTypes, int[] amounts, ItemType[] order)
     {
         items.Clear();
         inventoryOrder.Clear();
@@ -24,7 +24,7 @@ public class Inventory
         OnInventoryChanged?.Invoke();
     }
 
-    public bool AddItem(ItemType itemType, int amount)
+    public bool Add(ItemType itemType, int amount)
     {
         if (amount <= 0 || itemType == ItemType.None)
             return false;
@@ -44,12 +44,12 @@ public class Inventory
         return true;
     }
 
-    public bool HasSpaceForItem(ItemType itemType)
+    public bool HasSpaceFor(ItemType itemType)
     {
         return items.ContainsKey(itemType) || items.Count < maxCapacity;
     }
 
-    public bool HasSpaceAfterRemovingItem(
+    public bool HasSpaceAfterRemoving(
         ItemType itemToRemove,
         int amountToRemove,
         ItemType itemToAdd)
@@ -59,19 +59,19 @@ public class Inventory
         if (alreadyHasItem)
             return true;
 
-        int remainingAmount = GetItemAmount(itemToRemove) - amountToRemove;
+        int remainingAmount = GetAmount(itemToRemove) - amountToRemove;
 
         bool freesSlot = remainingAmount <= 0;
 
         return items.Count - (freesSlot ? 1 : 0) < maxCapacity;
     }
 
-    public int GetItemAmount(ItemType itemType)
+    public int GetAmount(ItemType itemType)
     {
         return items.TryGetValue(itemType, out int amount) ? amount : 0;
     }
 
-    public ItemType GetItemByIndex(int index)
+    public ItemType GetItemAt(int index)
     {
         if (index < 0 || index >= inventoryOrder.Count)
             return ItemType.None;
@@ -79,10 +79,10 @@ public class Inventory
         return inventoryOrder[index];
     }
 
-    public bool RemoveItem(ItemType itemType, int amount)
+    public bool Remove(ItemType itemType, int amount)
     {
         if (!items.ContainsKey(itemType) || amount <= 0 
-            || GetItemAmount(itemType) < amount)
+            || GetAmount(itemType) < amount)
         {
             return false;
         }

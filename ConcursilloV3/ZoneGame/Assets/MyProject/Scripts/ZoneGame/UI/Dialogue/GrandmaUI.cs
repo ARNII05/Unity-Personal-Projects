@@ -60,7 +60,7 @@ public class GrandmaUI : MonoBehaviour
 
     private void UpdateGrandmaPanel()
     {
-        int bouquetCount = player.inventory.GetItemAmount(ItemType.Bouquet);
+        int bouquetCount = player.inventory.GetAmount(ItemType.Bouquet);
         int bouquetsToWin = CraftingSystem.BouquetsToWin;
         bool canWin = CanWin(bouquetCount, bouquetsToWin);
 
@@ -82,7 +82,7 @@ public class GrandmaUI : MonoBehaviour
 
     public void EndGame()
     {
-        if (!CanWin(player.inventory.GetItemAmount(ItemType.Bouquet), CraftingSystem.BouquetsToWin))
+        if (!CanWin(player.inventory.GetAmount(ItemType.Bouquet), CraftingSystem.BouquetsToWin))
             return;
 
         grandmaPanel.SetActive(false);

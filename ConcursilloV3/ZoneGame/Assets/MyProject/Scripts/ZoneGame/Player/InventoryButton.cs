@@ -7,9 +7,15 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler
     private ChestUI chestUI;
     public int toWho;
 
-    private void Start()
+    private void Awake()
     {
-        chestUI = GameObject.Find("ChestUI").GetComponent<ChestUI>();
+        GameObject obj = GameObject.Find("ChestUI");
+
+        if (obj != null)
+            chestUI = obj.GetComponent<ChestUI>();
+
+        if (chestUI == null)
+            Debug.LogError("No se ha encontrado ChestUI o le falta el componente.", this);
     }
 
     public void OnPointerClick(PointerEventData eventData)

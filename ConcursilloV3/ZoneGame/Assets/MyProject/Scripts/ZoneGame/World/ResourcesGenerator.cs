@@ -153,11 +153,11 @@ public class ResourcesGenerator : MonoBehaviour
 
         int logsInWolfDen = map.Cast<ZoneData>()
             .Where(zone => zone.type == ZoneType.WolfDen)
-            .Sum(zone => zone.chestInventory.GetItemAmount(ItemType.Log));
+            .Sum(zone => zone.chestInventory.GetAmount(ItemType.Log));
 
         int branchesInWolfDen = map.Cast<ZoneData>()
             .Where(zone => zone.type == ZoneType.WolfDen)
-            .Sum(zone => zone.chestInventory.GetItemAmount(ItemType.Branch))
+            .Sum(zone => zone.chestInventory.GetAmount(ItemType.Branch))
             + logsInWolfDen * CraftingSystem.branchesForLog;
 
         bool wolfDenIsInMomPart =
@@ -227,7 +227,7 @@ public class ResourcesGenerator : MonoBehaviour
 
             int amount = Random.Range(1, MaxItemCountPerChest(item) + 1);
 
-            zone.chestInventory.AddItem((ItemType)item, amount);
+            zone.chestInventory.Add((ItemType)item, amount);
         }
     }
 
@@ -257,7 +257,7 @@ public class ResourcesGenerator : MonoBehaviour
 
             int amount = Random.Range(1, maxAmount + 1);
 
-            if (map[position.y, position.x].chestInventory.AddItem(
+            if (map[position.y, position.x].chestInventory.Add(
                     (ItemType)item, amount))
             {
                 itemCount += amount;
@@ -305,9 +305,9 @@ public class ResourcesGenerator : MonoBehaviour
             {
                 Inventory inventory = map[i, j].chestInventory;
 
-                flowers += inventory.GetItemAmount(ItemType.Flower);
-                branches += inventory.GetItemAmount(ItemType.Branch);
-                coins += inventory.GetItemAmount(ItemType.Coin);
+                flowers += inventory.GetAmount(ItemType.Flower);
+                branches += inventory.GetAmount(ItemType.Branch);
+                coins += inventory.GetAmount(ItemType.Coin);
             }
         }
 

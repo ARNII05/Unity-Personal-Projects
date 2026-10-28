@@ -65,7 +65,7 @@ public class CraftingUI : MonoBehaviour
     {
         ItemType itemType = player.Role.Value == PlayerRole.Gardener ? ItemType.Flower : ItemType.Branch;
 
-        int itemAmount = player.inventory.GetItemAmount(itemType);
+        int itemAmount = player.inventory.GetAmount(itemType);
 
         int maxItemAmount = player.Role.Value == PlayerRole.Gardener
             ? CraftingSystem.flowersForBouquet

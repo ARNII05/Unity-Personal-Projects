@@ -85,13 +85,13 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void HandleTabInput()
     {
-        if (player.inventory.GetItemAmount(ItemType.Radar) > 0)
+        if (player.inventory.GetAmount(ItemType.Radar) > 0)
         {
             RadarUI.Instance.ToggleRadar();
             return;
         }
 
-        if (player.inventory.GetItemAmount(ItemType.Map) > 0)
+        if (player.inventory.GetAmount(ItemType.Map) > 0)
         {
             MapUI.Instance.ToggleMap();
         }

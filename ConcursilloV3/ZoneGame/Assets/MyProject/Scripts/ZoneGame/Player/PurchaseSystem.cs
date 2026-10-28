@@ -47,12 +47,12 @@ public class PurchaseSystem : MonoBehaviour
             : actualAmount;
 
         bool hasEnoughItems =
-            player.inventory.GetItemAmount(itemToRemove) >= amountToRemove;
+            player.inventory.GetAmount(itemToRemove) >= amountToRemove;
         bool hasEnoughAmount = GetAmountLeft(itemToPrice, tradeMode) >= actualAmount;
         bool hasSpaceInInventory = tradeMode switch
         {
-            TradeMode.Buy => player.inventory.HasSpaceForItem(itemToAdd),
-            _ => player.inventory.HasSpaceAfterRemovingItem(
+            TradeMode.Buy => player.inventory.HasSpaceFor(itemToAdd),
+            _ => player.inventory.HasSpaceAfterRemoving(
             itemToRemove,
             amountToRemove,
             itemToAdd)
@@ -77,12 +77,12 @@ public class PurchaseSystem : MonoBehaviour
         int amountToRemove = itemToRemove == ItemType.Coin ? GetItemPrice(item) * actualAmount : actualAmount;
         int amountToAdd = itemToAdd == ItemType.Coin ? GetItemPrice(item) * actualAmount : actualAmount;
 
-        if (!player.inventory.RemoveItem(itemToRemove, amountToRemove))
+        if (!player.inventory.Remove(itemToRemove, amountToRemove))
             return PurchaseResult.Error;
 
-        if (!player.inventory.AddItem(itemToAdd, amountToAdd))
+        if (!player.inventory.Add(itemToAdd, amountToAdd))
         {
-            player.inventory.AddItem(itemToRemove, amountToRemove);
+            player.inventory.Add(itemToRemove, amountToRemove);
             return PurchaseResult.Error;
         }
 

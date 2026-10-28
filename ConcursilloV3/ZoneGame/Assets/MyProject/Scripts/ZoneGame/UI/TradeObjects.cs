@@ -98,7 +98,7 @@ public class TradeObjects : MonoBehaviour
         if (!tradePanel.activeSelf)
             return;
         
-        playerCoinsText.text = $"x{player.inventory.GetItemAmount(ItemType.Coin)}";
+        playerCoinsText.text = $"x{player.inventory.GetAmount(ItemType.Coin)}";
         UpdateComercialBox(callingInRpc);
         UpdateBuyBox();
     }

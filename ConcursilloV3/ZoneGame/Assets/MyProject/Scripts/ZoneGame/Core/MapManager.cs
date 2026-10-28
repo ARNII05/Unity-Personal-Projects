@@ -319,7 +319,7 @@ public class MapManager : MonoBehaviour
                     int amount =
                         chestAmounts[chestItemIndex];
 
-                    zone.chestInventory.AddItem(
+                    zone.chestInventory.Add(
                         item,
                         amount
                     );
@@ -470,6 +470,12 @@ public class MapManager : MonoBehaviour
         {
             River actualRiver = zone.GetComponent<River>();
             actualRiver.Init(position);
+        }
+
+        if (zoneData.type == ZoneType.Swamp)
+        {
+            SwampZone swamp = zone.GetComponent<SwampZone>();
+            swamp.Init(position, player);
         }
     }
 

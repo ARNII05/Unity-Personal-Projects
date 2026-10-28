@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -232,6 +233,8 @@ public class Ruins : ZoneData
 
 public class Swamp : ZoneData
 {
+    public Dictionary<ItemType, int> internalInventory = new();
+
     public Swamp() : base(ZoneType.Swamp, "Pantano")
     {
         player1EntryPoints[2] = new Vector3(42.3f, -2.2f, -6.2f);

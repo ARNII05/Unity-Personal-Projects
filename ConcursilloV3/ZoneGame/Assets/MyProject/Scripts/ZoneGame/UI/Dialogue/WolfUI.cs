@@ -52,7 +52,7 @@ public class WolfUI : MonoBehaviour
         cantStealItems.SetActive(false);
         noSpaceInChest.SetActive(false);
 
-        if (player.inventory.GetItemAmount(ItemType.Radar) > 0)
+        if (player.inventory.GetAmount(ItemType.Radar) > 0)
             RadarUI.Instance.StopVideoAndSound();
 
         switch (chestIsFull, stolenItems.Count == 0)

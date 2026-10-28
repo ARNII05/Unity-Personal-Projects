@@ -35,6 +35,7 @@ public class Player : NetworkBehaviour
     private WolfUI wolfUI;
 
     private bool gameplayInitialized;
+    private bool canRecoverSwampItems;
 
     public HashSet<Vector2Int> discoveredZones = new();
 
@@ -135,6 +136,16 @@ public class Player : NetworkBehaviour
         State.Value = newState;
     }
 
+    public bool CanRecoverSwampItems()
+    {
+        return canRecoverSwampItems;
+    }
+
+    public void SetCanRecoverSwampItems(bool status)
+    {
+        canRecoverSwampItems = status;
+    }
+
     [Rpc(SendTo.Server)]
     public void TradeItemRpc(ItemType item, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode)
     {
@@ -183,7 +194,7 @@ public class Player : NetworkBehaviour
         if (!isBridged)
             return;
 
-        if (!inventory.RemoveItem(ItemType.Log, 1))
+        if (!inventory.Remove(ItemType.Log, 1))
             return;
 
         SetInventory();
@@ -292,7 +303,7 @@ public class Player : NetworkBehaviour
         if (!IsServer)
         {
             ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
-            zone.chestInventory.AddItem(item, amount);
+            zone.chestInventory.Add(item, amount);
         }
 
         Player localPlayer = MapManager.Instance.GetLocalPlayer();
@@ -327,7 +338,7 @@ public class Player : NetworkBehaviour
         if (!IsServer)
         {
             ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
-            zone.chestInventory.RemoveItem(item, amount);
+            zone.chestInventory.Remove(item, amount);
         }
 
         Player localPlayer = MapManager.Instance.GetLocalPlayer();
@@ -589,29 +600,29 @@ public class Player : NetworkBehaviour
 
         if (Role.Value == PlayerRole.Gardener)
         {
-            inventory.AddItem(ItemType.Radar, 1);
+            inventory.Add(ItemType.Radar, 1);
             RadarUI.Instance.Init(this);
         }
         else if (Role.Value == PlayerRole.Builder)
         {
-            inventory.AddItem(ItemType.Map, 1);
+            inventory.Add(ItemType.Map, 1);
             MapUI.Instance.Init(this);
         }
         
-        inventory.AddItem(ItemType.Meat, 1);
+        inventory.Add(ItemType.Meat, 1);
 
         /*
-        inventory.AddItem(ItemType.Coin, 99);
-        inventory.AddItem(ItemType.Branch, 99);
-        inventory.AddItem(ItemType.Flower, 99);
-        inventory.AddItem(ItemType.Log, 7);
+        inventory.Add(ItemType.Coin, 99);
+        inventory.Add(ItemType.Branch, 99);
+        inventory.Add(ItemType.Flower, 99);
+        inventory.Add(ItemType.Log, 7);
         */
     }
 
     [Rpc(SendTo.Owner)]
     private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts, ItemType[] order)
     {
-        inventory.SetInventory(itemTypes, amounts, order);
+        inventory.SetContents(itemTypes, amounts, order);
 
         if (Role.Value == PlayerRole.Gardener)
         {
@@ -656,7 +667,7 @@ public class Player : NetworkBehaviour
         ItemType[] order,
         RpcParams rpcParams = default)
     {
-        inventory.SetInventory(items, amounts, order);
+        inventory.SetContents(items, amounts, order);
     }
 
     public void InitRoleSelector()

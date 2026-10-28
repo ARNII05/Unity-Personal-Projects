@@ -21,15 +21,15 @@ public class CraftingSystem : MonoBehaviour
     public bool CanCraftBouquet()
     {
         return player.Role.Value == PlayerRole.Gardener &&
-            player.inventory.GetItemAmount(ItemType.Flower) >= flowersForBouquet &&
-            player.inventory.HasSpaceForItem(ItemType.Bouquet);
+            player.inventory.GetAmount(ItemType.Flower) >= flowersForBouquet &&
+            player.inventory.HasSpaceFor(ItemType.Bouquet);
     }
 
     public bool CanCraftLog()
     {
         return player.Role.Value == PlayerRole.Builder &&
-            player.inventory.GetItemAmount(ItemType.Branch) >= branchesForLog &&
-            player.inventory.HasSpaceForItem(ItemType.Log);
+            player.inventory.GetAmount(ItemType.Branch) >= branchesForLog &&
+            player.inventory.HasSpaceFor(ItemType.Log);
     }
 
     public void CraftBouquet()
@@ -73,12 +73,12 @@ public class CraftingSystem : MonoBehaviour
         if (!canCraft)
             return false;
 
-        if (!player.inventory.AddItem(itemToAdd, 1))
+        if (!player.inventory.Add(itemToAdd, 1))
             return false;
 
-        if (!player.inventory.RemoveItem(itemToRemove, amountToRemove))
+        if (!player.inventory.Remove(itemToRemove, amountToRemove))
         {
-            player.inventory.RemoveItem(itemToAdd, 1);
+            player.inventory.Remove(itemToAdd, 1);
             return false;
         }
 

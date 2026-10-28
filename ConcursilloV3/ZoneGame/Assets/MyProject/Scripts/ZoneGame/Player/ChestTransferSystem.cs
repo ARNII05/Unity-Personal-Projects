@@ -22,7 +22,7 @@ public class ChestTransferSystem : MonoBehaviour
             return false;
 
         if (amount <= 0 ||
-            player.inventory.GetItemAmount(item) < amount)
+            player.inventory.GetAmount(item) < amount)
             return false;
 
         ZoneData zone = MapManager.Instance.map[
@@ -30,15 +30,15 @@ public class ChestTransferSystem : MonoBehaviour
             position.x
         ];
 
-        if (!zone.chestInventory.HasSpaceForItem(item))
+        if (!zone.chestInventory.HasSpaceFor(item))
             return false;
 
-        if (!zone.chestInventory.AddItem(item, amount))
+        if (!zone.chestInventory.Add(item, amount))
             return false;
 
-        if (!player.inventory.RemoveItem(item, amount))
+        if (!player.inventory.Remove(item, amount))
         {
-            zone.chestInventory.RemoveItem(item, amount);
+            zone.chestInventory.Remove(item, amount);
             return false;
         }
 
@@ -59,7 +59,7 @@ public class ChestTransferSystem : MonoBehaviour
             ZoneChestAmount(position, item) < amount)
             return false;
 
-        if (!player.inventory.HasSpaceForItem(item))
+        if (!player.inventory.HasSpaceFor(item))
             return false;
 
         ZoneData zone = MapManager.Instance.map[
@@ -67,12 +67,12 @@ public class ChestTransferSystem : MonoBehaviour
             position.x
         ];
 
-        if (!player.inventory.AddItem(item, amount))
+        if (!player.inventory.Add(item, amount))
             return false;
 
-        if (!zone.chestInventory.RemoveItem(item, amount))
+        if (!zone.chestInventory.Remove(item, amount))
         {
-            player.inventory.RemoveItem(item, amount);
+            player.inventory.Remove(item, amount);
             return false;
         }
 
@@ -86,6 +86,6 @@ public class ChestTransferSystem : MonoBehaviour
             position.x
         ];
 
-        return zone.chestInventory.GetItemAmount(item);
+        return zone.chestInventory.GetAmount(item);
     }
 }

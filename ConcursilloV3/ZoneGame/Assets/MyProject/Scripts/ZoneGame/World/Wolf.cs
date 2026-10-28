@@ -13,8 +13,8 @@ public class Wolf : NetworkBehaviour
     private const int moveInterval = 10;
     private const int distanceToChasePlayer = 3;
     private const int distanceToChaseMeat = 5;
-    private const int maxCountToSteal = 2;
-    private const int maxItemsToSteal = 4;
+    private const int maxCountToSteal = 4;
+    private const int maxItemsToSteal = 2;
 
     private int mapWidth;
     private int mapHeight;
@@ -170,7 +170,7 @@ public class Wolf : NetworkBehaviour
     {
         int itemsToSteal = Random.Range(1, maxItemsToSteal + 1);
 
-        return StealingItems(itemsToSteal, maxCountToSteal, player);
+        return StealingItems(itemsToSteal, player);
     }
     
     private Dictionary<ItemType, int> SoltenItemsToDic(ItemType[] items, int[] amounts)
@@ -193,13 +193,11 @@ public class Wolf : NetworkBehaviour
 
     private ItemsStolenResult StealingItems(
         int itemsToSteal,
-        int maxCountToSteal,
         Player player)
     {
         List<ItemType> stolenItems = new();
         List<int> amount = new();
-        HashSet<ItemType> forbbidenItems = new() { ItemType.Bouquet, ItemType.Log, 
-            ItemType.Map, ItemType.Radar};
+        HashSet<ItemType> forbbidenItems = new() {ItemType.None, ItemType.Map, ItemType.Radar};
         bool chestIsFull = false;
 
         for (int i = 0; i < itemsToSteal; i++)
@@ -224,14 +222,14 @@ public class Wolf : NetworkBehaviour
             int itemIndex = Random.Range(0, validItemsInWolfDen.Length);
             ItemType item = validItemsInWolfDen[itemIndex];
 
-            int availableAmount = player.inventory.GetItemAmount(item);
+            int availableAmount = player.inventory.GetAmount(item);
 
             int amountToSteal = Random.Range(
                 1,
-                Mathf.Min(maxCountToSteal, availableAmount) + 1
+                Mathf.Min(MaxCountPerItem(item), availableAmount) + 1
             );
 
-            if (!player.inventory.RemoveItem(item, amountToSteal))
+            if (!player.inventory.Remove(item, amountToSteal))
                 continue;
 
             if (!AddItemsToWolfDenChest(item, amountToSteal, player))
@@ -245,12 +243,21 @@ public class Wolf : NetworkBehaviour
         return new ItemsStolenResult(stolenItems, amount, chestIsFull);
     }
 
+    private int MaxCountPerItem(ItemType itemType)
+    {
+        return itemType switch
+        {
+            ItemType.Log or ItemType.Bouquet => 1,
+            _ => maxCountToSteal
+        };
+    }
+
     private bool SpaceInWolfDenChest(ItemType item)
     {
         Vector2Int pos = MapManager.Instance.wolfDenPos;
         ZoneData wolfDen = map[pos.y, pos.x];
 
-        return wolfDen.chestInventory.HasSpaceForItem(item);
+        return wolfDen.chestInventory.HasSpaceFor(item);
     }
 
     private bool AddItemsToWolfDenChest(ItemType item, int amount, Player player)
@@ -258,9 +265,9 @@ public class Wolf : NetworkBehaviour
         Vector2Int pos = MapManager.Instance.wolfDenPos;
         ZoneData wolfDen = map[pos.y, pos.x];
 
-        if (!wolfDen.chestInventory.AddItem(item, amount))
+        if (!wolfDen.chestInventory.Add(item, amount))
         {
-            player.inventory.AddItem(item, amount);
+            player.inventory.Add(item, amount);
             return false;
         }
 
@@ -364,7 +371,7 @@ public class Wolf : NetworkBehaviour
     {
         ZoneData zone = map[meatPos.y, meatPos.x];
 
-        zone.chestInventory.RemoveItem(ItemType.Meat, 1);
+        zone.chestInventory.Remove(ItemType.Meat, 1);
 
         RemoveMeatInZoneClientRpc(meatPos);
     }
@@ -374,7 +381,7 @@ public class Wolf : NetworkBehaviour
     {
         ZoneData zone = map[meatPos.y, meatPos.x];
 
-        zone.chestInventory.RemoveItem(ItemType.Meat, 1);
+        zone.chestInventory.Remove(ItemType.Meat, 1);
     }
 
     private Direction MoveTowards(Vector2Int targetPos)
@@ -511,7 +518,7 @@ public class Wolf : NetworkBehaviour
 
                 if (zone.type == ZoneType.Camp ||
                     zone.type == ZoneType.WolfDen ||
-                    zone.chestInventory.GetItemAmount(ItemType.Meat) <= 0)
+                    zone.chestInventory.GetAmount(ItemType.Meat) <= 0)
                     continue;
 
                 int distanceToMeat =
@@ -588,6 +595,21 @@ public class Wolf : NetworkBehaviour
             _ => null
         }; 
     }
+
+    private struct ItemsStolenResult
+    {
+        public List<ItemType> items;
+        public List<int> amount;
+
+        public bool chestIsFull;
+
+        public ItemsStolenResult(List<ItemType> items, List<int> amount, bool chestIsFull = false)
+        {
+            this.items = items;
+            this.amount = amount;
+            this.chestIsFull = chestIsFull;
+        }
+    }
 }
 
 public enum WolfState
@@ -596,19 +618,4 @@ public enum WolfState
     MovingToPlayer,
     MovingToMeat,
     MovingToDen
-}
-
-public struct ItemsStolenResult
-{
-    public List<ItemType> items;
-    public List<int> amount;
-
-    public bool chestIsFull;
-
-    public ItemsStolenResult(List<ItemType> items, List<int> amount, bool chestIsFull = false)
-    {
-        this.items = items;
-        this.amount = amount;
-        this.chestIsFull = chestIsFull;
-    }
 }
