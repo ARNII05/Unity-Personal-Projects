@@ -9,6 +9,8 @@ public class SwampZone : MonoBehaviour
 {
     private const int maxCountToSteal = 3;
 
+    private const int maxItemsToSteal = 1;
+
     private const int probToRecoverItem = 50;
 
     private ZoneData[,] map;
@@ -18,25 +20,24 @@ public class SwampZone : MonoBehaviour
         map = MapManager.Instance.map;
 
         if (player.IsServer)
-        {
-            player.SetCanRecoverSwampItems(true);
             ChooseItemToSteal(player, position);
-        }
     }
     
     private void ChooseItemToSteal(Player player, Vector2Int swampPos)
     {
-        ItemsStolenResult itemsStolen = StealingItems(1, swampPos, player);
+        ItemsStolenResult itemsStolen = StealingItems(maxItemsToSteal, swampPos, player);
 
         player.SetInventory();
 
         StartCoroutine(SwampNetwork.Instance.ShowUIToUserCoroutine(itemsStolen.items.ToArray(), 
             itemsStolen.amount.ToArray(), player));
+
+        TryToGetStolenItems(swampPos, player.OwnerClientId);
     }
 
-    public void TryToGetStolenItems(Vector2Int swampPos)
+    private void TryToGetStolenItems(Vector2Int swampPos, ulong id)
     {
-        SwampNetwork.Instance.TryToGetStolenItemsRpc(probToRecoverItem, swampPos);
+        SwampNetwork.Instance.TryToGetStolenItemsRpc(probToRecoverItem, swampPos, id);
     }
 
     private ItemsStolenResult StealingItems(

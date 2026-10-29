@@ -35,7 +35,6 @@ public class Player : NetworkBehaviour
     private WolfUI wolfUI;
 
     private bool gameplayInitialized;
-    private bool canRecoverSwampItems;
 
     public HashSet<Vector2Int> discoveredZones = new();
 
@@ -134,16 +133,6 @@ public class Player : NetworkBehaviour
     public void SetNewStateRpc(PlayerState newState)
     {
         State.Value = newState;
-    }
-
-    public bool CanRecoverSwampItems()
-    {
-        return canRecoverSwampItems;
-    }
-
-    public void SetCanRecoverSwampItems(bool status)
-    {
-        canRecoverSwampItems = status;
     }
 
     [Rpc(SendTo.Server)]
@@ -611,12 +600,12 @@ public class Player : NetworkBehaviour
         
         inventory.Add(ItemType.Meat, 1);
 
-        /*
-        inventory.Add(ItemType.Coin, 99);
-        inventory.Add(ItemType.Branch, 99);
-        inventory.Add(ItemType.Flower, 99);
+        
+        //inventory.Add(ItemType.Coin, 99);
+        inventory.Add(ItemType.Bouquet, 7);
+        //inventory.Add(ItemType.Flower, 99);
         inventory.Add(ItemType.Log, 7);
-        */
+        
     }
 
     [Rpc(SendTo.Owner)]
@@ -801,6 +790,7 @@ public enum PlayerState
     TradeUI,
     GrandmaDialogueInteraction,
     CaughtByWolf,
+    InSwamp,
     Inventory,
     Transitioning,
     Trading,

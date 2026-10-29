@@ -179,7 +179,7 @@ public class MapManager : MonoBehaviour
 
                 ImplementCamps();
 
-                startPos = GoTo(ZoneType.Swamp, startPos);
+                //startPos = GoTo(ZoneType.Swamp, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;

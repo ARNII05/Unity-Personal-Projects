@@ -175,20 +175,20 @@ public class Wolf : NetworkBehaviour
     
     private Dictionary<ItemType, int> SoltenItemsToDic(ItemType[] items, int[] amounts)
     {
-        Dictionary<ItemType, int> ItemsStolenDic = new();
+        Dictionary<ItemType, int> itemsStolenDic = new();
 
         for (int i = 0; i < items.Length; i++)
         {
-            if (ItemsStolenDic.ContainsKey(items[i]))
+            if (itemsStolenDic.ContainsKey(items[i]))
             {
-                ItemsStolenDic[items[i]] += amounts[i];
+                itemsStolenDic[items[i]] += amounts[i];
                 continue;
             }
 
-            ItemsStolenDic[items[i]] = amounts[i];
+            itemsStolenDic[items[i]] = amounts[i];
         }
 
-        return ItemsStolenDic;
+        return itemsStolenDic;
     }
 
     private ItemsStolenResult StealingItems(

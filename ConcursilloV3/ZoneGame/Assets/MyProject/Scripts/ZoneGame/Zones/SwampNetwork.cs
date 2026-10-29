@@ -4,9 +4,12 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+[RequireComponent(typeof(SwampDialogue))]
 public class SwampNetwork : NetworkBehaviour
 {
     public static SwampNetwork Instance { get; private set; }
+
+    private SwampDialogue swampDialogue;
 
     private void Awake()
     {
@@ -17,12 +20,13 @@ public class SwampNetwork : NetworkBehaviour
         }
 
         Instance = this;
+
+        swampDialogue = GetComponent<SwampDialogue>();
     }
 
     [Rpc(SendTo.Server)]
-    public void TryToGetStolenItemsRpc(int probToRecoverItem, Vector2Int swampPos, RpcParams rpcParams = default)
+    public void TryToGetStolenItemsRpc(int probToRecoverItem, Vector2Int swampPos, ulong id)
     {
-        ulong id = rpcParams.Receive.SenderClientId;
         Player player = MapManager.Instance.GetPlayerById(id);
 
         if (player == null)
@@ -31,20 +35,31 @@ public class SwampNetwork : NetworkBehaviour
         ZoneData[,] map = MapManager.Instance.map;
         Swamp swamp = (Swamp)map[swampPos.y, swampPos.x];
 
-        if (!player.CanRecoverSwampItems())
+        LootToRecover lootRecovered = LootRecovered(probToRecoverItem, swampPos, player);
+
+        if (lootRecovered.recoveryState == RecoveryState.ItemRecovered)
         {
-            Debug.Log("No puedes recuperar más items");
-            //Mostrar que no tiene más intentos para recuperar
-            return;
+            swamp.internalInventory[lootRecovered.item] -= lootRecovered.amount;
+
+            if (swamp.internalInventory[lootRecovered.item] <= 0)
+                swamp.internalInventory.Remove(lootRecovered.item);
+
+            player.inventory.Add(lootRecovered.item, lootRecovered.amount);
+            player.SetInventory();
         }
 
-        player.SetCanRecoverSwampItems(false);
+        ShowRecoveredItemToUserClientRpc(lootRecovered.item, lootRecovered.amount, lootRecovered.recoveryState, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+    }
+
+    private LootToRecover LootRecovered(int probToRecoverItem, Vector2Int swampPos, Player player)
+    {
+        ZoneData[,] map = MapManager.Instance.map;
+        Swamp swamp = (Swamp)map[swampPos.y, swampPos.x];
 
         if (swamp.internalInventory.Count == 0)
         {
             Debug.Log("No quedan objetos por recuperar");
-            // Mostrar que no quedan objetos por recuperar.
-            return;
+            return new LootToRecover(ItemType.None, 0, RecoveryState.NoItemsToRecover);
         }
 
         int finalItemProb = Random.Range(0, 100);
@@ -52,8 +67,7 @@ public class SwampNetwork : NetworkBehaviour
         if (finalItemProb >= probToRecoverItem)
         {
             Debug.Log($"{player.name} no ha recuperado ningun item");
-            //Mensaje de que no ha recuperado ningun item
-            return;
+            return new LootToRecover(ItemType.None, 0, RecoveryState.ProbToRecoverFailed);
         }
 
         ItemType[] validItems = swamp.internalInventory.Keys
@@ -63,8 +77,7 @@ public class SwampNetwork : NetworkBehaviour
         if (validItems.Length == 0)
         {
             Debug.Log("No hay espacio en el inventario");
-            //Mostrar que no hay espacio en el inventario
-            return;
+            return new LootToRecover(ItemType.None, 0, RecoveryState.NoSpaceInInventory);
         }
 
         int itemIndex = Random.Range(0, validItems.Length);
@@ -72,44 +85,14 @@ public class SwampNetwork : NetworkBehaviour
 
         int amountToRecover = Random.Range(1, swamp.internalInventory[itemType] + 1);
 
-        swamp.internalInventory[itemType] -= amountToRecover;
-
-        if (swamp.internalInventory[itemType] <= 0)
-            swamp.internalInventory.Remove(itemType);
-
-        player.inventory.Add(itemType, amountToRecover);
-        player.SetInventory();
-
-        ShowRecoveredItemToUserClientRpc(itemType, amountToRecover, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        return new LootToRecover(itemType, amountToRecover, RecoveryState.ItemRecovered);
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
-    private void ShowRecoveredItemToUserClientRpc(ItemType item, int amount, RpcParams rpcParams = default)
+    private void ShowRecoveredItemToUserClientRpc(ItemType item, int amount, RecoveryState recoveryState, RpcParams rpcParams = default)
     {
-        Debug.Log($"Has recuperado: {amount} {item}");
-        //Enseñar lo que ha recuperado
+        swampDialogue.ShowRecoveredItem(item, amount, recoveryState);
     }
-
-    /*
-    private bool SpaceInSwamp(ItemType item, Vector2Int swampPos)
-    {
-        ZoneData[,] map = MapManager.Instance.map;
-
-        ZoneData swamp = map[swampPos.y, swampPos.x];
-
-        return swamp.chestInventory.HasSpaceFor(item);
-    }
-    
-    [Rpc(SendTo.Everyone)]
-    private void UpdateSwampZoneClientRpc(ItemType item, int amount, Vector2Int position)
-    {
-        ZoneData[,] map = MapManager.Instance.map;
-        
-        Swamp swamp = (Swamp)map[position.y, position.x];
-
-        swamp.chestInventory.Add(item, amount);
-    }
-    */
 
     public IEnumerator ShowUIToUserCoroutine(ItemType[] items, int[] amount, Player player)
     {
@@ -117,17 +100,44 @@ public class SwampNetwork : NetworkBehaviour
         {
             yield return null;
         }
-        
+
         ShowItemsStolenToUserClientRpc(items, amount, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+
+        player.SetNewStateRpc(PlayerState.InSwamp);
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
     private void ShowItemsStolenToUserClientRpc(ItemType[] items, int[] amount, RpcParams rpcParams = default)
     {
-        for (int i = 0; i < items.Length; i++)
-        {
-            Debug.Log($"Robado por pantano: {amount[i]} {items[i]}");
-        }
-        //Enseñar lo que le ha robado
+        swampDialogue.ShowStolenItems(items, amount);
     }
+
+    public void CloseUI(Player player)
+    {
+        swampDialogue.Close();
+        
+        player.SetNewStateRpc(PlayerState.Normal);
+    }
+
+    private struct LootToRecover
+    {
+        public ItemType item;
+        public int amount;
+        public RecoveryState recoveryState;
+
+        public LootToRecover(ItemType item, int amount, RecoveryState recoveryState)
+        {
+            this.item = item;
+            this.amount = amount;
+            this.recoveryState = recoveryState;
+        }
+    }
+}
+
+public enum RecoveryState
+{
+    NoItemsToRecover,
+    ProbToRecoverFailed,
+    NoSpaceInInventory,
+    ItemRecovered
 }

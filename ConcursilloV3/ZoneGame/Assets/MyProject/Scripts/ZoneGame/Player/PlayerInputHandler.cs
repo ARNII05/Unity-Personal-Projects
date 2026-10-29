@@ -62,6 +62,11 @@ public class PlayerInputHandler : MonoBehaviour
                     TradeUI.Instance.CloseUI();
                 break;
 
+            case PlayerState.InSwamp:
+                if (controls.Gameplay.Confirm.WasPressedThisFrame())
+                    SwampNetwork.Instance.CloseUI(player);
+                break;
+                
             case PlayerState.SelectingRole:
             case PlayerState.RabbitDialogueInteraction:
             case PlayerState.GrandmaDialogueInteraction:
