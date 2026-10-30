@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SwampZone : MonoBehaviour
 {
@@ -15,12 +13,17 @@ public class SwampZone : MonoBehaviour
 
     private ZoneData[,] map;
 
+    bool hasEnteredOnSwamp = false;
+
     public void Init(Vector2Int position, Player player)
     {
         map = MapManager.Instance.map;
 
-        if (player.IsServer)
+        if (player.IsServer && !hasEnteredOnSwamp)
+        {
+            hasEnteredOnSwamp = true;
             ChooseItemToSteal(player, position);
+        }
     }
     
     private void ChooseItemToSteal(Player player, Vector2Int swampPos)
@@ -32,12 +35,7 @@ public class SwampZone : MonoBehaviour
         StartCoroutine(SwampNetwork.Instance.ShowUIToUserCoroutine(itemsStolen.items.ToArray(), 
             itemsStolen.amount.ToArray(), player));
 
-        TryToGetStolenItems(swampPos, player.OwnerClientId);
-    }
-
-    private void TryToGetStolenItems(Vector2Int swampPos, ulong id)
-    {
-        SwampNetwork.Instance.TryToGetStolenItemsRpc(probToRecoverItem, swampPos, id);
+        SwampNetwork.Instance.TryToGetStolenItems(probToRecoverItem, swampPos, player.OwnerClientId, itemsStolen.items.Count <= 0);
     }
 
     private ItemsStolenResult StealingItems(

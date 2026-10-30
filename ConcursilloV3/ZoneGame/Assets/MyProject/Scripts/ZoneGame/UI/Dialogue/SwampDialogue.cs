@@ -70,7 +70,8 @@ public class SwampDialogue : MonoBehaviour
         {
             RecoveryState.NoItemsToRecover => "Rebuscas entre las aguas turbias, pero no encuentras nada que recuperar.",
             RecoveryState.ProbToRecoverFailed => "Buscas entre las aguas turbias, pero el pantano se queda con tus pertenencias.",
-            RecoveryState.NoSpaceInInventory => "Encuentras tus pertenencias, pero no tienes espacio en el inventario para recuperarlas",
+            RecoveryState.NoSpaceInInventory => "Encuentras tus pertenencias, pero no tienes espacio en el inventario para recuperarlas.",
+            RecoveryState.NoItemsStolen => "Rebuscas entre las aguas turbias, pero no has perdido nada que puedas recuperar.",
             _ => ""
         };
     }

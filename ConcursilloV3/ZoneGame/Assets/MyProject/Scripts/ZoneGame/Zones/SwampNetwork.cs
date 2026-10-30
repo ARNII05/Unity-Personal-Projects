@@ -2,7 +2,6 @@ using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(SwampDialogue))]
 public class SwampNetwork : NetworkBehaviour
@@ -24,9 +23,11 @@ public class SwampNetwork : NetworkBehaviour
         swampDialogue = GetComponent<SwampDialogue>();
     }
 
-    [Rpc(SendTo.Server)]
-    public void TryToGetStolenItemsRpc(int probToRecoverItem, Vector2Int swampPos, ulong id)
+    public void TryToGetStolenItems(int probToRecoverItem, Vector2Int swampPos, ulong id, bool stolenItemsIsEmpty)
     {
+        if (!IsServer)
+            return;
+        
         Player player = MapManager.Instance.GetPlayerById(id);
 
         if (player == null)
@@ -35,7 +36,7 @@ public class SwampNetwork : NetworkBehaviour
         ZoneData[,] map = MapManager.Instance.map;
         Swamp swamp = (Swamp)map[swampPos.y, swampPos.x];
 
-        LootToRecover lootRecovered = LootRecovered(probToRecoverItem, swampPos, player);
+        LootToRecover lootRecovered = LootRecovered(probToRecoverItem, swampPos, player, stolenItemsIsEmpty);
 
         if (lootRecovered.recoveryState == RecoveryState.ItemRecovered)
         {
@@ -51,34 +52,28 @@ public class SwampNetwork : NetworkBehaviour
         ShowRecoveredItemToUserClientRpc(lootRecovered.item, lootRecovered.amount, lootRecovered.recoveryState, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
     }
 
-    private LootToRecover LootRecovered(int probToRecoverItem, Vector2Int swampPos, Player player)
+    private LootToRecover LootRecovered(int probToRecoverItem, Vector2Int swampPos, Player player, bool stolenItemsIsEmpty)
     {
+        if (stolenItemsIsEmpty)
+            return new LootToRecover(ItemType.None, 0, RecoveryState.NoItemsStolen);
+
         ZoneData[,] map = MapManager.Instance.map;
         Swamp swamp = (Swamp)map[swampPos.y, swampPos.x];
 
         if (swamp.internalInventory.Count == 0)
-        {
-            Debug.Log("No quedan objetos por recuperar");
             return new LootToRecover(ItemType.None, 0, RecoveryState.NoItemsToRecover);
-        }
 
         int finalItemProb = Random.Range(0, 100);
 
         if (finalItemProb >= probToRecoverItem)
-        {
-            Debug.Log($"{player.name} no ha recuperado ningun item");
             return new LootToRecover(ItemType.None, 0, RecoveryState.ProbToRecoverFailed);
-        }
 
         ItemType[] validItems = swamp.internalInventory.Keys
                 .Where(item => player.inventory.HasSpaceFor(item))
                 .ToArray();
 
         if (validItems.Length == 0)
-        {
-            Debug.Log("No hay espacio en el inventario");
             return new LootToRecover(ItemType.None, 0, RecoveryState.NoSpaceInInventory);
-        }
 
         int itemIndex = Random.Range(0, validItems.Length);
         ItemType itemType = validItems[itemIndex];
@@ -136,6 +131,7 @@ public class SwampNetwork : NetworkBehaviour
 
 public enum RecoveryState
 {
+    NoItemsStolen,
     NoItemsToRecover,
     ProbToRecoverFailed,
     NoSpaceInInventory,

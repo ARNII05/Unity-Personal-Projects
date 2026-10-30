@@ -600,12 +600,12 @@ public class Player : NetworkBehaviour
         
         inventory.Add(ItemType.Meat, 1);
 
-        
-        //inventory.Add(ItemType.Coin, 99);
+        /*
+        inventory.Add(ItemType.Coin, 99);
         inventory.Add(ItemType.Bouquet, 7);
-        //inventory.Add(ItemType.Flower, 99);
+        inventory.Add(ItemType.Flower, 99);
         inventory.Add(ItemType.Log, 7);
-        
+        */
     }
 
     [Rpc(SendTo.Owner)]

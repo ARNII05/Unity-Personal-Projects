@@ -9952,7 +9952,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -1.3746545, y: -7.611909}
+  m_Offset: {x: -1.4579879, y: -7.611909}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -9962,7 +9962,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.34828317, y: 16.911459}
+  m_Size: {x: 0.18161654, y: 16.911459}
   m_EdgeRadius: 0
 --- !u!1 &5206553738755135813
 GameObject:
@@ -13295,25 +13295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dac3bf4427745af43a59670c7befd741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  borders:
-  - {fileID: 3983850050332051660}
-  - {fileID: 3198896228585314366}
-  - {fileID: 4730815250182167159}
-  - {fileID: 3532142733352231400}
-  protectors:
-  - {fileID: 5244241433026980745}
-  - {fileID: 959071697978520288}
-  - {fileID: 4443426755250618105}
-  - {fileID: 3775178594147191162}
-  - {fileID: 7153073667200662812}
-  - {fileID: 8473906929290927636}
-  - {fileID: 5536735912848007028}
-  - {fileID: 1382016495621161379}
-  - {fileID: 6541532154854957526}
-  - {fileID: 1897088960136095259}
-  - {fileID: 9131144350297163601}
-  - {fileID: 4066770678568166528}
-  - {fileID: 892089794731491836}
 --- !u!114 &1721677877521582002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14399,7 +14380,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.281514, y: 2.8116016}
+  m_Offset: {x: -0.48984718, y: 2.8116016}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -14409,7 +14390,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.9509541, y: 7.8256874}
+  m_Size: {x: 0.5342877, y: 7.8256874}
   m_EdgeRadius: 0
 --- !u!114 &6408041501989732029
 MonoBehaviour:
