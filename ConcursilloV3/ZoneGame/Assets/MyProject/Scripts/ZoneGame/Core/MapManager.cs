@@ -616,6 +616,8 @@ public class MapManager : MonoBehaviour
         List<ZoneType> allowedFillTypes =
             new();
 
+        List<ZoneType> onlyOneZone = new() { ZoneType.Village, ZoneType.Ruins };
+
         foreach (
             ZoneType type
             in System.Enum.GetValues(
@@ -651,7 +653,7 @@ public class MapManager : MonoBehaviour
                 ZoneType selectedType =
                     allowedFillTypes[randomIndex];
 
-                if (selectedType == ZoneType.Village)
+                if (onlyOneZone.Contains(selectedType) && allowedFillTypes.Contains(selectedType))
                     allowedFillTypes.Remove(selectedType);
 
                 map[y, x] =
@@ -680,7 +682,9 @@ public class MapManager : MonoBehaviour
                 type != ZoneType.GrandmaHouse &&
                 type != ZoneType.VerticalRiver &&
                 type != ZoneType.HorizontalRiver &&
-                type != ZoneType.WolfDen)
+                type != ZoneType.WolfDen &&
+                type != ZoneType.Ruins &&
+                type != ZoneType.Village)
             {
                 allowedFillTypes.Add(type);
             }
