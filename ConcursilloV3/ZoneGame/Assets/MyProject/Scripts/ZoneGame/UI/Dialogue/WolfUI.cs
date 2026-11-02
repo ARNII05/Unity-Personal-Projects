@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class WolfUI : MonoBehaviour
 {
@@ -26,27 +27,31 @@ public class WolfUI : MonoBehaviour
 
     private void OpenUI()
     {
+        if (player.State.Value != PlayerState.CaughtByWolf &&
+            player.State.Value != PlayerState.Transitioning)
+        {
+            previousPlayerState = player.State.Value;
+        }
+
         player.SetNewStateRpc(PlayerState.CaughtByWolf);
-        
         wolfPanel.SetActive(true);
     }
 
     public void CloseUI()
     {
-        player.SetNewStateRpc(previousPlayerState);
+        PlayerState stateToRestore = previousPlayerState;
 
-        if (player.State.Value == PlayerState.UsingRadar)
+        player.SetNewStateRpc(stateToRestore);
+
+        if (stateToRestore == PlayerState.UsingRadar)
             RadarUI.Instance.PlayVideoAndSound();
 
         wolfPanel.SetActive(false);
     }
 
-    public void ShowItemsStolen(Dictionary<ItemType, int> stolenItems, Player player, bool chestIsFull)
+    public void ShowItemsStolen(ItemType[] stolenItems, int[] amounts, Player player, bool chestIsFull)
     {
         this.player = player;
-
-        previousPlayerState = player.State.Value == PlayerState.CaughtByWolf || player.State.Value == PlayerState.Transitioning 
-            ? previousPlayerState : player.State.Value;
 
         canStealItems.SetActive(false);
         cantStealItems.SetActive(false);
@@ -55,7 +60,7 @@ public class WolfUI : MonoBehaviour
         if (player.inventory.GetAmount(ItemType.Radar) > 0)
             RadarUI.Instance.StopVideoAndSound();
 
-        switch (chestIsFull, stolenItems.Count == 0)
+        switch (chestIsFull, stolenItems.Length == 0 || amounts.Length == 0)
         {
             case (true, true):
                 noSpaceInChest.SetActive(true);
@@ -66,14 +71,14 @@ public class WolfUI : MonoBehaviour
                 break;
 
             default:
-                CanStoleItemsUI(stolenItems);
+                CanStoleItemsUI(stolenItems, amounts);
                 break;
         }
 
         OpenUI();
     }
     
-    private void CanStoleItemsUI(Dictionary<ItemType, int> stolenItems)
+    private void CanStoleItemsUI(ItemType[] stolenItems, int[] amounts)
     {
         canStealItems.SetActive(true);
         
@@ -83,23 +88,20 @@ public class WolfUI : MonoBehaviour
             zell.SetActive(false);
         }
 
-        int j = 0;
 
-        foreach (var item in stolenItems)
+        for (int i = 0; i < stolenItems.Length; i++)
         {
-            if (j >= grid.transform.childCount)
+            if (i >= grid.transform.childCount)
                 break;
 
-            GameObject zell = grid.transform.GetChild(j).gameObject;
+            GameObject zell = grid.transform.GetChild(i).gameObject;
             zell.SetActive(true);
 
             Image zellImg = zell.GetComponentInChildren<Image>();
             TextMeshProUGUI zellText = zell.GetComponentInChildren<TextMeshProUGUI>();
 
-            zellImg.sprite = ItemVault.GetItemSprite(item.Key);
-            zellText.text = $"x {item.Value}";
-
-            j++;
+            zellImg.sprite = ItemVault.GetItemSprite(stolenItems[i]);
+            zellText.text = $"x {amounts[i]}";
         }
     }
 }

@@ -201,9 +201,9 @@ public class MapManager : MonoBehaviour
 
     private Vector2Int GoTo(ZoneType zoneType, Vector2Int initialPos)
     {
-        for (int y = 0; y < mapWidth; y++)
+        for (int y = 0; y < mapHeight; y++)
         {
-            for (int x = 0; x < mapHeight; x++)
+            for (int x = 0; x < mapWidth; x++)
             {
                 ZoneData zone = map[y, x];
 
@@ -653,7 +653,7 @@ public class MapManager : MonoBehaviour
                 ZoneType selectedType =
                     allowedFillTypes[randomIndex];
 
-                if (onlyOneZone.Contains(selectedType) && allowedFillTypes.Contains(selectedType))
+                if (onlyOneZone.Contains(selectedType))
                     allowedFillTypes.Remove(selectedType);
 
                 map[y, x] =
@@ -666,19 +666,16 @@ public class MapManager : MonoBehaviour
 
     private void ImplementCamps()
     {
-        List<ZoneType> allowedFillTypes =
-            new();
+        List<ZoneType> allowedFillTypes = new();
 
         const int minDistance = 3;
         const int maxCamps = 5;
+        const int maxDistributionAttempts = 100;
+        const int maxPositionAttempts = 100;
 
-        foreach (
-            ZoneType type
-            in System.Enum.GetValues(
-                typeof(ZoneType)))
+        foreach (ZoneType type in System.Enum.GetValues(typeof(ZoneType)))
         {
-            if (
-                type != ZoneType.MomHouse &&
+            if (type != ZoneType.MomHouse &&
                 type != ZoneType.GrandmaHouse &&
                 type != ZoneType.VerticalRiver &&
                 type != ZoneType.HorizontalRiver &&
@@ -692,50 +689,61 @@ public class MapManager : MonoBehaviour
 
         List<Vector2Int> campsPos = new();
 
-        while (campsPos.Count < maxCamps)
+        for (int attempt = 0; attempt < maxDistributionAttempts; attempt++)
         {
-            Vector2Int actualPos = new(
-                Random.Range(0, mapWidth),
-                Random.Range(0, mapHeight)
-            );
+            campsPos.Clear();
 
-            bool tooClose = false;
+            int positionAttempts = 0;
 
-            foreach (var position in campsPos)
+            while (campsPos.Count < maxCamps &&
+                   positionAttempts < maxPositionAttempts)
             {
-                int distance = Mathf.Abs(position.y - actualPos.y)
-                             + Mathf.Abs(position.x - actualPos.x);
+                positionAttempts++;
 
-                if (distance < minDistance)
+                Vector2Int actualPos = new(
+                    Random.Range(0, mapWidth),
+                    Random.Range(0, mapHeight)
+                );
+
+                bool tooClose = false;
+
+                foreach (var position in campsPos)
                 {
-                    tooClose = true;
-                    break;
+                    int distance = Mathf.Abs(position.y - actualPos.y)
+                                 + Mathf.Abs(position.x - actualPos.x);
+
+                    if (distance < minDistance)
+                    {
+                        tooClose = true;
+                        break;
+                    }
                 }
+
+                if (tooClose)
+                    continue;
+
+                ZoneData zone = map[actualPos.y, actualPos.x];
+
+                if (!allowedFillTypes.Contains(zone.type))
+                    continue;
+
+                campsPos.Add(actualPos);
             }
 
-            if (tooClose)
+            if (campsPos.Count < maxCamps)
                 continue;
 
-            ZoneData zone = map[actualPos.y, actualPos.x];
+            if (WolfCanLeaveDen(campsPos))
+            {
+                foreach (var pos in campsPos)
+                    map[pos.y, pos.x] = new Camp();
 
-            if (!allowedFillTypes.Contains(zone.type))
-                continue;
-
-            campsPos.Add(actualPos);
+                Debug.Log($"Se han colocado {maxCamps} campamentos al intento {attempt}");
+                return;
+            }
         }
 
-        if (!WolfCanLeaveDen(campsPos))
-        {
-            Debug.LogWarning("Distribución de campamentos inválida.");
-            return;
-        }
-
-        foreach (var pos in campsPos)
-        {
-            map[pos.y, pos.x] = new Camp();
-        }
-
-        Debug.Log($"Se han colocado {maxCamps} campamentos.");
+        Debug.LogWarning("No se ha encontrado una distribución válida de campamentos.");
     }
 
     private bool WolfCanLeaveDen(List<Vector2Int> campsPos)

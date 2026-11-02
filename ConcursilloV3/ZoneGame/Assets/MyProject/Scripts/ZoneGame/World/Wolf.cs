@@ -54,7 +54,7 @@ public class Wolf : NetworkBehaviour
             player2 = MapManager.Instance.Player2;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = false;
+            readyToMove = true;
         }
     }
 
@@ -132,7 +132,7 @@ public class Wolf : NetworkBehaviour
         if (player.State.Value == PlayerState.Transitioning || player.State.Value == PlayerState.EndGame)
             return;
 
-        ItemsStolenResult itemsStolen = ItemsToSteal(player);
+        ItemsStolenResult itemsStolen = StealingItems(Random.Range(1, maxItemsToSteal + 1), player);
 
         player.SetInventory();
 
@@ -140,7 +140,6 @@ public class Wolf : NetworkBehaviour
             itemsStolen.items.ToArray(),
             itemsStolen.amount.ToArray(),
             itemsStolen.chestIsFull,
-            player.NetworkObjectId,
             RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp)
         );
     }
@@ -150,45 +149,14 @@ public class Wolf : NetworkBehaviour
         ItemType[] items,
         int[] amounts,
         bool chestIsFull,
-        ulong playerNetworkObjectId,
         RpcParams rpcParams = default)
     {
-        if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(
-            playerNetworkObjectId, out NetworkObject playerObject))
+        Player localPlayer = MapManager.Instance.GetLocalPlayer();
+
+        if (localPlayer == null)
             return;
 
-        if (!playerObject.TryGetComponent<Player>(out var player))
-            return;
-
-        Dictionary<ItemType, int> itemsStolenDic =
-            SoltenItemsToDic(items, amounts);
-
-        wolfUI.ShowItemsStolen(itemsStolenDic, player, chestIsFull);
-    }
-
-    private ItemsStolenResult ItemsToSteal(Player player)
-    {
-        int itemsToSteal = Random.Range(1, maxItemsToSteal + 1);
-
-        return StealingItems(itemsToSteal, player);
-    }
-    
-    private Dictionary<ItemType, int> SoltenItemsToDic(ItemType[] items, int[] amounts)
-    {
-        Dictionary<ItemType, int> itemsStolenDic = new();
-
-        for (int i = 0; i < items.Length; i++)
-        {
-            if (itemsStolenDic.ContainsKey(items[i]))
-            {
-                itemsStolenDic[items[i]] += amounts[i];
-                continue;
-            }
-
-            itemsStolenDic[items[i]] = amounts[i];
-        }
-
-        return itemsStolenDic;
+        wolfUI.ShowItemsStolen(items, amounts, localPlayer, chestIsFull);
     }
 
     private ItemsStolenResult StealingItems(
@@ -197,13 +165,13 @@ public class Wolf : NetworkBehaviour
     {
         List<ItemType> stolenItems = new();
         List<int> amount = new();
-        HashSet<ItemType> forbbidenItems = new() {ItemType.None, ItemType.Map, ItemType.Radar};
+        HashSet<ItemType> stolenItemTypes = new();
         bool chestIsFull = false;
 
         for (int i = 0; i < itemsToSteal; i++)
         {
             ItemType[] validItems = player.inventory.items.Keys
-                .Where(item => !forbbidenItems.Contains(item))
+                .Where(item => ItemVault.IsTransferable(item) && !stolenItemTypes.Contains(item))
                 .ToArray();
 
             if (validItems.Length == 0)
@@ -235,7 +203,7 @@ public class Wolf : NetworkBehaviour
             if (!AddItemsToWolfDenChest(item, amountToSteal, player))
                 continue;
 
-            forbbidenItems.Add(item);
+            stolenItemTypes.Add(item);
             stolenItems.Add(item);
             amount.Add(amountToSteal);
         }
@@ -587,7 +555,7 @@ public class Wolf : NetworkBehaviour
 
         return (isInSamePosWithP1, isInSamePosWithP2, player1IsInForbiddenState, player2IsInForbiddenState) switch
         {
-            (true, true, false, true) => new[] { player1},
+            (true, true, false, true) => new[] { player1 },
             (true, true, true, false) => new[] { player2 },
             (true, true, false, false) => new[] { player1, player2 },
             (true, false, false, _) => new[] { player1 },

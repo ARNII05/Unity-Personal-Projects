@@ -45,13 +45,13 @@ public class SwampZone : MonoBehaviour
     {
         List<ItemType> stolenItems = new();
         List<int> amount = new();
-        HashSet<ItemType> forbbidenItems = new() { ItemType.None, ItemType.Map, ItemType.Radar};
+        HashSet<ItemType> stolenItemTypes = new();
         Swamp swamp = (Swamp)map[swampPos.y, swampPos.x];
 
         for (int i = 0; i < itemsToSteal; i++)
         {
             ItemType[] validItems = player.inventory.items.Keys
-                .Where(item => !forbbidenItems.Contains(item))
+                .Where(item => ItemVault.IsTransferable(item) && !stolenItemTypes.Contains(item))
                 .ToArray();
 
             if (validItems.Length == 0)
@@ -71,7 +71,7 @@ public class SwampZone : MonoBehaviour
                 continue;
 
             swamp.internalInventory[item] = swamp.internalInventory.GetValueOrDefault(item) + amountToSteal;
-            forbbidenItems.Add(item);
+            stolenItemTypes.Add(item);
             stolenItems.Add(item);
             amount.Add(amountToSteal);
         }
