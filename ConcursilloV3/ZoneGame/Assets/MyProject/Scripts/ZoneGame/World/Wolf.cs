@@ -132,23 +132,30 @@ public class Wolf : NetworkBehaviour
         if (player.State.Value == PlayerState.Transitioning || player.State.Value == PlayerState.EndGame)
             return;
 
-        ItemsStolenResult itemsStolen = StealingItems(Random.Range(1, maxItemsToSteal + 1), player);
+        int items = ItemsToSteal(player);
+
+        ItemsStolenResult itemsStolen = StealingItems(items, player);
 
         player.SetInventory();
 
         StealFromPlayerRpc(
             itemsStolen.items.ToArray(),
             itemsStolen.amount.ToArray(),
-            itemsStolen.chestIsFull,
+            itemsStolen.stealResult,
             RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp)
         );
+    }
+
+    private int ItemsToSteal(Player player)
+    {
+        return Random.Range(0, 100) < player.luck ? 0 : Random.Range(1, maxItemsToSteal + 1);
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
     private void StealFromPlayerRpc(
         ItemType[] items,
         int[] amounts,
-        bool chestIsFull,
+        StealResult stealResult,
         RpcParams rpcParams = default)
     {
         Player localPlayer = MapManager.Instance.GetLocalPlayer();
@@ -156,7 +163,7 @@ public class Wolf : NetworkBehaviour
         if (localPlayer == null)
             return;
 
-        wolfUI.ShowItemsStolen(items, amounts, localPlayer, chestIsFull);
+        wolfUI.ShowItemsStolen(items, amounts, localPlayer, stealResult);
     }
 
     private ItemsStolenResult StealingItems(
@@ -166,7 +173,10 @@ public class Wolf : NetworkBehaviour
         List<ItemType> stolenItems = new();
         List<int> amount = new();
         HashSet<ItemType> stolenItemTypes = new();
-        bool chestIsFull = false;
+        StealResult stealResult = StealResult.Success;
+
+        if (itemsToSteal <= 0)
+            return new ItemsStolenResult(stolenItems, amount, StealResult.LuckPotionEffect);
 
         for (int i = 0; i < itemsToSteal; i++)
         {
@@ -175,7 +185,10 @@ public class Wolf : NetworkBehaviour
                 .ToArray();
 
             if (validItems.Length == 0)
+            {
+                stealResult = StealResult.NoItemsToSteal;
                 break;
+            }
 
             ItemType[] validItemsInWolfDen = validItems
                 .Where(item => SpaceInWolfDenChest(item))
@@ -183,7 +196,7 @@ public class Wolf : NetworkBehaviour
 
             if (validItemsInWolfDen.Length == 0)
             {
-                chestIsFull = true;
+                stealResult = StealResult.ChestFull;
                 break;
             }
 
@@ -208,7 +221,7 @@ public class Wolf : NetworkBehaviour
             amount.Add(amountToSteal);
         }
 
-        return new ItemsStolenResult(stolenItems, amount, chestIsFull);
+        return new ItemsStolenResult(stolenItems, amount, stealResult);
     }
 
     private int MaxCountPerItem(ItemType itemType)
@@ -569,13 +582,13 @@ public class Wolf : NetworkBehaviour
         public List<ItemType> items;
         public List<int> amount;
 
-        public bool chestIsFull;
+        public StealResult stealResult;
 
-        public ItemsStolenResult(List<ItemType> items, List<int> amount, bool chestIsFull = false)
+        public ItemsStolenResult(List<ItemType> items, List<int> amount, StealResult stealResult = StealResult.Success)
         {
             this.items = items;
             this.amount = amount;
-            this.chestIsFull = chestIsFull;
+            this.stealResult = stealResult;
         }
     }
 }
@@ -586,4 +599,12 @@ public enum WolfState
     MovingToPlayer,
     MovingToMeat,
     MovingToDen
+}
+
+public enum StealResult
+{
+    Success,
+    NoItemsToSteal,
+    ChestFull,
+    LuckPotionEffect
 }

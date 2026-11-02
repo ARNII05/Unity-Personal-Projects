@@ -16,6 +16,16 @@ public static class ItemVault
         return itemType != ItemType.Map && itemType != ItemType.Radar
             && itemType != ItemType.None && itemType != ItemType.AncientRelic;
     }
+
+    public static bool IsBuff(ItemType itemType)
+    {
+        return itemType switch
+        {
+            ItemType.AgilityPotion => true,
+            ItemType.LuckPotion => true,
+            _ => false
+        };
+    }
 }
 
 public enum ItemType
@@ -29,5 +39,8 @@ public enum ItemType
     Log,
     Radar,
     Map,
-    AncientRelic
+    AncientRelic,
+    AmuletOfTheAncients,
+    AgilityPotion,
+    LuckPotion,
 }

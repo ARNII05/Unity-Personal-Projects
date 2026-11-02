@@ -46,7 +46,7 @@ public class Inventory
 
     public bool HasSpaceFor(ItemType itemType)
     {
-        return items.ContainsKey(itemType) || items.Count < maxCapacity;
+        return items.ContainsKey(itemType) || items.Count < maxCapacity || ItemVault.IsBuff(itemType);
     }
 
     public bool HasSpaceAfterRemoving(

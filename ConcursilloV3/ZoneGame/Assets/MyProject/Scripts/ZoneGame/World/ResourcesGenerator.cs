@@ -89,6 +89,8 @@ public class ResourcesGenerator : MonoBehaviour
         DistributeAllItems();
 
         DistributeAncientRelics();
+
+        FillRuinChest();
     }
 
     private void CheckResources()
@@ -226,9 +228,7 @@ public class ResourcesGenerator : MonoBehaviour
 
     private void DistributeAncientRelics()
     {
-        const int totalAncientRelics = 3;
-
-        for (int i = 0; i < totalAncientRelics; i++)
+        for (int i = 0; i < CraftingSystem.ancientRelicsToOpenAncientChest; i++)
         {
             int randomIndex = Random.Range(0, allMap.Count);
 
@@ -251,6 +251,20 @@ public class ResourcesGenerator : MonoBehaviour
 
             Debug.Log($"Ancient Relic added to zone {zone.name} at position ({position.y + 1}, {position.x + 1}).");
         }
+    }
+
+    private void FillRuinChest()
+    {
+        ZoneData ruins = map.Cast<ZoneData>().FirstOrDefault(zone => zone.type == ZoneType.Ruins);
+
+        if (ruins == null)
+        {
+            Debug.LogWarning("No zone of type Ruins found.");
+            return;
+        }
+
+        ruins.chestInventory.Add(ItemType.AgilityPotion, 1);
+        ruins.chestInventory.Add(ItemType.LuckPotion, 1);
     }
 
     private int SetInitialItems(

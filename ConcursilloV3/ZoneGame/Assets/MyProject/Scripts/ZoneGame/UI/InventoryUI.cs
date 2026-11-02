@@ -87,6 +87,14 @@ public class InventoryUI : MonoBehaviour
             iconBox.SetActive(false);
         }
 
+        for (int j = 0; j < Inventory.maxCapacity; j++)
+        {
+            GameObject box =
+                inventoryUI.transform.Find($"Box{j + 1}").gameObject;
+
+            UpdateBoxLock(box, false);
+        }
+
         int i = 0;
 
         foreach (var item in inventory.inventoryOrder)

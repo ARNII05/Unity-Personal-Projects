@@ -73,7 +73,6 @@ public class ChestUI : MonoBehaviour
 
         ItemType itemType = chestInventoryUI.inventory.GetItemAt(index);
 
-
         if (!playerInventoryUI.inventory.HasSpaceFor(itemType))
             return;
 

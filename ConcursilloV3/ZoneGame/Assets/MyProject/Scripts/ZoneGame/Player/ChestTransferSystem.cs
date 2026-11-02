@@ -64,7 +64,13 @@ public class ChestTransferSystem : MonoBehaviour
             position.x
         ];
 
-        if (!player.inventory.Add(item, amount))
+        bool isBuff = ItemVault.IsBuff(item);
+
+        if (isBuff)
+        {
+            player.AddBuff(item);
+        }
+        else if (!player.inventory.Add(item, amount))
             return false;
 
         if (!zone.chestInventory.Remove(item, amount))
@@ -74,6 +80,50 @@ public class ChestTransferSystem : MonoBehaviour
         }
 
         return true;
+    }
+
+    public bool TryToRemoveAncientRelics(ChestType chestType, Vector2Int position)
+    {
+        ZoneData zone = MapManager.Instance.map[position.y, position.x];
+
+        if (zone.type != ZoneType.Ruins)
+            return false;
+
+        Ruins ruinsZone = (Ruins)zone;
+
+        if (ruinsZone.ancientRelicsRemoved)
+            return true;
+
+        if (chestType != ChestType.Ancient)
+            return false;
+
+        Player otherPlayer = MapManager.Instance.GetOtherPlayer(player);
+
+        int amountOfAncientRelics = player.inventory.GetAmount(ItemType.AncientRelic) +
+            otherPlayer.inventory.GetAmount(ItemType.AncientRelic);
+
+        if (amountOfAncientRelics < CraftingSystem.ancientRelicsToOpenAncientChest)
+        {
+            Debug.Log("Necesitas al menos 3 Reliquias Antiguas para abrir este cofre.");
+            return false;
+        }
+
+        RemoveAncientRelicsFromPlayers(otherPlayer);
+        ruinsZone.ancientRelicsRemoved = true;
+
+        return true;
+    }
+
+    private void RemoveAncientRelicsFromPlayers(Player otherPlayer)
+    {
+        int player1Relics = player.inventory.GetAmount(ItemType.AncientRelic);
+        int player2Relics = otherPlayer.inventory.GetAmount(ItemType.AncientRelic);
+
+        if (player1Relics > 0)
+            player.inventory.Remove(ItemType.AncientRelic, player1Relics);
+
+        if (player2Relics > 0)
+            otherPlayer.inventory.Remove(ItemType.AncientRelic, player2Relics);
     }
 
     private int ZoneChestAmount(Vector2Int position, ItemType item)

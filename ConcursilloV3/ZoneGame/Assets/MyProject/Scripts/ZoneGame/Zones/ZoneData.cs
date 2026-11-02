@@ -210,8 +210,11 @@ public class FlowerField : ZoneData
 
 public class Ruins : ZoneData
 {
+    public bool ancientRelicsRemoved = false;
+
     public Ruins() : base(ZoneType.Ruins, "Ruinas")
     {
+        canHaveChest = false;
     }
     public override void OnEnter(Player player)
     {

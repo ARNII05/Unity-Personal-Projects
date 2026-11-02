@@ -3283,6 +3283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37658a6277165314a900893d4117f88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestType: 0
   chestUI: {fileID: 0}
 --- !u!1 &1257528692942288350
 GameObject:
@@ -28017,20 +28018,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dac3bf4427745af43a59670c7befd741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  borders:
-  - {fileID: 5978727937011823696}
-  - {fileID: 7384232611789395561}
-  - {fileID: 6446245806893791190}
-  - {fileID: 7520819847587774382}
-  - {fileID: 6386151469718690820}
-  - {fileID: 1361933482106699973}
-  protectors:
-  - {fileID: 3683973294439640021}
-  - {fileID: 8560880168929912137}
-  - {fileID: 72770117224928433}
-  - {fileID: 8661806065562517724}
-  - {fileID: 2786968973689174619}
-  - {fileID: 2824930153070575461}
 --- !u!1 &8743821416009427639
 GameObject:
   m_ObjectHideFlags: 0

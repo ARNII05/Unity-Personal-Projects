@@ -35,8 +35,11 @@ public class Player : NetworkBehaviour
     private WolfUI wolfUI;
 
     private bool gameplayInitialized;
+    public float movementSpeedMultiplier = 1f;
+    public int luck = 0;
 
     public HashSet<Vector2Int> discoveredZones = new();
+    private readonly HashSet<ItemType> activeBuffs = new();
 
     public NetworkVariable<PlayerState> State = new(
         PlayerState.Normal,
@@ -85,6 +88,7 @@ public class Player : NetworkBehaviour
         playerInputHandler = GetComponent<PlayerInputHandler>();
         playerInputHandler.Initialize(controls);
         roleSelectionVisuals = GetComponent<PlayerRoleSelectionVisuals>();
+        //luck = 100;
     }
 
     private void Update()
@@ -111,7 +115,6 @@ public class Player : NetworkBehaviour
     public void OpenChest()
     {
         nearbyObjects.NearbyChest.OnOpen(this);
-        UpdateOpenedChestServerRpc();
     }
 
     public void CloseChest()
@@ -133,6 +136,42 @@ public class Player : NetworkBehaviour
     public void SetNewStateRpc(PlayerState newState)
     {
         State.Value = newState;
+    }
+
+    public void AddBuff(ItemType buff)
+    {
+        if (!activeBuffs.Add(buff))
+            return;
+
+        ApplyBuff(buff);
+
+        AddBuffClientRpc(buff, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
+    }
+
+    private void ApplyBuff(ItemType buff)
+    {
+        switch (buff)
+        {
+            case ItemType.AgilityPotion:
+                movementSpeedMultiplier = 1.1f;
+                Debug.Log("Agility Potion applied! Movement speed increased by 10%.");
+                break;
+
+            case ItemType.LuckPotion:
+                luck = 15;
+                Debug.Log("Luck Potion applied! Luck increased by 15.");
+                break;
+        }
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void AddBuffClientRpc(ItemType buff, RpcParams rpcParams = default)
+    {
+        if (IsServer)
+            return;
+
+        activeBuffs.Add(buff);
+        ApplyBuff(buff);
     }
 
     [Rpc(SendTo.Server)]
@@ -262,7 +301,32 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    private void UpdateOpenedChestServerRpc()
+    public void TryToRemoveAncientRelicsRpc(ChestType chestType, Vector2Int position)
+    {
+        if (!chestTransferSystem.TryToRemoveAncientRelics(chestType, position))
+            return;
+
+        SetInventory();
+
+        UpdateOpenedChestClientRpc(position);
+        OpenChestClientRpc(position);
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void OpenChestClientRpc(Vector2Int position)
+    {
+        if (!IsServer)
+        {
+            Ruins ruinsZone = (Ruins)MapManager.Instance.map[position.y, position.x];
+            ruinsZone.ancientRelicsRemoved = true;
+        }
+
+        nearbyChest.chestUI.InitPlayer(this);
+        nearbyChest.chestUI.ToggleInventory();
+    }
+
+    [Rpc(SendTo.Server)]
+    public void UpdateOpenedChestServerRpc()
     {
         UpdateOpenedChestClientRpc(NetworkMapPos.Value);
     }
@@ -471,7 +535,6 @@ public class Player : NetworkBehaviour
         MapManager.Instance.RegisterPlayer(this, IsServer);
     }
 
-
     public override void OnNetworkDespawn()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -599,6 +662,7 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
+        //inventory.Add(ItemType.AncientRelic, 1);
 
         /*
         inventory.Add(ItemType.Coin, 99);
@@ -672,7 +736,6 @@ public class Player : NetworkBehaviour
 
     private IEnumerator InitRoleSelectorWhenReady()
     {
-        // Esperar a que la escena y la interfaz estén preparadas.
         while (RoleSelectorUI.Instance == null ||
                MapManager.Instance == null ||
                !RoleSelectorUI.Instance.IsPlayerInitialized ||
@@ -749,7 +812,6 @@ public class Player : NetworkBehaviour
         int[] chestItemCounts,
         Vector2Int[] positions)
     {
-        // No procesar los datos hasta que el gestor y ambos jugadores existan.
         while (MapManager.Instance == null ||
                !MapManager.Instance.ArePlayersRegistered)
         {

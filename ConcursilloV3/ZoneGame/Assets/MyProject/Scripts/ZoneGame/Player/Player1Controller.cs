@@ -1,9 +1,10 @@
 
 using Unity.Netcode;
 using UnityEngine;
-
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
+
+[RequireComponent(typeof(Player))]
 public class Player1Controller : NetworkBehaviour
 {
     public Animator anim;
@@ -82,7 +83,7 @@ public class Player1Controller : NetworkBehaviour
             return;
         }
 
-        rb.linearVelocity = movementInput * moveSpeed;
+        rb.linearVelocity = movementInput * (moveSpeed * player.movementSpeedMultiplier);
     }
 
     private void UpdateDirection()
