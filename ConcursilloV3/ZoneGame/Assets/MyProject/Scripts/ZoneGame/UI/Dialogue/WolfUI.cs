@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class WolfUI : MonoBehaviour
 {
@@ -87,7 +86,6 @@ public class WolfUI : MonoBehaviour
             GameObject zell = grid.transform.GetChild(i).gameObject;
             zell.SetActive(false);
         }
-
 
         for (int i = 0; i < stolenItems.Length; i++)
         {

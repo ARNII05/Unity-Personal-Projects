@@ -83,19 +83,12 @@ public class ResourcesGenerator : MonoBehaviour
         }
        
         SetInitialItems(ChestItems.Branch, momPart, totalBranchesToCraft);
-        //Debug.Log("Items después de añadir ramas");
-        //PrintItems();
         
         SetInitialItems(ChestItems.Flower, allMap, totalFlowersToCraft);
-        //Debug.Log("Items después de añadir flores");
-        //PrintItems();
         
-        DistributeAllItems(allMap);
+        DistributeAllItems();
 
-        //Debug.Log("Items después de añadir items aleatorios por el mapa entero");
-        //PrintItems();
-
-        //PrintEmptyZones();
+        DistributeAncientRelics();
     }
 
     private void CheckResources()
@@ -212,7 +205,7 @@ public class ResourcesGenerator : MonoBehaviour
         return itemCount;
     }
 
-    private void DistributeAllItems(List<Vector2Int> allMap)
+    private void DistributeAllItems()
     {
         foreach (Vector2Int position in allMap)
         {
@@ -228,6 +221,35 @@ public class ResourcesGenerator : MonoBehaviour
             int amount = Random.Range(1, MaxItemCountPerChest(item) + 1);
 
             zone.chestInventory.Add((ItemType)item, amount);
+        }
+    }
+
+    private void DistributeAncientRelics()
+    {
+        const int totalAncientRelics = 3;
+
+        for (int i = 0; i < totalAncientRelics; i++)
+        {
+            int randomIndex = Random.Range(0, allMap.Count);
+
+            Vector2Int position = allMap[randomIndex];
+
+            ZoneData zone = map[position.y, position.x];
+
+            if (zone.chestInventory.GetAmount(ItemType.AncientRelic) > 0 
+                || !zone.chestInventory.HasSpaceFor(ItemType.AncientRelic))
+            {
+                i--;
+                continue;
+            }
+
+            if (!zone.chestInventory.Add(ItemType.AncientRelic, 1))
+            {
+                Debug.LogWarning($"Failed to add Ancient Relic to zone {zone.name} at position ({position.y + 1}, {position.x + 1}).");
+                continue;
+            }
+
+            Debug.Log($"Ancient Relic added to zone {zone.name} at position ({position.y + 1}, {position.x + 1}).");
         }
     }
 

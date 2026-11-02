@@ -178,15 +178,17 @@ public class MapManager : MonoBehaviour
                 FillOtherZones();
 
                 ImplementCamps();
-
-                //startPos = GoTo(ZoneType.Swamp, startPos);
+                
+                ResourcesGenerator.Instance.Init();
+                
+                startPos = GoTo(startPos, ItemType.AncientRelic);
+                //startPos = GoTo(ZoneType.RabbitDen, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
 
                 PrintMap();
                 CreateInitialZones();
-                ResourcesGenerator.Instance.Init();
                 IsMapReady = true;
                 StartCoroutine(SendMapNextFrame());
 
@@ -208,6 +210,22 @@ public class MapManager : MonoBehaviour
                 ZoneData zone = map[y, x];
 
                 if (zone.type == zoneType)
+                    return new Vector2Int(x, y);
+            }
+        }
+
+        return initialPos;
+    }
+
+    private Vector2Int GoTo(Vector2Int initialPos, ItemType itemInChest)
+    {
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                ZoneData zone = map[y, x];
+
+                if (zone.chestInventory.items.ContainsKey(itemInChest))
                     return new Vector2Int(x, y);
             }
         }

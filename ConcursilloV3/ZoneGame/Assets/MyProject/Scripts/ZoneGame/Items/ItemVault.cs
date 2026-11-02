@@ -14,7 +14,7 @@ public static class ItemVault
     public static bool IsTransferable(ItemType itemType)
     {
         return itemType != ItemType.Map && itemType != ItemType.Radar
-            && itemType != ItemType.None;
+            && itemType != ItemType.None && itemType != ItemType.AncientRelic;
     }
 }
 
@@ -28,5 +28,6 @@ public enum ItemType
     Bouquet,
     Log,
     Radar,
-    Map
+    Map,
+    AncientRelic
 }
