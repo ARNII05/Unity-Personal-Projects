@@ -64,7 +64,7 @@ public class SwampZone : MonoBehaviour
         for (int i = 0; i < itemsToSteal; i++)
         {
             ItemType[] validItems = player.inventory.items.Keys
-                .Where(item => ItemVault.IsTransferable(item) && !stolenItemTypes.Contains(item))
+                .Where(item => ItemVault.IsStealable(item) && !stolenItemTypes.Contains(item))
                 .ToArray();
 
             if (validItems.Length == 0)

@@ -236,8 +236,7 @@ public class ResourcesGenerator : MonoBehaviour
 
             ZoneData zone = map[position.y, position.x];
 
-            if (zone.chestInventory.GetAmount(ItemType.AncientRelic) > 0 
-                || !zone.chestInventory.HasSpaceFor(ItemType.AncientRelic))
+            if (!zone.chestInventory.HasSpaceFor(ItemType.AncientRelic))
             {
                 i--;
                 continue;
@@ -263,49 +262,34 @@ public class ResourcesGenerator : MonoBehaviour
             return;
         }
 
-        int itemsToAdd = ItemCountInRuins();
-
-        HashSet<ItemType> addedItems = new();
-
-        for (int i = 0; i < itemsToAdd; i++)
-        {
-            ItemType item = RandomItemInRuins();
-
-            if (addedItems.Contains(item))
-            {
-                i--;
-                continue;
-            }
-
-            addedItems.Add(item);
-
-            ruins.chestInventory.Add(item, 1);
-            ruins.chestInventory.Add(ItemType.Coin, Random.Range(1, 11));
-        }
-    }
-
-    private int ItemCountInRuins()
-    {
-        int probability = Random.Range(0, 100);
-
-        return probability switch
+        int itemsToAdd = Random.Range(0, 100) switch
         {
             < 55 => 1, //55% chance to add 1 item
             < 90 => 2, //35% chance to add 2 items
             _ => 3 //10% chance to add 3 items
         };
-    }
 
-    private ItemType RandomItemInRuins()
-    {
-        int probability = Random.Range(0, 100);
+        HashSet<ItemType> addedItems = new();
 
-        return probability switch
+        ruins.chestInventory.Add(ItemType.Coin, Random.Range(1, 11));
+
+        for (int i = 0; i < itemsToAdd; i++)
         {
-            < 40 => ItemType.AgilityPotion, //40% chance to add Agility Potion
-            < 75 => ItemType.LuckPotion, //35% chance to add Luck Potion
-            _ => ItemType.AncestralNecklace //25% chance to add Ancestral Necklace
-        };
+            ItemType item = Random.Range(0, 100) switch
+            {
+                < 40 => ItemType.AgilityPotion, //40% chance to add Agility Potion
+                < 75 => ItemType.LuckPotion, //35% chance to add Luck Potion
+                _ => ItemType.AncestralNecklace //25% chance to add Ancestral Necklace
+            };
+
+            if (!addedItems.Add(item))
+            {
+                i--;
+                continue;
+            }
+
+            ruins.chestInventory.Add(item, 1);
+        }
     }
 
     private int SetInitialItems(

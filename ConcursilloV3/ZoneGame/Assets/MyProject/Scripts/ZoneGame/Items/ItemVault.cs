@@ -14,6 +14,12 @@ public static class ItemVault
     public static bool IsTransferable(ItemType itemType)
     {
         return itemType != ItemType.Map && itemType != ItemType.Radar
+            && itemType != ItemType.None;
+    }
+
+    public static bool IsStealable(ItemType itemType)
+    {
+        return itemType != ItemType.Map && itemType != ItemType.Radar
             && itemType != ItemType.None && itemType != ItemType.AncientRelic &&
             itemType != ItemType.AncestralNecklace;
     }

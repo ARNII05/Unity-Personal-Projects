@@ -640,6 +640,7 @@ public class Player : NetworkBehaviour
         
         inventory.Add(ItemType.Meat, 1);
         inventory.Add(ItemType.AncientRelic, 3);
+        //inventory.Add(ItemType.AncestralNecklace, 1);
         //AddBuff(ItemType.AgilityPotion);
 
         /*
