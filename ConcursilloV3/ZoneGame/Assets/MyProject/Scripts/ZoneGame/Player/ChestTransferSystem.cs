@@ -52,6 +52,9 @@ public class ChestTransferSystem : MonoBehaviour
     {
         position = player.NetworkMapPos.Value;
 
+        if (!ItemVault.IsTransferable(item))
+            return false;
+
         if (amount <= 0 ||
             ZoneChestAmount(position, item) < amount)
             return false;

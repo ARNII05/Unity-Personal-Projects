@@ -73,6 +73,9 @@ public class ChestUI : MonoBehaviour
 
         ItemType itemType = chestInventoryUI.inventory.GetItemAt(index);
 
+        if (!ItemVault.IsTransferable(itemType))
+            return;
+
         if (!playerInventoryUI.inventory.HasSpaceFor(itemType))
             return;
 
@@ -90,6 +93,9 @@ public class ChestUI : MonoBehaviour
 
         ItemType itemType = chestInventoryUI.inventory.GetItemAt(index);
         int itemAmount = chestInventoryUI.inventory.GetAmount(itemType);
+
+        if (!ItemVault.IsTransferable(itemType))
+            return;
 
         if (!playerInventoryUI.inventory.HasSpaceFor(itemType))
             return;
