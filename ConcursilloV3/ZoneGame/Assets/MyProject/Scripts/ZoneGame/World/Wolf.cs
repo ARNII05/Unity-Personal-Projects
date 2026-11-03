@@ -81,13 +81,9 @@ public class Wolf : NetworkBehaviour
     {
         if (wolfState.Value == WolfState.MovingToDen)
         {
-            Debug.Log($"El lobo se está moviendo hacia su madriguera desde {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
             MoveToDen();
-            Debug.Log($"Posición del lobo después de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
             return;
         }
-
-        Debug.Log($"Posición del lobo antes de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
 
         Vector2Int meatPos = CanMoveToMeat();
         Player playerToChase = CanMoveToPlayer();
@@ -114,17 +110,15 @@ public class Wolf : NetworkBehaviour
 
         Player[] playersCaught = CheckPlayerCollision();
 
-        if (playersCaught != null)
-        {
-            foreach (var player in playersCaught)
-            {
-                StealFromPlayer(player);
-            }
+        if (playersCaught == null)
+            return;
 
-            wolfState.Value = WolfState.MovingToDen;
+        foreach (var player in playersCaught)
+        {
+            StealFromPlayer(player);
         }
 
-        Debug.Log($"Posición del lobo despúes de moverse: {NetworkPosition.Value.y}, {NetworkPosition.Value.x}");
+        wolfState.Value = WolfState.MovingToDen;
     }
 
     private void StealFromPlayer(Player player)
@@ -148,7 +142,9 @@ public class Wolf : NetworkBehaviour
 
     private int ItemsToSteal(Player player)
     {
-        return Random.Range(0, 100) < player.luck ? 0 : Random.Range(1, maxItemsToSteal + 1);
+        ItemType itemType = player.inventory.TryToGet(ItemType.LuckPotion, isBuff: true);
+        
+        return Random.Range(0, 100) < ItemVault.GetBuffValue(itemType, BuffApplierType.Wolf) ? 0 : Random.Range(1, maxItemsToSteal + 1);
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
@@ -258,24 +254,17 @@ public class Wolf : NetworkBehaviour
     private void MoveToDen()
     {
         Vector2Int wolfDenPos = MapManager.Instance.wolfDenPos;
-
-        Debug.Log($"El lobo se está moviendo hacia su cueva en la posicion: {wolfDenPos.y}, {wolfDenPos.x}");
        
         Direction direction = MoveTowards(wolfDenPos);
 
         NetworkPosition.Value = MoveWolfTo(direction, wolfDenPos);
 
         if (NetworkPosition.Value == wolfDenPos)
-        {
-            Debug.Log($"El lobo ha llegado a la cueva en la posicion: {wolfDenPos.y}, {wolfDenPos.x}");
             wolfState.Value = WolfState.MovingRandom;
-        }
     }
 
     private void MoveToMeat(Vector2Int meatPos)
     {
-        Debug.Log($"El lobo se está moviendo hacia una carne en la posicion: {meatPos.y}, {meatPos.x}");
-
         wolfState.Value = WolfState.MovingToMeat;
 
         Direction direction = MoveTowards(meatPos);
@@ -284,7 +273,6 @@ public class Wolf : NetworkBehaviour
 
         if (NetworkPosition.Value == meatPos)
         {
-            Debug.Log($"El lobo se ha comido la carne en la posicion: {meatPos.y}, {meatPos.x}");
             RemoveMeatInZone(meatPos);
             wolfState.Value = WolfState.MovingToDen;
         }
@@ -292,8 +280,6 @@ public class Wolf : NetworkBehaviour
 
     private void MoveToPlayer(Player player)
     {
-        Debug.Log($"El lobo se está moviendo hacia {player.name} en la posicion: {player.NetworkMapPos.Value.y}, {player.NetworkMapPos.Value.x}");
-
         wolfState.Value = WolfState.MovingToPlayer;
 
         Direction direction = MoveTowards(player.NetworkMapPos.Value);
@@ -303,8 +289,6 @@ public class Wolf : NetworkBehaviour
 
     private Vector2Int MoveRandomly()
     {
-        Debug.Log("El lobo se está moviendo random");
-
         wolfState.Value = WolfState.MovingRandom;
 
         Direction[] directions =
@@ -331,7 +315,7 @@ public class Wolf : NetworkBehaviour
             return newPos;
         }
 
-        Debug.Log("El lobo no tiene movimientos disponibles.");
+        Debug.LogError("El lobo no tiene movimientos disponibles.");
 
         return NetworkPosition.Value;
     }
@@ -418,7 +402,7 @@ public class Wolf : NetworkBehaviour
             }
         }
 
-        Debug.LogWarning($"El lobo no encuentra una ruta hasta {targetPos}.");
+        Debug.LogError($"El lobo no encuentra una ruta hasta {targetPos}.");
 
         return Direction.None;
     }
@@ -557,24 +541,38 @@ public class Wolf : NetworkBehaviour
 
     private Player[] CheckPlayerCollision()
     {
-        Vector2Int p1Pos = player1.NetworkMapPos.Value;
-        Vector2Int p2Pos = player2.NetworkMapPos.Value;
+        bool player1CanBeCaught =
+            player1.NetworkMapPos.Value == NetworkPosition.Value &&
+            CanPlayerBeCaught(player1);
 
-        bool isInSamePosWithP1 = p1Pos == NetworkPosition.Value;
-        bool isInSamePosWithP2 = p2Pos == NetworkPosition.Value;
+        bool player2CanBeCaught =
+            player2.NetworkMapPos.Value == NetworkPosition.Value &&
+            CanPlayerBeCaught(player2);
 
-        bool player1IsInForbiddenState = player1.State.Value == PlayerState.Transitioning || player1.State.Value == PlayerState.EndGame;
-        bool player2IsInForbiddenState = player2.State.Value == PlayerState.Transitioning || player2.State.Value == PlayerState.EndGame;
+        if (player1CanBeCaught && player2CanBeCaught)
+            return new[] { player1, player2 };
 
-        return (isInSamePosWithP1, isInSamePosWithP2, player1IsInForbiddenState, player2IsInForbiddenState) switch
-        {
-            (true, true, false, true) => new[] { player1 },
-            (true, true, true, false) => new[] { player2 },
-            (true, true, false, false) => new[] { player1, player2 },
-            (true, false, false, _) => new[] { player1 },
-            (false, true, _, false) => new[] { player2 },
-            _ => null
-        }; 
+        if (player1CanBeCaught)
+            return new[] { player1 };
+
+        if (player2CanBeCaught)
+            return new[] { player2 };
+
+        return null;
+    }
+
+    private bool CanPlayerBeCaught(Player player)
+    {
+        if (player.State.Value == PlayerState.Transitioning ||
+            player.State.Value == PlayerState.EndGame)
+            return false;
+
+        int protection = ItemVault.GetBuffValue(
+            player.inventory.TryToGet(ItemType.AncestralNecklace, isBuff: false),
+            BuffApplierType.Wolf
+        );
+
+        return Random.Range(0, 100) >= protection;
     }
 
     private struct ItemsStolenResult

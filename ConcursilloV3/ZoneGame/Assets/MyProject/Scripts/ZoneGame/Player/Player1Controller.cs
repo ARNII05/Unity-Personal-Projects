@@ -18,6 +18,8 @@ public class Player1Controller : NetworkBehaviour
 
     private ZoneGameControls controls;
 
+    public float movementSpeedMultiplier = 1f;
+
     private void Awake()
     {
         controls = new ZoneGameControls();
@@ -48,6 +50,24 @@ public class Player1Controller : NetworkBehaviour
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.gravityScale = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        UpdateMovementSpeed();
+
+        player.inventory.OnInventoryChanged += UpdateMovementSpeed;
+    }
+
+    private void UpdateMovementSpeed()
+    {
+        bool hasAgilityPotion = player.inventory.TryToGet(
+            ItemType.AgilityPotion,
+            isBuff: true
+        ) != ItemType.None;
+
+        int bonus = hasAgilityPotion
+            ? ItemVault.GetBuffValue(ItemType.AgilityPotion, BuffApplierType.Movement)
+            : 0;
+
+        movementSpeedMultiplier = 1f + bonus / 100f;
     }
 
     private void Update()
@@ -83,7 +103,7 @@ public class Player1Controller : NetworkBehaviour
             return;
         }
 
-        rb.linearVelocity = movementInput * (moveSpeed * player.movementSpeedMultiplier);
+        rb.linearVelocity = movementInput * (moveSpeed * movementSpeedMultiplier);
     }
 
     private void UpdateDirection()

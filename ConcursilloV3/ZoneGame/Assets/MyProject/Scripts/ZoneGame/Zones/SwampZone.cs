@@ -19,13 +19,26 @@ public class SwampZone : MonoBehaviour
     {
         map = MapManager.Instance.map;
 
-        if (player.IsServer && !hasEnteredOnSwamp)
-        {
-            hasEnteredOnSwamp = true;
-            ChooseItemToSteal(player, position);
-        }
+        if (!CanStealItems(player))
+            return;
+
+        hasEnteredOnSwamp = true;
+        ChooseItemToSteal(player, position);
     }
-    
+
+    private bool CanStealItems(Player player)
+    {
+        if (!player.IsServer || hasEnteredOnSwamp)
+            return false;
+
+        int protection = ItemVault.GetBuffValue(
+            player.inventory.TryToGet(ItemType.AncestralNecklace, isBuff: false),
+            BuffApplierType.Swamp
+        );
+
+        return Random.Range(0, 100) >= protection;
+    }
+
     private void ChooseItemToSteal(Player player, Vector2Int swampPos)
     {
         ItemsStolenResult itemsStolen = StealingItems(maxItemsToSteal, swampPos, player);

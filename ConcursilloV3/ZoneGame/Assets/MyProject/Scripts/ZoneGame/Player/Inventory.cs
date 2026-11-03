@@ -8,6 +8,7 @@ public class Inventory
 {
     public Dictionary<ItemType, int> items = new();
     public List<ItemType> inventoryOrder = new();
+    public readonly HashSet<ItemType> activeBuffs = new();
     public event Action OnInventoryChanged;
     public const int maxCapacity = 5;
     
@@ -47,6 +48,14 @@ public class Inventory
     public bool HasSpaceFor(ItemType itemType)
     {
         return items.ContainsKey(itemType) || items.Count < maxCapacity || ItemVault.IsBuff(itemType);
+    }
+
+    public ItemType TryToGet(ItemType itemType, bool isBuff)
+    {
+        if (isBuff && activeBuffs.Contains(itemType))
+            return itemType;
+
+        return items.ContainsKey(itemType) ? itemType : ItemType.None;
     }
 
     public bool HasSpaceAfterRemoving(

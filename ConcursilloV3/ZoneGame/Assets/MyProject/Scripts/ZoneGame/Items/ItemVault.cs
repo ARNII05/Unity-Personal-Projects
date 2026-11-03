@@ -14,7 +14,8 @@ public static class ItemVault
     public static bool IsTransferable(ItemType itemType)
     {
         return itemType != ItemType.Map && itemType != ItemType.Radar
-            && itemType != ItemType.None && itemType != ItemType.AncientRelic;
+            && itemType != ItemType.None && itemType != ItemType.AncientRelic &&
+            itemType != ItemType.AncestralNecklace;
     }
 
     public static bool IsBuff(ItemType itemType)
@@ -24,6 +25,18 @@ public static class ItemVault
             ItemType.AgilityPotion => true,
             ItemType.LuckPotion => true,
             _ => false
+        };
+    }
+
+    public static int GetBuffValue(ItemType itemType, BuffApplierType applierType)
+    {
+        return (itemType, applierType) switch
+        {
+            (ItemType.AncestralNecklace, BuffApplierType.Wolf) => 15,
+            (ItemType.AncestralNecklace, BuffApplierType.Swamp) => 25,
+            (ItemType.AgilityPotion, BuffApplierType.Movement) => 10,
+            (ItemType.LuckPotion, BuffApplierType.Wolf) => 15,
+            _ => 0
         };
     }
 }
@@ -40,7 +53,15 @@ public enum ItemType
     Radar,
     Map,
     AncientRelic,
-    AmuletOfTheAncients,
+    AncestralNecklace,
     AgilityPotion,
     LuckPotion,
+}
+
+public enum BuffApplierType
+{
+    None,
+    Wolf,
+    Swamp,
+    Movement,
 }

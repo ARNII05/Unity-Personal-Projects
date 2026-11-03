@@ -35,11 +35,8 @@ public class Player : NetworkBehaviour
     private WolfUI wolfUI;
 
     private bool gameplayInitialized;
-    public float movementSpeedMultiplier = 1f;
-    public int luck = 0;
 
     public HashSet<Vector2Int> discoveredZones = new();
-    private readonly HashSet<ItemType> activeBuffs = new();
 
     public NetworkVariable<PlayerState> State = new(
         PlayerState.Normal,
@@ -88,7 +85,6 @@ public class Player : NetworkBehaviour
         playerInputHandler = GetComponent<PlayerInputHandler>();
         playerInputHandler.Initialize(controls);
         roleSelectionVisuals = GetComponent<PlayerRoleSelectionVisuals>();
-        //luck = 100;
     }
 
     private void Update()
@@ -140,28 +136,13 @@ public class Player : NetworkBehaviour
 
     public void AddBuff(ItemType buff)
     {
-        if (!activeBuffs.Add(buff))
+        if (!ItemVault.IsBuff(buff))
             return;
 
-        ApplyBuff(buff);
+        if (!inventory.activeBuffs.Add(buff))
+            return;
 
         AddBuffClientRpc(buff, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
-    }
-
-    private void ApplyBuff(ItemType buff)
-    {
-        switch (buff)
-        {
-            case ItemType.AgilityPotion:
-                movementSpeedMultiplier = 1.1f;
-                Debug.Log("Agility Potion applied! Movement speed increased by 10%.");
-                break;
-
-            case ItemType.LuckPotion:
-                luck = 15;
-                Debug.Log("Luck Potion applied! Luck increased by 15.");
-                break;
-        }
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
@@ -170,8 +151,7 @@ public class Player : NetworkBehaviour
         if (IsServer)
             return;
 
-        activeBuffs.Add(buff);
-        ApplyBuff(buff);
+        inventory.activeBuffs.Add(buff);
     }
 
     [Rpc(SendTo.Server)]
@@ -198,10 +178,7 @@ public class Player : NetworkBehaviour
         TradeUI.Instance.tradeObjects.UpdateUI(true);
 
         if (IsOwner)
-        {
             TradeUI.Instance.tradeObjects.WriteOnAdviceText(result, true);
-            //TradeUI.Instance.tradeWithCoins.DeselectItem();
-        }
     }
 
     [Rpc(SendTo.Server)]
@@ -662,7 +639,8 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
-        //inventory.Add(ItemType.AncientRelic, 1);
+        inventory.Add(ItemType.AncientRelic, 3);
+        //AddBuff(ItemType.AgilityPotion);
 
         /*
         inventory.Add(ItemType.Coin, 99);

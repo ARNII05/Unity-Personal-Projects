@@ -56,7 +56,9 @@ public class ChestTransferSystem : MonoBehaviour
             ZoneChestAmount(position, item) < amount)
             return false;
 
-        if (!player.inventory.HasSpaceFor(item))
+        bool isBuff = ItemVault.IsBuff(item);
+
+        if (!isBuff && !player.inventory.HasSpaceFor(item))
             return false;
 
         ZoneData zone = MapManager.Instance.map[
@@ -64,18 +66,16 @@ public class ChestTransferSystem : MonoBehaviour
             position.x
         ];
 
-        bool isBuff = ItemVault.IsBuff(item);
+        if (!zone.chestInventory.Remove(item, amount))
+            return false;
 
         if (isBuff)
         {
             player.AddBuff(item);
         }
         else if (!player.inventory.Add(item, amount))
-            return false;
-
-        if (!zone.chestInventory.Remove(item, amount))
         {
-            player.inventory.Remove(item, amount);
+            zone.chestInventory.Add(item, amount);
             return false;
         }
 
@@ -84,6 +84,9 @@ public class ChestTransferSystem : MonoBehaviour
 
     public bool TryToRemoveAncientRelics(ChestType chestType, Vector2Int position)
     {
+        if (position != player.NetworkMapPos.Value)
+            return false;
+
         ZoneData zone = MapManager.Instance.map[position.y, position.x];
 
         if (zone.type != ZoneType.Ruins)
@@ -98,6 +101,9 @@ public class ChestTransferSystem : MonoBehaviour
             return false;
 
         Player otherPlayer = MapManager.Instance.GetOtherPlayer(player);
+
+        if (otherPlayer == null)
+            return false;
 
         int amountOfAncientRelics = player.inventory.GetAmount(ItemType.AncientRelic) +
             otherPlayer.inventory.GetAmount(ItemType.AncientRelic);
