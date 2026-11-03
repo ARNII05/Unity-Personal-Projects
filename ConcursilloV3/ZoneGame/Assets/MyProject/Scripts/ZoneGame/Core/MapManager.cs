@@ -368,9 +368,6 @@ public class MapManager : MonoBehaviour
             return;
         }
 
-        player1.initialPos = startPos;
-        player2.initialPos = startPos;
-
         player1.transform.position =
             player1RealPos;
 
@@ -407,19 +404,14 @@ public class MapManager : MonoBehaviour
             Destroy(player.currentZone);
         }
 
-        Vector2Int position =
-            player.NetworkMapPos.Value;
+        Vector2Int position = player.NetworkMapPos.Value;
 
-        ZoneData zoneData =
-            map[position.y, position.x];
+        ZoneData zoneData = map[position.y, position.x];
 
-        GameObject prefab =
-            LoadZone(zoneData.type);
+        GameObject prefab = LoadZone(zoneData.type);
 
         if (prefab == null)
-        {
             return;
-        }
 
         Vector3 zonePosition =
             player == player1
@@ -433,7 +425,6 @@ public class MapManager : MonoBehaviour
         );
 
         player.currentZone = zone;
-        player.CurrentZoneMapPos = position;
 
         Zone currentZone = zone.GetComponent<Zone>();
 
@@ -441,7 +432,7 @@ public class MapManager : MonoBehaviour
 
         foreach (Chest chest in chests)
         {
-            chest.Init(GameObject.Find("ChestUI").GetComponent<ChestUI>());
+            chest.Init(GameObject.Find("ChestUI").GetComponent<ChestUI>(), zoneData.chestOpened);
             chest.inventory = zoneData.chestInventory;
         }
 
@@ -452,15 +443,6 @@ public class MapManager : MonoBehaviour
                     zoneData.chestInventory);
 
             player.discoveredZones.Add(position);
-        }
-
-        if (zoneData.chestOpened)
-        {
-            foreach (Chest chest in chests)
-            {
-                chest.gameObject.GetComponent<SpriteRenderer>().sprite
-                = Resources.Load<Sprite>("Prefabs/Objects/OpenedBox");
-            }
         }
 
         currentZone.Setup(

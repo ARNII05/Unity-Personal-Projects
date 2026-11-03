@@ -23,8 +23,6 @@ public class Player : NetworkBehaviour
 
     public Chest nearbyChest => nearbyObjects.NearbyChest;
     public PlayerNearbyObjects NearbyObjects => nearbyObjects;
-    public Vector2Int CurrentZoneMapPos;
-    public Vector2Int initialPos;
     public GameObject currentZone;
 
     public Inventory inventory = new();

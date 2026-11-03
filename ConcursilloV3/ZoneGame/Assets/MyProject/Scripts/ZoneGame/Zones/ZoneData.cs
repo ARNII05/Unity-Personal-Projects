@@ -215,22 +215,26 @@ public class Ruins : ZoneData
     public Ruins() : base(ZoneType.Ruins, "Ruinas")
     {
         canHaveChest = false;
+
+        player1EntryPoints[0] = new Vector3(-49.6f, 46.9f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-49.6f, -43.1f, -6.2f);
+        player1EntryPoints[2] = new Vector3(36.4f, -1f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-136.6f, -1f, -6.2f);
+
+        player2EntryPoints[0] = new Vector3(203.4f, 46.9f, -6.2f);
+        player2EntryPoints[1] = new Vector3(203.4f, -43.1f, -6.2f);
+        player2EntryPoints[2] = new Vector3(288.4f, -1f, -6.2f);
+        player2EntryPoints[3] = new Vector3(118.4f, -1f, -6.2f);
+
+        player1ZonePos = new Vector3(-49.1f, 36.6f);
+        player2ZonePos = new Vector3(206, 36.6f);
+
+        player1TpZonePos = new Vector3(-73.6f, -10f, -6.2f);
+        player2TpZonePos = new Vector3(183.4f, -10f, -6.2f);
     }
     public override void OnEnter(Player player)
     {
         LogManager.Log("Entrando a unas Ruinas.");
-    }
-
-    public override ChestItems ItemProbInChest(int prob)
-    {
-        return prob switch
-        {
-            < 40 => ChestItems.None,    //40%
-            < 70 => ChestItems.Coin,    //30%
-            < 85 => ChestItems.Flower,  //15%
-            < 100 => ChestItems.Branch, //15%
-            _ => ChestItems.None
-        };
     }
 }
 

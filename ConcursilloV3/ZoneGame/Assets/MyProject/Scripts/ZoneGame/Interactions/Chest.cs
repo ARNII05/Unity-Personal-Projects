@@ -1,18 +1,18 @@
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Chest : MonoBehaviour
 {
-    [SerializeField] private ChestType chestType = ChestType.Normal;
+    [SerializeField] private ChestType chestType;
     public Inventory inventory = new();
     public ChestUI chestUI;
 
-    public void Init(ChestUI chestUI)
+    public void Init(ChestUI chestUI, bool isOpen)
     {
         this.chestUI = chestUI;
 
-        if (chestType == ChestType.Ancient)
-            transform.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Prefabs/Objects/AncientVaseClosed");
+        GetComponent<SpriteRenderer>().sprite = GetSprite(isOpen);
     }
 
     public void OnOpen(Player player)
@@ -35,9 +35,13 @@ public class Chest : MonoBehaviour
         player.TryToRemoveAncientRelicsRpc(chestType, player.NetworkMapPos.Value);
     }
 
-    public Sprite GetSprite()
+    public Sprite GetSprite(bool isOpen = true)
     {
-        return chestType == ChestType.Normal ? Resources.Load<Sprite>("Prefabs/Objects/OpenedBox") : Resources.Load<Sprite>("Prefabs/Objects/AncientVaseOpened");
+        return isOpen switch
+        {
+            true => chestType == ChestType.Normal ? Resources.Load<Sprite>("Prefabs/Objects/OpenedBox") : Resources.Load<Sprite>("Prefabs/Objects/AncientVaseOpened"),
+            _ => chestType == ChestType.Normal ? Resources.Load<Sprite>("Prefabs/Objects/ClosedBox") : Resources.Load<Sprite>("Prefabs/Objects/AncientVaseClosed")
+        };
     }
 }
 
