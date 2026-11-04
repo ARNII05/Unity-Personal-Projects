@@ -56,27 +56,25 @@ public class BuffsUI : MonoBehaviour
         foreach (Transform child in grid.transform)
             Destroy(child.gameObject);
 
-        for (int i = 0; i < Inventory.maxBuffs; i++)
+        for (int i = 0; i < inventory.activeBuffs.Count; i++)
         {
             GameObject actualBox = Instantiate(buffBox, grid.transform);
             GameObject itemBox = actualBox.transform.Find("ItemBox").gameObject;
             GameObject textPanel = actualBox.transform.Find("TextPanel").gameObject;
             TextMeshProUGUI itemName = textPanel.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
             TextMeshProUGUI desc = textPanel.transform.Find("Desc").GetComponent<TextMeshProUGUI>();
+
+            ItemType buffType = inventory.GetBuffAt(i);
+
+            if (buffType == ItemType.None)
+            {
+                Debug.LogWarning($"Invalid buff at index {i}.");
+                continue;
+            }
             
-            if (i < inventory.activeBuffs.Count)
-            {
-                ItemType buffType = inventory.GetBuffAt(i);
-                itemBox.transform.Find("ItemIcon").GetComponent<Image>().sprite = ItemVault.GetItemSprite(buffType);
-                itemName.text = ItemVault.GetItemName(buffType);
-                desc.text = ItemVault.GetItemDescription(buffType);
-            }
-            else
-            {
-                itemBox.SetActive(false);
-                itemName.text = "";
-                desc.text = "";
-            }
+            itemBox.transform.Find("ItemIcon").GetComponent<Image>().sprite = ItemVault.GetItemSprite(buffType);
+            itemName.text = ItemVault.GetItemName(buffType);
+            desc.text = ItemVault.GetItemDescription(buffType);
         }
     }
 
