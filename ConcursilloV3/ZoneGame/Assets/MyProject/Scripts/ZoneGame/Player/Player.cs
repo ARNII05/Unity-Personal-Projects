@@ -28,6 +28,7 @@ public class Player : NetworkBehaviour
     public Inventory inventory = new();
     public CraftingSystem craftingSystem;
     private InventoryUI inventoryUI;
+    private BuffsUI buffsUI;
     private Direction lastDirection;
     private ZoneGameControls controls;
     private WolfUI wolfUI;
@@ -106,6 +107,16 @@ public class Player : NetworkBehaviour
         inventoryUI.ToggleInventory();
     }
 
+    public void OpenBuffsUI()
+    {
+        buffsUI.ToggleBuffsUI();
+    }
+
+    public void CloseBuffsUI()
+    {
+        buffsUI.ToggleBuffsUI();
+    }
+
     public void OpenChest()
     {
         nearbyObjects.NearbyChest.OnOpen(this);
@@ -134,10 +145,7 @@ public class Player : NetworkBehaviour
 
     public void AddBuff(ItemType buff)
     {
-        if (!ItemVault.IsBuff(buff))
-            return;
-
-        if (!inventory.activeBuffs.Add(buff))
+        if (!inventory.Add(buff))
             return;
 
         AddBuffClientRpc(buff, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
@@ -496,6 +504,10 @@ public class Player : NetworkBehaviour
 
             inventoryUI.SetPlayer(this);
 
+            buffsUI = GameObject.Find("BuffsPanel").GetComponent<BuffsUI>();
+
+            buffsUI.SetPlayer(this);
+
             CraftingUI.Instance.SetPlayer(this);
 
             TradeUI.Instance.Init(this);
@@ -637,16 +649,6 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
-        inventory.Add(ItemType.AncientRelic, 3);
-        //inventory.Add(ItemType.AncestralNecklace, 1);
-        //AddBuff(ItemType.AgilityPotion);
-
-        /*
-        inventory.Add(ItemType.Coin, 99);
-        inventory.Add(ItemType.Bouquet, 7);
-        inventory.Add(ItemType.Flower, 99);
-        inventory.Add(ItemType.Log, 7);
-        */
     }
 
     [Rpc(SendTo.Owner)]
@@ -831,6 +833,7 @@ public enum PlayerState
     CaughtByWolf,
     InSwamp,
     Inventory,
+    BuffsUI,
     Transitioning,
     Trading,
     EndGame

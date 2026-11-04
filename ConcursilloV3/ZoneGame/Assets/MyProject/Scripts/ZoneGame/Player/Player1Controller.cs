@@ -60,7 +60,7 @@ public class Player1Controller : NetworkBehaviour
     {
         bool hasAgilityPotion = player.inventory.TryToGet(
             ItemType.AgilityPotion,
-            isBuff: true
+            ItemVault.IsBuff(ItemType.AgilityPotion)
         ) != ItemType.None;
 
         int bonus = hasAgilityPotion

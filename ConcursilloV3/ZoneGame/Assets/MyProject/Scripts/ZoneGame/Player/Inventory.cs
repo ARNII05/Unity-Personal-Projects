@@ -11,7 +11,10 @@ public class Inventory
     public readonly HashSet<ItemType> activeBuffs = new();
     public event Action OnInventoryChanged;
     public const int maxCapacity = 5;
-    
+
+    public const int maxBuffs = 6;
+
+
     public void SetContents(ItemType[] itemTypes, int[] amounts, ItemType[] order)
     {
         items.Clear();
@@ -42,6 +45,22 @@ public class Inventory
 
         OnInventoryChanged?.Invoke();
 
+        return true;
+    }
+
+    public bool Add(ItemType buffType)
+    {
+        if (buffType == ItemType.None || !ItemVault.IsBuff(buffType))
+            return false;
+
+        if (activeBuffs.Count >= maxBuffs)
+            return false;
+
+        if (!activeBuffs.Add(buffType))
+            return false;
+
+        OnInventoryChanged?.Invoke();
+        
         return true;
     }
 
@@ -86,6 +105,23 @@ public class Inventory
             return ItemType.None;
 
         return inventoryOrder[index];
+    }
+
+    public ItemType GetBuffAt(int index)
+    {
+        if (index < 0 || index >= activeBuffs.Count)
+            return ItemType.None;
+
+        int i = 0;
+
+        foreach (var item in activeBuffs)
+        {
+            if (i == index)
+                return item;
+            i++;
+        }
+
+        return ItemType.None;
     }
 
     public bool Remove(ItemType itemType, int amount)

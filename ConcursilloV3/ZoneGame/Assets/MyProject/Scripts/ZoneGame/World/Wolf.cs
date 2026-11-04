@@ -142,7 +142,7 @@ public class Wolf : NetworkBehaviour
 
     private int ItemsToSteal(Player player)
     {
-        ItemType itemType = player.inventory.TryToGet(ItemType.LuckPotion, isBuff: true);
+        ItemType itemType = player.inventory.TryToGet(ItemType.LuckPotion, ItemVault.IsBuff(ItemType.LuckPotion));
         
         return Random.Range(0, 100) < ItemVault.GetBuffValue(itemType, BuffApplierType.Wolf) ? 0 : Random.Range(1, maxItemsToSteal + 1);
     }
@@ -568,7 +568,7 @@ public class Wolf : NetworkBehaviour
             return false;
 
         int protection = ItemVault.GetBuffValue(
-            player.inventory.TryToGet(ItemType.AncestralNecklace, isBuff: false),
+            player.inventory.TryToGet(ItemType.AncestralNecklace, ItemVault.IsBuff(ItemType.AncestralNecklace)),
             BuffApplierType.Wolf
         );
 

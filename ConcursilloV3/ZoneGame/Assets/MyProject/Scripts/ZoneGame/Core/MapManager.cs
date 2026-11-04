@@ -182,7 +182,7 @@ public class MapManager : MonoBehaviour
                 ResourcesGenerator.Instance.Init();
                 
                 //startPos = GoTo(startPos, ItemType.AncientRelic);
-                startPos = GoTo(ZoneType.Ruins, startPos);
+                //startPos = GoTo(ZoneType.Ruins, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;

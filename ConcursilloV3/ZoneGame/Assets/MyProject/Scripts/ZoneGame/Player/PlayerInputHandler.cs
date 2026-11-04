@@ -37,6 +37,11 @@ public class PlayerInputHandler : MonoBehaviour
                     player.CloseInventory();
                 break;
 
+            case PlayerState.BuffsUI:
+                if (controls.Gameplay.Buffs.WasPressedThisFrame())
+                    player.CloseBuffsUI();
+                break;
+
             case PlayerState.UsingMap:
                 if (controls.Gameplay.InitialObj.WasPressedThisFrame())
                     MapUI.Instance.ToggleMap();
@@ -86,6 +91,9 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (controls.Gameplay.Inventory.WasPressedThisFrame())
             player.OpenInventory();
+
+        if (controls.Gameplay.Buffs.WasPressedThisFrame())
+            player.OpenBuffsUI();
     }
 
     private void HandleTabInput()

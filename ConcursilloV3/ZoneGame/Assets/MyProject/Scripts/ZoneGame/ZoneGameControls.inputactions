@@ -55,6 +55,16 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "Buffs",
+                    "type": "Button",
+                    "id": "2aa3526d-ae61-486c-9d34-044bbe3dc606",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -209,6 +219,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ca85b1f-9faf-4ec0-b510-11cf7faa5457",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Buffs",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

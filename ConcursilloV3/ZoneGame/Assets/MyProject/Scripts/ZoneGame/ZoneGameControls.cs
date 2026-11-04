@@ -141,6 +141,16 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Buffs"",
+                    ""type"": ""Button"",
+                    ""id"": ""2aa3526d-ae61-486c-9d34-044bbe3dc606"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -297,6 +307,17 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Confirm"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5ca85b1f-9faf-4ec0-b510-11cf7faa5457"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Buffs"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -310,6 +331,7 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
         m_Gameplay_Inventory = m_Gameplay.FindAction("Inventory", throwIfNotFound: true);
         m_Gameplay_InitialObj = m_Gameplay.FindAction("InitialObj", throwIfNotFound: true);
         m_Gameplay_Confirm = m_Gameplay.FindAction("Confirm", throwIfNotFound: true);
+        m_Gameplay_Buffs = m_Gameplay.FindAction("Buffs", throwIfNotFound: true);
     }
 
     ~@ZoneGameControls()
@@ -395,6 +417,7 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Inventory;
     private readonly InputAction m_Gameplay_InitialObj;
     private readonly InputAction m_Gameplay_Confirm;
+    private readonly InputAction m_Gameplay_Buffs;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -426,6 +449,10 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/Confirm".
         /// </summary>
         public InputAction @Confirm => m_Wrapper.m_Gameplay_Confirm;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Buffs".
+        /// </summary>
+        public InputAction @Buffs => m_Wrapper.m_Gameplay_Buffs;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -467,6 +494,9 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
             @Confirm.started += instance.OnConfirm;
             @Confirm.performed += instance.OnConfirm;
             @Confirm.canceled += instance.OnConfirm;
+            @Buffs.started += instance.OnBuffs;
+            @Buffs.performed += instance.OnBuffs;
+            @Buffs.canceled += instance.OnBuffs;
         }
 
         /// <summary>
@@ -493,6 +523,9 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
             @Confirm.started -= instance.OnConfirm;
             @Confirm.performed -= instance.OnConfirm;
             @Confirm.canceled -= instance.OnConfirm;
+            @Buffs.started -= instance.OnBuffs;
+            @Buffs.performed -= instance.OnBuffs;
+            @Buffs.canceled -= instance.OnBuffs;
         }
 
         /// <summary>
@@ -568,5 +601,12 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnConfirm(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Buffs" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBuffs(InputAction.CallbackContext context);
     }
 }

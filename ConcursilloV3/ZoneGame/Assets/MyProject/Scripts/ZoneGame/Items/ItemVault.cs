@@ -11,6 +11,47 @@ public static class ItemVault
         return Resources.Load<Sprite>(baseSpritePath + itemType.ToString());
     }
 
+    public static string GetItemName(ItemType itemType)
+    {
+        return itemType switch
+        {
+            ItemType.Flower => "Flor",
+            ItemType.Branch => "Rama",
+            ItemType.Coin => "Moneda",
+            ItemType.Meat => "Carne",
+            ItemType.Bouquet => "Ramo de Flores",
+            ItemType.Log => "Tronco",
+            ItemType.Radar => "Radar",
+            ItemType.Map => "Mapa",
+            ItemType.AncientRelic => "Reliquia Antigua",
+            ItemType.AncestralNecklace => "Collar Ancestral",
+            ItemType.AgilityPotion => "Poción de Agilidad",
+            ItemType.LuckPotion => "Poción de Suerte",
+            _ => ""
+        };
+    }
+
+    public static string GetItemDescription(ItemType itemType)
+    {
+        return itemType switch
+        {
+            ItemType.Flower => "Se utiliza para fabricar Ramos de Flores.",
+            ItemType.Branch => "Se utiliza para fabricar Troncos.",
+            ItemType.Coin => "Se utiliza para comprar objetos.",
+            ItemType.Meat => "Sirve para atraer al lobo.",
+            ItemType.Bouquet => "Un ramo de flores para entregárselo a la abuela.",
+            ItemType.Log => "Permite cruzar los ríos.",
+            ItemType.Radar => "Detecta el lobo.",
+            ItemType.Map => "Muestra el área circundante para orientarte.",
+            ItemType.AncientRelic => "Una reliquia necesaria para abrir el cofre ancestral.",
+            ItemType.AncestralNecklace => $"Protege contra el lobo y el pantano: " +
+            $"{GetBuffValue(itemType, BuffApplierType.Wolf)} y {GetBuffValue(itemType, BuffApplierType.Swamp)}%, respectivamente.",
+            ItemType.AgilityPotion => $"Aumenta tu velocidad de movimiento un {GetBuffValue(itemType, BuffApplierType.Movement)}%.",
+            ItemType.LuckPotion => $"Otorga un {GetBuffValue(itemType, BuffApplierType.Wolf)}% de probabilidad de evitar el robo del lobo al ser capturado.",
+            _ => ""
+        };
+    }
+
     public static bool IsTransferable(ItemType itemType)
     {
         return itemType != ItemType.Map && itemType != ItemType.Radar
@@ -20,8 +61,7 @@ public static class ItemVault
     public static bool IsStealable(ItemType itemType)
     {
         return itemType != ItemType.Map && itemType != ItemType.Radar
-            && itemType != ItemType.None && itemType != ItemType.AncientRelic &&
-            itemType != ItemType.AncestralNecklace;
+            && itemType != ItemType.None && itemType != ItemType.AncientRelic;
     }
 
     public static bool IsBuff(ItemType itemType)
@@ -30,6 +70,7 @@ public static class ItemVault
         {
             ItemType.AgilityPotion => true,
             ItemType.LuckPotion => true,
+            ItemType.AncestralNecklace => true,
             _ => false
         };
     }

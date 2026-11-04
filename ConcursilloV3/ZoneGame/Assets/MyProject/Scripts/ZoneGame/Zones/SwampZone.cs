@@ -32,7 +32,7 @@ public class SwampZone : MonoBehaviour
             return false;
 
         int protection = ItemVault.GetBuffValue(
-            player.inventory.TryToGet(ItemType.AncestralNecklace, isBuff: false),
+            player.inventory.TryToGet(ItemType.AncestralNecklace, ItemVault.IsBuff(ItemType.AncestralNecklace)),
             BuffApplierType.Swamp
         );
 

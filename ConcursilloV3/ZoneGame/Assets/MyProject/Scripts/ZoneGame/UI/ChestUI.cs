@@ -6,8 +6,8 @@ public class ChestUI : MonoBehaviour
 {
     public InventoryUI playerInventoryUI;
     public InventoryUI chestInventoryUI;
-    private Vector3 playerInventoryBasePos = Vector3.zero;
-    private Vector3 playerInventoryChangedPos = new(-460, -1);
+    private Vector3 playerInventoryBasePos = new(460, 0);
+    private Vector3 playerInventoryChangedPos = Vector3.zero;
 
     private Player player;
 
