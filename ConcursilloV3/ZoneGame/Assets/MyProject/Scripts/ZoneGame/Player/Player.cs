@@ -717,10 +717,7 @@ public class Player : NetworkBehaviour
     {
         while (RoleSelectorUI.Instance == null ||
                MapManager.Instance == null ||
-               !RoleSelectorUI.Instance.IsPlayerInitialized ||
-               !MapManager.Instance.ArePlayersRegistered ||
-               MapManager.Instance.GetOtherPlayer(
-                   MapManager.Instance.GetLocalPlayer()) == null)
+               !RoleSelectorUI.Instance.IsPlayerInitialized)
         {
             yield return null;
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoleSelectorUI : MonoBehaviour
 {
@@ -14,16 +15,15 @@ public class RoleSelectorUI : MonoBehaviour
     [SerializeField] private GameObject lockObj, startGameObj;
     [SerializeField] private CanvasGroup canvasGroup;
 
-    public GameObject[] background;
-    private GameObject roleLobbyPanel;
-    public GameObject gardenerRoleObject;
-    public GameObject builderRoleObject;
+    public GameObject background, gardenerRoleObject, builderRoleObject;
+    private GameObject roleLobbyPanel, player1Box, player2Box;
+    private TextMeshProUGUI relayCodeText;
 
     private Player player;
     private Player otherPlayer;
 
-    private bool gameStarted = false;
-    
+    private bool gameStarted = false, roleSelectorInitialized = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -35,10 +35,12 @@ public class RoleSelectorUI : MonoBehaviour
         Instance = this;
 
         roleLobbyPanel = transform.Find("RoleLobbyPanel").gameObject;
+        relayCodeText = roleLobbyPanel.transform.Find("RelayCodeText").GetComponent<TextMeshProUGUI>();
+        player1Box = roleLobbyPanel.transform.Find("Player1Box").gameObject;
+        player2Box = roleLobbyPanel.transform.Find("Player2Box").gameObject;
 
         roleLobbyPanel.SetActive(false);
-        background[0].SetActive(false);
-        background[1].SetActive(false);
+        background.SetActive(false);
     }
 
     public void InitPlayer(Player player)
@@ -48,34 +50,75 @@ public class RoleSelectorUI : MonoBehaviour
 
     public void InitRoleSelector()
     {
+        if (player == null)
+            return;
+
         otherPlayer = MapManager.Instance.GetOtherPlayer(player);
 
-        player.SetNewStateRpc(PlayerState.SelectingRole);
+        if (!roleSelectorInitialized)
+        {
+            player.SetNewStateRpc(PlayerState.SelectingRole);
 
-        player.Role.OnValueChanged += OnRoleChanged;
-        otherPlayer.Role.OnValueChanged += OnRoleChanged;
+            player.Role.OnValueChanged += OnRoleChanged;
 
-        roleLobbyPanel.SetActive(true);
-        background[0].SetActive(true);
-        startGameObj.SetActive(NetworkManager.Singleton.IsServer);
+            roleLobbyPanel.SetActive(true);
+            background.SetActive(true);
+            startGameObj.SetActive(NetworkManager.Singleton.IsServer);
+            relayCodeText.gameObject.SetActive(NetworkManager.Singleton.IsServer);
 
+            if (NetworkManager.Singleton.IsServer)
+            {
+                relayCodeText.text = $"Código de partida: {RelayManager.CurrentJoinCode}";
+            }
+
+            roleSelectorInitialized = true;
+        }
+
+        UpdateOtherPlayer();
         UpdateStartButton();
-        UpdateInfoBoxText();
+        UpdatePlayerBoxes();
+    }
+
+    public void RefreshPlayers()
+    {
+        if (!roleSelectorInitialized)
+            return;
+
+        UpdateOtherPlayer();
+        UpdateStartButton();
+        UpdatePlayerBoxes();
+    }
+
+    private void UpdateOtherPlayer()
+    {
+        Player newOtherPlayer = MapManager.Instance.GetOtherPlayer(player);
+
+        if (otherPlayer == newOtherPlayer)
+            return;
+
+        if (otherPlayer != null)
+            otherPlayer.Role.OnValueChanged -= OnRoleChanged;
+
+        otherPlayer = newOtherPlayer;
+
+        if (otherPlayer != null)
+            otherPlayer.Role.OnValueChanged += OnRoleChanged;
     }
 
     private void OnRoleChanged(PlayerRole previousValue, PlayerRole newValue)
     {
         UpdateStartButton();
-        UpdateInfoBoxText();
+        UpdatePlayerBoxes();
     }
 
     private void UpdateStartButton()
     {
-        bool bothReady = player.Role.Value != PlayerRole.None
-            && otherPlayer.Role.Value != PlayerRole.None;
+        bool bothReady = otherPlayer != null &&
+                         player.Role.Value != PlayerRole.None &&
+                         otherPlayer.Role.Value != PlayerRole.None;
 
         lockObj.SetActive(!bothReady);
-        
+
         canvasGroup.alpha = bothReady ? 1 : 0.4f;
         canvasGroup.interactable = bothReady;
         canvasGroup.blocksRaycasts = bothReady;
@@ -108,17 +151,17 @@ public class RoleSelectorUI : MonoBehaviour
         playerRoleText.text = isSelectionType ? playerName : "Sin escoger";
     }
 
-    public void UpdateInfoBoxText()
+    public void UpdatePlayerBoxes()
     {
-        TextMeshProUGUI infoboxText = roleLobbyPanel.transform.Find("InfoBox").GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI player1NameText = player1Box.transform.GetChild(0).Find("PlayerName").GetComponent<TextMeshProUGUI>();
+        Image player1Icon = player1Box.transform.GetChild(1).Find("PlayerIcon").GetComponent<Image>();
 
-        infoboxText.text = (player.Role.Value, otherPlayer.Role.Value) switch
-        {
-            (PlayerRole.None, PlayerRole.None) => "Ningún jugador tiene rol",
-            (PlayerRole.None, _) => $"{player.name} sin rol",
-            (_, PlayerRole.None) => $"{otherPlayer.name} sin rol",
-            _ => "Los 2 jugadores están listos.",
-        };
+        TextMeshProUGUI player2NameText = player2Box.transform.GetChild(0).Find("PlayerName").GetComponent<TextMeshProUGUI>();
+        Image player2Icon = player2Box.transform.GetChild(1).Find("PlayerIcon").GetComponent<Image>();
+
+        player1NameText.text = player.name;
+
+        player2NameText.text = otherPlayer != null ? otherPlayer.name : "Sin conexión";
     }
 
     public void StartGame()
@@ -130,8 +173,7 @@ public class RoleSelectorUI : MonoBehaviour
     public void CloseLobby()
     {
         roleLobbyPanel.SetActive(false);
-        background[0].SetActive(false);
-        background[1].SetActive(false);
+        background.SetActive(false);
     }
 
     public void SelectGardener()

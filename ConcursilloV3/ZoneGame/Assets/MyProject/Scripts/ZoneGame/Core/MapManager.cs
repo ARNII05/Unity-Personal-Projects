@@ -35,8 +35,11 @@ public class MapManager : MonoBehaviour
     private Player player1;
     private Player player2;
 
+    private bool roleSelectorInitializationRequested = false;
+
     public Player Player1 => player1;
     public Player Player2 => player2;
+
 
     public Wolf wolf;
 
@@ -81,17 +84,25 @@ public class MapManager : MonoBehaviour
             player1 = player;
             player1.name = "Player 1";
         }
-        else if (player2 == null)
+        else if (player2 == null && player != player1)
         {
             player2 = player;
             player2.name = "Player 2";
         }
 
-        if (player1 != null &&
-            player2 != null &&
-            isServer)
+        if (RoleSelectorUI.Instance != null)
+            RoleSelectorUI.Instance.RefreshPlayers();
+
+        if (isServer &&
+            player1 != null &&
+            !roleSelectorInitializationRequested)
         {
+            roleSelectorInitializationRequested = true;
             InitRoleSelector();
+        }
+
+        if (isServer && ArePlayersRegistered && !IsMapReady)
+        {
             MakeRandomMap();
         }
     }

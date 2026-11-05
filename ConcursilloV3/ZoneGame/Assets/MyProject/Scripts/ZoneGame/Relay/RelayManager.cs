@@ -26,6 +26,8 @@ public class RelayManager : MonoBehaviour
     private float pingTimer;
     private UnityTransport transport;
 
+    public static string CurrentJoinCode { get; private set; } = string.Empty;
+
 
     private void Update()
     {
@@ -103,11 +105,13 @@ public class RelayManager : MonoBehaviour
         try
         {
             string code = await CreateRelay();
-            relayCodeText.text = $"Código: {code}";
+            if (relayCodeText != null)
+                relayCodeText.text = $"Código: {code}";
         }
         catch (Exception e)
         {
-            relayCodeText.text = "Error al crear partida";
+            if (relayCodeText != null)
+                relayCodeText.text = "Error al crear partida";
             Debug.LogError($"Error al crear Relay: {e}");
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
@@ -123,7 +127,8 @@ public class RelayManager : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(code))
         {
-            relayCodeText.text = "Introduce un código";
+            if (relayCodeText != null)
+                relayCodeText.text = "Introduce un código";
             return;
         }
 
@@ -133,11 +138,13 @@ public class RelayManager : MonoBehaviour
         try
         {
             await JoinRelay(code);
-            relayCodeText.text = "Conectando...";
+            if (relayCodeText != null)
+                relayCodeText.text = "Conectando...";
         }
         catch (Exception e)
         {
-            relayCodeText.text = "Error al unirse";
+            if (relayCodeText != null)
+                relayCodeText.text = "Error al unirse";
             Debug.LogError($"Error al unirse a Relay: {e}");
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
@@ -160,8 +167,34 @@ public class RelayManager : MonoBehaviour
         if (!NetworkManager.Singleton.StartHost())
             throw new Exception("No se pudo iniciar el Host.");
 
+        CurrentJoinCode = joinCode;
+
         Debug.Log($"Relay creado. Código: {joinCode}");
+
+        LoadRoleScene();
+
         return joinCode;
+    }
+
+    private void LoadRoleScene()
+    {
+        if (isLoadingRoleScene)
+            return;
+
+        isLoadingRoleScene = true;
+
+        Debug.Log("Host iniciado. Cargando ZoneMap...");
+
+        var status = NetworkManager.Singleton.SceneManager.LoadScene(
+            "ZoneMap",
+            LoadSceneMode.Single
+        );
+
+        if (status != Unity.Netcode.SceneEventProgressStatus.Started)
+        {
+            Debug.LogError($"No se pudo iniciar la carga de ZoneMap. Estado: {status}");
+            isLoadingRoleScene = false;
+        }
     }
 
     public async Task JoinRelay(string joinCode)
@@ -201,37 +234,10 @@ public class RelayManager : MonoBehaviour
         Debug.Log($"Cliente conectado correctamente. ID: {clientId}");
 
         if (NetworkManager.Singleton.IsClient &&
-            NetworkManager.Singleton.LocalClientId == clientId)
+            NetworkManager.Singleton.LocalClientId == clientId &&
+            relayCodeText != null)
         {
             relayCodeText.text = "¡Conectado correctamente!";
-        }
-
-        // Solo el host decide cuándo pasar a la selección de roles.
-        if (!NetworkManager.Singleton.IsServer ||
-            isLoadingRoleScene)
-        {
-            return;
-        }
-
-        // El host cuenta como un cliente conectado.
-        if (NetworkManager.Singleton.ConnectedClientsIds.Count < 2)
-        {
-            return;
-        }
-
-        isLoadingRoleScene = true;
-
-        Debug.Log("Los dos jugadores están conectados. Cargando ZoneMap...");
-
-        var status = NetworkManager.Singleton.SceneManager.LoadScene(
-            "ZoneMap",
-            LoadSceneMode.Single
-        );
-
-        if (status != Unity.Netcode.SceneEventProgressStatus.Started)
-        {
-            Debug.LogError($"No se pudo iniciar la carga de ZoneMap. Estado: {status}");
-            isLoadingRoleScene = false;
         }
     }
 
