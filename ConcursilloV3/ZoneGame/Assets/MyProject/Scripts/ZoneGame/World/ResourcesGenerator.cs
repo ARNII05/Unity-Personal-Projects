@@ -57,6 +57,7 @@ public class ResourcesGenerator : MonoBehaviour
         allMap.Clear();
         momPart.Clear();
 
+        recoveryTimer = 0f;
         canActivateRecoveryTimer = true;
 
         localPlayer = MapManager.Instance.GetLocalPlayer();

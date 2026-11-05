@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
+    public bool IsGameStarted { get; private set; } = false;
+
     public static GameManager Instance
     {
         get
@@ -28,5 +30,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void MarkGameStarted()
+    {
+        IsGameStarted = true;
     }
 }

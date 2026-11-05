@@ -631,6 +631,8 @@ public class Player : NetworkBehaviour
         if (otherPlayer.Role.Value == PlayerRole.None)
             return false;
 
+        GameManager.Instance.MarkGameStarted();
+
         GiveStartingItemsOnServer();
         otherPlayer.GiveStartingItemsOnServer();
 

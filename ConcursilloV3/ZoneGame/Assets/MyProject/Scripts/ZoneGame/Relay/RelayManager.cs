@@ -17,7 +17,7 @@ public class RelayManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Button createRelayButton;
     [SerializeField] private Button joinRelayButton;
-    [SerializeField] private TMP_Text relayCodeText;
+    [SerializeField] private TMP_Text relayCodeText, errorTexts;
     [SerializeField] private TMP_InputField joinCodeInput;
 
     private bool isLoadingRoleScene;
