@@ -98,7 +98,7 @@ public class MapManager : MonoBehaviour
             !roleSelectorInitializationRequested)
         {
             roleSelectorInitializationRequested = true;
-            InitRoleSelector();
+            player1.InitRoleSelector();
         }
 
         if (isServer && ArePlayersRegistered && !IsMapReady)
@@ -151,18 +151,6 @@ public class MapManager : MonoBehaviour
             return Player2;
 
         return null;
-    }
-
-    private void InitRoleSelector()
-    {
-        StartCoroutine(InitRoleSelectorCoroutine());
-    }
-
-    private IEnumerator InitRoleSelectorCoroutine()
-    {
-        yield return null;
-
-        player1.InitRoleSelector();
     }
 
     public void MakeRandomMap()

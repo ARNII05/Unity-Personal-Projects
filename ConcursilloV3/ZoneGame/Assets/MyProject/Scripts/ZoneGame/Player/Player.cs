@@ -520,6 +520,9 @@ public class Player : NetworkBehaviour
         }
 
         MapManager.Instance.RegisterPlayer(this, IsServer);
+
+        if (IsOwner)
+            StartCoroutine(InitRoleSelectorWhenReady());
     }
 
     public override void OnNetworkDespawn()
@@ -703,12 +706,6 @@ public class Player : NetworkBehaviour
     }
 
     public void InitRoleSelector()
-    {
-        InitRoleSelectorClientRpc();
-    }
-
-    [Rpc(SendTo.Everyone)]
-    private void InitRoleSelectorClientRpc()
     {
         StartCoroutine(InitRoleSelectorWhenReady());
     }
