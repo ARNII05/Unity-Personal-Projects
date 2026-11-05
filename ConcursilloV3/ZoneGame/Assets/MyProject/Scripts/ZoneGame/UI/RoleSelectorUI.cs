@@ -77,6 +77,7 @@ public class RoleSelectorUI : MonoBehaviour
         UpdateOtherPlayer();
         UpdateStartButton();
         UpdatePlayerBoxes();
+        RefreshRoleSelections();
     }
 
     public void RefreshPlayers()
@@ -87,6 +88,35 @@ public class RoleSelectorUI : MonoBehaviour
         UpdateOtherPlayer();
         UpdateStartButton();
         UpdatePlayerBoxes();
+        RefreshRoleSelections();
+    }
+
+    private void RefreshRoleSelections()
+    {
+        RefreshPlayerRole(MapManager.Instance.Player1);
+        RefreshPlayerRole(MapManager.Instance.Player2);
+    }
+
+    private void RefreshPlayerRole(Player targetPlayer)
+    {
+        if (targetPlayer == null || targetPlayer == player)
+            return;
+
+        PlayerRole currentRole = targetPlayer.Role.Value;
+
+        if (currentRole == PlayerRole.None)
+            return;
+
+        CommonActions(
+            targetPlayer.OwnerClientId,
+            currentRole,
+            SelectionRolType.Select
+        );
+
+        player.RefreshDifferentPlayerRole(
+            currentRole,
+            targetPlayer.name
+        );
     }
 
     private void UpdateOtherPlayer()

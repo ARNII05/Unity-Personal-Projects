@@ -598,6 +598,17 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void RefreshDifferentPlayerRole(
+        PlayerRole playerRole,
+        string playerName)
+    {
+        roleSelectionVisuals.UpdateDifferentPlayer(
+            playerRole,
+            SelectionRolType.Select,
+            playerName
+        );
+    }
+
     [Rpc(SendTo.Everyone)]
     public void ShowRecoverySystemPanelInfoClientRpc(ItemType[] items, int[] amounts)
     {

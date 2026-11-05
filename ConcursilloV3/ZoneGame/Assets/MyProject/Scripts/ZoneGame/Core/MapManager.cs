@@ -107,6 +107,23 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    public void UnregisterPlayer(Player player)
+    {
+        if (player == player1)
+        {
+            player1 = null;
+        }
+        else if (player == player2)
+        {
+            player2 = null;
+        }
+
+        IsMapReady = false;
+
+        if (RoleSelectorUI.Instance != null)
+            RoleSelectorUI.Instance.RefreshPlayers();
+    }
+
     private void CleanMap()
     {
         Zone[] zones = FindObjectsByType<Zone>(
