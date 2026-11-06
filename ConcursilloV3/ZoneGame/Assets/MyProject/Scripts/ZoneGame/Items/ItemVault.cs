@@ -42,12 +42,32 @@ public static class ItemVault
             ItemType.Bouquet => "Un ramo de flores para entregárselo a la abuela.",
             ItemType.Log => "Permite cruzar los ríos.",
             ItemType.Radar => "Detecta el lobo.",
-            ItemType.Map => "Muestra el área circundante para orientarte.",
+            ItemType.Map => "Muestra las zonas adyacentes a tu posición.",
             ItemType.AncientRelic => "Una reliquia necesaria para abrir el cofre ancestral.",
             ItemType.AncestralNecklace => $"Protege contra el lobo y el pantano: " +
-            $"{GetBuffValue(itemType, BuffApplierType.Wolf)} y {GetBuffValue(itemType, BuffApplierType.Swamp)}%, respectivamente.",
+                $"{GetBuffValue(itemType, BuffApplierType.Wolf)} y {GetBuffValue(itemType, BuffApplierType.Swamp)}%, respectivamente.",
             ItemType.AgilityPotion => $"Aumenta tu velocidad de movimiento un {GetBuffValue(itemType, BuffApplierType.Movement)}%.",
             ItemType.LuckPotion => $"Otorga un {GetBuffValue(itemType, BuffApplierType.Wolf)}% de probabilidad de evitar el robo del lobo al ser capturado.",
+            _ => ""
+        };
+    }
+
+    public static string GetItemType(ItemType itemType)
+    {
+        return itemType switch
+        {
+            ItemType.Flower => "Recurso de fabricación",
+            ItemType.Branch => "Recurso de fabricación",
+            ItemType.Coin => "Objeto para venta",
+            ItemType.Meat => "Consumible",
+            ItemType.Bouquet => "Objeto de misión",
+            ItemType.Log => "Recurso de fabricación",
+            ItemType.Radar => "Objeto de ayuda",
+            ItemType.Map => "Objeto de ayuda",
+            ItemType.AncientRelic => "Objeto de misión",
+            ItemType.AncestralNecklace => "Objeto de protección",
+            ItemType.AgilityPotion => "Consumible",
+            ItemType.LuckPotion => "Consumible",
             _ => ""
         };
     }

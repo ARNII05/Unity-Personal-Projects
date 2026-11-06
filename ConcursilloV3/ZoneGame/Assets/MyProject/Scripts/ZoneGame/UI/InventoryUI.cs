@@ -69,6 +69,9 @@ public class InventoryUI : MonoBehaviour
 
         for (int i = 0; i < inventory.items.Count; i++)
         {
+            if (i >= Inventory.maxCapacity)
+                break;
+            
             GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
             actualBox.GetComponent<Button>().interactable = status;
         }
@@ -99,6 +102,9 @@ public class InventoryUI : MonoBehaviour
 
         foreach (var item in inventory.inventoryOrder)
         {
+            if (i >= Inventory.maxCapacity)
+                break;
+            
             UpdateItemBox(i, item, inventory.items[item]);
             i++;
         }

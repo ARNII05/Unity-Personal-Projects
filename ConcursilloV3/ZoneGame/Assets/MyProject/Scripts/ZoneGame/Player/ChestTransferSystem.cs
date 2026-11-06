@@ -85,6 +85,7 @@ public class ChestTransferSystem : MonoBehaviour
         return true;
     }
 
+
     public bool TryToRemoveAncientRelics(ChestType chestType, Vector2Int position)
     {
         if (position != player.NetworkMapPos.Value)

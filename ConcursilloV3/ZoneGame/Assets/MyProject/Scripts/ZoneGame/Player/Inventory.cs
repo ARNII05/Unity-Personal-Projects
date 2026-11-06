@@ -32,7 +32,7 @@ public class Inventory
     {
         if (amount <= 0 || itemType == ItemType.None)
             return false;
-        
+
         if (items.Count >= maxCapacity && items.GetValueOrDefault(itemType) == 0)
             return false;
 
@@ -60,7 +60,7 @@ public class Inventory
             return false;
 
         OnInventoryChanged?.Invoke();
-        
+
         return true;
     }
 
@@ -126,7 +126,7 @@ public class Inventory
 
     public bool Remove(ItemType itemType, int amount)
     {
-        if (!items.ContainsKey(itemType) || amount <= 0 
+        if (!items.ContainsKey(itemType) || amount <= 0
             || GetAmount(itemType) < amount)
         {
             return false;

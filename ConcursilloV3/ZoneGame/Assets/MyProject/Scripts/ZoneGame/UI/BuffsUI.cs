@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class BuffsUI : MonoBehaviour
 {
-    private GameObject buffsUI, buffBox, grid, noItems;
+    private GameObject buffsUI, grid, noItems;
 
     private Player player;
 
@@ -16,7 +16,6 @@ public class BuffsUI : MonoBehaviour
         buffsUI = transform.Find("BuffsUI").gameObject;
         grid = buffsUI.transform.Find("Grid").gameObject;
         noItems = buffsUI.transform.Find("NoItems").gameObject;
-        buffBox = Resources.Load<GameObject>("Prefabs/Objects/BuffBox");
         buffsUI.SetActive(false);
         grid.SetActive(false);
         noItems.SetActive(true);
@@ -54,15 +53,12 @@ public class BuffsUI : MonoBehaviour
         noItems.SetActive(false);
 
         foreach (Transform child in grid.transform)
-            Destroy(child.gameObject);
+            child.gameObject.SetActive(false);
 
         for (int i = 0; i < inventory.activeBuffs.Count; i++)
         {
-            GameObject actualBox = Instantiate(buffBox, grid.transform);
-            GameObject itemBox = actualBox.transform.Find("ItemBox").gameObject;
-            GameObject textPanel = actualBox.transform.Find("TextPanel").gameObject;
-            TextMeshProUGUI itemName = textPanel.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-            TextMeshProUGUI desc = textPanel.transform.Find("Desc").GetComponent<TextMeshProUGUI>();
+            GameObject actualBox = grid.transform.GetChild(i).gameObject;
+            actualBox.SetActive(true);
 
             ItemType buffType = inventory.GetBuffAt(i);
 
@@ -71,10 +67,8 @@ public class BuffsUI : MonoBehaviour
                 Debug.LogWarning($"Invalid buff at index {i}.");
                 continue;
             }
-            
-            itemBox.transform.Find("ItemIcon").GetComponent<Image>().sprite = ItemVault.GetItemSprite(buffType);
-            itemName.text = ItemVault.GetItemName(buffType);
-            desc.text = ItemVault.GetItemDescription(buffType);
+
+            actualBox.transform.Find("ItemIcon").GetComponent<Image>().sprite = ItemVault.GetItemSprite(buffType);
         }
     }
 

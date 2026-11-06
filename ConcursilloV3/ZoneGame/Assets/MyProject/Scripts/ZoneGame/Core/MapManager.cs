@@ -645,7 +645,8 @@ public class MapManager : MonoBehaviour
                 type != ZoneType.VerticalRiver &&
                 type != ZoneType.HorizontalRiver &&
                 type != ZoneType.WolfDen &&
-                type != ZoneType.Camp)
+                type != ZoneType.Camp && 
+                type != ZoneType.Tavern)
             {
                 allowedFillTypes.Add(type);
             }

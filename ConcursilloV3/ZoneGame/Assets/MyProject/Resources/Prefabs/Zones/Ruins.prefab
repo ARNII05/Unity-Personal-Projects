@@ -418,7 +418,7 @@ GameObject:
   - component: {fileID: 1319474489163374846}
   - component: {fileID: 7788889398810400328}
   m_Layer: 0
-  m_Name: Box (2)
+  m_Name: Box (1)
   m_TagString: Chest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

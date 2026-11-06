@@ -160,6 +160,7 @@ public class Player : NetworkBehaviour
         inventory.activeBuffs.Add(buff);
     }
 
+
     [Rpc(SendTo.Server)]
     public void TradeItemRpc(ItemType item, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode)
     {
@@ -290,6 +291,8 @@ public class Player : NetworkBehaviour
             return;
 
         SetInventory();
+        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
+        otherPlayer.SetInventory();
 
         UpdateOpenedChestClientRpc(position);
         OpenChestClientRpc(position);
