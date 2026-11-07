@@ -263,28 +263,6 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void ShowEndGanePanelServerRpc()
-    {
-        State.Value = PlayerState.EndGame;
-
-        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
-
-        otherPlayer.State.Value = PlayerState.EndGame;
-
-        EndgameUI.Instance.ShowEndGamePanel();
-
-        MapManager.Instance.wolf.SetReadyToMove(false);
-
-        ShowEndGanePanelClientRpc();
-    }
-
-    [Rpc(SendTo.NotServer)]
-    private void ShowEndGanePanelClientRpc()
-    {
-        EndgameUI.Instance.ShowEndGamePanel();
-    }
-
-    [Rpc(SendTo.Server)]
     public void TryToRemoveAncientRelicsRpc(ChestType chestType, Vector2Int position)
     {
         if (!chestTransferSystem.TryToRemoveAncientRelics(chestType, position))

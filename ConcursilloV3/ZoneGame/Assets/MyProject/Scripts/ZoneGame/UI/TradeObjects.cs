@@ -52,7 +52,6 @@ public class TradeObjects : MonoBehaviour
     public void OpenTrade(TradeMode tradeMode)
     {
         tradePanel.SetActive(true);
-        tradePanel.SetActive(true);
         this.tradeMode = tradeMode;
 
         shopText.text = tradeMode switch
@@ -196,7 +195,7 @@ public class TradeObjects : MonoBehaviour
             PurchaseResult.InventoryFull => "Sin espacio en el inventario",
             PurchaseResult.OutOfStock => "No hay stock suficiente",
             PurchaseResult.InvalidAmount => "Cantidad inválida",
-            PurchaseResult.Success => callingInRpc ? "Se ha completado la compra" : "",
+            PurchaseResult.Success => callingInRpc ? (tradeMode == TradeMode.Buy ? "Se ha completado la compra" : "Se ha completado la venta") : "",
             PurchaseResult.NotEnoughItems => "No tienes objetos suficientes",
             _ => "Ha ocurrido un error"
         };

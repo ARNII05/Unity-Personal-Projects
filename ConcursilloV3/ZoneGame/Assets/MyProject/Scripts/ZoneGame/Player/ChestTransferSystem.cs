@@ -61,8 +61,12 @@ public class ChestTransferSystem : MonoBehaviour
 
         bool isBuff = ItemVault.IsBuff(item);
 
-        if (!isBuff && !player.inventory.HasSpaceFor(item))
+        if (isBuff &&
+        (player.inventory.activeBuffs.Contains(item) ||
+         player.inventory.activeBuffs.Count >= Inventory.maxBuffs))
+        {
             return false;
+        }
 
         ZoneData zone = MapManager.Instance.map[
             position.y,

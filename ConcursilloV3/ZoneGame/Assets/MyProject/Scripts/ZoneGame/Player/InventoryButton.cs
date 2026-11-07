@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public int index;
-    
     private ChestUI chestUI;
     public int toWho;
 
@@ -15,6 +14,8 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
     private TooltipUI tooltipUI;
 
     private Player player;
+
+    private bool isPointerOver;
 
     private void Awake()
     {
@@ -31,30 +32,44 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
         StartCoroutine(SetPlayer());
     }
 
-    private void OnDisable()
-    {
-        if (tooltipUI != null)
-            tooltipUI.HideTooltip();
-    }
-
     IEnumerator SetPlayer()
     {
-        while (MapManager.Instance == null)
+        while (MapManager.Instance == null ||
+               (player = MapManager.Instance.GetLocalPlayer()) == null)
+        {
             yield return null;
+        }
 
-        player = MapManager.Instance.GetLocalPlayer();
+        if (toWho == 1)
+            StartCoroutine(WaitForChestInventory());
+        else
+            player.inventory.OnInventoryChanged += RefreshTooltip;
+    }
+
+    IEnumerator WaitForChestInventory()
+    {
+        while (chestUI == null || chestUI.chestInventoryUI.inventory == null)
+            yield return null;
+        
+        chestUI.chestInventoryUI.inventory.OnInventoryChanged += RefreshTooltip;
+    }
+
+    private void RefreshTooltip()
+    {
+        if (isPointerOver && tooltipUI != null && tooltipUI.gameObject.activeSelf)
+            ShowItemInTooltip();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (isBuffUI)
+            return;
+
         if (!chestUI)
         {
             Debug.Log("ChestUI es null");
             return;
         }
-
-        if (isBuffUI)
-            return;
 
         switch (toWho)
         {
@@ -69,13 +84,12 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
                 else chestUI.SendItemsToPlayer(index);
                 break;
         }
-
-        if (tooltipUI != null && tooltipUI.gameObject.activeSelf)
-            ShowItemInTooltip();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        isPointerOver = true;
+        
         ShowItemInTooltip();
     }
 
@@ -87,7 +101,7 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
             return;
         }
 
-        if (toWho == 0 && player == null)
+        if ((toWho == 0 || toWho == 2) && player == null)
         {
             Debug.LogWarning("El jugador todavía no está inicializado.");
             return;
@@ -110,7 +124,31 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        isPointerOver = false;
+        
         if (tooltipUI != null)
             tooltipUI.HideTooltip();
-    }   
+    }
+
+    private void OnDisable()
+    {
+        isPointerOver = false;
+
+        if (tooltipUI != null)
+            tooltipUI.HideTooltip();
+    }
+
+    private void OnDestroy()
+    {
+        if (toWho == 0 || toWho == 2)
+        {
+            if (player != null && player.inventory != null)
+                player.inventory.OnInventoryChanged -= RefreshTooltip;
+        }
+        else if (toWho == 1)
+        {
+            if (chestUI != null && chestUI.chestInventoryUI != null && chestUI.chestInventoryUI.inventory != null)
+                chestUI.chestInventoryUI.inventory.OnInventoryChanged -= RefreshTooltip;
+        }
+    }
 }
