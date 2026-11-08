@@ -6,10 +6,22 @@ using System.Collections;
 
 public class PersistentNetworkManager : MonoBehaviour
 {
+    public static PersistentNetworkManager Instance { get; private set; }
+
     private bool isHandlingDisconnect;
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (NetworkManager.Singleton != null &&
             NetworkManager.Singleton.gameObject != gameObject)
         {
@@ -77,7 +89,7 @@ public class PersistentNetworkManager : MonoBehaviour
         }
     }
 
-    private void ReturnToMainMenu(string message)
+    public void ReturnToMainMenu(string message = "")
     {
         if (isHandlingDisconnect)
             return;

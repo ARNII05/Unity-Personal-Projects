@@ -187,15 +187,6 @@ public class GrandmaUI : NetworkBehaviour
         EndgameUI.Instance.ShowEndGamePanel();
     }
 
-    public override void OnNetworkSpawn()
-    {
-        Debug.Log(
-            $"GrandmaUI | LocalClientId: {NetworkManager.LocalClientId} | " +
-            $"OwnerClientId: {OwnerClientId} | " +
-            $"IsOwner: {IsOwner} | IsServer: {IsServer}"
-        );
-    }
-
     public override void OnNetworkDespawn()
     {
         if (IsServer && initialized)

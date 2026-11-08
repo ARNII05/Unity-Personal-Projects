@@ -17,7 +17,6 @@ public class RelayManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Button createRelayButton;
     [SerializeField] private Button joinRelayButton;
-    [SerializeField] private TMP_Text relayCodeText, errorTexts;
     [SerializeField] private TMP_InputField joinCodeInput;
 
     private bool isLoadingRoleScene;
@@ -72,7 +71,6 @@ public class RelayManager : MonoBehaviour
         transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         createRelayButton.interactable = false;
         joinRelayButton.interactable = false;
-        relayCodeText.text = "Inicializando servicios...";
 
         try
         {
@@ -84,12 +82,10 @@ public class RelayManager : MonoBehaviour
             servicesReady = true;
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
-            relayCodeText.text = "Servicios listos";
             Debug.Log("Unity Services y Authentication preparados.");
         }
         catch (Exception e)
         {
-            relayCodeText.text = "Error al inicializar servicios";
             Debug.LogError($"Error al inicializar Unity Services: {e}");
         }
     }
@@ -105,13 +101,9 @@ public class RelayManager : MonoBehaviour
         try
         {
             string code = await CreateRelay();
-            if (relayCodeText != null)
-                relayCodeText.text = $"Código: {code}";
         }
         catch (Exception e)
         {
-            if (relayCodeText != null)
-                relayCodeText.text = "Error al crear partida";
             Debug.LogError($"Error al crear Relay: {e}");
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
@@ -127,8 +119,6 @@ public class RelayManager : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(code))
         {
-            if (relayCodeText != null)
-                relayCodeText.text = "Introduce un código";
             return;
         }
 
@@ -138,13 +128,9 @@ public class RelayManager : MonoBehaviour
         try
         {
             await JoinRelay(code);
-            if (relayCodeText != null)
-                relayCodeText.text = "Conectando...";
         }
         catch (Exception e)
         {
-            if (relayCodeText != null)
-                relayCodeText.text = "Error al unirse";
             Debug.LogError($"Error al unirse a Relay: {e}");
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
@@ -211,6 +197,17 @@ public class RelayManager : MonoBehaviour
         Debug.Log("Conexión de cliente iniciada.");
     }
 
+    public void ApplicationQuit()
+    {
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+
+        Application.Quit();
+    }
+
     private void OnEnable()
     {
         if (NetworkManager.Singleton != null)
@@ -232,13 +229,6 @@ public class RelayManager : MonoBehaviour
     private void OnClientConnected(ulong clientId)
     {
         Debug.Log($"Cliente conectado correctamente. ID: {clientId}");
-
-        if (NetworkManager.Singleton.IsClient &&
-            NetworkManager.Singleton.LocalClientId == clientId &&
-            relayCodeText != null)
-        {
-            relayCodeText.text = "¡Conectado correctamente!";
-        }
     }
 
     private void OnClientDisconnected(ulong clientId)

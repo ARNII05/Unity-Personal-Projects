@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EndgameUI : MonoBehaviour
 {
@@ -37,6 +39,6 @@ public class EndgameUI : MonoBehaviour
 
     public void GoToMenu()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        PersistentNetworkManager.Instance.ReturnToMainMenu();
     }
 }

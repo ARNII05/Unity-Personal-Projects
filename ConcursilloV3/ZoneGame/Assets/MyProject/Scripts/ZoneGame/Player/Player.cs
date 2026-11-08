@@ -164,6 +164,16 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void TradeItemRpc(ItemType item, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode)
     {
+        Vector2Int pos = NetworkMapPos.Value;
+
+        ZoneData zone = MapManager.Instance.map[pos.y, pos.x];
+
+        if (zone == null)
+            return;
+
+        if (zone.type != ZoneType.Village || State.Value != PlayerState.TradeUI)
+            return;
+
         PurchaseResult result = PurchaseSystem.Instance.TradeItem(item, itemToAdd, itemToRemove, actualAmount, tradeMode, this);
 
         SetInventory();

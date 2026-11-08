@@ -11,12 +11,11 @@ public class RoleSelectorUI : MonoBehaviour
     public static RoleSelectorUI Instance { get; private set; }
 
     public bool IsPlayerInitialized => player != null;
-
-    [SerializeField] private GameObject lockObj, startGameObj;
-    [SerializeField] private CanvasGroup canvasGroup;
+    
+    private CanvasGroup canvasGroup;
 
     public GameObject background, gardenerRoleObject, builderRoleObject;
-    private GameObject roleLobbyPanel, player1Box, player2Box;
+    private GameObject roleLobbyPanel, startGameObj, player1Box, player2Box, lockObj;
     private TextMeshProUGUI relayCodeText;
 
     private Player player;
@@ -35,9 +34,12 @@ public class RoleSelectorUI : MonoBehaviour
         Instance = this;
 
         roleLobbyPanel = transform.Find("RoleLobbyPanel").gameObject;
+        startGameObj = roleLobbyPanel.transform.Find("StartGameButton").gameObject;
+        canvasGroup = startGameObj.GetComponentInChildren<CanvasGroup>();
         relayCodeText = roleLobbyPanel.transform.Find("RelayCodeText").GetComponent<TextMeshProUGUI>();
         player1Box = roleLobbyPanel.transform.Find("Player1Box").gameObject;
         player2Box = roleLobbyPanel.transform.Find("Player2Box").gameObject;
+        lockObj = startGameObj.transform.Find("Lock").gameObject;
 
         roleLobbyPanel.SetActive(false);
         background.SetActive(false);
@@ -74,10 +76,7 @@ public class RoleSelectorUI : MonoBehaviour
             roleSelectorInitialized = true;
         }
 
-        UpdateOtherPlayer();
-        UpdateStartButton();
-        UpdatePlayerBoxes();
-        RefreshRoleSelections();
+        RefreshPlayers();
     }
 
     public void RefreshPlayers()
@@ -172,22 +171,25 @@ public class RoleSelectorUI : MonoBehaviour
 
     public void CommonActions(ulong playerId, PlayerRole playerRole, SelectionRolType selectionRolType)
     {
-        string playerName = MapManager.Instance.GetPlayerById(playerId).name;
+        Player playerWhoCalled = MapManager.Instance.GetPlayerById(playerId);
         
         bool isSelectionType = selectionRolType == SelectionRolType.Select;
 
-        GameObject playerBox = roleLobbyPanel.transform.Find($"{playerRole}Box").gameObject;
-        TextMeshProUGUI playerRoleText = playerBox.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
-        playerRoleText.text = isSelectionType ? playerName : "Sin escoger";
+        TextMeshProUGUI playerRolNameText;
+
+        if (playerWhoCalled.OwnerClientId == MapManager.Instance.Player1.OwnerClientId)
+            playerRolNameText = player1Box.transform.GetChild(0).Find("RolName").GetComponent<TextMeshProUGUI>();
+        else
+            playerRolNameText = player2Box.transform.GetChild(0).Find("RolName").GetComponent<TextMeshProUGUI>();
+
+        playerRolNameText.text = isSelectionType ? (playerRole == PlayerRole.Builder ? "Constructor" : "Jardinero") : "Sin escoger";
     }
 
     public void UpdatePlayerBoxes()
     {
         TextMeshProUGUI player1NameText = player1Box.transform.GetChild(0).Find("PlayerName").GetComponent<TextMeshProUGUI>();
-        Image player1Icon = player1Box.transform.GetChild(1).Find("PlayerIcon").GetComponent<Image>();
 
         TextMeshProUGUI player2NameText = player2Box.transform.GetChild(0).Find("PlayerName").GetComponent<TextMeshProUGUI>();
-        Image player2Icon = player2Box.transform.GetChild(1).Find("PlayerIcon").GetComponent<Image>();
 
         player1NameText.text = player.name;
 
