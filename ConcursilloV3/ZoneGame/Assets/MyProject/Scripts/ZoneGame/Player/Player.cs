@@ -499,8 +499,6 @@ public class Player : NetworkBehaviour
 
             buffsUI.SetPlayer(this);
 
-            CraftingUI.Instance.SetPlayer(this);
-
             TradeUI.Instance.Init(this);
 
             wolfUI =
@@ -681,7 +679,7 @@ public class Player : NetworkBehaviour
     {
         RoleSelectorUI.Instance.CloseLobby();
 
-        CraftingUI.Instance.Init();
+        inventoryUI.InitCraftingUI();
 
         RabbitDialogue.Instance.Init(this);
 

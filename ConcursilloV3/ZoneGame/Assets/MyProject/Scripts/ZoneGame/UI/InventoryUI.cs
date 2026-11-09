@@ -12,9 +12,12 @@ public class InventoryUI : MonoBehaviour
 
     private Player player;
 
+    private CraftingUI craftingUI;
+
     private void Awake()
     {
         inventoryUI = gameObject.transform.GetChild(0).gameObject;
+        craftingUI = FindFirstObjectByType<CraftingUI>();
     }
 
     private void Start()
@@ -27,6 +30,12 @@ public class InventoryUI : MonoBehaviour
     {
         this.player = player;
         SetInventory(player.inventory);
+        craftingUI.SetPlayer(player);
+    }
+
+    public void InitCraftingUI()
+    {
+        craftingUI.Init();
     }
 
     public void SetInventory(Inventory newInventory)
@@ -165,13 +174,13 @@ public class InventoryUI : MonoBehaviour
     private void ShowInventoryAndCrafting()
     {
         inventoryUI.SetActive(true);
-        CraftingUI.Instance.OpenCraftingUI();
+        craftingUI.OpenCraftingUI();
     }
 
     private void HideInventoryAndCrafting()
     {
         inventoryUI.SetActive(false);
-        CraftingUI.Instance.CloseCraftingUI();
+        craftingUI.CloseCraftingUI();
     }
 
     public void ShowInventory()

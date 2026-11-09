@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class CraftingUI : MonoBehaviour
 {
-    public static CraftingUI Instance { get; private set; }
-
     private GameObject craftingUI;
 
     private Image childItemImg, coreItemImg;
@@ -18,17 +16,6 @@ public class CraftingUI : MonoBehaviour
     private Player player;
 
     private const string itemsBasePath = "Prefabs/ItemsImg/";
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-    }
 
     void Start()
     {
