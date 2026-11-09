@@ -108,17 +108,6 @@ public class PersistentNetworkManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void ApplicationQuit()
-    {
-        if (NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.IsListening)
-        {
-            NetworkManager.Singleton.Shutdown();
-        }
-
-        Application.Quit();
-    }
-
     private IEnumerator WaitForResourcesGenerator()
     {
         while (ResourcesGenerator.Instance == null)

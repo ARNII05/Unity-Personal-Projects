@@ -1,5 +1,7 @@
+
 using UnityEngine.SceneManagement;
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
@@ -18,6 +20,12 @@ public class RelayManager : MonoBehaviour
     [SerializeField] private Button createRelayButton;
     [SerializeField] private Button joinRelayButton;
     [SerializeField] private TMP_InputField joinCodeInput;
+    [SerializeField] private TMP_Text errorJoiningText;
+
+    [Header("Error Settings")]
+    [SerializeField] private float errorDuration = 4f;
+
+    private Coroutine errorCoroutine;
 
     private bool isLoadingRoleScene;
     private bool servicesReady;
@@ -26,7 +34,6 @@ public class RelayManager : MonoBehaviour
     private UnityTransport transport;
 
     public static string CurrentJoinCode { get; private set; } = string.Empty;
-
 
     private void Update()
     {
@@ -43,7 +50,6 @@ public class RelayManager : MonoBehaviour
 
             if (NetworkManager.Singleton.IsServer)
             {
-                // El host mide el RTT hacia cada cliente conectado.
                 foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
                 {
                     if (clientId == NetworkManager.ServerClientId)
@@ -56,7 +62,6 @@ public class RelayManager : MonoBehaviour
             }
             else
             {
-                // El cliente mide el RTT hacia el host.
                 ulong ping = transport.GetCurrentRtt(
                     NetworkManager.ServerClientId);
 
@@ -65,10 +70,13 @@ public class RelayManager : MonoBehaviour
         }
     }
 
-
     private async void Start()
     {
+        errorJoiningText.text = "";
+        errorJoiningText.gameObject.SetActive(false);
+
         transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
         createRelayButton.interactable = false;
         joinRelayButton.interactable = false;
 
@@ -80,13 +88,17 @@ public class RelayManager : MonoBehaviour
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
             servicesReady = true;
+
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
+
             Debug.Log("Unity Services y Authentication preparados.");
         }
         catch (Exception e)
         {
             Debug.LogError($"Error al inicializar Unity Services: {e}");
+
+            ShowJoinError("No se han podido inicializar los servicios online.");
         }
     }
 
@@ -105,6 +117,9 @@ public class RelayManager : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Error al crear Relay: {e}");
+
+            ShowJoinError("No se ha podido crear la partida.");
+
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
         }
@@ -113,12 +128,16 @@ public class RelayManager : MonoBehaviour
     public async void OnJoinRelayButtonClicked()
     {
         if (!servicesReady)
+        {
+            ShowJoinError("Los servicios online todavía no están preparados.");
             return;
+        }
 
         string code = joinCodeInput.text.Trim();
 
         if (string.IsNullOrWhiteSpace(code))
         {
+            ShowJoinError("Introduce un código de partida.");
             return;
         }
 
@@ -129,9 +148,23 @@ public class RelayManager : MonoBehaviour
         {
             await JoinRelay(code);
         }
+        catch (RelayServiceException e)
+        {
+            Debug.LogError($"Error de Relay: {e}");
+
+            ShowJoinError(
+                "No se ha podido encontrar o acceder a la partida. Comprueba el código."
+            );
+
+            createRelayButton.interactable = true;
+            joinRelayButton.interactable = true;
+        }
         catch (Exception e)
         {
             Debug.LogError($"Error al unirse a Relay: {e}");
+
+            ShowJoinError("No se ha podido conectar a la partida.");
+
             createRelayButton.interactable = true;
             joinRelayButton.interactable = true;
         }
@@ -195,6 +228,32 @@ public class RelayManager : MonoBehaviour
             throw new Exception("No se pudo iniciar el Client.");
 
         Debug.Log("Conexión de cliente iniciada.");
+    }
+
+    private void ShowJoinError(string message)
+    {
+        if (errorCoroutine != null)
+        {
+            StopCoroutine(errorCoroutine);
+            errorCoroutine = null;
+        }
+
+        errorCoroutine = StartCoroutine(
+            ShowJoinErrorCoroutine(message)
+        );
+    }
+
+    private IEnumerator ShowJoinErrorCoroutine(string message)
+    {
+        errorJoiningText.text = message;
+        errorJoiningText.gameObject.SetActive(true);
+
+        yield return new WaitForSecondsRealtime(errorDuration);
+
+        errorJoiningText.text = "";
+        errorJoiningText.gameObject.SetActive(false);
+
+        errorCoroutine = null;
     }
 
     private void OnEnable()

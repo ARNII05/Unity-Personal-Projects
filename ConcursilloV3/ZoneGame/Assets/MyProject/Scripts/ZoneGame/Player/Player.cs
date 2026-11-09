@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CraftingSystem))]
@@ -445,11 +446,38 @@ public class Player : NetworkBehaviour
         NetworkMapPos.OnValueChanged += OnNetworkMapPosChanged;
         IsWalking.OnValueChanged += OnWalkingChanged;
         NetworkDirection.OnValueChanged += OnDirectionChanged;
+        State.OnValueChanged += OnPlayerStateChanged;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         TryInitializeGameplay();
+
+        if (IsOwner)
+            if (CursorManager.Instance != null)
+                CursorManager.Instance.UpdateCursor(State.Value);
     }
+
+    public override void OnNetworkDespawn()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        NetworkMapPos.OnValueChanged -= OnNetworkMapPosChanged;
+        IsWalking.OnValueChanged -= OnWalkingChanged;
+        NetworkDirection.OnValueChanged -= OnDirectionChanged;
+        State.OnValueChanged -= OnPlayerStateChanged;
+
+        base.OnNetworkDespawn();
+    }
+
+    private void OnPlayerStateChanged(PlayerState previous, PlayerState current)
+    {
+        if (!IsOwner)
+            return;
+
+        if (CursorManager.Instance != null)
+            CursorManager.Instance.UpdateCursor(current);
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == "ZoneMap")
@@ -512,17 +540,6 @@ public class Player : NetworkBehaviour
 
         if (IsOwner)
             StartCoroutine(InitRoleSelectorWhenReady());
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        NetworkMapPos.OnValueChanged -= OnNetworkMapPosChanged;
-        IsWalking.OnValueChanged -= OnWalkingChanged;
-        NetworkDirection.OnValueChanged -= OnDirectionChanged;
-
-        base.OnNetworkDespawn();
     }
 
     public override void OnDestroy()
@@ -654,9 +671,6 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
-        inventory.Add(ItemType.Flower, 20);
-        inventory.Add(ItemType.Branch, 20);
-        inventory.Add(ItemType.AncientRelic, 3);
     }
 
     [Rpc(SendTo.Owner)]

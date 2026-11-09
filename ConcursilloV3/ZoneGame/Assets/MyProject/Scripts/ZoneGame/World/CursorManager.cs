@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class CursorManager : MonoBehaviour
@@ -15,15 +16,37 @@ public class CursorManager : MonoBehaviour
         Instance = this;
     }
 
-    public void LockCursor()
+    public void UpdateCursor(PlayerState state)
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = state switch
+        {
+            PlayerState.BuffsUI
+            or PlayerState.EndGame
+            or PlayerState.GrandmaDialogueInteraction
+            or PlayerState.Inventory
+            or PlayerState.RabbitDialogueInteraction
+            or PlayerState.RabbitMapUI
+            or PlayerState.SelectingRole
+            or PlayerState.TradeUI
+            or PlayerState.Trading => true,
+
+            _ => false
+        };
+    }
+
+    public void ShowCursor()
+    {
+        Cursor.visible = true;
+    }
+
+    public void HideCursor()
+    {
         Cursor.visible = false;
     }
 
-    public void UnlockCursor()
+    private void OnDestroy()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (Instance == this)
+            Instance = null;
     }
 }

@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 public class MainMenuUI : MonoBehaviour
@@ -21,6 +22,9 @@ public class MainMenuUI : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        
         if (!string.IsNullOrEmpty(PendingMessage))
         {
             infoPanel.SetActive(true);
@@ -30,6 +34,17 @@ public class MainMenuUI : MonoBehaviour
 
             OpenInfoPanel();
         }
+    }
+
+    public void ApplicationQuit()
+    {
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+
+        Application.Quit();
     }
 
     public void OpenInfoPanel()

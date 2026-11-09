@@ -1,0 +1,113 @@
+﻿Carpeta,Archivo,Tamaño (MB)
+
+"Assets/",,
+,"UniversalRenderPipelineGlobalSettings.asset",0.025
+,"TOTAL CARPETA",0.025
+
+"Assets/Fonts/",,
+,"Caveat-VariableFont_wght.ttf",0.376
+,"Caveat-SemiBold.ttf",0.246
+,"Caveat-Medium.ttf",0.246
+,"Caveat-Regular.ttf",0.245
+,"TOTAL CARPETA",1.113
+
+"Assets/MyProject/BackGrounds/",,
+,"DungeonFrame2.png",0.025
+,"BrickBackground.png",0.007
+,"TOTAL CARPETA",0.031
+
+"Assets/MyProject/Resources/Prefabs/ItemsImg/",,
+,"AncientRelic.png",0.048
+,"AgilityPotion.png",0.033
+,"Map.png",0.031
+,"LuckPotion.png",0.023
+,"Radar.png",0.020
+,"TOTAL CARPETA",0.154
+
+"Assets/MyProject/Resources/Prefabs/Objects/",,
+,"barrel (2) 1.png",0.031
+,"AncientVaseClosed.png",0.026
+,"AncientVaseOpened.png",0.025
+,"ClosedBox.png",0.020
+,"OpenedBox.png",0.012
+,"TOTAL CARPETA",0.114
+
+"Assets/MyProject/Resources/Prefabs/ZoneIcons/",,
+,"River.png",0.053
+,"RabbitDen.png",0.039
+,"WolfDen.png",0.038
+,"Village.png",0.037
+,"Swamp.png",0.029
+,"Ruins.png",0.023
+,"Cross.png",0.005
+,"TOTAL CARPETA",0.224
+
+"Assets/New Folder/Medieval Buildings and Objects/Sprites/tiles/",,
+,"tile (3).png",0.040
+,"tile (4).png",0.036
+,"TOTAL CARPETA",0.077
+
+"Assets/Pixel Lost Game Scene/Sprites/",,
+,"background.png",0.088
+,"TOTAL CARPETA",0.088
+
+"Assets/Plugins/ParrelSync/ScriptableObjects/",,
+,"ParrelSyncProjectSettings.asset",0.000
+,"TOTAL CARPETA",0.000
+
+"Assets/Settings/",,
+,"UniversalRP.asset",0.004
+,"TOTAL CARPETA",0.004
+
+"Assets/TextMesh Pro/Examples & Extras/Fonts/",,
+,"Unity.ttf",0.002
+,"TOTAL CARPETA",0.002
+
+"Assets/TextMesh Pro/Examples & Extras/Materials/",,
+,"Ground - Logo Scene.mat",0.004
+,"Small Crate_diffuse.mat",0.003
+,"TOTAL CARPETA",0.007
+
+"Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/",,
+,"Dark to Light Green - Vertical.asset",0.001
+,"Blue to Purple - Vertical.asset",0.001
+,"Light to Dark Green - Vertical.asset",0.001
+,"Yellow to Orange - Vertical.asset",0.001
+,"TOTAL CARPETA",0.002
+
+"Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/",,
+,"Oswald Bold SDF.asset",0.140
+,"Bangers SDF Glow.mat",0.003
+,"LiberationSans SDF - Metalic Green.mat",0.003
+,"Roboto-Bold SDF - Drop Shadow.mat",0.003
+,"Anton SDF - Outline.mat",0.003
+,"LiberationSans SDF - Overlay.mat",0.002
+,"TOTAL CARPETA",0.153
+
+"Assets/TextMesh Pro/Examples & Extras/Textures/",,
+,"Mask Zig-n-Zag.psd",0.037
+,"Wipe Pattern - Radial Quad.psd",0.033
+,"Wipe Pattern - Radial Double.psd",0.032
+,"Wipe Pattern - Diagonal.psd",0.032
+,"Gradient Vertical (Color).jpg",0.011
+,"TOTAL CARPETA",0.144
+
+"Assets/TextMesh Pro/Resources/",,
+,"TMP Settings.asset",0.002
+,"TOTAL CARPETA",0.002
+
+"Assets/TextMesh Pro/Resources/Fonts & Materials/",,
+,"LiberationSans SDF - Outline.mat",0.003
+,"TOTAL CARPETA",0.003
+
+"Assets/TextMesh Pro/Shaders/",,
+,"TMP_SDF-URP Unlit.shadergraph",0.275
+,"TMP_SDF SSD.shader",0.012
+,"TMP_SDF Overlay.shader",0.011
+,"TMP_Bitmap-Mobile.shader",0.004
+,"TMP_Bitmap.shader",0.004
+,"TMP_Bitmap-Custom-Atlas.shader",0.004
+,"TMP_SDF-Mobile SSD.shader",0.003
+,"TOTAL CARPETA",0.313
+
+"TOTAL GENERAL",,2.455
