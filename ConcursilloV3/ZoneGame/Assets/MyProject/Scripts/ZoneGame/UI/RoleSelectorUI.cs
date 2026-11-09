@@ -187,13 +187,17 @@ public class RoleSelectorUI : MonoBehaviour
 
     public void UpdatePlayerBoxes()
     {
-        TextMeshProUGUI player1NameText = player1Box.transform.GetChild(0).Find("PlayerName").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI player1NameText = player1Box.transform.GetChild(0)
+            .Find("PlayerName").GetComponent<TextMeshProUGUI>();
 
-        TextMeshProUGUI player2NameText = player2Box.transform.GetChild(0).Find("PlayerName").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI player2NameText = player2Box.transform.GetChild(0)
+            .Find("PlayerName").GetComponent<TextMeshProUGUI>();
 
-        player1NameText.text = player.name;
+        Player player1 = MapManager.Instance.Player1;
+        Player player2 = MapManager.Instance.Player2;
 
-        player2NameText.text = otherPlayer != null ? otherPlayer.name : "Sin conexión";
+        player1NameText.text = player1 != null ? player1.name : "Sin conexión";
+        player2NameText.text = player2 != null ? player2.name : "Sin conexión";
     }
 
     public void StartGame()

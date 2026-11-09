@@ -46,27 +46,28 @@ public class ChestTransferSystem : MonoBehaviour
     }
 
     public bool TrySendItemsToPlayer(
-        ItemType item,
-        int amount,
-        out Vector2Int position)
+    ItemType item,
+    ref int amount,
+    out Vector2Int position)
     {
         position = player.NetworkMapPos.Value;
 
-        if (!ItemVault.IsTransferable(item))
-            return false;
-
-        if (amount <= 0 ||
-            ZoneChestAmount(position, item) < amount)
+        if (!ItemVault.IsTransferable(item) || amount <= 0)
             return false;
 
         bool isBuff = ItemVault.IsBuff(item);
 
-        if (isBuff &&
-        (player.inventory.activeBuffs.Contains(item) ||
-         player.inventory.activeBuffs.Count >= Inventory.maxBuffs))
+        if (isBuff)
         {
-            return false;
+            amount = 1;
+
+            if (player.inventory.activeBuffs.Contains(item) ||
+                player.inventory.activeBuffs.Count >= Inventory.maxBuffs)
+                return false;
         }
+
+        if (ZoneChestAmount(position, item) < amount)
+            return false;
 
         ZoneData zone = MapManager.Instance.map[
             position.y,
@@ -78,7 +79,11 @@ public class ChestTransferSystem : MonoBehaviour
 
         if (isBuff)
         {
-            player.AddBuff(item);
+            if (!player.AddBuff(item))
+            {
+                zone.chestInventory.Add(item, amount);
+                return false;
+            }
         }
         else if (!player.inventory.Add(item, amount))
         {
@@ -130,14 +135,18 @@ public class ChestTransferSystem : MonoBehaviour
 
     private void RemoveAncientRelicsFromPlayers(Player otherPlayer)
     {
+        int amountToRemove = CraftingSystem.ancientRelicsToOpenAncientChest;
+        
         int player1Relics = player.inventory.GetAmount(ItemType.AncientRelic);
-        int player2Relics = otherPlayer.inventory.GetAmount(ItemType.AncientRelic);
 
-        if (player1Relics > 0)
-            player.inventory.Remove(ItemType.AncientRelic, player1Relics);
+        int relicsToRemoveFromPlayer1 = Mathf.Min(player1Relics, amountToRemove);
+        int relicsToRemoveFromPlayer2 = amountToRemove - relicsToRemoveFromPlayer1;
 
-        if (player2Relics > 0)
-            otherPlayer.inventory.Remove(ItemType.AncientRelic, player2Relics);
+        if (relicsToRemoveFromPlayer1 > 0)
+            player.inventory.Remove(ItemType.AncientRelic, relicsToRemoveFromPlayer1);
+
+        if (relicsToRemoveFromPlayer2 > 0)
+            otherPlayer.inventory.Remove(ItemType.AncientRelic, relicsToRemoveFromPlayer2);
     }
 
     private int ZoneChestAmount(Vector2Int position, ItemType item)

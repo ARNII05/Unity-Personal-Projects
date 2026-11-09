@@ -144,12 +144,14 @@ public class Player : NetworkBehaviour
         State.Value = newState;
     }
 
-    public void AddBuff(ItemType buff)
+    public bool AddBuff(ItemType buff)
     {
         if (!inventory.Add(buff))
-            return;
+            return false;
 
         AddBuffClientRpc(buff, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
+
+        return true;
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
@@ -352,7 +354,7 @@ public class Player : NetworkBehaviour
     public void SendItemsToPlayerServerRpc(ItemType item, int amount)
     {
         if (!chestTransferSystem.TrySendItemsToPlayer(
-                item, amount, out Vector2Int pos))
+                item, ref amount, out Vector2Int pos))
             return;
 
         SetInventory();
@@ -551,6 +553,9 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void DeselectRoleServerRpc(PlayerRole playerRole)
     {
+        if (Role.Value != playerRole)
+            return;
+
         Role.Value = PlayerRole.None;
 
         SelectRoleClientRpc(
@@ -563,7 +568,15 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void SelectRoleServerRpc(PlayerRole playerRole)
     {
+        if (playerRole == PlayerRole.None)
+            return;
+
         if (Role.Value != PlayerRole.None)
+            return;
+
+        Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
+
+        if (otherPlayer != null && otherPlayer.Role.Value == playerRole)
             return;
 
         Role.Value = playerRole;

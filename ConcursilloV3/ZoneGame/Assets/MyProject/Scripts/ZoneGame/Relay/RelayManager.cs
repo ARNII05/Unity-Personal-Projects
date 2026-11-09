@@ -183,6 +183,8 @@ public class RelayManager : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>()
             .SetRelayServerData(new RelayServerData(allocation, "dtls"));
 
+        PersistentNetworkManager.Instance.PrepareForNewSession();
+
         if (!NetworkManager.Singleton.StartHost())
             throw new Exception("No se pudo iniciar el Host.");
 
@@ -223,6 +225,8 @@ public class RelayManager : MonoBehaviour
 
         NetworkManager.Singleton.GetComponent<UnityTransport>()
             .SetRelayServerData(new RelayServerData(allocation, "dtls"));
+
+        PersistentNetworkManager.Instance.PrepareForNewSession();
 
         if (!NetworkManager.Singleton.StartClient())
             throw new Exception("No se pudo iniciar el Client.");

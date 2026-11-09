@@ -116,8 +116,11 @@ public class ResourcesGenerator : MonoBehaviour
             int flowersGenerated = SetInitialItems(
                 ChestItems.Flower, allMap, flowersToGenerate);
 
-            items.Add(ItemType.Flower);
-            amounts.Add(flowersGenerated);
+            if (flowersGenerated > 0)
+            {
+                items.Add(ItemType.Flower);
+                amounts.Add(flowersGenerated);
+            }
         }
 
         if (branchesToGenerate > 0)
@@ -125,8 +128,11 @@ public class ResourcesGenerator : MonoBehaviour
             int branchesGenerated = SetInitialItems(
                 ChestItems.Branch, momPart, branchesToGenerate);
 
-            items.Add(ItemType.Branch);
-            amounts.Add(branchesGenerated);
+            if (branchesGenerated > 0)
+            {
+                items.Add(ItemType.Branch);
+                amounts.Add(branchesGenerated);
+            }
         }
 
         localPlayer.ShowRecoverySystemPanelInfoClientRpc(items.ToArray(), amounts.ToArray());
@@ -293,41 +299,60 @@ public class ResourcesGenerator : MonoBehaviour
         }
     }
 
+
     private int SetInitialItems(
         ChestItems item,
         List<Vector2Int> mapPart,
         int totalItemsToCraft)
     {
         int itemCount = 0;
-        List<Vector2Int> availablePositions = new(mapPart);
 
-        while (itemCount < totalItemsToCraft)
+        if (totalItemsToCraft <= 0 || mapPart.Count == 0)
+            return 0;
+
+        ItemType itemType = (ItemType)item;
+
+        List<Vector2Int> availablePositions = mapPart
+            .Where(pos => map[pos.y, pos.x].chestInventory.HasSpaceFor(itemType))
+            .ToList();
+
+        while (itemCount < totalItemsToCraft && availablePositions.Count > 0)
         {
-            if (availablePositions.Count == 0)
-            {
-                availablePositions = new List<Vector2Int>(mapPart);
-            }
-
             int randomIndex = Random.Range(0, availablePositions.Count);
             Vector2Int position = availablePositions[randomIndex];
-            availablePositions.RemoveAt(randomIndex);
+
+            ZoneData zone = map[position.y, position.x];
 
             int maxAmount = MaxItemCountPerChest(item);
 
             if (maxAmount <= 0)
-                continue;
+                break;
 
-            int amount = Random.Range(1, maxAmount + 1);
+            int remainingAmount = totalItemsToCraft - itemCount;
 
-            if (map[position.y, position.x].chestInventory.Add(
-                    (ItemType)item, amount))
-            {
+            int amount = Random.Range(
+                1,
+                Mathf.Min(maxAmount, remainingAmount) + 1
+            );
+
+            if (zone.chestInventory.Add(itemType, amount))
                 itemCount += amount;
-            }
+
+            if (!zone.chestInventory.HasSpaceFor(itemType))
+                availablePositions.RemoveAt(randomIndex);
+        }
+
+        if (itemCount < totalItemsToCraft)
+        {
+            Debug.LogWarning(
+                $"No se han podido generar todos los recursos de {item}. " +
+                $"Generados: {itemCount}/{totalItemsToCraft}."
+            );
         }
 
         return itemCount;
     }
+
 
     private int MaxItemCountPerChest(ChestItems item)
     {

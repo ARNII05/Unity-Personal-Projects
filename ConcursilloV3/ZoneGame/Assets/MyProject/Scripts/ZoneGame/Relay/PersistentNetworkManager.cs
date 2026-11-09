@@ -32,17 +32,38 @@ public class PersistentNetworkManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+
     private void OnEnable()
     {
         if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        }
     }
 
     private void OnDisable()
     {
         if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
     }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (NetworkManager.Singleton == null)
+            return;
+
+        if (clientId != NetworkManager.Singleton.LocalClientId)
+            return;
+
+        isHandlingDisconnect = false;
+
+        Debug.Log("Nueva sesión iniciada. Gestión de desconexiones reiniciada.");
+    }
+
 
     private void OnClientDisconnected(ulong clientId)
     {
@@ -106,6 +127,22 @@ public class PersistentNetworkManager : MonoBehaviour
         }
 
         SceneManager.LoadScene(0);
+    }
+
+    public void PrepareForNewSession()
+    {
+        if (NetworkManager.Singleton == null)
+            return;
+
+        if (NetworkManager.Singleton.IsListening)
+        {
+            Debug.LogWarning("No se puede preparar una sesión mientras hay otra activa.");
+            return;
+        }
+
+        isHandlingDisconnect = false;
+
+        Debug.Log("Gestión de desconexiones preparada para una nueva sesión.");
     }
 
     private IEnumerator WaitForResourcesGenerator()
