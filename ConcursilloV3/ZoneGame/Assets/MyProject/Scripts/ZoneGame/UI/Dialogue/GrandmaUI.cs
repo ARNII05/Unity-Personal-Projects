@@ -178,13 +178,17 @@ public class GrandmaUI : NetworkBehaviour
 
         MapManager.Instance.wolf.SetReadyToMove(false);
 
-        ShowEndGamePanelClientRpc();
+        ShowWinPanelInMenuClientRpc();
     }
 
     [Rpc(SendTo.Everyone)]
-    private void ShowEndGamePanelClientRpc()
+    private void ShowWinPanelInMenuClientRpc()
     {
-        EndgameUI.Instance.ShowEndGamePanel();
+        string winMessage = "¡Enhorabuena!\n\n" +
+                    "¡Habéis completado Hello Grandma!\n\n" +
+                    "Muchas gracias por jugar. ¡Espero que hayáis disfrutado de la aventura!";
+
+        PersistentNetworkManager.Instance.ReturnToMainMenu(winMessage, isErrorMsg: false);
     }
 
     public override void OnNetworkDespawn()

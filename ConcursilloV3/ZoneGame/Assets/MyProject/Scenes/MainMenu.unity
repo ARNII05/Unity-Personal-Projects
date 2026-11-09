@@ -763,8 +763,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1839890346}
-        m_TargetAssemblyTypeName: RelayManager, Assembly-CSharp
+      - m_Target: {fileID: 965757094}
+        m_TargetAssemblyTypeName: PersistentNetworkManager, Assembly-CSharp
         m_MethodName: ApplicationQuit
         m_Mode: 1
         m_Arguments:
@@ -2939,7 +2939,7 @@ GameObject:
   - component: {fileID: 1105150774}
   - component: {fileID: 1105150773}
   m_Layer: 5
-  m_Name: ErrorPanel
+  m_Name: InfoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3948,7 +3948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95da333064595dd46b241162b2e18df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuUI
-  errorPanel: {fileID: 1105150771}
+  infoPanel: {fileID: 1105150771}
   joinGamePanel: {fileID: 865907336}
 --- !u!1 &1474553181
 GameObject:
@@ -4604,7 +4604,7 @@ GameObject:
   - component: {fileID: 1912605945}
   - component: {fileID: 1912605944}
   m_Layer: 5
-  m_Name: ErrorText
+  m_Name: InfoText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4658,8 +4658,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279769331
-  m_fontColor: {r: 0.9528302, g: 0.09438412, b: 0.09438412, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

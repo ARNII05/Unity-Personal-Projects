@@ -8,11 +8,11 @@ public class CraftingUI : MonoBehaviour
 {
     public static CraftingUI Instance { get; private set; }
 
-    [SerializeField] private GameObject craftingUI;
+    private GameObject craftingUI;
 
     private Image childItemImg, coreItemImg;
     private TextMeshProUGUI itemTextCount;
-    private GameObject boxBtn, lockObj, childrenObj;
+    private GameObject boxBtn, childrenObj;
     private Button boxItemBtn;
     
     private Player player;
@@ -32,13 +32,15 @@ public class CraftingUI : MonoBehaviour
 
     void Start()
     {
+        craftingUI = transform.GetChild(0).gameObject;
+        craftingUI.SetActive(false);
+        
         boxBtn = craftingUI.transform.Find("CoreItemBtn").gameObject;
         boxItemBtn = boxBtn.GetComponent<Button>();
-        lockObj = boxBtn.transform.Find("Lock").gameObject;
         childrenObj = craftingUI.transform.Find("ChildItem").gameObject;
         itemTextCount = childrenObj.transform.GetComponentInChildren<TextMeshProUGUI>();
         childItemImg = childrenObj.transform.Find("ItemImg").GetComponent<Image>();
-        coreItemImg = boxBtn.transform.GetChild(0).Find("ItemIcon").GetComponent<Image>();
+        coreItemImg = craftingUI.transform.Find("CoreItem").GetChild(0).GetComponent<Image>();
     }
 
     public void SetPlayer(Player player)
@@ -82,9 +84,7 @@ public class CraftingUI : MonoBehaviour
 
     private void UpdateCanvasGroup(bool haveNecessaryItems = false)
     {
-        CanvasGroup canvasGroup = boxBtn.transform.Find("CanvasGroup").GetComponent<CanvasGroup>();
-
-        lockObj.SetActive(!haveNecessaryItems);
+        CanvasGroup canvasGroup = boxBtn.transform.GetComponent<CanvasGroup>();
 
         canvasGroup.alpha = haveNecessaryItems ? 1 : 0.4f;
         canvasGroup.interactable = haveNecessaryItems;
@@ -112,5 +112,15 @@ public class CraftingUI : MonoBehaviour
         };
 
         itemTextCount.text = $"0/{maxItemAmount}";
+    }
+
+    public void OpenCraftingUI()
+    {
+        craftingUI.SetActive(true);
+    }
+
+    public void CloseCraftingUI()
+    {
+        craftingUI.SetActive(false);
     }
 }

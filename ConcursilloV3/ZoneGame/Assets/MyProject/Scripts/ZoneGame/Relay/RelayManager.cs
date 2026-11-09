@@ -197,17 +197,6 @@ public class RelayManager : MonoBehaviour
         Debug.Log("Conexión de cliente iniciada.");
     }
 
-    public void ApplicationQuit()
-    {
-        if (NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.IsListening)
-        {
-            NetworkManager.Singleton.Shutdown();
-        }
-
-        Application.Quit();
-    }
-
     private void OnEnable()
     {
         if (NetworkManager.Singleton != null)

@@ -89,7 +89,7 @@ public class PersistentNetworkManager : MonoBehaviour
         }
     }
 
-    public void ReturnToMainMenu(string message = "")
+    public void ReturnToMainMenu(string message = "", bool isErrorMsg = true)
     {
         if (isHandlingDisconnect)
             return;
@@ -97,6 +97,7 @@ public class PersistentNetworkManager : MonoBehaviour
         isHandlingDisconnect = true;
 
         MainMenuUI.PendingMessage = message;
+        MainMenuUI.IsErrorMsg = isErrorMsg;
 
         if (NetworkManager.Singleton != null &&
             NetworkManager.Singleton.IsListening)
@@ -105,6 +106,17 @@ public class PersistentNetworkManager : MonoBehaviour
         }
 
         SceneManager.LoadScene(0);
+    }
+
+    public void ApplicationQuit()
+    {
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+
+        Application.Quit();
     }
 
     private IEnumerator WaitForResourcesGenerator()

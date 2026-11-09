@@ -3,38 +3,43 @@ using UnityEngine;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [SerializeField] private GameObject errorPanel, joinGamePanel;
-    private TMP_Text errorText;
+    [SerializeField] private GameObject infoPanel, joinGamePanel;
+    private TMP_Text infoText;
     public static string PendingMessage { get; set; }
+    public static bool IsErrorMsg { get; set; }
+
+    private const string errorColor = "#F31818";
+    private const string infoColor = "#000000";
 
     private void Awake()
     {
-        errorPanel.SetActive(false);
+        infoPanel.SetActive(false);
         joinGamePanel.SetActive(false);
 
-        errorText = errorPanel.GetComponentInChildren<TMP_Text>();
+        infoText = infoPanel.GetComponentInChildren<TMP_Text>();
     }
 
     private void Start()
     {
         if (!string.IsNullOrEmpty(PendingMessage))
         {
-            errorPanel.SetActive(true);
-            errorText.text = PendingMessage;
+            infoPanel.SetActive(true);
+            infoText.text = PendingMessage;
+            infoText.color = IsErrorMsg ? HexToColor(errorColor) : HexToColor(infoColor);
             PendingMessage = string.Empty;
 
-            OpenErrorPanel();
+            OpenInfoPanel();
         }
     }
 
-    public void OpenErrorPanel()
+    public void OpenInfoPanel()
     {
-        errorPanel.SetActive(true);
+        infoPanel.SetActive(true);
     }
 
-    public void CloseErrorPanel()
+    public void CloseInfoPanel()
     {
-        errorPanel.SetActive(false);
+        infoPanel.SetActive(false);
     }
 
     public void OpenJoinGamePanel()
@@ -45,5 +50,11 @@ public class MainMenuUI : MonoBehaviour
     public void CloseJoinGamePanel()
     {
         joinGamePanel.SetActive(false);
+    }
+
+    private Color HexToColor(string hex)
+    {
+        ColorUtility.TryParseHtmlString(hex, out Color color);
+        return color;
     }
 }

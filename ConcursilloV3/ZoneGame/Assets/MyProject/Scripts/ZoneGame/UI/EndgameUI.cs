@@ -34,7 +34,7 @@ public class EndgameUI : MonoBehaviour
 
     public void Exit()
     {
-        Application.Quit();
+        PersistentNetworkManager.Instance.ApplicationQuit();
     }
 
     public void GoToMenu()

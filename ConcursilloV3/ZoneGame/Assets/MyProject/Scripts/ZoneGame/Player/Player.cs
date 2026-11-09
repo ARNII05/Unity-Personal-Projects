@@ -656,6 +656,9 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
+        inventory.Add(ItemType.Flower, 20);
+        inventory.Add(ItemType.Branch, 20);
+        inventory.Add(ItemType.AncientRelic, 3);
     }
 
     [Rpc(SendTo.Owner)]

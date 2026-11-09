@@ -134,7 +134,7 @@ public class InventoryUI : MonoBehaviour
 
     private void UpdateBoxLock(GameObject box, bool isTransferable = false)
     {
-        Transform lockTrans = box.transform.Find("Lock");
+        Transform lockTrans = box.transform.Find("IconBox").Find("Lock");
 
         if (lockTrans == null)
             return;
@@ -144,8 +144,8 @@ public class InventoryUI : MonoBehaviour
 
     public void ToggleInventory()
     {
-        if (!inventoryUI.activeSelf) OpenInventory();
-        else CloseInventory();
+        if (!inventoryUI.activeSelf) ShowInventoryAndCrafting();
+        else HideInventoryAndCrafting();
     }
 
     public void OpenInventory()
@@ -160,6 +160,18 @@ public class InventoryUI : MonoBehaviour
         player.SetNewStateRpc(PlayerState.Normal);
         HideInventory();
         //CursorManager.Instance.LockCursor();
+    }
+
+    private void ShowInventoryAndCrafting()
+    {
+        inventoryUI.SetActive(true);
+        CraftingUI.Instance.OpenCraftingUI();
+    }
+
+    private void HideInventoryAndCrafting()
+    {
+        inventoryUI.SetActive(false);
+        CraftingUI.Instance.CloseCraftingUI();
     }
 
     public void ShowInventory()
