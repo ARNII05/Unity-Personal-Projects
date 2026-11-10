@@ -67,7 +67,7 @@
                     "priority": 0
                 },
                 {
-                    "name": "PauseMenu",
+                    "name": "Esc",
                     "type": "Button",
                     "id": "34669250-cb98-4ceb-a540-c011e1299242",
                     "expectedControlType": "",
@@ -250,7 +250,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PauseMenu",
+                    "action": "Esc",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

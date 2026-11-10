@@ -98,6 +98,11 @@ public class Player : NetworkBehaviour
         pauseMenuUI.ShowPauseMenu();
     }
 
+    public void ClosePauseMenu()
+    {
+        pauseMenuUI.ResumeGame();
+    }
+
     public void OpenInventory()
     {
         inventoryUI.ToggleInventory();
@@ -705,7 +710,6 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
-        inventory.Add(ItemType.AncientRelic, 3);
     }
 
     [Rpc(SendTo.Owner)]
@@ -774,6 +778,46 @@ public class Player : NetworkBehaviour
         }
 
         RoleSelectorUI.Instance.InitRoleSelector();
+
+        if (IsOwner)
+            NotifyPlayerReadyRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void NotifyPlayerReadyRpc()
+    {
+        MapManager.Instance.RegisterPlayerReady(this);
+    }
+
+    [Rpc(SendTo.Owner)]
+    public void RequestPlayerNameRpc()
+    {
+        if (!IsOwner)
+            return;
+
+        string playerName = PlayerPrefs.GetString("PlayerName", "Jugador");
+
+        name = playerName;
+        SyncPlayerNameRpc(playerName);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SyncPlayerNameRpc(string playerName)
+    {
+        name = playerName;
+        UpdatePlayerNameRpc(playerName);
+
+        if (RoleSelectorUI.Instance != null)
+            RoleSelectorUI.Instance.UpdatePlayerBoxes();
+    }
+
+    [Rpc(SendTo.NotServer)]
+    private void UpdatePlayerNameRpc(string playerName)
+    {
+        name = playerName;
+
+        if (RoleSelectorUI.Instance != null)
+            RoleSelectorUI.Instance.UpdatePlayerBoxes();
     }
 
     private void OnWalkingChanged(bool oldValue, bool newValue)

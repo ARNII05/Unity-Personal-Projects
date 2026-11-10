@@ -15,7 +15,7 @@ public class RoleSelectorUI : MonoBehaviour
     private CanvasGroup canvasGroup;
 
     public GameObject background, gardenerRoleObject, builderRoleObject;
-    private GameObject roleLobbyPanel, startGameObj, player1Box, player2Box, lockObj;
+    private GameObject roleLobbyPanel, startGameObj, player1Box, player2Box, lockObj, copyCodeBtn;
     private TextMeshProUGUI relayCodeText;
 
     private Player player;
@@ -34,6 +34,7 @@ public class RoleSelectorUI : MonoBehaviour
         Instance = this;
 
         roleLobbyPanel = transform.Find("RoleLobbyPanel").gameObject;
+        copyCodeBtn = roleLobbyPanel.transform.Find("CopyCodeBtn").gameObject;
         startGameObj = roleLobbyPanel.transform.Find("StartGameButton").gameObject;
         canvasGroup = startGameObj.GetComponentInChildren<CanvasGroup>();
         relayCodeText = roleLobbyPanel.transform.Find("RelayCodeText").GetComponent<TextMeshProUGUI>();
@@ -67,16 +68,22 @@ public class RoleSelectorUI : MonoBehaviour
             background.SetActive(true);
             startGameObj.SetActive(NetworkManager.Singleton.IsServer);
             relayCodeText.gameObject.SetActive(NetworkManager.Singleton.IsServer);
+            copyCodeBtn.SetActive(NetworkManager.Singleton.IsServer);
 
             if (NetworkManager.Singleton.IsServer)
             {
-                relayCodeText.text = $"Código de partida: {RelayManager.CurrentJoinCode}";
+                relayCodeText.text = $"Código: {RelayManager.CurrentJoinCode}";
             }
 
             roleSelectorInitialized = true;
         }
 
         RefreshPlayers();
+    }
+
+    public void CopyRelayCode()
+    {
+        GUIUtility.systemCopyBuffer = RelayManager.CurrentJoinCode;
     }
 
     public void RefreshPlayers()
@@ -221,8 +228,8 @@ public class RoleSelectorUI : MonoBehaviour
         Player player1 = MapManager.Instance.Player1;
         Player player2 = MapManager.Instance.Player2;
 
-        player1NameText.text = player1 != null ? player1.name : "Sin conexión";
-        player2NameText.text = player2 != null ? player2.name : "Sin conexión";
+        player1NameText.text = player1 != null ? player1.name : "Esperando jugador...";
+        player2NameText.text = player2 != null ? player2.name : "Esperando jugador...";
     }
 
     public void StartGame()

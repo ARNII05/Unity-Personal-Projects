@@ -12,6 +12,8 @@ public class MapManager : MonoBehaviour
     public static MapManager instance { get; private set; }
     public bool IsMapReady { get; private set; } = false;
 
+    private readonly HashSet<ulong> readyPlayers = new();
+
     public bool ArePlayersRegistered =>
         player1 != null && player2 != null;
 
@@ -82,12 +84,12 @@ public class MapManager : MonoBehaviour
         if (player1 == null)
         {
             player1 = player;
-            player1.name = "Player 1";
+            player1.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 1") : "Player 1";
         }
         else if (player2 == null && player != player1)
         {
             player2 = player;
-            player2.name = "Player 2";
+            player2.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 2") : "Player 2";
         }
 
         if (RoleSelectorUI.Instance != null)
@@ -107,6 +109,17 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    public void RegisterPlayerReady(Player player)
+    {
+        readyPlayers.Add(player.OwnerClientId);
+
+        if (readyPlayers.Count != 2)
+            return;
+
+        player1.RequestPlayerNameRpc();
+        player2.RequestPlayerNameRpc();
+    }
+
     public void UnregisterPlayer(Player player)
     {
         if (player == player1)
@@ -119,6 +132,8 @@ public class MapManager : MonoBehaviour
         }
 
         IsMapReady = false;
+
+        readyPlayers.Remove(player.OwnerClientId);
 
         if (RoleSelectorUI.Instance != null)
             RoleSelectorUI.Instance.RefreshPlayers();
@@ -198,7 +213,7 @@ public class MapManager : MonoBehaviour
                 ResourcesGenerator.Instance.Init();
                 
                 //startPos = GoTo(startPos, ItemType.AncientRelic);
-                startPos = GoTo(ZoneType.Ruins, startPos);
+                //startPos = GoTo(ZoneType.Ruins, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;

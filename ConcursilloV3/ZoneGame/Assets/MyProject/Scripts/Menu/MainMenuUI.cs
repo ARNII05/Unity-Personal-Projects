@@ -2,9 +2,11 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(UserName))]
 public class MainMenuUI : MonoBehaviour
 {
     [SerializeField] private GameObject infoPanel, joinGamePanel;
+
     private TMP_Text infoText;
     public static string PendingMessage { get; set; }
     public static bool IsErrorMsg { get; set; }

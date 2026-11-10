@@ -9,8 +9,6 @@ public class AncientChestUI : MonoBehaviour
 
     private Player player;
 
-    private PlayerState previousPlayerState;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -32,12 +30,6 @@ public class AncientChestUI : MonoBehaviour
 
     public void ShowPanel(int amountOfAncientRelics)
     {
-        if (player.State.Value != PlayerState.CaughtByWolf &&
-            player.State.Value != PlayerState.Transitioning)
-        {
-            previousPlayerState = player.State.Value;
-        }
-
         player.SetNewStateRpc(PlayerState.AncientChestUI);
 
         ancientChestUI.SetActive(true);
@@ -58,7 +50,7 @@ public class AncientChestUI : MonoBehaviour
 
     public void HidePanel()
     {
-        player.SetNewStateRpc(previousPlayerState);
+        player.SetNewStateRpc(PlayerState.Normal);
 
         ancientChestUI.SetActive(false);
     }

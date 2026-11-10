@@ -21,8 +21,11 @@ public class PlayerInputHandler : MonoBehaviour
         if (controls == null)
             return;
 
-        if (controls.Gameplay.PauseMenu.WasPressedThisFrame() && player.State.Value != PlayerState.PauseMenu)
+        if (controls.Gameplay.Esc.WasPressedThisFrame() && player.State.Value != PlayerState.PauseMenu)
+        {
             player.OpenPauseMenu();
+            return;
+        }
 
         switch (player.State.Value)
         {
@@ -74,13 +77,22 @@ public class PlayerInputHandler : MonoBehaviour
                 if (controls.Gameplay.Confirm.WasPressedThisFrame())
                     SwampNetwork.Instance.CloseUI(player);
                 break;
-                
+
+            case PlayerState.AncientChestUI:
+                if (controls.Gameplay.InitialObj.WasPressedThisFrame())
+                    AncientChestUI.Instance.HidePanel();
+                break;
+
+            case PlayerState.PauseMenu:
+                if (controls.Gameplay.Esc.WasPressedThisFrame())
+                    player.ClosePauseMenu();
+                break;
+
             case PlayerState.SelectingRole:
             case PlayerState.RabbitDialogueInteraction:
             case PlayerState.GrandmaDialogueInteraction:
             case PlayerState.Transitioning:
             case PlayerState.EndGame:
-            case PlayerState.PauseMenu:
                 break;
         }
     }
