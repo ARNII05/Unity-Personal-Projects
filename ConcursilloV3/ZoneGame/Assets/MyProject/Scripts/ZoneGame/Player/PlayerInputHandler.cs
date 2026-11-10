@@ -21,13 +21,16 @@ public class PlayerInputHandler : MonoBehaviour
         if (controls == null)
             return;
 
+        if (controls.Gameplay.PauseMenu.WasPressedThisFrame() && player.State.Value != PlayerState.PauseMenu)
+            player.OpenPauseMenu();
+
         switch (player.State.Value)
         {
             case PlayerState.Normal:
                 HandleNormalInput();
                 break;
 
-            case PlayerState.Trading:
+            case PlayerState.ChestInventory:
                 if (controls.Gameplay.Interact.WasPressedThisFrame())
                     player.CloseChest();
                 break;
@@ -62,7 +65,7 @@ public class PlayerInputHandler : MonoBehaviour
                     player.CloseWolfUI();
                 break;
 
-            case PlayerState.TradeUI:
+            case PlayerState.Trade:
                 if (controls.Gameplay.Confirm.WasPressedThisFrame())
                     TradeUI.Instance.CloseUI();
                 break;
@@ -77,6 +80,7 @@ public class PlayerInputHandler : MonoBehaviour
             case PlayerState.GrandmaDialogueInteraction:
             case PlayerState.Transitioning:
             case PlayerState.EndGame:
+            case PlayerState.PauseMenu:
                 break;
         }
     }

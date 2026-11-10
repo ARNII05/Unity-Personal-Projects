@@ -18,7 +18,7 @@ public class CursorManager : MonoBehaviour
 
     public void UpdateCursor(PlayerState state)
     {
-        Cursor.visible = state switch
+        bool showCursor = state switch
         {
             PlayerState.BuffsUI
             or PlayerState.EndGame
@@ -27,11 +27,18 @@ public class CursorManager : MonoBehaviour
             or PlayerState.RabbitDialogueInteraction
             or PlayerState.RabbitMapUI
             or PlayerState.SelectingRole
-            or PlayerState.TradeUI
-            or PlayerState.Trading => true,
+            or PlayerState.Trade
+            or PlayerState.PauseMenu
+            or PlayerState.ChestInventory => true,
 
             _ => false
         };
+
+        Cursor.lockState = showCursor
+            ? CursorLockMode.None
+            : CursorLockMode.Locked;
+
+        Cursor.visible = showCursor;
     }
 
     public void ShowCursor()

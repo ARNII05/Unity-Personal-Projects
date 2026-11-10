@@ -6,7 +6,7 @@ public class PurchaseSystem : MonoBehaviour
 
     public const int flowerCost = 2;
     public const int branchCost = 4;
-    public const int meatCost = 3;
+    public const int meatCost = 6;
 
     public const int maxFlowers = 5;
     public const int maxBranches = 5;

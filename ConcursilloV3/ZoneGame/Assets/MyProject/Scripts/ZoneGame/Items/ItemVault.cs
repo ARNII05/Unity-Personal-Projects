@@ -38,7 +38,7 @@ public static class ItemVault
             ItemType.Flower => "Se utiliza para fabricar Ramos de Flores.",
             ItemType.Branch => "Se utiliza para fabricar Troncos.",
             ItemType.Coin => "Se utiliza para comprar objetos.",
-            ItemType.Meat => "Sirve para atraer al lobo.",
+            ItemType.Meat => "Sirve para distraer al lobo y evitar que te robe otros objetos",
             ItemType.Bouquet => "Un ramo de flores para entregárselo a la abuela.",
             ItemType.Log => "Permite cruzar los ríos.",
             ItemType.Radar => "Detecta el lobo.",
@@ -71,6 +71,53 @@ public static class ItemVault
             _ => ""
         };
     }
+
+    public static int MaxAmountOf(ItemType itemType, int maxCountToSteal)
+    {
+        return itemType switch
+        {
+            ItemType.Bouquet or ItemType.Log => 1,
+            _ => maxCountToSteal
+        };
+    }
+
+    public static ItemType GetRandomWeightedItem(ItemType[] validItems)
+    {
+        int totalWeight = 0;
+
+        foreach (ItemType item in validItems)
+            totalWeight += GetStealWeight(item);
+
+        if (totalWeight <= 0)
+            return ItemType.None;
+
+        int randomValue = Random.Range(0, totalWeight);
+
+        foreach (ItemType item in validItems)
+        {
+            randomValue -= GetStealWeight(item);
+
+            if (randomValue < 0)
+                return item;
+        }
+
+        return ItemType.None;
+    }
+
+    private static int GetStealWeight(ItemType item)
+    {
+        return item switch
+        {
+            ItemType.Coin => 30,
+            ItemType.Flower => 25,
+            ItemType.Branch => 25,
+            ItemType.Log => 12,
+            ItemType.Bouquet => 8,
+            ItemType.Meat => 30,
+            _ => 0
+        };
+    }
+
 
     public static bool IsTransferable(ItemType itemType)
     {

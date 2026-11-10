@@ -70,14 +70,16 @@ public class SwampZone : MonoBehaviour
             if (validItems.Length == 0)
                 break;
 
-            int itemIndex = Random.Range(0, validItems.Length);
-            ItemType item = validItems[itemIndex];
+            ItemType item = ItemVault.GetRandomWeightedItem(validItems);
+
+            if (item == ItemType.None)
+                continue;
 
             int availableAmount = player.inventory.GetAmount(item);
 
             int amountToSteal = Random.Range(
                 1,
-                Mathf.Min(MaxAmountOf(item), availableAmount) + 1
+                Mathf.Min(ItemVault.MaxAmountOf(item, maxCountToSteal), availableAmount) + 1
             );
 
             if (!player.inventory.Remove(item, amountToSteal))
@@ -90,15 +92,6 @@ public class SwampZone : MonoBehaviour
         }
 
         return new ItemsStolenResult(stolenItems, amount);
-    }
-
-    private int MaxAmountOf(ItemType itemType)
-    {
-        return itemType switch
-        {
-            ItemType.Bouquet or ItemType.Log => 1,
-            _ => maxCountToSteal
-        };
     }
 
     private struct ItemsStolenResult

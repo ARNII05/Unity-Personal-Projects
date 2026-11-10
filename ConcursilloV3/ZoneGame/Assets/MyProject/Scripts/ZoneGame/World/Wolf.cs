@@ -53,9 +53,24 @@ public class Wolf : NetworkBehaviour
             player1 = MapManager.Instance.Player1;
             player2 = MapManager.Instance.Player2;
 
+            player1.NetworkMapPos.OnValueChanged += UpdateWolfState;
+            player2.NetworkMapPos.OnValueChanged += UpdateWolfState;
+
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
             readyToMove = true;
         }
+    }
+
+    public void UpdateWolfState(Vector2Int oldPos, Vector2Int newPos)
+    {
+        if (wolfState.Value == WolfState.MovingToDen)
+            return;
+
+        Player[] targets = CheckPlayerCollision();
+
+        wolfState.Value = targets == null 
+            ? WolfState.MovingRandom
+            : WolfState.MovingToPlayer;
     }
 
     private void Update()
@@ -79,34 +94,33 @@ public class Wolf : NetworkBehaviour
 
     private void MoveWolf()
     {
+        Debug.Log($"Wolf before moving -> Y: {NetworkPosition.Value.y}, X: {NetworkPosition.Value.x}");
+
         if (wolfState.Value == WolfState.MovingToDen)
         {
             MoveToDen();
             return;
         }
 
-        Vector2Int meatPos = CanMoveToMeat();
         Player playerToChase = CanMoveToPlayer();
 
-        int option = (meatPos.x != -1, playerToChase != null) switch
+        int option = (playerToChase != null) switch
         {
-            (true, _) => 1,
-            (false, true) => 2,
-            _ => 3
+            (true) => 1,
+            _ => 2
         };
 
         switch (option)
         {
             case 1:
-                MoveToMeat(meatPos);
-                break;
-            case 2:
                 MoveToPlayer(playerToChase);
                 break;
             default:
                 NetworkPosition.Value = MoveRandomly();
                 break;
         }
+
+        Debug.Log($"Wolf after moving -> Y: {NetworkPosition.Value.y}, X: {NetworkPosition.Value.x}");
 
         Player[] playersCaught = CheckPlayerCollision();
 
@@ -174,6 +188,17 @@ public class Wolf : NetworkBehaviour
         if (itemsToSteal <= 0)
             return new ItemsStolenResult(stolenItems, amount, StealResult.LuckPotionEffect);
 
+        if (player.inventory.GetAmount(ItemType.Meat) > 0)
+        {
+            player.inventory.Remove(ItemType.Meat, 1);
+
+            return new ItemsStolenResult(
+                new List<ItemType> { ItemType.Meat },
+                new List<int> { 1 },
+                StealResult.Success
+            );
+        }
+
         for (int i = 0; i < itemsToSteal; i++)
         {
             ItemType[] validItems = player.inventory.items.Keys
@@ -196,14 +221,16 @@ public class Wolf : NetworkBehaviour
                 break;
             }
 
-            int itemIndex = Random.Range(0, validItemsInWolfDen.Length);
-            ItemType item = validItemsInWolfDen[itemIndex];
+            ItemType item = ItemVault.GetRandomWeightedItem(validItemsInWolfDen);
+
+            if (item == ItemType.None)
+                continue;
 
             int availableAmount = player.inventory.GetAmount(item);
 
             int amountToSteal = Random.Range(
                 1,
-                Mathf.Min(MaxCountPerItem(item), availableAmount) + 1
+                Mathf.Min(ItemVault.MaxAmountOf(item, maxCountToSteal), availableAmount) + 1
             );
 
             if (!player.inventory.Remove(item, amountToSteal))
@@ -218,15 +245,6 @@ public class Wolf : NetworkBehaviour
         }
 
         return new ItemsStolenResult(stolenItems, amount, stealResult);
-    }
-
-    private int MaxCountPerItem(ItemType itemType)
-    {
-        return itemType switch
-        {
-            ItemType.Log or ItemType.Bouquet => 1,
-            _ => maxCountToSteal
-        };
     }
 
     private bool SpaceInWolfDenChest(ItemType item)
@@ -263,6 +281,7 @@ public class Wolf : NetworkBehaviour
             wolfState.Value = WolfState.MovingRandom;
     }
 
+    /*
     private void MoveToMeat(Vector2Int meatPos)
     {
         wolfState.Value = WolfState.MovingToMeat;
@@ -277,6 +296,7 @@ public class Wolf : NetworkBehaviour
             wolfState.Value = WolfState.MovingToDen;
         }
     }
+    */
 
     private void MoveToPlayer(Player player)
     {
@@ -332,6 +352,7 @@ public class Wolf : NetworkBehaviour
         };
     }
 
+    /*
     private void RemoveMeatInZone(Vector2Int meatPos)
     {
         ZoneData zone = map[meatPos.y, meatPos.x];
@@ -348,6 +369,7 @@ public class Wolf : NetworkBehaviour
 
         zone.chestInventory.Remove(ItemType.Meat, 1);
     }
+    */
 
     private Direction MoveTowards(Vector2Int targetPos)
     {
@@ -470,6 +492,7 @@ public class Wolf : NetworkBehaviour
         return canMove ? newPos : new Vector2Int(-1, -1);
     }
 
+    /*
     private Vector2Int CanMoveToMeat()
     {
         int closestDistance = int.MaxValue;
@@ -503,6 +526,7 @@ public class Wolf : NetworkBehaviour
 
         return closestPosition;
     }
+    */
 
     private Player CanMoveToPlayer()
     {
@@ -595,8 +619,8 @@ public enum WolfState
 {
     MovingRandom,
     MovingToPlayer,
-    MovingToMeat,
     MovingToDen
+    //MovingToMeat,
 }
 
 public enum StealResult

@@ -151,6 +151,16 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""PauseMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""34669250-cb98-4ceb-a540-c011e1299242"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -318,6 +328,17 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Buffs"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b602ad7e-9703-4179-8c71-36e23f03a7a6"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -332,6 +353,7 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
         m_Gameplay_InitialObj = m_Gameplay.FindAction("InitialObj", throwIfNotFound: true);
         m_Gameplay_Confirm = m_Gameplay.FindAction("Confirm", throwIfNotFound: true);
         m_Gameplay_Buffs = m_Gameplay.FindAction("Buffs", throwIfNotFound: true);
+        m_Gameplay_PauseMenu = m_Gameplay.FindAction("PauseMenu", throwIfNotFound: true);
     }
 
     ~@ZoneGameControls()
@@ -418,6 +440,7 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_InitialObj;
     private readonly InputAction m_Gameplay_Confirm;
     private readonly InputAction m_Gameplay_Buffs;
+    private readonly InputAction m_Gameplay_PauseMenu;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -453,6 +476,10 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/Buffs".
         /// </summary>
         public InputAction @Buffs => m_Wrapper.m_Gameplay_Buffs;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/PauseMenu".
+        /// </summary>
+        public InputAction @PauseMenu => m_Wrapper.m_Gameplay_PauseMenu;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -497,6 +524,9 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
             @Buffs.started += instance.OnBuffs;
             @Buffs.performed += instance.OnBuffs;
             @Buffs.canceled += instance.OnBuffs;
+            @PauseMenu.started += instance.OnPauseMenu;
+            @PauseMenu.performed += instance.OnPauseMenu;
+            @PauseMenu.canceled += instance.OnPauseMenu;
         }
 
         /// <summary>
@@ -526,6 +556,9 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
             @Buffs.started -= instance.OnBuffs;
             @Buffs.performed -= instance.OnBuffs;
             @Buffs.canceled -= instance.OnBuffs;
+            @PauseMenu.started -= instance.OnPauseMenu;
+            @PauseMenu.performed -= instance.OnPauseMenu;
+            @PauseMenu.canceled -= instance.OnPauseMenu;
         }
 
         /// <summary>
@@ -608,5 +641,12 @@ public partial class @ZoneGameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBuffs(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PauseMenu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPauseMenu(InputAction.CallbackContext context);
     }
 }

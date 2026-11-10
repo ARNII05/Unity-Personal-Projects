@@ -122,6 +122,9 @@ public class RoleSelectorUI : MonoBehaviour
     {
         Player newOtherPlayer = MapManager.Instance.GetOtherPlayer(player);
 
+        if (newOtherPlayer == null)
+            ClearDisconnectedPlayerRole();
+
         if (otherPlayer == newOtherPlayer)
             return;
 
@@ -132,6 +135,28 @@ public class RoleSelectorUI : MonoBehaviour
 
         if (otherPlayer != null)
             otherPlayer.Role.OnValueChanged += OnRoleChanged;
+    }
+
+    private void ClearDisconnectedPlayerRole()
+    {
+        PlayerRole localRole = player.Role.Value;
+
+        if (localRole != PlayerRole.Gardener)
+            SetRoleTextBox(gardenerRoleObject, false);
+
+        if (localRole != PlayerRole.Builder)
+            SetRoleTextBox(builderRoleObject, false);
+
+        GameObject disconnectedPlayerBox = MapManager.Instance.Player1 == null
+            ? player1Box
+            : player2Box;
+
+        TextMeshProUGUI roleNameText = disconnectedPlayerBox.transform
+            .GetChild(0)
+            .Find("RolName")
+            .GetComponent<TextMeshProUGUI>();
+
+        roleNameText.text = "Sin escoger";
     }
 
     private void OnRoleChanged(PlayerRole previousValue, PlayerRole newValue)

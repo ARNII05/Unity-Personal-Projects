@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class WolfUI : MonoBehaviour
 {
-    [SerializeField] private GameObject wolfPanel;
+    private GameObject wolfUI;
     private GameObject canStealItems, cantStealItems, noSpaceInChest, grid, luckPotionEffect;
 
     private PlayerState previousPlayerState;
@@ -14,11 +14,12 @@ public class WolfUI : MonoBehaviour
 
     void Start()
     {
-        wolfPanel.SetActive(false);
-        canStealItems = wolfPanel.transform.Find("CanStealItems").gameObject;
-        cantStealItems = wolfPanel.transform.Find("CantStealItems").gameObject;
-        noSpaceInChest = wolfPanel.transform.Find("NoSpaceInChest").gameObject;
-        luckPotionEffect = wolfPanel.transform.Find("LuckPotionEffect").gameObject;
+        wolfUI = GameObject.Find("WolfPanel").transform.GetChild(0).gameObject;
+        wolfUI.SetActive(false);
+        canStealItems = wolfUI.transform.Find("CanStealItems").gameObject;
+        cantStealItems = wolfUI.transform.Find("CantStealItems").gameObject;
+        noSpaceInChest = wolfUI.transform.Find("NoSpaceInChest").gameObject;
+        luckPotionEffect = wolfUI.transform.Find("LuckPotionEffect").gameObject;
 
         grid = canStealItems.transform.Find("Grid").gameObject;
 
@@ -34,7 +35,7 @@ public class WolfUI : MonoBehaviour
         }
 
         player.SetNewStateRpc(PlayerState.CaughtByWolf);
-        wolfPanel.SetActive(true);
+        wolfUI.SetActive(true);
     }
 
     public void CloseUI()
@@ -46,7 +47,7 @@ public class WolfUI : MonoBehaviour
         if (stateToRestore == PlayerState.UsingRadar)
             RadarUI.Instance.PlayVideoAndSound();
 
-        wolfPanel.SetActive(false);
+        wolfUI.SetActive(false);
     }
 
     public void ShowItemsStolen(ItemType[] stolenItems, int[] amounts, Player player, StealResult stealResult)

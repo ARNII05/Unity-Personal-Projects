@@ -172,10 +172,6 @@ public class RadarUI : MonoBehaviour
                 wolfStatusText.color = distanceText.color;
                 break;
 
-            case WolfState.MovingToMeat:
-                wolfStatusText.text = "Yendo hacia la carne";
-                break;
-
             case WolfState.MovingToDen:
                 wolfStatusText.text = "Regresando a la cueva";
                 break;

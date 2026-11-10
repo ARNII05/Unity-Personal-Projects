@@ -40,7 +40,7 @@ public class TradeUI : MonoBehaviour
     {
         tradeDialogue.SetActive(true);
 
-        player.SetNewStateRpc(PlayerState.TradeUI);
+        player.SetNewStateRpc(PlayerState.Trade);
     }
 
     public void CloseUI()

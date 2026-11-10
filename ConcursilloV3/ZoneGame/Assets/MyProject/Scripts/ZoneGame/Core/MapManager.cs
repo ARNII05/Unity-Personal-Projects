@@ -201,7 +201,7 @@ public class MapManager : MonoBehaviour
                 //startPos = GoTo(ZoneType.Ruins, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
-                player2.NetworkMapPos.Value = startPos;
+                player2.NetworkMapPos.Value = GoTo(ZoneType.Camp, startPos);
 
                 PrintMap();
                 CreateInitialZones();
@@ -392,12 +392,6 @@ public class MapManager : MonoBehaviour
 
         if (!IsServer)
             return;
-
-        player1.NetworkZoneEntryPosition.Value =
-            player1.transform.position;
-
-        player2.NetworkZoneEntryPosition.Value =
-            player2.transform.position;
     }
 
     private void CreateInitialZones()

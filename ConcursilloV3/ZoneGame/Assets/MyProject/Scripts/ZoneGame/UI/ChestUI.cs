@@ -110,7 +110,7 @@ public class ChestUI : MonoBehaviour
 
     public void OpenInventory()
     {
-        player.SetNewStateRpc(PlayerState.Trading);
+        player.SetNewStateRpc(PlayerState.ChestInventory);
         
         playerInventoryUI.ChangeButtonStatus(true);
         chestInventoryUI.ChangeButtonStatus(true);

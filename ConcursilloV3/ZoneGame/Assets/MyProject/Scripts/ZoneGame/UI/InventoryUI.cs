@@ -157,29 +157,17 @@ public class InventoryUI : MonoBehaviour
         else HideInventoryAndCrafting();
     }
 
-    public void OpenInventory()
+    private void ShowInventoryAndCrafting()
     {
         player.SetNewStateRpc(PlayerState.Inventory);
         ShowInventory();
-        //CursorManager.Instance.UnlockCursor();
-    }
-
-    public void CloseInventory()
-    {
-        player.SetNewStateRpc(PlayerState.Normal);
-        HideInventory();
-        //CursorManager.Instance.LockCursor();
-    }
-
-    private void ShowInventoryAndCrafting()
-    {
-        inventoryUI.SetActive(true);
         craftingUI.OpenCraftingUI();
     }
 
     private void HideInventoryAndCrafting()
     {
-        inventoryUI.SetActive(false);
+        player.SetNewStateRpc(PlayerState.Normal);
+        HideInventory();
         craftingUI.CloseCraftingUI();
     }
 

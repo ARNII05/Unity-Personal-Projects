@@ -21,6 +21,7 @@ public class Player : NetworkBehaviour
     private PlayerAnimationController playerAnimationController;
     private PlayerInputHandler playerInputHandler;
     private PlayerRoleSelectionVisuals roleSelectionVisuals;
+    private PauseMenuUI pauseMenuUI;
 
     public Chest nearbyChest => nearbyObjects.NearbyChest;
     public PlayerNearbyObjects NearbyObjects => nearbyObjects;
@@ -40,12 +41,6 @@ public class Player : NetworkBehaviour
 
     public NetworkVariable<PlayerState> State = new(
         PlayerState.Normal,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
-     
-    public NetworkVariable<Vector3> NetworkZoneEntryPosition = new(
-        Vector3.zero,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
@@ -96,6 +91,11 @@ public class Player : NetworkBehaviour
 
         if (otherPlayerVisualController != null)
             otherPlayerVisualController.UpdateVisual();
+    }
+
+    public void OpenPauseMenu()
+    {
+        pauseMenuUI.ShowPauseMenu();
     }
 
     public void OpenInventory()
@@ -174,7 +174,7 @@ public class Player : NetworkBehaviour
         if (zone == null)
             return;
 
-        if (zone.type != ZoneType.Village || State.Value != PlayerState.TradeUI)
+        if (zone.type != ZoneType.Village || State.Value != PlayerState.Trade)
             return;
 
         PurchaseResult result = PurchaseSystem.Instance.TradeItem(item, itemToAdd, itemToRemove, actualAmount, tradeMode, this);
@@ -404,7 +404,6 @@ public class Player : NetworkBehaviour
         if (changeLastDirection)
             lastDirection = direction;
 
-        NetworkZoneEntryPosition.Value = entryPosition;
         NetworkMapPos.Value = newPos;
     }
 
@@ -533,6 +532,10 @@ public class Player : NetworkBehaviour
 
             wolfUI =
                 GameObject.Find("WolfManager").GetComponent<WolfUI>();
+
+            pauseMenuUI = GameObject.Find("PausePanel").GetComponent<PauseMenuUI>();
+
+            pauseMenuUI.InitPlayer(this);
 
             if (otherPlayerVisualController != null)
                 otherPlayerVisualController.Initialize(this);
@@ -854,13 +857,14 @@ public enum PlayerState
     UsingMap,
     RabbitDialogueInteraction,
     RabbitMapUI,
-    TradeUI,
+    Trade,
     GrandmaDialogueInteraction,
     CaughtByWolf,
     InSwamp,
     Inventory,
     BuffsUI,
     Transitioning,
-    Trading,
+    ChestInventory,
+    PauseMenu,
     EndGame
 }
