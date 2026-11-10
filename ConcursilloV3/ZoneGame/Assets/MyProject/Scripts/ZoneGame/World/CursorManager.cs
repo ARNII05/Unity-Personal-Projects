@@ -29,6 +29,7 @@ public class CursorManager : MonoBehaviour
             or PlayerState.SelectingRole
             or PlayerState.Trade
             or PlayerState.PauseMenu
+            or PlayerState.AncientChestUI
             or PlayerState.ChestInventory => true,
 
             _ => false

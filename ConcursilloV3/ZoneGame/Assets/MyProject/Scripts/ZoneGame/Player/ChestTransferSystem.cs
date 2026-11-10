@@ -95,42 +95,45 @@ public class ChestTransferSystem : MonoBehaviour
     }
 
 
-    public bool TryToRemoveAncientRelics(ChestType chestType, Vector2Int position)
+    public AncientRelicsResult TryToRemoveAncientRelics(
+        ChestType chestType,
+        Vector2Int position,
+        out int amountOfAncientRelics)
     {
+        amountOfAncientRelics = 0;
+
         if (position != player.NetworkMapPos.Value)
-            return false;
+            return AncientRelicsResult.InvalidInteraction;
 
         ZoneData zone = MapManager.Instance.map[position.y, position.x];
 
         if (zone.type != ZoneType.Ruins)
-            return false;
+            return AncientRelicsResult.InvalidInteraction;
 
         Ruins ruinsZone = (Ruins)zone;
 
         if (ruinsZone.ancientRelicsRemoved)
-            return true;
+            return AncientRelicsResult.Success;
 
         if (chestType != ChestType.Ancient)
-            return false;
+            return AncientRelicsResult.InvalidInteraction;
 
         Player otherPlayer = MapManager.Instance.GetOtherPlayer(player);
 
         if (otherPlayer == null)
-            return false;
+            return AncientRelicsResult.InvalidInteraction;
 
-        int amountOfAncientRelics = player.inventory.GetAmount(ItemType.AncientRelic) +
+        amountOfAncientRelics =
+            player.inventory.GetAmount(ItemType.AncientRelic) +
             otherPlayer.inventory.GetAmount(ItemType.AncientRelic);
 
         if (amountOfAncientRelics < CraftingSystem.ancientRelicsToOpenAncientChest)
-        {
-            Debug.Log("Necesitas al menos 3 Reliquias Antiguas para abrir este cofre.");
-            return false;
-        }
+            return AncientRelicsResult.NotEnoughRelics;
 
         RemoveAncientRelicsFromPlayers(otherPlayer);
         ruinsZone.ancientRelicsRemoved = true;
 
-        return true;
+        return AncientRelicsResult.Success;
     }
 
     private void RemoveAncientRelicsFromPlayers(Player otherPlayer)
@@ -158,4 +161,11 @@ public class ChestTransferSystem : MonoBehaviour
 
         return zone.chestInventory.GetAmount(item);
     }
+}
+
+public enum AncientRelicsResult
+{
+    Success,
+    NotEnoughRelics,
+    InvalidInteraction
 }

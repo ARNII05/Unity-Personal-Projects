@@ -46,7 +46,6 @@ public class TradeObjects : MonoBehaviour
         this.player = player;
 
         tradePanel.SetActive(false);
-        tradePanel.SetActive(false);
     }
 
     public void OpenTrade(TradeMode tradeMode)

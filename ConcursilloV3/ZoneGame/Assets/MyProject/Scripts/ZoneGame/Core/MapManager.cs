@@ -198,10 +198,10 @@ public class MapManager : MonoBehaviour
                 ResourcesGenerator.Instance.Init();
                 
                 //startPos = GoTo(startPos, ItemType.AncientRelic);
-                //startPos = GoTo(ZoneType.Ruins, startPos);
+                startPos = GoTo(ZoneType.Ruins, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
-                player2.NetworkMapPos.Value = GoTo(ZoneType.Camp, startPos);
+                player2.NetworkMapPos.Value = startPos;
 
                 PrintMap();
                 CreateInitialZones();
@@ -1014,8 +1014,7 @@ public class MapManager : MonoBehaviour
 
                 player.SetNetworkMapPosServerRpc(
                     newPos,
-                    direction,
-                    entryPosition
+                    direction
                 );
             },
             player
@@ -1088,7 +1087,6 @@ public class MapManager : MonoBehaviour
         player.SetNetworkMapPosServerRpc(
             newPos,
             Direction.East,
-            tpPos,
             false
         );
     }

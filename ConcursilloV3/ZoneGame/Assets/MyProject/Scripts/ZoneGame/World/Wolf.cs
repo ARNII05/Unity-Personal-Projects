@@ -57,7 +57,7 @@ public class Wolf : NetworkBehaviour
             player2.NetworkMapPos.OnValueChanged += UpdateWolfState;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = true;
+            readyToMove = false;
         }
     }
 
@@ -66,9 +66,9 @@ public class Wolf : NetworkBehaviour
         if (wolfState.Value == WolfState.MovingToDen)
             return;
 
-        Player[] targets = CheckPlayerCollision();
+        Player target = CanMoveToPlayer();
 
-        wolfState.Value = targets == null 
+        wolfState.Value = target == null 
             ? WolfState.MovingRandom
             : WolfState.MovingToPlayer;
     }

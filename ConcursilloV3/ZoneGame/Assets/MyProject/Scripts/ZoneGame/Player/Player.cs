@@ -278,15 +278,32 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void TryToRemoveAncientRelicsRpc(ChestType chestType, Vector2Int position)
     {
-        if (!chestTransferSystem.TryToRemoveAncientRelics(chestType, position))
+        AncientRelicsResult result =
+            chestTransferSystem.TryToRemoveAncientRelics(
+                chestType, position, out int amountOfAncientRelics);
+
+        if (result == AncientRelicsResult.NotEnoughRelics)
+        {
+            ShowAncientChestUIRpc(amountOfAncientRelics);
+            return;
+        }
+
+        if (result != AncientRelicsResult.Success)
             return;
 
         SetInventory();
+
         Player otherPlayer = MapManager.Instance.GetOtherPlayer(this);
         otherPlayer.SetInventory();
 
         UpdateOpenedChestClientRpc(position);
         OpenChestClientRpc(position);
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void ShowAncientChestUIRpc(int amountOfAncientRelics)
+    {
+        AncientChestUI.Instance.ShowPanel(amountOfAncientRelics);
     }
 
     [Rpc(SendTo.Owner)]
@@ -398,7 +415,6 @@ public class Player : NetworkBehaviour
     public void SetNetworkMapPosServerRpc(
         Vector2Int newPos,
         Direction direction,
-        Vector3 entryPosition,
         bool changeLastDirection = true)
     {
         if (changeLastDirection)
@@ -536,6 +552,8 @@ public class Player : NetworkBehaviour
             pauseMenuUI = GameObject.Find("PausePanel").GetComponent<PauseMenuUI>();
 
             pauseMenuUI.InitPlayer(this);
+
+            AncientChestUI.Instance.InitPlayer(this);
 
             if (otherPlayerVisualController != null)
                 otherPlayerVisualController.Initialize(this);
@@ -687,6 +705,7 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
+        inventory.Add(ItemType.AncientRelic, 3);
     }
 
     [Rpc(SendTo.Owner)]
@@ -866,5 +885,6 @@ public enum PlayerState
     Transitioning,
     ChestInventory,
     PauseMenu,
+    AncientChestUI,
     EndGame
 }
