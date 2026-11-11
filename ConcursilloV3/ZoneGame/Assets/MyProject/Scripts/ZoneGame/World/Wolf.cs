@@ -266,6 +266,12 @@ public class Wolf : NetworkBehaviour
             return false;
         }
 
+        player.SyncChestItemsRpc(
+           new[] { pos },
+           new[] { item },
+           new[] { amount }
+       );
+
         return true;
     }
 

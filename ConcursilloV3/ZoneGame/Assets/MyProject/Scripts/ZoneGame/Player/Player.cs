@@ -682,6 +682,30 @@ public class Player : NetworkBehaviour
         StartCoroutine(recoverySystemUI.ShowRecoverySystemPanelInfo(items, amounts));
     }
 
+    [Rpc(SendTo.NotServer)]
+    public void SyncChestItemsRpc(
+        Vector2Int[] positions,
+        ItemType[] itemTypes,
+        int[] amounts)
+    {
+        if (positions.Length != itemTypes.Length ||
+            positions.Length != amounts.Length)
+            return;
+
+        ZoneData[,] map = MapManager.Instance.map;
+
+        for (int i = 0; i < positions.Length; i++)
+        {
+            Vector2Int pos = positions[i];
+
+            if (pos.x < 0 || pos.x >= MapManager.mapWidth ||
+                pos.y < 0 || pos.y >= MapManager.mapHeight)
+                continue;
+
+            map[pos.y, pos.x].chestInventory.Add(itemTypes[i], amounts[i]);
+        }
+    }
+
     public bool StartGame()
     {
         if (Role.Value == PlayerRole.None)

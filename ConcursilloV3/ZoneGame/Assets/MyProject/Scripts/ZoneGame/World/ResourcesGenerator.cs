@@ -113,25 +113,33 @@ public class ResourcesGenerator : MonoBehaviour
 
         if (flowersToGenerate > 0)
         {
-            int flowersGenerated = SetInitialItems(
-                ChestItems.Flower, allMap, flowersToGenerate);
+            InitialItemsResult flowersGenerated = SetInitialItems(
+                ChestItems.Flower, allMap, 
+                flowersToGenerate);
 
-            if (flowersGenerated > 0)
+            if (flowersGenerated.itemsGenerated > 0)
             {
                 items.Add(ItemType.Flower);
-                amounts.Add(flowersGenerated);
+                amounts.Add(flowersGenerated.itemsGenerated);
+
+                localPlayer.SyncChestItemsRpc(flowersGenerated.zonePositions.ToArray(),
+                flowersGenerated.items.ToArray(), flowersGenerated.amounts.ToArray());
             }
         }
 
         if (branchesToGenerate > 0)
         {
-            int branchesGenerated = SetInitialItems(
-                ChestItems.Branch, momPart, branchesToGenerate);
+            InitialItemsResult branchesGenerated = SetInitialItems(
+                ChestItems.Branch, momPart, 
+                branchesToGenerate);
 
-            if (branchesGenerated > 0)
+            if (branchesGenerated.itemsGenerated > 0)
             {
                 items.Add(ItemType.Branch);
-                amounts.Add(branchesGenerated);
+                amounts.Add(branchesGenerated.itemsGenerated);
+
+                localPlayer.SyncChestItemsRpc(branchesGenerated.zonePositions.ToArray(),
+                    branchesGenerated.items.ToArray(), branchesGenerated.amounts.ToArray());
             }
         }
 
@@ -300,15 +308,19 @@ public class ResourcesGenerator : MonoBehaviour
     }
 
 
-    private int SetInitialItems(
+    private InitialItemsResult SetInitialItems(
         ChestItems item,
         List<Vector2Int> mapPart,
         int totalItemsToCraft)
     {
         int itemCount = 0;
 
+        List<Vector2Int> positions = new();
+        List<ItemType> items = new();
+        List<int> amounts = new();
+
         if (totalItemsToCraft <= 0 || mapPart.Count == 0)
-            return 0;
+            return new InitialItemsResult(itemCount, positions, items, amounts);
 
         ItemType itemType = (ItemType)item;
 
@@ -336,7 +348,12 @@ public class ResourcesGenerator : MonoBehaviour
             );
 
             if (zone.chestInventory.Add(itemType, amount))
+            {
                 itemCount += amount;
+                positions.Add(position);
+                items.Add(itemType);
+                amounts.Add(amount);
+            }
 
             if (!zone.chestInventory.HasSpaceFor(itemType))
                 availablePositions.RemoveAt(randomIndex);
@@ -350,7 +367,7 @@ public class ResourcesGenerator : MonoBehaviour
             );
         }
 
-        return itemCount;
+        return new InitialItemsResult(itemCount, positions, items, amounts);
     }
 
 
@@ -449,6 +466,22 @@ public class ResourcesGenerator : MonoBehaviour
         }
 
         return tilesInZone;
+    }
+
+    private struct InitialItemsResult
+    {
+        public int itemsGenerated;
+        public List<Vector2Int> zonePositions;
+        public List<ItemType> items;
+        public List<int> amounts;
+
+        public InitialItemsResult(int itemsGenerated, List<Vector2Int> zonePositions, List<ItemType> items, List<int> amounts)
+        {
+            this.itemsGenerated = itemsGenerated;
+            this.zonePositions = zonePositions;
+            this.items = items;
+            this.amounts = amounts;
+        }
     }
 }
 
