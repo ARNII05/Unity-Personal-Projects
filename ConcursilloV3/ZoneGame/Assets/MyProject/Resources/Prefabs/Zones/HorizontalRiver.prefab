@@ -1615,6 +1615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37658a6277165314a900893d4117f88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestType: 0
   chestUI: {fileID: 0}
 --- !u!1 &1423982249449786519
 GameObject:
@@ -1846,6 +1847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37658a6277165314a900893d4117f88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chestType: 0
   chestUI: {fileID: 0}
 --- !u!1 &1484481708969810950
 GameObject:
@@ -17324,26 +17326,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dac3bf4427745af43a59670c7befd741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  borders:
-  - {fileID: 3983850050332051660}
-  - {fileID: 3213823861456506744}
-  - {fileID: 3198896228585314366}
-  - {fileID: 1290837602932611039}
-  - {fileID: 4730815250182167159}
-  - {fileID: 8082539897922423965}
-  protectors:
-  - {fileID: 6078272821835758787}
-  - {fileID: 2625841793644177694}
-  - {fileID: 4915523216852434018}
-  - {fileID: 7353590180686265173}
-  - {fileID: 8249122985448267738}
-  - {fileID: 8425173173506508517}
-  - {fileID: 7018013030186051821}
-  - {fileID: 9012717457543477224}
-  - {fileID: 3227937449962616951}
-  - {fileID: 6062682271175325513}
-  - {fileID: 2720147916728925858}
-  - {fileID: 8014455854422098224}
 --- !u!114 &4107513368440164460
 MonoBehaviour:
   m_ObjectHideFlags: 0

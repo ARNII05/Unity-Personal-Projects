@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,39 +14,99 @@ public class River : MonoBehaviour
     public Vector2Int mapPosition;
     private ZoneData[,] map;
 
+    [SerializeField] private float pulseDuration = 2f;
+    [SerializeField] private float minAlpha = 0.1f;
+    [SerializeField] private float maxAlpha = 0.6f;
+
+    private SpriteRenderer[] bridgeRenderers;
+    private Color[] originalColors;
+
+    private bool isBridged;
+
+    private void Awake()
+    {
+        bridgeRenderers = bridges
+            .Where(bridge => bridge != null)
+            .SelectMany(bridge => bridge.GetComponentsInChildren<SpriteRenderer>(true))
+            .ToArray();
+
+        originalColors = new Color[bridgeRenderers.Length];
+
+        for (int i = 0; i < bridgeRenderers.Length; i++)
+        {
+            originalColors[i] = bridgeRenderers[i].color;
+        }
+    }
+
     public void Init(Vector2Int mapPosition)
     {
         this.mapPosition = mapPosition;
         map = MapManager.Instance.map;
-        
-        SwapGameObjectStatus(map[mapPosition.y, mapPosition.x].riverBridged, bridges);
-        SwapGameObjectStatus(!map[mapPosition.y, mapPosition.x].riverBridged, riverInteractors);
-        SwapGameObjectStatus(!map[mapPosition.y, mapPosition.x].riverBridged, triggers);
-        
+
+        isBridged = map[mapPosition.y, mapPosition.x].riverBridged;
+
+        SwapGameObjectStatus(true, bridges);
+        SwapGameObjectStatus(!isBridged, riverInteractors);
+        SwapGameObjectStatus(!isBridged, triggers);
+
         InitHorizontalRiver();
+    }
+
+    private void Update()
+    {
+        if (isBridged || bridgeRenderers == null)
+            return;
+
+        float alpha = Mathf.Lerp(
+            minAlpha,
+            maxAlpha,
+            (Mathf.Sin(Time.time * Mathf.PI * 2f / pulseDuration) + 1f) / 2f
+        );
+
+        Direction direction = map[mapPosition.y, mapPosition.x].firstRiverDirection;
+
+        for (int i = 0; i < bridgeRenderers.Length; i++)
+        {
+            SpriteRenderer sprite = bridgeRenderers[i];
+
+            if (sprite == null || !sprite.gameObject.activeInHierarchy)
+                continue;
+
+            bool shouldAnimate = true;
+
+            if (riverType == RiverType.Horizontal)
+            {
+                if (direction == Direction.North)
+                {
+                    shouldAnimate = sprite.transform.IsChildOf(bridges[1].transform);
+                }
+                else if (direction == Direction.South)
+                {
+                    shouldAnimate = sprite.transform.IsChildOf(bridges[0].transform);
+                }
+            }
+
+            sprite.color = shouldAnimate
+                ? new Color(1f, 1f, 1f, alpha)
+                : originalColors[i];
+        }
     }
 
     private void InitHorizontalRiver()
     {
+        if (riverType != RiverType.Horizontal || isBridged)
+            return;
+
         Direction direction = map[mapPosition.y, mapPosition.x].firstRiverDirection;
 
-        if (riverType != RiverType.Horizontal)
-            return;
-
-        if (map[mapPosition.y, mapPosition.x].riverBridged)
-            return;
-
-        riverInteractors[0].SetActive(!(direction == Direction.North));
-        riverInteractors[1].SetActive(!(direction == Direction.South));
+        riverInteractors[0].SetActive(direction != Direction.North);
+        riverInteractors[1].SetActive(direction != Direction.South);
         riverInteractors[2].SetActive(direction == Direction.None);
-
-        bridges[0].SetActive(direction == Direction.North);
-        bridges[1].SetActive(direction == Direction.South);
     }
 
     public bool Interact(Player player)
     {
-        if (map[mapPosition.y, mapPosition.x].riverBridged)
+        if (isBridged)
             return false;
 
         if (player.inventory.GetAmount(ItemType.Log) < CraftingSystem.logsForBridge)
@@ -64,9 +125,16 @@ public class River : MonoBehaviour
 
     public void SwapGameObjectStatus()
     {
+        isBridged = true;
+
         SwapGameObjectStatus(false, riverInteractors);
         SwapGameObjectStatus(false, triggers);
         SwapGameObjectStatus(true, bridges);
+
+        for (int i = 0; i < bridgeRenderers.Length; i++)
+        {
+            bridgeRenderers[i].color = originalColors[i];
+        }
     }
 }
 

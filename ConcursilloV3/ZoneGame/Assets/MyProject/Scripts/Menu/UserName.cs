@@ -17,6 +17,8 @@ public class UserName : MonoBehaviour
 
     private void Awake()
     {
+        //PlayerPrefs.DeleteKey("PlayerName");
+
         playerNameSetterPanel = transform.Find("PlayerNameSetterPanel").gameObject;
         playerNamePanel = transform.Find("PlayerNamePanel").gameObject;
         errorText = playerNameSetterPanel.transform.Find("ErrorText").GetComponent<TMP_Text>();

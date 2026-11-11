@@ -59,7 +59,7 @@ public class PlayerInputHandler : MonoBehaviour
                 break;
 
             case PlayerState.RabbitMapUI:
-                if (controls.Gameplay.InitialObj.WasPressedThisFrame())
+                if (controls.Gameplay.Confirm.WasPressedThisFrame())
                     RabbitDialogue.Instance.CloseMap();
                 break;
 
@@ -79,7 +79,7 @@ public class PlayerInputHandler : MonoBehaviour
                 break;
 
             case PlayerState.AncientChestUI:
-                if (controls.Gameplay.InitialObj.WasPressedThisFrame())
+                if (controls.Gameplay.Confirm.WasPressedThisFrame())
                     AncientChestUI.Instance.HidePanel();
                 break;
 

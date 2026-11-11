@@ -1,0 +1,1079 @@
+fileFormatVersion: 2
+guid: 062b36b73e0cf7146a4f36830b170d15
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8130116401619956050
+    second: ARROWS_0
+  - first:
+      213: -5904000266973543965
+    second: ARROWS_1
+  - first:
+      213: 2747254197209572349
+    second: ARROWS_2
+  - first:
+      213: 7034109672877830752
+    second: ARROWS_3
+  - first:
+      213: -7084700891798597996
+    second: ARROWS_4
+  - first:
+      213: -1791268013967344208
+    second: ARROWS_5
+  - first:
+      213: 6759654217258358486
+    second: ARROWS_6
+  - first:
+      213: -2389987292643039885
+    second: ARROWS_7
+  - first:
+      213: 7463504584707290764
+    second: ARROWS_8
+  - first:
+      213: 2138740881090138604
+    second: ARROWS_9
+  - first:
+      213: 3162595031409131702
+    second: ARROWS_10
+  - first:
+      213: 5140043046854757938
+    second: ARROWS_11
+  - first:
+      213: 7610731251403005066
+    second: ARROWS_12
+  - first:
+      213: -7762892909212278518
+    second: ARROWS_13
+  - first:
+      213: -1527332863953554104
+    second: ARROWS_14
+  - first:
+      213: 2475356400645008056
+    second: ARROWS_15
+  - first:
+      213: -9196859555296299125
+    second: ARROWS_16
+  - first:
+      213: -7770005631636521608
+    second: ARROWS_17
+  - first:
+      213: -6933100928850861139
+    second: ARROWS_18
+  - first:
+      213: -8323519995056452515
+    second: ARROWS_19
+  - first:
+      213: 184837926206849948
+    second: ARROWS_20
+  - first:
+      213: 6497430625731556247
+    second: ARROWS_21
+  - first:
+      213: -8065478287122167015
+    second: ARROWS_22
+  - first:
+      213: -8849324786113867296
+    second: ARROWS_23
+  - first:
+      213: 5389808887315718978
+    second: ARROWS_24
+  - first:
+      213: -8435531424927939759
+    second: ARROWS_25
+  - first:
+      213: 1251618874166225492
+    second: ARROWS_26
+  - first:
+      213: 6434237128368948782
+    second: ARROWS_27
+  - first:
+      213: 2253238510600193958
+    second: ARROWS_28
+  - first:
+      213: -3763345925654985929
+    second: ARROWS_29
+  - first:
+      213: -711151963994907818
+    second: ARROWS_30
+  - first:
+      213: 2305339905442416976
+    second: ARROWS_31
+  - first:
+      213: -3444900492279638317
+    second: ARROWS_32
+  - first:
+      213: 3573938282098533196
+    second: ARROWS_33
+  - first:
+      213: -6026681468559916523
+    second: ARROWS_34
+  - first:
+      213: -2842994576345958270
+    second: ARROWS_35
+  - first:
+      213: -4986297018017050431
+    second: ARROWS_36
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ARROWS_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1240
+        height: 1252
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eae8dda35360c2f80800000000000000
+      internalID: -8130116401619956050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_1
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 111
+        width: 30
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e10b35b907c01ea0800000000000000
+      internalID: -5904000266973543965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_2
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 81
+        width: 26
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df3a0640325302620800000000000000
+      internalID: 2747254197209572349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_3
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 111
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 062b50baa7d2e9160800000000000000
+      internalID: 7034109672877830752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_4
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 85
+        width: 25
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49e837443161ead90800000000000000
+      internalID: -7084700891798597996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_5
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 111
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bdf4f95b332427e0800000000000000
+      internalID: -1791268013967344208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_6
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 58
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d6d72842bd1fcd50800000000000000
+      internalID: 6759654217258358486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_7
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 77
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3756054583f05ded0800000000000000
+      internalID: -2389987292643039885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_8
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 17
+        width: 9
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c863afe50e1b39760800000000000000
+      internalID: 7463504584707290764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_9
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 63
+        width: 49
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce1dbf3ff755ead10800000000000000
+      internalID: 2138740881090138604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_10
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 95
+        width: 7
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b08e87cc6bc3eb20800000000000000
+      internalID: 3162595031409131702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_11
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 62
+        width: 10
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23e8ef10be9155740800000000000000
+      internalID: 5140043046854757938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_12
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 94
+        width: 20
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8c17d0ffbfbe9960800000000000000
+      internalID: 7610731251403005066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_13
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 146
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a01e005570aa44490800000000000000
+      internalID: -7762892909212278518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_14
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 152
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 845b4463ad2ddcae0800000000000000
+      internalID: -1527332863953554104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_15
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 101
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ba6fe8088b3a5220800000000000000
+      internalID: 2475356400645008056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_16
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 124
+        width: 19
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b87386526f03e5080800000000000000
+      internalID: -9196859555296299125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_17
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 93
+        width: 48
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87d35879b056b2490800000000000000
+      internalID: -7770005631636521608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_18
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 75
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da3e9e7307da8cf90800000000000000
+      internalID: -6933100928850861139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_19
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 63
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5c8cc51aaaec7c80800000000000000
+      internalID: -8323519995056452515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_20
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 176
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9344945d1da09200800000000000000
+      internalID: 184837926206849948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_21
+      rect:
+        serializedVersion: 2
+        x: 654
+        y: 85
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 793397faab28b2a50800000000000000
+      internalID: 6497430625731556247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_22
+      rect:
+        serializedVersion: 2
+        x: 658
+        y: 91
+        width: 40
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91b05780b3aa11090800000000000000
+      internalID: -8065478287122167015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_23
+      rect:
+        serializedVersion: 2
+        x: 697
+        y: 77
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e19f952ef1e03580800000000000000
+      internalID: -8849324786113867296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_24
+      rect:
+        serializedVersion: 2
+        x: 711
+        y: 47
+        width: 12
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24362b760a27cca40800000000000000
+      internalID: 5389808887315718978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_25
+      rect:
+        serializedVersion: 2
+        x: 713
+        y: 144
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1538685ccd8feea80800000000000000
+      internalID: -8435531424927939759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_26
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 83
+        width: 38
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45a2ad41cb4ae5110800000000000000
+      internalID: 1251618874166225492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_27
+      rect:
+        serializedVersion: 2
+        x: 770
+        y: 73
+        width: 47
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e268f0504900b4950800000000000000
+      internalID: 6434237128368948782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_28
+      rect:
+        serializedVersion: 2
+        x: 770
+        y: 60
+        width: 27
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a70e8abc7c154f10800000000000000
+      internalID: 2253238510600193958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_29
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 15
+        width: 15
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 733cb66d1d8e5cbc0800000000000000
+      internalID: -3763345925654985929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_30
+      rect:
+        serializedVersion: 2
+        x: 814
+        y: 81
+        width: 25
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65b13cc7e0b7126f0800000000000000
+      internalID: -711151963994907818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_31
+      rect:
+        serializedVersion: 2
+        x: 854
+        y: 36
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0598d660e663eff10800000000000000
+      internalID: 2305339905442416976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_32
+      rect:
+        serializedVersion: 2
+        x: 932
+        y: 77
+        width: 20
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d69a1f01414130d0800000000000000
+      internalID: -3444900492279638317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_33
+      rect:
+        serializedVersion: 2
+        x: 1045
+        y: 95
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4327a99eed299130800000000000000
+      internalID: 3573938282098533196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_34
+      rect:
+        serializedVersion: 2
+        x: 1051
+        y: 95
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5128e04922dec5ca0800000000000000
+      internalID: -6026681468559916523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_35
+      rect:
+        serializedVersion: 2
+        x: 1149
+        y: 131
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2887982ee77ab88d0800000000000000
+      internalID: -2842994576345958270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARROWS_36
+      rect:
+        serializedVersion: 2
+        x: 1204
+        y: 144
+        width: 25
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c01188d74d1dcab0800000000000000
+      internalID: -4986297018017050431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ARROWS_0: -8130116401619956050
+      ARROWS_1: -5904000266973543965
+      ARROWS_10: 3162595031409131702
+      ARROWS_11: 5140043046854757938
+      ARROWS_12: 7610731251403005066
+      ARROWS_13: -7762892909212278518
+      ARROWS_14: -1527332863953554104
+      ARROWS_15: 2475356400645008056
+      ARROWS_16: -9196859555296299125
+      ARROWS_17: -7770005631636521608
+      ARROWS_18: -6933100928850861139
+      ARROWS_19: -8323519995056452515
+      ARROWS_2: 2747254197209572349
+      ARROWS_20: 184837926206849948
+      ARROWS_21: 6497430625731556247
+      ARROWS_22: -8065478287122167015
+      ARROWS_23: -8849324786113867296
+      ARROWS_24: 5389808887315718978
+      ARROWS_25: -8435531424927939759
+      ARROWS_26: 1251618874166225492
+      ARROWS_27: 6434237128368948782
+      ARROWS_28: 2253238510600193958
+      ARROWS_29: -3763345925654985929
+      ARROWS_3: 7034109672877830752
+      ARROWS_30: -711151963994907818
+      ARROWS_31: 2305339905442416976
+      ARROWS_32: -3444900492279638317
+      ARROWS_33: 3573938282098533196
+      ARROWS_34: -6026681468559916523
+      ARROWS_35: -2842994576345958270
+      ARROWS_36: -4986297018017050431
+      ARROWS_4: -7084700891798597996
+      ARROWS_5: -1791268013967344208
+      ARROWS_6: 6759654217258358486
+      ARROWS_7: -2389987292643039885
+      ARROWS_8: 7463504584707290764
+      ARROWS_9: 2138740881090138604
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

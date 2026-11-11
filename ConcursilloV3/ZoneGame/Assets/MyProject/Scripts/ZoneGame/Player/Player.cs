@@ -570,6 +570,26 @@ public class Player : NetworkBehaviour
             StartCoroutine(InitRoleSelectorWhenReady());
     }
 
+    public void InitRoleSelector()
+    {
+        StartCoroutine(InitRoleSelectorWhenReady());
+    }
+
+    private IEnumerator InitRoleSelectorWhenReady()
+    {
+        while (RoleSelectorUI.Instance == null ||
+               MapManager.Instance == null ||
+               !RoleSelectorUI.Instance.IsPlayerInitialized)
+        {
+            yield return null;
+        }
+
+        if (IsOwner)
+            NotifyPlayerReadyRpc();
+
+        RoleSelectorUI.Instance.InitRoleSelector();
+    }
+
     public override void OnDestroy()
     {
         controls?.Dispose();
@@ -710,6 +730,7 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
+        inventory.Add(ItemType.Log, 7);
     }
 
     [Rpc(SendTo.Owner)]
@@ -763,26 +784,6 @@ public class Player : NetworkBehaviour
         inventory.SetContents(items, amounts, order);
     }
 
-    public void InitRoleSelector()
-    {
-        StartCoroutine(InitRoleSelectorWhenReady());
-    }
-
-    private IEnumerator InitRoleSelectorWhenReady()
-    {
-        while (RoleSelectorUI.Instance == null ||
-               MapManager.Instance == null ||
-               !RoleSelectorUI.Instance.IsPlayerInitialized)
-        {
-            yield return null;
-        }
-
-        RoleSelectorUI.Instance.InitRoleSelector();
-
-        if (IsOwner)
-            NotifyPlayerReadyRpc();
-    }
-
     [Rpc(SendTo.Server)]
     private void NotifyPlayerReadyRpc()
     {
@@ -795,7 +796,7 @@ public class Player : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        string playerName = PlayerPrefs.GetString("PlayerName", "Jugador");
+        string playerName = PlayerPrefs.GetString("PlayerName", "Esperando jugador...");
 
         name = playerName;
         SyncPlayerNameRpc(playerName);

@@ -9,10 +9,14 @@ public class PauseMenuUI : MonoBehaviour
 
     private PlayerState previousPlayerState;
 
+    private ControlsUI controlsUI;
+
     private void Awake()
     {
         pauseUI = transform.GetChild(0).gameObject;
         pauseUI.SetActive(false);
+
+        controlsUI = GameObject.Find("ControlsPanel").GetComponent<ControlsUI>();
     }
 
     public void InitPlayer(Player player)
@@ -34,6 +38,12 @@ public class PauseMenuUI : MonoBehaviour
 
     public void ResumeGame()
     {
+        if (controlsUI.PanelIsActive)
+        {
+            controlsUI.ClosePanel();
+            return;
+        }
+
         player.SetNewStateRpc(previousPlayerState);
         pauseUI.SetActive(false);
     }

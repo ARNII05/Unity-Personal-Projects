@@ -84,12 +84,12 @@ public class MapManager : MonoBehaviour
         if (player1 == null)
         {
             player1 = player;
-            player1.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 1") : "Player 1";
+            player1.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 1") : "Esperando jugador...";
         }
         else if (player2 == null && player != player1)
         {
             player2 = player;
-            player2.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 2") : "Player 2";
+            player2.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 2") : "Esperando jugador...";
         }
 
         if (RoleSelectorUI.Instance != null)

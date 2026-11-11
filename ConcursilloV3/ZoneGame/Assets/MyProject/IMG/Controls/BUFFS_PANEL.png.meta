@@ -1,0 +1,481 @@
+fileFormatVersion: 2
+guid: aace7494871640e4ba166aabc5948946
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -9168073952422570070
+    second: BUFFS_PANEL_0
+  - first:
+      213: 4319505611069817318
+    second: BUFFS_PANEL_1
+  - first:
+      213: -4535908749135048765
+    second: BUFFS_PANEL_2
+  - first:
+      213: 8003136175551153956
+    second: BUFFS_PANEL_3
+  - first:
+      213: 4628526403465500873
+    second: BUFFS_PANEL_4
+  - first:
+      213: 8551813527217805213
+    second: BUFFS_PANEL_5
+  - first:
+      213: -6839882229113161310
+    second: BUFFS_PANEL_6
+  - first:
+      213: -7628558157544770464
+    second: BUFFS_PANEL_7
+  - first:
+      213: -4462484676111079987
+    second: BUFFS_PANEL_8
+  - first:
+      213: 7512152829863778932
+    second: BUFFS_PANEL_9
+  - first:
+      213: -2022627268775095557
+    second: BUFFS_PANEL_10
+  - first:
+      213: 4529169192676912633
+    second: BUFFS_PANEL_11
+  - first:
+      213: -7160542866589472389
+    second: BUFFS_PANEL_12
+  - first:
+      213: -1012439863198989394
+    second: BUFFS_PANEL_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BUFFS_PANEL_0
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 1239
+        width: 75
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa75757905574c080800000000000000
+      internalID: -9168073952422570070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1233
+        height: 1216
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e18f11b777f1fb30800000000000000
+      internalID: 4319505611069817318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_2
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 1175
+        width: 145
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cf083266073d01c0800000000000000
+      internalID: -4535908749135048765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_3
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 81
+        width: 23
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4270ec003f9d01f60800000000000000
+      internalID: 8003136175551153956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_4
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 63
+        width: 53
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c8d310bd34db3040800000000000000
+      internalID: 4628526403465500873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_5
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 69
+        width: 43
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d979233f7152ea670800000000000000
+      internalID: 8551813527217805213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_6
+      rect:
+        serializedVersion: 2
+        x: 868
+        y: 65
+        width: 25
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a9f3341a5bd311a0800000000000000
+      internalID: -6839882229113161310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_7
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 35
+        width: 29
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 064b22706cae12690800000000000000
+      internalID: -7628558157544770464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_8
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 54
+        width: 8
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc566c094d11212c0800000000000000
+      internalID: -4462484676111079987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_9
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 55
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47ad97a9237804860800000000000000
+      internalID: 7512152829863778932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_10
+      rect:
+        serializedVersion: 2
+        x: 906
+        y: 61
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf254a3273f2ee3e0800000000000000
+      internalID: -2022627268775095557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_11
+      rect:
+        serializedVersion: 2
+        x: 906
+        y: 25
+        width: 13
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fd66295267dade30800000000000000
+      internalID: 4529169192676912633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_12
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 23
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b792af57334a0ac90800000000000000
+      internalID: -7160542866589472389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BUFFS_PANEL_13
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 7
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea3449dfe4713f1f0800000000000000
+      internalID: -1012439863198989394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BUFFS_PANEL_0: -9168073952422570070
+      BUFFS_PANEL_1: 4319505611069817318
+      BUFFS_PANEL_10: -2022627268775095557
+      BUFFS_PANEL_11: 4529169192676912633
+      BUFFS_PANEL_12: -7160542866589472389
+      BUFFS_PANEL_13: -1012439863198989394
+      BUFFS_PANEL_2: -4535908749135048765
+      BUFFS_PANEL_3: 8003136175551153956
+      BUFFS_PANEL_4: 4628526403465500873
+      BUFFS_PANEL_5: 8551813527217805213
+      BUFFS_PANEL_6: -6839882229113161310
+      BUFFS_PANEL_7: -7628558157544770464
+      BUFFS_PANEL_8: -4462484676111079987
+      BUFFS_PANEL_9: 7512152829863778932
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -2,10 +2,13 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(UserName))]
 public class MainMenuUI : MonoBehaviour
 {
     [SerializeField] private GameObject infoPanel, joinGamePanel;
+
+    private ZoneGameControls controls;
+
+    private ControlsUI controlsUI;
 
     private TMP_Text infoText;
     public static string PendingMessage { get; set; }
@@ -20,6 +23,21 @@ public class MainMenuUI : MonoBehaviour
         joinGamePanel.SetActive(false);
 
         infoText = infoPanel.GetComponentInChildren<TMP_Text>();
+
+        controlsUI = GameObject.Find("ControlsPanel").GetComponent<ControlsUI>();
+
+        controls = new ZoneGameControls();
+
+        controls.Gameplay.Enable();
+    }
+
+    private void Update()
+    {
+        if (!controlsUI.PanelIsActive)
+            return;
+
+        if (controls.Gameplay.Confirm.WasPressedThisFrame())
+            controlsUI.ClosePanel();
     }
 
     private void Start()
@@ -73,5 +91,20 @@ public class MainMenuUI : MonoBehaviour
     {
         ColorUtility.TryParseHtmlString(hex, out Color color);
         return color;
+    }
+
+    private void OnEnable()
+    {
+        controls?.Gameplay.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls?.Gameplay.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        controls?.Dispose();
     }
 }
