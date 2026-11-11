@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class ChestUI : MonoBehaviour
 
     private Player player;
 
+    public event Action OnInventoryChanged;
+
     public void InitPlayer(Player player)
     {
         this.player = player;
@@ -17,6 +20,7 @@ public class ChestUI : MonoBehaviour
     public void SetInventory(Inventory inventory)
     {
         chestInventoryUI.SetInventory(inventory);
+        OnInventoryChanged?.Invoke();
     }
 
     public void SendItemsToChest(int index)

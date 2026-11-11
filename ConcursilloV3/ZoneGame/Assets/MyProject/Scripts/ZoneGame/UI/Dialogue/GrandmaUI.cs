@@ -166,6 +166,14 @@ public class GrandmaUI : NetworkBehaviour
             player.inventory.GetAmount(ItemType.Bouquet) +
             otherPlayer.inventory.GetAmount(ItemType.Bouquet);
 
+        ZoneData[,] map = MapManager.Instance.map;
+        Vector2Int playerPos = player.NetworkMapPos.Value;
+        Vector2Int otherPlayerPos = otherPlayer.NetworkMapPos.Value;
+
+        if (map[playerPos.y, playerPos.x].type != ZoneType.GrandmaHouse
+            || map[otherPlayerPos.y, otherPlayerPos.x].type != ZoneType.GrandmaHouse)
+            return;
+
         if (!CanWin(totalBouquets, CraftingSystem.BouquetsToWin))
             return;
 

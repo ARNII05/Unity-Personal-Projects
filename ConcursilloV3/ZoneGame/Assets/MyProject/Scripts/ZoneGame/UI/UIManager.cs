@@ -66,7 +66,8 @@ public class UIManager : MonoBehaviour
     {
         transitionCanvas.SetActive(false);
 
-        player.SetNewStateRpc(PlayerState.Normal);
+        if (player.State.Value == PlayerState.Transitioning)
+            player.SetNewStateRpc(PlayerState.Normal);
     }
 
     private void OnDestroy()

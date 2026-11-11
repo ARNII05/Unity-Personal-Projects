@@ -17,6 +17,8 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 
     private bool isPointerOver;
 
+    private Inventory subscribedChestInventory;
+
     private void Awake()
     {
         GameObject obj = GameObject.Find("ChestUI");
@@ -50,8 +52,26 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
     {
         while (chestUI == null || chestUI.chestInventoryUI.inventory == null)
             yield return null;
-        
-        chestUI.chestInventoryUI.inventory.OnInventoryChanged += RefreshTooltip;
+
+        chestUI.OnInventoryChanged += UpdateChestInventorySubscription;
+
+        UpdateChestInventorySubscription();
+    }
+
+    private void UpdateChestInventorySubscription()
+    {
+        Inventory newInventory = chestUI.chestInventoryUI.inventory;
+
+        if (subscribedChestInventory == newInventory)
+            return;
+
+        if (subscribedChestInventory != null)
+            subscribedChestInventory.OnInventoryChanged -= RefreshTooltip;
+
+        subscribedChestInventory = newInventory;
+
+        if (subscribedChestInventory != null)
+            subscribedChestInventory.OnInventoryChanged += RefreshTooltip;
     }
 
     private void RefreshTooltip()
@@ -140,15 +160,17 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 
     private void OnDestroy()
     {
-        if (toWho == 0 || toWho == 2)
+        if (chestUI != null)
+            chestUI.OnInventoryChanged -= UpdateChestInventorySubscription;
+
+        if (toWho == 1)
         {
-            if (player != null && player.inventory != null)
-                player.inventory.OnInventoryChanged -= RefreshTooltip;
+            if (subscribedChestInventory != null)
+                subscribedChestInventory.OnInventoryChanged -= RefreshTooltip;
         }
-        else if (toWho == 1)
+        else if (player != null)
         {
-            if (chestUI != null && chestUI.chestInventoryUI != null && chestUI.chestInventoryUI.inventory != null)
-                chestUI.chestInventoryUI.inventory.OnInventoryChanged -= RefreshTooltip;
+            player.inventory.OnInventoryChanged -= RefreshTooltip;
         }
     }
 }

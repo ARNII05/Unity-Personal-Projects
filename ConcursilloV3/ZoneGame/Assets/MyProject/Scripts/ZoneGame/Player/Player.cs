@@ -165,7 +165,7 @@ public class Player : NetworkBehaviour
         if (IsServer)
             return;
 
-        inventory.activeBuffs.Add(buff);
+        inventory.Add(buff);
     }
 
 
