@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class RabbitMapUI : MonoBehaviour
 {
-    [SerializeField] private GameObject rabbitMap;
+    private GameObject rabbitUI;
     [SerializeField] private Sprite questionSprite, UserSprite;
     
     private GameObject grid, zoneInfo, zoneZellPrefab, lockObj;
@@ -15,7 +15,7 @@ public class RabbitMapUI : MonoBehaviour
 
     private Button tpButton;
 
-    private TextMeshProUGUI zoneName, zoneState, chestState;
+    private TextMeshProUGUI zoneName, zoneDesc, chestState;
 
     private ZoneData[,] map;
 
@@ -27,13 +27,15 @@ public class RabbitMapUI : MonoBehaviour
 
     private void Start()
     {
-        rabbitMap.SetActive(false);
-        grid = rabbitMap.transform.Find("Grid").gameObject;
+        rabbitUI = transform.Find("RabbitUI").gameObject;
+
+        rabbitUI.SetActive(false);
+        grid = rabbitUI.transform.Find("Grid").gameObject;
         
-        zoneInfo = rabbitMap.transform.Find("ZoneInfo").gameObject;
+        zoneInfo = rabbitUI.transform.Find("ZoneInfo").gameObject;
         zoneImage = zoneInfo.transform.Find("ZoneImage").GetComponent<Image>();
         zoneName = zoneInfo.transform.Find("ZoneName").GetComponent<TextMeshProUGUI>();
-        zoneState = zoneInfo.transform.Find("ZoneState").GetComponent<TextMeshProUGUI>();
+        zoneDesc = zoneInfo.transform.Find("ZoneDesc").GetComponent<TextMeshProUGUI>();
         chestState = zoneInfo.transform.Find("ChestState").GetComponent<TextMeshProUGUI>();
         tpButton = zoneInfo.transform.Find("TpButton").GetComponent<Button>();
         lockObj = tpButton.transform.Find("Lock").gameObject;
@@ -43,7 +45,7 @@ public class RabbitMapUI : MonoBehaviour
 
     public void ToggleRabbitMap()
     {
-        if (rabbitMap.activeSelf)
+        if (rabbitUI.activeSelf)
             CloseMap();
         else
             OpenMap();
@@ -56,19 +58,19 @@ public class RabbitMapUI : MonoBehaviour
         SetZoneInfo(false);
         SetZoneIcons();
 
-        rabbitMap.SetActive(true);
+        rabbitUI.SetActive(true);
     }
 
     private void CloseMap()
     {
         player.SetNewStateRpc(PlayerState.Normal);
 
-        rabbitMap.SetActive(false);
+        rabbitUI.SetActive(false);
     }
 
     public void UpdateZoneInfo()
     {
-        if (!rabbitMap.activeSelf)
+        if (!rabbitUI.activeSelf)
             return;
 
         SetZoneInfo(false);
@@ -111,7 +113,7 @@ public class RabbitMapUI : MonoBehaviour
             true => $"{zone.name} ({zonePos.y + 1}, {zonePos.x + 1})",
             _ => $"Zona desconocida ({zonePos.y + 1}, {zonePos.x + 1})"
         };
-        zoneState.text = $"Estado: {(zoneDiscovered ? "Descubierta" : "Sin descubrir")}";
+        zoneDesc.text = ZoneVault.GetZoneDescription(zone.type);
         chestState.text = $"Cofre: {(zone.chestOpened ? "Abierto" : "Sin abrir")}";
     }
 

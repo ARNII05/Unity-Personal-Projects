@@ -34,11 +34,8 @@ public class SwampDialogue : MonoBehaviour
         stolenSwampMsg.gameObject.SetActive(items.Length <= 0);
 
         for (int i = 0; i < items.Length; i++)
-        {
-            TextMeshProUGUI amountText = stolenItemBoxItemImg.transform.GetComponentInChildren<TextMeshProUGUI>();
-            
+        { 
             stolenItemBoxItemImg.sprite = ItemVault.GetItemSprite(items[i]);
-            amountText.text = $"x{amount[i]}";
         }
     }
 

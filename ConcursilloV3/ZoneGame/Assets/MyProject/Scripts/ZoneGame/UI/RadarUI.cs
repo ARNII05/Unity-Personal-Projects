@@ -8,7 +8,7 @@ public class RadarUI : MonoBehaviour
 {
     public static RadarUI Instance { get; private set; }
 
-    [SerializeField] private GameObject radarDevice;
+    private GameObject radarUI;
     
     private AudioSource radarAudioSource;
     private VideoPlayer videoPlayer;
@@ -33,9 +33,10 @@ public class RadarUI : MonoBehaviour
     {
         wolf = GameObject.Find("WolfManager").GetComponent<Wolf>();
 
-        radarDevice.SetActive(false);
-        radarAudioSource = radarDevice.transform.Find("AudioSource").GetComponent<AudioSource>();
-        videoPlayer = radarDevice.transform.Find("ScreenMask").GetComponent<VideoPlayer>();
+        radarUI = transform.Find("RadarUI").gameObject;
+        radarUI.SetActive(false);
+        radarAudioSource = radarUI.transform.Find("AudioSource").GetComponent<AudioSource>();
+        videoPlayer = radarUI.transform.Find("ScreenMask").GetComponent<VideoPlayer>();
         distanceText = videoPlayer.transform.Find("DistanceText").GetComponent<TextMeshProUGUI>();
         wolfStatusText = videoPlayer.transform.Find("StatusText").GetComponent<TextMeshProUGUI>();
         videoPlayer.Prepare();
@@ -70,7 +71,7 @@ public class RadarUI : MonoBehaviour
 
     public void ToggleRadar()
     {
-        if (radarDevice.activeSelf)
+        if (radarUI.activeSelf)
             OnClose();
         else
             OnOpen();
@@ -80,7 +81,7 @@ public class RadarUI : MonoBehaviour
     {
         playerWithRadar.SetNewStateRpc(PlayerState.UsingRadar);
 
-        radarDevice.SetActive(true);
+        radarUI.SetActive(true);
 
         if (videoPlayer.isPrepared)
         {
@@ -96,7 +97,7 @@ public class RadarUI : MonoBehaviour
 
     private void OnClose()
     {
-        radarDevice.SetActive(false);
+        radarUI.SetActive(false);
 
         videoPlayer.Pause();
         radarAudioSource.Pause();

@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(RabbitMapUI))]
 public class RabbitDialogue : MonoBehaviour
 {
     public static RabbitDialogue Instance { get; private set; }
 
-    [SerializeField] private GameObject rabbitPanel;
+    private GameObject rabbitDialogue;
 
     private RabbitMapUI rabbitMapUI;
 
@@ -22,13 +21,15 @@ public class RabbitDialogue : MonoBehaviour
         }
 
         Instance = this;
-        rabbitMapUI = GetComponent<RabbitMapUI>();
+
+        rabbitDialogue = transform.Find("RabbitDialogue").gameObject;
+        rabbitMapUI = GameObject.Find("RabbitPanel").GetComponent<RabbitMapUI>();
         MapManager.Instance.InitRabbitMapUI(rabbitMapUI);
     }
 
     void Start()
     {
-        rabbitPanel.SetActive(false);
+        rabbitDialogue.SetActive(false);
     }
 
     public void Init(Player player)
@@ -40,18 +41,18 @@ public class RabbitDialogue : MonoBehaviour
     public void OpenDialogue()
     {
         player.SetNewStateRpc(PlayerState.RabbitDialogueInteraction);
-        rabbitPanel.SetActive(true);
+        rabbitDialogue.SetActive(true);
     }
 
     public void CloseDialogue()
     {
         player.SetNewStateRpc(PlayerState.Normal);
-        rabbitPanel.SetActive(false);
+        rabbitDialogue.SetActive(false);
     }
     
     public void ShowMap()
     {
-        rabbitPanel.SetActive(false);
+        rabbitDialogue.SetActive(false);
         rabbitMapUI.ToggleRabbitMap();
     }
 

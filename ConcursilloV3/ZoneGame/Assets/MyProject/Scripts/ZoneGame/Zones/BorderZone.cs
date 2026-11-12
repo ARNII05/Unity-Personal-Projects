@@ -15,6 +15,7 @@ public enum Direction
     East,
     West,
     None,
+    Actual,
 }
 
 public enum Side

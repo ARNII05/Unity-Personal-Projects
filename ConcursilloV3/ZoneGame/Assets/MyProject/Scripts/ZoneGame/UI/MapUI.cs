@@ -9,10 +9,9 @@ public class MapUI : MonoBehaviour
 {
     public static MapUI Instance { get; private set; }
 
-    [SerializeField] private GameObject mapObj;
+    private GameObject mapUI;
     
     private GameObject mapZones;
-    private TextMeshProUGUI zoneName;
     private TextMeshProUGUI p1Coordinates;
     private TextMeshProUGUI p2Coordinates;
     private TextMeshProUGUI grandmaHouseCoordinates;
@@ -21,7 +20,9 @@ public class MapUI : MonoBehaviour
     private Player mapPlayer;
     private Player otherPlayer;
 
-    ZoneData[,] map;
+    private ZoneData[,] map;
+
+    private ZoneTooltipUI zoneTooltipUI;
 
     private void Awake()
     {
@@ -32,17 +33,19 @@ public class MapUI : MonoBehaviour
         }
 
         Instance = this;
+
+        zoneTooltipUI = GameObject.Find("ZoneTooltipPanel").GetComponent<ZoneTooltipUI>();
     }
 
     private void Start()
     {
-        mapZones = mapObj.transform.Find("MapZones").gameObject;
-        zoneName = mapObj.transform.Find("ZoneName").GetComponent<TextMeshProUGUI>();
-        p1Coordinates = mapObj.transform.Find("P1Coordinates").GetComponent<TextMeshProUGUI>();
-        p2Coordinates = mapObj.transform.Find("P2Coordinates").GetComponent<TextMeshProUGUI>();
-        grandmaHouseCoordinates = mapObj.transform.Find("GrandmaHouseCoordinates").GetComponent<TextMeshProUGUI>();
-        wolfDenCoordinates = mapObj.transform.Find("WolfDenCoordinates").GetComponent<TextMeshProUGUI>();
-        mapObj.SetActive(false);
+        mapUI = transform.Find("MapUI").gameObject;
+        mapZones = mapUI.transform.Find("MapZones").gameObject;
+        p1Coordinates = mapUI.transform.Find("P1Coordinates").GetComponent<TextMeshProUGUI>();
+        p2Coordinates = mapUI.transform.Find("P2Coordinates").GetComponent<TextMeshProUGUI>();
+        grandmaHouseCoordinates = mapUI.transform.Find("GrandmaHouseCoordinates").GetComponent<TextMeshProUGUI>();
+        wolfDenCoordinates = mapUI.transform.Find("WolfDenCoordinates").GetComponent<TextMeshProUGUI>();
+        mapUI.SetActive(false);
     }
 
     public void Init(Player player)
@@ -58,7 +61,7 @@ public class MapUI : MonoBehaviour
 
     public void ToggleMap()
     {
-        if (mapObj.activeSelf)
+        if (mapUI.activeSelf)
             OnClose();
         else
             OnOpen();
@@ -68,7 +71,7 @@ public class MapUI : MonoBehaviour
     {
 		mapPlayer.SetNewStateRpc(PlayerState.UsingMap);
 
-		mapObj.SetActive(true);
+		mapUI.SetActive(true);
     }
 
     private void OnPlayerPositionChanged(
@@ -85,7 +88,7 @@ public class MapUI : MonoBehaviour
     {
 		mapPlayer.SetNewStateRpc(PlayerState.Normal);
 
-		mapObj.SetActive(false);
+		mapUI.SetActive(false);
     }
 
     public void UpdateMap()
@@ -105,8 +108,6 @@ public class MapUI : MonoBehaviour
         Vector2Int wolfDenPos = MapManager.Instance.wolfDenPos;
 
         ZoneData currentZone = map[playerPos.y, playerPos.x];
-
-        zoneName.text = currentZone.name;
 
         p1Coordinates.text = $"{mapPlayer.name.ToUpper()}\nY: {playerPos.y + 1}\nX: {playerPos.x + 1}";
         p2Coordinates.text = $"{otherPlayer.name.ToUpper()}\nY: {otherPlayerPos.y + 1}\nX: {otherPlayerPos.x + 1}";
@@ -152,5 +153,39 @@ public class MapUI : MonoBehaviour
         ZoneData zone = map[targetPos.y, targetPos.x];
 
         return zone != null ? zone.icon : Resources.Load<Sprite>("Prefabs/ZoneIcons/Cross");
+    }
+
+    public void ShowZoneTooltip(Direction direction, RectTransform rectTransform)
+    {
+        Vector2Int playerPos = mapPlayer.NetworkMapPos.Value;
+
+        Vector2Int targetPos = direction switch
+        {
+            Direction.North => playerPos + Vector2Int.up,
+            Direction.South => playerPos + Vector2Int.down,
+            Direction.East => playerPos + Vector2Int.right,
+            Direction.West => playerPos + Vector2Int.left,
+            _ => playerPos
+        };
+
+        bool isOutOfBounds = targetPos.x < 0 || targetPos.x >= map.GetLength(1) ||
+            targetPos.y < 0 || targetPos.y >= map.GetLength(0);
+
+        ZoneData zone = isOutOfBounds ? null : map[targetPos.y, targetPos.x];
+
+        zoneTooltipUI.ShowZoneTooltip(zone, rectTransform);
+    }
+
+    public void HideZoneTooltip()
+    {
+        zoneTooltipUI.HideTooltip();
+    }
+
+    private void OnDisable()
+    {
+        if (zoneTooltipUI == null)
+            return;
+
+        zoneTooltipUI.HideTooltip();
     }
 }

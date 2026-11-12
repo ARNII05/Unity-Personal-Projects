@@ -32,7 +32,7 @@ public class TradeObjects : MonoBehaviour
         playerCoinsText = tradePanel.transform.Find("PlayerCoins").GetComponentInChildren<TextMeshProUGUI>();
         comercialBox = tradePanel.transform.Find("ComercialBox").gameObject;
         comercialBoxItemsGrid = comercialBox.transform.Find("ItemsGrid").gameObject;
-        buyBox = comercialBox.transform.Find("BuyBox").gameObject;
+        buyBox = tradePanel.transform.Find("BuyBox").gameObject;
         tradeButton = buyBox.transform.Find("ButtonUI").Find("CanvasGroup").Find("BuyButton").GetComponent<Button>();
         gridUI = buyBox.transform.Find("GridUI").gameObject;
         buyBoxItemsGrid = gridUI.transform.Find("ItemsGrid").gameObject;

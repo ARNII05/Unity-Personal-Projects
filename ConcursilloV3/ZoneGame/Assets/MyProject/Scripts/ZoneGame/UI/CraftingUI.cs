@@ -27,7 +27,7 @@ public class CraftingUI : MonoBehaviour
         childrenObj = craftingUI.transform.Find("ChildItem").gameObject;
         itemTextCount = childrenObj.transform.GetComponentInChildren<TextMeshProUGUI>();
         childItemImg = childrenObj.transform.Find("ItemImg").GetComponent<Image>();
-        coreItemImg = craftingUI.transform.Find("CoreItem").GetChild(0).GetComponent<Image>();
+        coreItemImg = craftingUI.transform.Find("CoreItem").Find("ItemIcon").GetComponent<Image>();
     }
 
     public void SetPlayer(Player player)

@@ -38,8 +38,8 @@ public class RoleSelectorUI : MonoBehaviour
         startGameObj = roleLobbyPanel.transform.Find("StartGameButton").gameObject;
         canvasGroup = startGameObj.GetComponentInChildren<CanvasGroup>();
         relayCodeText = roleLobbyPanel.transform.Find("RelayCodeText").GetComponent<TextMeshProUGUI>();
-        player1Box = roleLobbyPanel.transform.Find("Player1Box").gameObject;
-        player2Box = roleLobbyPanel.transform.Find("Player2Box").gameObject;
+        player1Box = builderRoleObject.transform.Find("Player1Box").gameObject;
+        player2Box = gardenerRoleObject.transform.Find("Player2Box").gameObject;
         lockObj = startGameObj.transform.Find("Lock").gameObject;
 
         roleLobbyPanel.SetActive(false);
