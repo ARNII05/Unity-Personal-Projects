@@ -1,10 +1,10 @@
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
-[RequireComponent(typeof(TradeObjects))]
+
 public class TradeUI : MonoBehaviour
 {
-    [SerializeField] private GameObject tradeDialogue;
+    private GameObject tradeDialogue;
 
     public static TradeUI Instance { get; private set; }
 
@@ -22,7 +22,9 @@ public class TradeUI : MonoBehaviour
 
         Instance = this;
 
-        tradeObjects = GetComponent<TradeObjects>();
+        tradeDialogue = transform.Find("TradeDialogue").gameObject;
+
+        tradeObjects = GameObject.Find("TradePanel").GetComponent<TradeObjects>();
     }
 
     void Start()

@@ -29,7 +29,6 @@ public class RabbitMapUI : MonoBehaviour
     {
         rabbitUI = transform.Find("RabbitUI").gameObject;
 
-        rabbitUI.SetActive(false);
         grid = rabbitUI.transform.Find("Grid").gameObject;
         
         zoneInfo = rabbitUI.transform.Find("ZoneInfo").gameObject;
@@ -41,6 +40,8 @@ public class RabbitMapUI : MonoBehaviour
         lockObj = tpButton.transform.Find("Lock").gameObject;
 
         zoneZellPrefab = Resources.Load<GameObject>("Prefabs/Objects/ZoneZell");
+
+        rabbitUI.SetActive(false);
     }
 
     public void ToggleRabbitMap()
@@ -113,8 +114,9 @@ public class RabbitMapUI : MonoBehaviour
             true => $"{zone.name} ({zonePos.y + 1}, {zonePos.x + 1})",
             _ => $"Zona desconocida ({zonePos.y + 1}, {zonePos.x + 1})"
         };
-        zoneDesc.text = ZoneVault.GetZoneDescription(zone.type);
-        chestState.text = $"Cofre: {(zone.chestOpened ? "Abierto" : "Sin abrir")}";
+        
+        zoneDesc.text = zoneDiscovered ? ZoneVault.GetZoneDescription(zone.type) : "Efecto desconocido";
+        chestState.text = $"Cofre {(zone.chestOpened ? "abierto" : "sin abrir")}";
     }
 
     private void SwapBackGroundColor(Vector2Int pos)
@@ -129,7 +131,7 @@ public class RabbitMapUI : MonoBehaviour
             selectedImage.gameObject.transform.localScale = Vector3.one;
         }
 
-        Image actualZoneImg = zone.GetComponent<Image>();
+        Image actualZoneImg = zone.transform.Find("Background").GetComponent<Image>();
         
         Color actualColor = actualZoneImg.color;
         actualColor.a = 0.45f;
@@ -192,7 +194,7 @@ public class RabbitMapUI : MonoBehaviour
                 GameObject actualZone =
                     Instantiate(zoneZellPrefab, grid.transform);
 
-                Image zoneImg = actualZone.GetComponent<Image>();
+                Image zoneImg = actualZone.transform.Find("Background").GetComponent<Image>();
 
                 Color color = zoneImg.color;
                 color.a = 0f;

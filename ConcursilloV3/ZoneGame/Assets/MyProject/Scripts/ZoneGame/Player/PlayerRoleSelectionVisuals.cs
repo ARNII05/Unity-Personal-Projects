@@ -11,8 +11,8 @@ public class PlayerRoleSelectionVisuals : MonoBehaviour
         bool isGardener = playerRole == PlayerRole.Gardener;
 
         GameObject roleObject = isGardener
-            ? RoleSelectorUI.Instance.gardenerRoleObject
-            : RoleSelectorUI.Instance.builderRoleObject;
+            ? RoleSelectorUI.Instance.GetGardenerRoleObject()
+            : RoleSelectorUI.Instance.GetBuilderRoleObject();
 
         switch (selectionRolType)
         {
@@ -34,8 +34,8 @@ public class PlayerRoleSelectionVisuals : MonoBehaviour
         bool isGardener = playerRole == PlayerRole.Gardener;
 
         GameObject roleObject = isGardener
-            ? RoleSelectorUI.Instance.gardenerRoleObject
-            : RoleSelectorUI.Instance.builderRoleObject;
+            ? RoleSelectorUI.Instance.GetGardenerRoleObject()
+            : RoleSelectorUI.Instance.GetBuilderRoleObject();
 
         switch (selectionRolType)
         {

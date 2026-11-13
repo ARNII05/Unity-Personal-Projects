@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -56,6 +57,13 @@ public class MapUI : MonoBehaviour
         mapPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
         otherPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
 
+        StartCoroutine(WaitForMapReady());
+    }
+
+    private IEnumerator WaitForMapReady()
+    {
+        yield return new WaitUntil(() => MapManager.Instance.IsMapReady);
+
         UpdateMap();
     }
 
@@ -106,8 +114,6 @@ public class MapUI : MonoBehaviour
         Vector2Int otherPlayerPos = otherPlayer.NetworkMapPos.Value;
         Vector2Int grandmaHousePos = MapManager.Instance.grandmaPos;
         Vector2Int wolfDenPos = MapManager.Instance.wolfDenPos;
-
-        ZoneData currentZone = map[playerPos.y, playerPos.x];
 
         p1Coordinates.text = $"{mapPlayer.name.ToUpper()}\nY: {playerPos.y + 1}\nX: {playerPos.x + 1}";
         p2Coordinates.text = $"{otherPlayer.name.ToUpper()}\nY: {otherPlayerPos.y + 1}\nX: {otherPlayerPos.x + 1}";

@@ -1,16 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ChestUI : MonoBehaviour
 {
-    public InventoryUI playerInventoryUI;
+    private InventoryUI playerInventoryUI;
     public InventoryUI chestInventoryUI;
 
     private Player player;
 
     public event Action OnInventoryChanged;
+
+    private void Awake()
+    {
+        playerInventoryUI = GameObject.Find("InventoryPanel").GetComponent<InventoryUI>();
+        chestInventoryUI = transform.GetComponent<InventoryUI>();
+    }
 
     public void InitPlayer(Player player)
     {

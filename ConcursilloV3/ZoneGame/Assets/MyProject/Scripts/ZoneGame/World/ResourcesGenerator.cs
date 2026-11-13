@@ -9,7 +9,7 @@ public class ResourcesGenerator : MonoBehaviour
 {
     public static ResourcesGenerator Instance { get; private set; }
 
-    public RecoverySystemUI recoverySystemUI;
+    private RecoverySystemUI recoverySystemUI;
 
     private ZoneData[,] map;
     
@@ -50,6 +50,11 @@ public class ResourcesGenerator : MonoBehaviour
             recoveryTimer = 0f;
             CheckResources();
         }
+    }
+
+    public RecoverySystemUI GetRecoverySystemUI()
+    {
+        return recoverySystemUI;
     }
 
     public void Init()

@@ -21,7 +21,7 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 
     private void Awake()
     {
-        GameObject obj = GameObject.Find("ChestUI");
+        GameObject obj = GameObject.Find("ChestPanel");
 
         if (obj != null)
             chestUI = obj.GetComponent<ChestUI>();

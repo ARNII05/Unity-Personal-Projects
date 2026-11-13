@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class TradeObjects : MonoBehaviour
 {
     private static readonly WaitForSeconds _waitForSeconds3 = new(3f);
-    [SerializeField] private GameObject tradePanel;
+    private GameObject tradeUI;
     
     private int actualAmount = 1;
     private Coroutine adviceCoroutine;
@@ -28,15 +28,19 @@ public class TradeObjects : MonoBehaviour
 
     private void Awake()
     {
-        shopText = tradePanel.transform.Find("TextPanel").GetComponentInChildren<TextMeshProUGUI>();
-        playerCoinsText = tradePanel.transform.Find("PlayerCoins").GetComponentInChildren<TextMeshProUGUI>();
-        comercialBox = tradePanel.transform.Find("ComercialBox").gameObject;
+        tradeUI = transform.Find("TradeUI").gameObject;
+
+        shopText = tradeUI.transform.Find("TextPanel").GetComponentInChildren<TextMeshProUGUI>();
+        playerCoinsText = tradeUI.transform.Find("PlayerCoins").GetComponentInChildren<TextMeshProUGUI>();
+        comercialBox = tradeUI.transform.Find("ComercialBox").gameObject;
         comercialBoxItemsGrid = comercialBox.transform.Find("ItemsGrid").gameObject;
-        buyBox = tradePanel.transform.Find("BuyBox").gameObject;
+        buyBox = tradeUI.transform.Find("BuyBox").gameObject;
         tradeButton = buyBox.transform.Find("ButtonUI").Find("CanvasGroup").Find("BuyButton").GetComponent<Button>();
         gridUI = buyBox.transform.Find("GridUI").gameObject;
         buyBoxItemsGrid = gridUI.transform.Find("ItemsGrid").gameObject;
         adviceText = buyBox.transform.Find("AdviceText").GetComponent<TextMeshProUGUI>();
+
+        tradeUI.SetActive(false);
 
         adviceText.text = "";
     }
@@ -45,12 +49,12 @@ public class TradeObjects : MonoBehaviour
     {
         this.player = player;
 
-        tradePanel.SetActive(false);
+        tradeUI.SetActive(false);
     }
 
     public void OpenTrade(TradeMode tradeMode)
     {
-        tradePanel.SetActive(true);
+        tradeUI.SetActive(true);
         this.tradeMode = tradeMode;
 
         shopText.text = tradeMode switch
@@ -72,8 +76,8 @@ public class TradeObjects : MonoBehaviour
     {
         selectedItem = ItemType.None;
         
-        tradePanel.SetActive(false);
-        tradePanel.SetActive(false);
+        tradeUI.SetActive(false);
+        tradeUI.SetActive(false);
     }
 
     public void SelectItem(int index)
@@ -93,7 +97,7 @@ public class TradeObjects : MonoBehaviour
 
     public void UpdateUI(bool callingInRpc = false)
     {
-        if (!tradePanel.activeSelf)
+        if (!tradeUI.activeSelf)
             return;
         
         playerCoinsText.text = $"x{player.inventory.GetAmount(ItemType.Coin)}";

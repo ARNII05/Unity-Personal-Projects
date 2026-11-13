@@ -14,8 +14,8 @@ public class RoleSelectorUI : MonoBehaviour
     
     private CanvasGroup canvasGroup;
 
-    public GameObject background, gardenerRoleObject, builderRoleObject;
-    private GameObject roleLobbyPanel, startGameObj, player1Box, player2Box, lockObj, copyCodeBtn;
+    private GameObject background, gardenerRoleObject, builderRoleObject;
+    private GameObject roleLobbyUI, startGameObj, player1Box, player2Box, lockObj, copyCodeBtn;
     private TextMeshProUGUI relayCodeText;
 
     private Player player;
@@ -33,22 +33,34 @@ public class RoleSelectorUI : MonoBehaviour
 
         Instance = this;
 
-        roleLobbyPanel = transform.Find("RoleLobbyPanel").gameObject;
-        copyCodeBtn = roleLobbyPanel.transform.Find("CopyCodeBtn").gameObject;
-        startGameObj = roleLobbyPanel.transform.Find("StartGameButton").gameObject;
+        roleLobbyUI = transform.Find("RoleLobbyUI").gameObject;
+        background = roleLobbyUI.transform.Find("Background").gameObject;
+        gardenerRoleObject = roleLobbyUI.transform.Find("GardenerRole").gameObject;
+        builderRoleObject = roleLobbyUI.transform.Find("BuilderRole").gameObject;
+        copyCodeBtn = roleLobbyUI.transform.Find("CopyCodeBtn").gameObject;
+        startGameObj = roleLobbyUI.transform.Find("StartGameButton").gameObject;
         canvasGroup = startGameObj.GetComponentInChildren<CanvasGroup>();
-        relayCodeText = roleLobbyPanel.transform.Find("RelayCodeText").GetComponent<TextMeshProUGUI>();
+        relayCodeText = roleLobbyUI.transform.Find("RelayCodeText").GetComponent<TextMeshProUGUI>();
         player1Box = builderRoleObject.transform.Find("Player1Box").gameObject;
         player2Box = gardenerRoleObject.transform.Find("Player2Box").gameObject;
         lockObj = startGameObj.transform.Find("Lock").gameObject;
 
-        roleLobbyPanel.SetActive(false);
-        background.SetActive(false);
+        roleLobbyUI.SetActive(false);
     }
 
     public void InitPlayer(Player player)
     {
         this.player = player;
+    }
+
+    public GameObject GetGardenerRoleObject()
+    {
+        return gardenerRoleObject;
+    }
+
+    public GameObject GetBuilderRoleObject()
+    {
+        return builderRoleObject;
     }
 
     public void InitRoleSelector()
@@ -64,7 +76,7 @@ public class RoleSelectorUI : MonoBehaviour
 
             player.Role.OnValueChanged += OnRoleChanged;
 
-            roleLobbyPanel.SetActive(true);
+            roleLobbyUI.SetActive(true);
             background.SetActive(true);
             startGameObj.SetActive(NetworkManager.Singleton.IsServer);
             relayCodeText.gameObject.SetActive(NetworkManager.Singleton.IsServer);
@@ -240,7 +252,7 @@ public class RoleSelectorUI : MonoBehaviour
     
     public void CloseLobby()
     {
-        roleLobbyPanel.SetActive(false);
+        roleLobbyUI.SetActive(false);
         background.SetActive(false);
     }
 

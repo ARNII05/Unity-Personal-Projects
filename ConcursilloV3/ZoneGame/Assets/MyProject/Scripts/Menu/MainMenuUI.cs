@@ -42,8 +42,6 @@ public class MainMenuUI : MonoBehaviour
 
     private void Start()
     {
-        Screen.SetResolution(1920, 1080, FullScreenMode.FullScreenWindow);
-
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         

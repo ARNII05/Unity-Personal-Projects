@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class RecoverySystemUI : MonoBehaviour
 {
-    [SerializeField] private GameObject recoverySystemPanel;
+    private GameObject recoverySystemUI;
 
     private GameObject grid;
 
@@ -14,17 +14,16 @@ public class RecoverySystemUI : MonoBehaviour
 
     private void Awake()
     {
-        grid = recoverySystemPanel.transform.Find("Grid").gameObject;
-    }
+        recoverySystemUI = transform.Find("RecoverySystemUI").gameObject;
 
-    private void Start()
-    {
-        recoverySystemPanel.SetActive(false);
+        grid = recoverySystemUI.transform.Find("Grid").gameObject;
+
+        recoverySystemUI.SetActive(false);
     }
 
     public IEnumerator ShowRecoverySystemPanelInfo(ItemType[] items, int[] amounts)
     {
-        recoverySystemPanel.SetActive(true);
+        recoverySystemUI.SetActive(true);
 
         for (int i = 0; i < grid.transform.childCount; i++)
         {
@@ -47,6 +46,6 @@ public class RecoverySystemUI : MonoBehaviour
 
         yield return new WaitForSeconds(timeInPanel);
 
-        recoverySystemPanel.SetActive(false);
+        recoverySystemUI.SetActive(false);
     }
 }

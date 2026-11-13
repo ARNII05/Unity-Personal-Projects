@@ -457,7 +457,7 @@ public class MapManager : MonoBehaviour
 
         foreach (Chest chest in chests)
         {
-            chest.Init(GameObject.Find("ChestUI").GetComponent<ChestUI>(), zoneData.chestOpened);
+            chest.Init(GameObject.Find("ChestPanel").GetComponent<ChestUI>(), zoneData.chestOpened);
             chest.inventory = zoneData.chestInventory;
         }
 

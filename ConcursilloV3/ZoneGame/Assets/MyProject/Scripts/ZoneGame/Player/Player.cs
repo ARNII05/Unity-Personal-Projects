@@ -677,7 +677,7 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void ShowRecoverySystemPanelInfoClientRpc(ItemType[] items, int[] amounts)
     {
-        RecoverySystemUI recoverySystemUI = ResourcesGenerator.Instance.recoverySystemUI;
+        RecoverySystemUI recoverySystemUI = ResourcesGenerator.Instance.GetRecoverySystemUI();
 
         StartCoroutine(recoverySystemUI.ShowRecoverySystemPanelInfo(items, amounts));
     }
