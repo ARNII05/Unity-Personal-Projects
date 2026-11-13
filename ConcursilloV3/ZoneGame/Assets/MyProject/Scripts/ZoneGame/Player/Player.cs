@@ -754,7 +754,6 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
-        inventory.Add(ItemType.Log, 7);
     }
 
     [Rpc(SendTo.Owner)]
@@ -833,7 +832,7 @@ public class Player : NetworkBehaviour
         UpdatePlayerNameRpc(playerName);
 
         if (RoleSelectorUI.Instance != null)
-            RoleSelectorUI.Instance.UpdatePlayerBoxes();
+            RoleSelectorUI.Instance.RefreshPlayers();
     }
 
     [Rpc(SendTo.NotServer)]
@@ -842,7 +841,7 @@ public class Player : NetworkBehaviour
         name = playerName;
 
         if (RoleSelectorUI.Instance != null)
-            RoleSelectorUI.Instance.UpdatePlayerBoxes();
+            RoleSelectorUI.Instance.RefreshPlayers();
     }
 
     private void OnWalkingChanged(bool oldValue, bool newValue)

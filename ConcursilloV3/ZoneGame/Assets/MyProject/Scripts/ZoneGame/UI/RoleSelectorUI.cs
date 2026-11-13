@@ -46,6 +46,7 @@ public class RoleSelectorUI : MonoBehaviour
         lockObj = startGameObj.transform.Find("Lock").gameObject;
 
         roleLobbyUI.SetActive(false);
+        lockObj.SetActive(false);
     }
 
     public void InitPlayer(Player player)

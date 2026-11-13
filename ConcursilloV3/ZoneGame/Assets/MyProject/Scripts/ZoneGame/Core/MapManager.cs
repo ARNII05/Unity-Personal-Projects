@@ -85,11 +85,27 @@ public class MapManager : MonoBehaviour
         {
             player1 = player;
             player1.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 1") : "Esperando jugador...";
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    player1.discoveredZones.Add(new(x, y));
+                }
+            }
         }
         else if (player2 == null && player != player1)
         {
             player2 = player;
             player2.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 2") : "Esperando jugador...";
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    player2.discoveredZones.Add(new(x, y));
+                }
+            }
         }
 
         if (RoleSelectorUI.Instance != null)
@@ -197,19 +213,18 @@ public class MapManager : MonoBehaviour
 
             InitPlayersInfo();
 
-            map[startPos.y, startPos.x] = new MomHouse();
-            map[grandmaPos.y, grandmaPos.x] = new GrandmaHouse();
-
             ImplementRiver();
 
             if (HasEnoughAccessibleTilesBeforeRiver())
             {
                 PutWolfDenPos(startPos, grandmaPos);
-                
-                FillOtherZones();
 
                 ImplementCamps();
-                
+
+                GenerateRequiredZones();
+
+                FillOtherZones();
+
                 ResourcesGenerator.Instance.Init();
                 
                 //startPos = GoTo(startPos, ItemType.AncientRelic);
@@ -272,6 +287,9 @@ public class MapManager : MonoBehaviour
         );
 
         grandmaPos = GrandmaHousePos(startPos);
+
+        map[startPos.y, startPos.x] = new MomHouse();
+        map[grandmaPos.y, grandmaPos.x] = new GrandmaHouse();
     }
 
     private IEnumerator SendMapNextFrame()
@@ -382,7 +400,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        InitPlayersInfo(false);
+        InitPlayersInfo();
 
         CreateInitialZones();
 
@@ -391,7 +409,7 @@ public class MapManager : MonoBehaviour
         PrintMap();
     }
 
-    private void InitPlayersInfo(bool IsServer = true)
+    private void InitPlayersInfo()
     {
         if (player1 == null ||
             player2 == null)
@@ -404,9 +422,6 @@ public class MapManager : MonoBehaviour
 
         player2.transform.position =
             player2RealPos;
-
-        if (!IsServer)
-            return;
     }
 
     private void CreateInitialZones()
@@ -636,26 +651,72 @@ public class MapManager : MonoBehaviour
         return possiblePositions;
     }
 
+    private void GenerateRequiredZones()
+    {
+        ZoneType[] requiredZones =
+        {
+            ZoneType.Village,
+            ZoneType.Ruins,
+            ZoneType.RabbitDen,
+            ZoneType.FlowerField,
+            ZoneType.Swamp
+        };
+
+        foreach (ZoneType zoneType in requiredZones)
+        {
+            List<Vector2Int> emptyPositions = new();
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    if (map[y, x] == null)
+                        emptyPositions.Add(new Vector2Int(x, y));
+                }
+            }
+
+            if (emptyPositions.Count == 0)
+            {
+                Debug.LogError($"No space for {zoneType}");
+                return;
+            }
+
+            Vector2Int position =
+                emptyPositions[Random.Range(0, emptyPositions.Count)];
+
+            map[position.y, position.x] = ZoneVault.GenerateZone(zoneType);
+        }
+    }
+
     private void FillOtherZones()
     {
-        List<ZoneType> allowedFillTypes =
-            new();
+        List<ZoneType> allowedFillTypes = new();
 
-        List<ZoneType> onlyOneZone = new() { ZoneType.Village, ZoneType.Ruins };
-
-        foreach (
-            ZoneType type
-            in System.Enum.GetValues(
-                typeof(ZoneType)))
+        Dictionary<ZoneType, int> maxZones = new()
         {
-            if (
-                type != ZoneType.MomHouse &&
+            { ZoneType.RabbitDen, 4 },
+            { ZoneType.FlowerField, 9 },
+            { ZoneType.Swamp, 6 }
+        };
+
+        Dictionary<ZoneType, int> generatedZones = new()
+        {
+            { ZoneType.RabbitDen, 1 },
+            { ZoneType.FlowerField, 1 },
+            { ZoneType.Swamp, 1 }
+        };
+
+        foreach (ZoneType type in System.Enum.GetValues(typeof(ZoneType)))
+        {
+            if (type != ZoneType.MomHouse &&
                 type != ZoneType.GrandmaHouse &&
                 type != ZoneType.VerticalRiver &&
                 type != ZoneType.HorizontalRiver &&
                 type != ZoneType.WolfDen &&
-                type != ZoneType.Camp && 
-                type != ZoneType.Tavern)
+                type != ZoneType.Camp &&
+                type != ZoneType.Tavern &&
+                type != ZoneType.Village &&
+                type != ZoneType.Ruins)
             {
                 allowedFillTypes.Add(type);
             }
@@ -666,52 +727,32 @@ public class MapManager : MonoBehaviour
             for (int x = 0; x < mapWidth; x++)
             {
                 if (map[y, x] != null)
-                {
                     continue;
+
+                int randomIndex = Random.Range(0, allowedFillTypes.Count);
+
+                ZoneType selectedType = allowedFillTypes[randomIndex];
+
+                if (!generatedZones.TryAdd(selectedType, 1))
+                    generatedZones[selectedType]++;
+
+                if (maxZones.TryGetValue(selectedType, out int maxAmount) &&
+                    generatedZones[selectedType] >= maxAmount)
+                {
+                    allowedFillTypes.Remove(selectedType);
                 }
 
-                int randomIndex =
-                    Random.Range(
-                        0,
-                        allowedFillTypes.Count
-                    );
-
-                ZoneType selectedType =
-                    allowedFillTypes[randomIndex];
-
-                if (onlyOneZone.Contains(selectedType))
-                    allowedFillTypes.Remove(selectedType);
-
-                map[y, x] =
-                    ZoneVault.GenerateZone(
-                        selectedType
-                    );
+                map[y, x] = ZoneVault.GenerateZone(selectedType);
             }
         }
     }
 
     private void ImplementCamps()
     {
-        List<ZoneType> allowedFillTypes = new();
-
         const int minDistance = 3;
         const int maxCamps = 5;
         const int maxDistributionAttempts = 100;
         const int maxPositionAttempts = 100;
-
-        foreach (ZoneType type in System.Enum.GetValues(typeof(ZoneType)))
-        {
-            if (type != ZoneType.MomHouse &&
-                type != ZoneType.GrandmaHouse &&
-                type != ZoneType.VerticalRiver &&
-                type != ZoneType.HorizontalRiver &&
-                type != ZoneType.WolfDen &&
-                type != ZoneType.Ruins &&
-                type != ZoneType.Village)
-            {
-                allowedFillTypes.Add(type);
-            }
-        }
 
         List<Vector2Int> campsPos = new();
 
@@ -745,12 +786,7 @@ public class MapManager : MonoBehaviour
                     }
                 }
 
-                if (tooClose)
-                    continue;
-
-                ZoneData zone = map[actualPos.y, actualPos.x];
-
-                if (!allowedFillTypes.Contains(zone.type))
+                if (tooClose || map[actualPos.y, actualPos.x] != null)
                     continue;
 
                 campsPos.Add(actualPos);
