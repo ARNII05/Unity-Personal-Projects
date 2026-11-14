@@ -51,8 +51,14 @@ public class PlayerNearbyObjects : MonoBehaviour
                 break;
 
             case "Chest":
-                NearbyChest = null;
+            {
+                Chest exitingChest = other.GetComponentInParent<Chest>();
+
+                if (NearbyChest == exitingChest)
+                    NearbyChest = null;
+
                 break;
+            }
 
             case "RiverInteractor":
                 CurrentRiverInteraction = null;
@@ -70,5 +76,15 @@ public class PlayerNearbyObjects : MonoBehaviour
                 tradeCollider = null;
                 break;
         }
+    }
+
+    public void ClearNearbyObjects()
+    {
+        CurrentBorderZone = null;
+        NearbyChest = null;
+        Rabbit = null;
+        NearbyGrandma = null;
+        CurrentRiverInteraction = null;
+        tradeCollider = null;
     }
 }

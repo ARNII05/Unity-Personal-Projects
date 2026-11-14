@@ -35,6 +35,8 @@ public class Player : NetworkBehaviour
     private ZoneGameControls controls;
     private WolfUI wolfUI;
 
+    private Chest openedChest;
+
     private bool gameplayInitialized, gameplayInitializing;
 
     public HashSet<Vector2Int> discoveredZones = new();
@@ -125,12 +127,22 @@ public class Player : NetworkBehaviour
 
     public void OpenChest()
     {
-        nearbyObjects.NearbyChest.OnOpen(this);
+        openedChest = nearbyObjects.NearbyChest;
+
+        if (openedChest == null)
+            return;
+
+        openedChest.OnOpen(this);
     }
 
     public void CloseChest()
     {
-        nearbyObjects.NearbyChest.OnOpen(this);
+        if (openedChest == null)
+            return;
+
+        openedChest.chestUI.CloseInventory();
+
+        openedChest = null;
     }
 
     public void CloseWolfUI()
@@ -495,6 +507,8 @@ public class Player : NetworkBehaviour
     {
         if (!IsOwner)
             return;
+
+        Debug.Log($"STATE: {previous} -> {current}");
 
         if (CursorManager.Instance != null)
             CursorManager.Instance.UpdateCursor(current);

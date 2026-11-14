@@ -72,8 +72,8 @@ public class ResourcesGenerator : MonoBehaviour
 
         localPlayer = MapManager.Instance.GetLocalPlayer();
 
-        const int extraFlowers = 0;
-        const int extraBranches = 10;
+        const int extraFlowers = 15;
+        const int extraBranches = 18;
         const int totalBranchesToCraft = CraftingSystem.branchesForLog + extraBranches;
         const int totalFlowersToCraft = CraftingSystem.flowersForBouquet * CraftingSystem.BouquetsToWin + extraFlowers;
 
@@ -173,6 +173,12 @@ public class ResourcesGenerator : MonoBehaviour
 
     private int BranchesToGenerate(int branchesInTotal)
     {
+        bool hasRiverBridged =
+            map.Cast<ZoneData>().Any(zone => zone.riverBridged);
+
+        if (hasRiverBridged)
+            return 0;
+
         int necessaryBranches =
             CraftingSystem.branchesForLog * CraftingSystem.logsForBridge;
 
@@ -191,19 +197,13 @@ public class ResourcesGenerator : MonoBehaviour
         bool wolfDenIsInMomPart =
             momPartToSearch.Contains(MapManager.Instance.wolfDenPos);
 
-        bool hasRiverBridged =
-            map.Cast<ZoneData>().Any(zone => zone.riverBridged);
-
         if (wolfDenIsInMomPart)
         {
-            if (branchesInTotal + branchesInWolfDen >= necessaryBranches)
-                return 0;
-
-            return necessaryBranches - branchesInTotal - branchesInWolfDen;
+            return Mathf.Max(
+                0,
+                necessaryBranches - branchesInTotal - branchesInWolfDen
+            );
         }
-
-        if (hasRiverBridged)
-            return 0;
 
         return necessaryBranches - branchesInTotal;
     }

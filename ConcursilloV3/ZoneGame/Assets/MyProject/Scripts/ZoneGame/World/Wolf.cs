@@ -10,8 +10,8 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(WolfUI))]
 public class Wolf : NetworkBehaviour
 {
-    private const int moveInterval = 10;
-    private const int distanceToChasePlayer = 3;
+    private const int moveInterval = 12;
+    private const int distanceToChasePlayer = 2;
     private const int distanceToChaseMeat = 5;
     private const int maxCountToSteal = 4;
     private const int maxItemsToSteal = 2;
@@ -57,7 +57,7 @@ public class Wolf : NetworkBehaviour
             player2.NetworkMapPos.OnValueChanged += UpdateWolfState;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = false;
+            readyToMove = true;
         }
     }
 

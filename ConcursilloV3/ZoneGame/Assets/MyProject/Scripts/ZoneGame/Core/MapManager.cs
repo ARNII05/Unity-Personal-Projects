@@ -214,7 +214,7 @@ public class MapManager : MonoBehaviour
                 //startPos = GoTo(startPos, ItemType.AncientRelic);
                 //startPos = GoTo(ZoneType.RabbitDen, startPos);
 
-                player1.NetworkMapPos.Value = startPos;
+                player1.NetworkMapPos.Value = GoTo(ZoneType.Camp, startPos);
                 player2.NetworkMapPos.Value = startPos;
 
                 PrintMap();
@@ -1029,6 +1029,8 @@ public class MapManager : MonoBehaviour
         UIManager.Instance.PlayZoneTransition(
             () =>
             {
+                player.NearbyObjects.ClearNearbyObjects();
+                
                 Vector3 entryPosition =
                     GetPlayerEntryPoint(
                         player,

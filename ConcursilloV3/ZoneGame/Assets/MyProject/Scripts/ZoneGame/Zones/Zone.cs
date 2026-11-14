@@ -11,6 +11,13 @@ public class Zone : MonoBehaviour
     {
         borders = GetComponentsInChildren<BorderZone>(true);
         protectors = GetComponentsInChildren<Protector>(true);
+
+        Transform portectorsParent = transform.Find("Protectors");
+
+        if (!portectorsParent)
+            return;
+
+        portectorsParent.gameObject.SetActive(true);
     }
 
     public void Setup(Vector2Int mapPos, ZoneData[,] map)
