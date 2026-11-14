@@ -263,19 +263,16 @@ public class ResourcesGenerator : MonoBehaviour
     {
         List<Vector2Int> availablePositions = allMap
             .Where(pos => map[pos.y, pos.x].chestInventory
-                .HasSpaceFor(ItemType.AncientRelic))
+            .HasSpaceFor(ItemType.AncientRelic))
             .ToList();
 
-        int requiredRelics = CraftingSystem.ancientRelicsToOpenAncientChest;
-
-        if (availablePositions.Count < requiredRelics)
+        if (availablePositions.Count == 0)
         {
-            Debug.LogError(
-                $"No hay suficientes cofres para distribuir las reliquias. " +
-                $"Disponibles: {availablePositions.Count}/{requiredRelics}"
-            );
+            Debug.LogError("Not enough chests to distibute ancient relics");
             return;
         }
+
+        int requiredRelics = CraftingSystem.ancientRelicsToOpenAncientChest;
 
         for (int i = 0; i < requiredRelics; i++)
         {
@@ -288,7 +285,7 @@ public class ResourcesGenerator : MonoBehaviour
             if (!zone.chestInventory.Add(ItemType.AncientRelic, 1))
             {
                 Debug.LogError(
-                    $"No se ha podido añadir la reliquia en {zone.name} " +
+                    $"Can't add ancient relic in {zone.name} " +
                     $"({position.y + 1}, {position.x + 1})."
                 );
                 return;
