@@ -49,14 +49,12 @@ public class PurchaseSystem : MonoBehaviour
         bool hasEnoughItems =
             player.inventory.GetAmount(itemToRemove) >= amountToRemove;
         bool hasEnoughAmount = GetAmountLeft(itemToPrice, tradeMode) >= actualAmount;
-        bool hasSpaceInInventory = tradeMode switch
-        {
-            TradeMode.Buy => player.inventory.HasSpaceFor(itemToAdd),
-            _ => player.inventory.HasSpaceAfterRemoving(
-            itemToRemove,
-            amountToRemove,
-            itemToAdd)
-        };
+        bool hasSpaceInInventory =
+            player.inventory.HasSpaceAfterRemoving(
+                itemToRemove,
+                amountToRemove,
+                itemToAdd
+            );
 
         return (hasSpaceInInventory, hasEnoughItems, hasEnoughAmount) switch
         {

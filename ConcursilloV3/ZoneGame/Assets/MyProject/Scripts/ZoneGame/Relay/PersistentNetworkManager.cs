@@ -97,6 +97,14 @@ public class PersistentNetworkManager : MonoBehaviour
             return;
         }
 
+        if (MapManager.Instance == null)
+        {
+            Debug.LogWarning(
+                "Se ha desconectado un jugador antes de inicializar MapManager."
+            );
+            return;
+        }
+
         // CASO 3: Desconexión durante el lobby.
         // Conservamos el comportamiento que ya funcionaba.
         Player disconnectedPlayer = MapManager.Instance.GetPlayerById(clientId);

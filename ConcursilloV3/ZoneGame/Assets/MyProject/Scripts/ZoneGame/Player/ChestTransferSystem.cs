@@ -18,6 +18,9 @@ public class ChestTransferSystem : MonoBehaviour
     {
         position = player.NetworkMapPos.Value;
 
+        if (player.State.Value != PlayerState.ChestInventory)
+            return false;
+
         if (!ItemVault.IsTransferable(item))
             return false;
 
@@ -46,11 +49,14 @@ public class ChestTransferSystem : MonoBehaviour
     }
 
     public bool TrySendItemsToPlayer(
-    ItemType item,
-    ref int amount,
-    out Vector2Int position)
+        ItemType item,
+        ref int amount,
+        out Vector2Int position)
     {
         position = player.NetworkMapPos.Value;
+
+        if (player.State.Value != PlayerState.ChestInventory)
+            return false;
 
         if (!ItemVault.IsTransferable(item) || amount <= 0)
             return false;

@@ -248,27 +248,43 @@ public class ResourcesGenerator : MonoBehaviour
 
     private void DistributeAncientRelics()
     {
-        for (int i = 0; i < CraftingSystem.ancientRelicsToOpenAncientChest; i++)
-        {
-            int randomIndex = Random.Range(0, allMap.Count);
+        List<Vector2Int> availablePositions = allMap
+            .Where(pos => map[pos.y, pos.x].chestInventory
+                .HasSpaceFor(ItemType.AncientRelic))
+            .ToList();
 
-            Vector2Int position = allMap[randomIndex];
+        int requiredRelics = CraftingSystem.ancientRelicsToOpenAncientChest;
+
+        if (availablePositions.Count < requiredRelics)
+        {
+            Debug.LogError(
+                $"No hay suficientes cofres para distribuir las reliquias. " +
+                $"Disponibles: {availablePositions.Count}/{requiredRelics}"
+            );
+            return;
+        }
+
+        for (int i = 0; i < requiredRelics; i++)
+        {
+            int randomIndex = Random.Range(0, availablePositions.Count);
+
+            Vector2Int position = availablePositions[randomIndex];
 
             ZoneData zone = map[position.y, position.x];
 
-            if (!zone.chestInventory.HasSpaceFor(ItemType.AncientRelic))
-            {
-                i--;
-                continue;
-            }
-
             if (!zone.chestInventory.Add(ItemType.AncientRelic, 1))
             {
-                Debug.LogWarning($"Failed to add Ancient Relic to zone {zone.name} at position ({position.y + 1}, {position.x + 1}).");
-                continue;
+                Debug.LogError(
+                    $"No se ha podido añadir la reliquia en {zone.name} " +
+                    $"({position.y + 1}, {position.x + 1})."
+                );
+                return;
             }
 
-            Debug.Log($"Ancient Relic added to zone {zone.name} at position ({position.y + 1}, {position.x + 1}).");
+            Debug.Log(
+                $"Ancient Relic added to {zone.name} " +
+                $"({position.y + 1}, {position.x + 1})."
+            );
         }
     }
 

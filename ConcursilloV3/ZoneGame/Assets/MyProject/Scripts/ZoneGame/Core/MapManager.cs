@@ -231,12 +231,12 @@ public class MapManager : MonoBehaviour
                 //startPos = GoTo(ZoneType.RabbitDen, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
-                player2.NetworkMapPos.Value = startPos;
+                player2.NetworkMapPos.Value = GoTo(ZoneType.Camp, startPos);
 
                 PrintMap();
                 CreateInitialZones();
                 IsMapReady = true;
-                StartCoroutine(SendMapNextFrame());
+                SendMapToClient();
 
                 return;
             }
@@ -249,6 +249,8 @@ public class MapManager : MonoBehaviour
 
     private Vector2Int GoTo(ZoneType zoneType, Vector2Int initialPos)
     {
+        List<Vector2Int> zoneTypePositions = new();
+
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
@@ -256,11 +258,26 @@ public class MapManager : MonoBehaviour
                 ZoneData zone = map[y, x];
 
                 if (zone.type == zoneType)
-                    return new Vector2Int(x, y);
+                    zoneTypePositions.Add(new(x, y));
             }
         }
 
-        return initialPos;
+        int nearestDistance = int.MaxValue;
+        Vector2Int nearestPos = new(-1, -1);
+
+        foreach (var pos in zoneTypePositions)
+        {
+            int distance = Mathf.Abs(pos.x - initialPos.x) +
+                Mathf.Abs(pos.y - initialPos.y);
+
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestPos = pos;
+            }
+        }
+
+        return nearestPos == new Vector2Int(-1, -1) ? startPos : nearestPos;
     }
 
     private Vector2Int GoTo(Vector2Int initialPos, ItemType itemInChest)
@@ -292,12 +309,14 @@ public class MapManager : MonoBehaviour
         map[grandmaPos.y, grandmaPos.x] = new GrandmaHouse();
     }
 
+    /*
     private IEnumerator SendMapNextFrame()
     {
         yield return null;
 
         SendMapToClient();
     }
+    */
 
     private void SendMapToClient()
     {

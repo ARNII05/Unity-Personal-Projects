@@ -35,7 +35,7 @@ public class Player : NetworkBehaviour
     private ZoneGameControls controls;
     private WolfUI wolfUI;
 
-    private bool gameplayInitialized;
+    private bool gameplayInitialized, gameplayInitializing;
 
     public HashSet<Vector2Int> discoveredZones = new();
 
@@ -510,18 +510,25 @@ public class Player : NetworkBehaviour
 
     private void TryInitializeGameplay()
     {
-        if (gameplayInitialized || !IsSpawned)
+        if (gameplayInitialized || gameplayInitializing || !IsSpawned)
             return;
 
         if (SceneManager.GetActiveScene().name != "ZoneMap")
             return;
 
-        if (MapManager.Instance == null)
+        gameplayInitializing = true;
+        StartCoroutine(WaitForMapManager());
+    }
+
+    private IEnumerator WaitForMapManager()
+    {
+        yield return new WaitUntil(() => MapManager.Instance != null);
+
+        if (gameplayInitialized || !IsSpawned ||
+            SceneManager.GetActiveScene().name != "ZoneMap")
         {
-            Debug.LogWarning(
-                "Player: ZoneMap está activa, pero MapManager todavía no está disponible."
-            );
-            return;
+            gameplayInitializing = false;
+            yield break;
         }
 
         gameplayInitialized = true;

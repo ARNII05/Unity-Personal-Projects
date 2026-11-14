@@ -86,7 +86,9 @@ public class MapUI : MonoBehaviour
         Vector2Int oldPos,
         Vector2Int newPos)
     {
-        if (mapPlayer == null)
+        if (mapPlayer == null ||
+            MapManager.Instance == null ||
+            !MapManager.Instance.IsMapReady)
             return;
 
         UpdateMap();
