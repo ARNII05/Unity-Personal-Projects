@@ -77,7 +77,7 @@ public class ResourcesGenerator : MonoBehaviour
 
         map = MapManager.Instance.map;
 
-        momPart = TilesBeforeRiver(MapManager.Instance.startPos);
+        momPart = GetTilesInMomPart(MapManager.Instance.startPos);
 
         for (int i = 0; i < mapHeight; i++)
         {
@@ -441,7 +441,7 @@ public class ResourcesGenerator : MonoBehaviour
         Debug.Log($"Total coins: {coins}");
     }
 
-    private List<Vector2Int> TilesBeforeRiver(Vector2Int position)
+    private List<Vector2Int> GetTilesInMomPart(Vector2Int position)
     {
         List<Vector2Int> tilesInZone = new();
         bool[,] visited = new bool[mapHeight, mapWidth];
@@ -461,10 +461,9 @@ public class ResourcesGenerator : MonoBehaviour
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
+
             if (map[current.y, current.x].canHaveChest)
-            {
                 tilesInZone.Add(current);
-            }
 
             foreach (Vector2Int direction in directions)
             {
@@ -477,11 +476,24 @@ public class ResourcesGenerator : MonoBehaviour
                 if (visited[next.y, next.x])
                     continue;
 
-                if (map[next.y, next.x] != null &&
-                    (map[next.y, next.x].type == ZoneType.VerticalRiver || map[next.y, next.x].type == ZoneType.HorizontalRiver))
+                ZoneData nextZone = map[next.y, next.x];
+
+                if (nextZone == null)
                     continue;
 
                 visited[next.y, next.x] = true;
+
+                bool isRiver = nextZone.type == ZoneType.VerticalRiver ||
+                               nextZone.type == ZoneType.HorizontalRiver;
+
+                if (isRiver)
+                {
+                    if (nextZone.canHaveChest)
+                        tilesInZone.Add(next);
+
+                    continue;
+                }
+
                 queue.Enqueue(next);
             }
         }

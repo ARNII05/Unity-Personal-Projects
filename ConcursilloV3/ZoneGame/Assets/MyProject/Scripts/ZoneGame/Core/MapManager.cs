@@ -215,7 +215,7 @@ public class MapManager : MonoBehaviour
                 //startPos = GoTo(ZoneType.RabbitDen, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
-                player2.NetworkMapPos.Value = GoTo(ZoneType.Camp, startPos);
+                player2.NetworkMapPos.Value = startPos;
 
                 PrintMap();
                 CreateInitialZones();

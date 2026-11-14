@@ -119,8 +119,8 @@ public class GrandmaUI : NetworkBehaviour
 
         requirement2.text =
             player.NetworkMapPos.Value != otherPlayer.NetworkMapPos.Value
-            ? $" ->    {player.name}"
-            : $" ->    {player.name} / {otherPlayer.name}";
+            ? " -> 1 / 2"
+            : $" -> 2 / 2";
 
         denyTextObj.SetActive(!canWin);
         acceptBtn.interactable = canWin;

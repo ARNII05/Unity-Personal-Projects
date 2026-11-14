@@ -325,7 +325,6 @@ public class VerticalRiver : ZoneData
 {
     public VerticalRiver() : base(ZoneType.VerticalRiver, "Rio")
     {
-        canHaveChest = false;
         icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
 
         //Left side entry
@@ -375,13 +374,12 @@ public class HorizontalRiver : ZoneData
 {
     public HorizontalRiver() : base(ZoneType.HorizontalRiver, "Rio")
     {
-        canHaveChest = false;
         icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
 
         player1EntryPoints[0] = new Vector3(-85.4f, 15.5f, -6.2f);
         player1EntryPoints[1] = new Vector3(-111.4f, -47.5f, -6.2f);
-        player1EntryPoints[2] = new Vector3(139.4f, -11.5f, -6.2f);
-        player1EntryPoints[3] = new Vector3(38.6f, -11.5f, -6.2f);
+        player1EntryPoints[2] = new Vector3(35.5f, -11.5f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-133.5f, -11.5f, -6.2f);
 
         player2EntryPoints[0] = new Vector3(380.1f, 13.8f, -6.2f);
         player2EntryPoints[1] = new Vector3(354.1f, -47.2f, -6.2f);
