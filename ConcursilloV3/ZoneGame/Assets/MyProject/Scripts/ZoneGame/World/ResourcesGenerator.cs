@@ -20,8 +20,11 @@ public class ResourcesGenerator : MonoBehaviour
 
     public bool canActivateRecoveryTimer = false;
 
-    List<Vector2Int> momPart = new();
+    private List<Vector2Int> momPart = new();
     private readonly List<Vector2Int> allMap = new();
+
+    private List<Vector2Int> allMapToSearch = new();
+    private List<Vector2Int> momPartToSearch = new();
 
     private Player localPlayer;
 
@@ -61,6 +64,8 @@ public class ResourcesGenerator : MonoBehaviour
     {
         allMap.Clear();
         momPart.Clear();
+        allMapToSearch.Clear();
+        momPartToSearch.Clear();
 
         recoveryTimer = 0f;
         canActivateRecoveryTimer = true;
@@ -77,14 +82,22 @@ public class ResourcesGenerator : MonoBehaviour
 
         map = MapManager.Instance.map;
 
-        momPart = GetTilesInMomPart(MapManager.Instance.startPos);
+        momPartToSearch = GetTilesInMomPart(
+            MapManager.Instance.startPos
+        );
 
-        for (int i = 0; i < mapHeight; i++)
+        momPart = momPartToSearch
+            .Where(pos => map[pos.y, pos.x].canHaveChest)
+            .ToList();
+
+        for (int y = 0; y < mapHeight; y++)
         {
-            for (int j = 0; j < mapWidth; j++)
+            for (int x = 0; x < mapWidth; x++)
             {
-                if (map[i, j].canHaveChest)
-                    allMap.Add(new Vector2Int(j, i));
+                allMapToSearch.Add(new Vector2Int(x, y));
+                
+                if (map[y, x].canHaveChest)
+                    allMap.Add(new Vector2Int(x, y));
             }
         }
        
@@ -101,11 +114,11 @@ public class ResourcesGenerator : MonoBehaviour
 
     private void CheckResources()
     {
-        int bouquetsInTotal = SearchForItem(ItemType.Bouquet, allMap);
-        int flowersInTotal = SearchForItem(ItemType.Flower, allMap) + (bouquetsInTotal * CraftingSystem.flowersForBouquet);
+        int bouquetsInTotal = SearchForItem(ItemType.Bouquet, allMapToSearch);
+        int flowersInTotal = SearchForItem(ItemType.Flower, allMapToSearch) + (bouquetsInTotal * CraftingSystem.flowersForBouquet);
 
-        int logsInTotal = SearchForItem(ItemType.Log, momPart, false);
-        int branchesInTotal = SearchForItem(ItemType.Branch, momPart, false) + (logsInTotal * CraftingSystem.branchesForLog);
+        int logsInTotal = SearchForItem(ItemType.Log, momPartToSearch, false);
+        int branchesInTotal = SearchForItem(ItemType.Branch, momPartToSearch, false) + (logsInTotal * CraftingSystem.branchesForLog);
 
         int flowersToGenerate = FlowersToGenerate(flowersInTotal);
         int branchesToGenerate = BranchesToGenerate(branchesInTotal);
@@ -176,7 +189,7 @@ public class ResourcesGenerator : MonoBehaviour
             + logsInWolfDen * CraftingSystem.branchesForLog;
 
         bool wolfDenIsInMomPart =
-            momPart.Contains(MapManager.Instance.wolfDenPos);
+            momPartToSearch.Contains(MapManager.Instance.wolfDenPos);
 
         bool hasRiverBridged =
             map.Cast<ZoneData>().Any(zone => zone.riverBridged);
@@ -462,8 +475,7 @@ public class ResourcesGenerator : MonoBehaviour
         {
             Vector2Int current = queue.Dequeue();
 
-            if (map[current.y, current.x].canHaveChest)
-                tilesInZone.Add(current);
+            tilesInZone.Add(current);
 
             foreach (Vector2Int direction in directions)
             {
@@ -488,9 +500,7 @@ public class ResourcesGenerator : MonoBehaviour
 
                 if (isRiver)
                 {
-                    if (nextZone.canHaveChest)
-                        tilesInZone.Add(next);
-
+                    tilesInZone.Add(next);
                     continue;
                 }
 
