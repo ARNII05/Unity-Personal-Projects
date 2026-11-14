@@ -101,7 +101,6 @@ public class River : MonoBehaviour
 
         riverInteractors[0].SetActive(direction != Direction.North);
         riverInteractors[1].SetActive(direction != Direction.South);
-        riverInteractors[2].SetActive(direction == Direction.None);
     }
 
     public bool Interact(Player player)

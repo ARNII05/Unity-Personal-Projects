@@ -264,22 +264,6 @@ public class MapManager : MonoBehaviour
         return nearestPos == new Vector2Int(-1, -1) ? startPos : nearestPos;
     }
 
-    private Vector2Int GoTo(Vector2Int initialPos, ItemType itemInChest)
-    {
-        for (int y = 0; y < mapHeight; y++)
-        {
-            for (int x = 0; x < mapWidth; x++)
-            {
-                ZoneData zone = map[y, x];
-
-                if (zone.chestInventory.items.ContainsKey(itemInChest))
-                    return new Vector2Int(x, y);
-            }
-        }
-
-        return initialPos;
-    }
-
     private void GenerateStartPositions()
     {
         startPos = new Vector2Int(

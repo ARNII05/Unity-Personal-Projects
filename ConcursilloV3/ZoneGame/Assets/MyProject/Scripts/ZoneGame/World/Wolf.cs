@@ -94,8 +94,6 @@ public class Wolf : NetworkBehaviour
 
     private void MoveWolf()
     {
-        Debug.Log($"Wolf before moving -> Y: {NetworkPosition.Value.y}, X: {NetworkPosition.Value.x}");
-
         if (wolfState.Value == WolfState.MovingToDen)
         {
             MoveToDen();
@@ -119,8 +117,6 @@ public class Wolf : NetworkBehaviour
                 NetworkPosition.Value = MoveRandomly();
                 break;
         }
-
-        Debug.Log($"Wolf after moving -> Y: {NetworkPosition.Value.y}, X: {NetworkPosition.Value.x}");
 
         Player[] playersCaught = CheckPlayerCollision();
 

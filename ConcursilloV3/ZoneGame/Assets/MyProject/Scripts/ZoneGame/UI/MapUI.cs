@@ -12,11 +12,9 @@ public class MapUI : MonoBehaviour
 
     private GameObject mapUI;
     
-    private GameObject mapZones;
-    private TextMeshProUGUI p1Coordinates;
-    private TextMeshProUGUI p2Coordinates;
-    private TextMeshProUGUI grandmaHouseCoordinates;
-    private TextMeshProUGUI wolfDenCoordinates;
+    private GameObject mapZones, grid;
+    private TextMeshProUGUI p1Coordinates, p2Coordinates, p1Name, p2Name,
+        grandmaHouseCoordinates, wolfDenCoordinates, momHouseCoordinates;
 
     private Player mapPlayer;
     private Player otherPlayer;
@@ -24,6 +22,9 @@ public class MapUI : MonoBehaviour
     private ZoneData[,] map;
 
     private ZoneTooltipUI zoneTooltipUI;
+
+    private const string gardenerRolColor = "#356344";
+    private const string builderRolColor = "#754327";
 
     private void Awake()
     {
@@ -42,10 +43,18 @@ public class MapUI : MonoBehaviour
     {
         mapUI = transform.Find("MapUI").gameObject;
         mapZones = mapUI.transform.Find("MapZones").gameObject;
-        p1Coordinates = mapUI.transform.Find("P1Coordinates").GetComponent<TextMeshProUGUI>();
-        p2Coordinates = mapUI.transform.Find("P2Coordinates").GetComponent<TextMeshProUGUI>();
-        grandmaHouseCoordinates = mapUI.transform.Find("GrandmaHouseCoordinates").GetComponent<TextMeshProUGUI>();
-        wolfDenCoordinates = mapUI.transform.Find("WolfDenCoordinates").GetComponent<TextMeshProUGUI>();
+        grid = mapUI.transform.Find("CoordinatesGrid").gameObject;
+        
+        p1Coordinates = mapUI.transform.Find("P1Info").Find("Coordinates").GetComponent<TextMeshProUGUI>();
+        p2Coordinates = mapUI.transform.Find("P2Info").Find("Coordinates").GetComponent<TextMeshProUGUI>();
+
+        p1Name = mapUI.transform.Find("P1Info").Find("PlayerName").GetComponent<TextMeshProUGUI>();
+        p2Name = mapUI.transform.Find("P2Info").Find("PlayerName").GetComponent<TextMeshProUGUI>();
+
+        grandmaHouseCoordinates = grid.transform.Find("GrandmaZell").Find("Coordinates").GetComponent<TextMeshProUGUI>();
+        wolfDenCoordinates = grid.transform.Find("WolfZell").Find("Coordinates").GetComponent<TextMeshProUGUI>();
+        momHouseCoordinates = grid.transform.Find("MomZell").Find("Coordinates").GetComponent<TextMeshProUGUI>();
+
         mapUI.SetActive(false);
     }
 
@@ -58,6 +67,7 @@ public class MapUI : MonoBehaviour
         otherPlayer.NetworkMapPos.OnValueChanged += OnPlayerPositionChanged;
 
         StartCoroutine(WaitForMapReady());
+        StartCoroutine(WaitForPlayerRols());
     }
 
     private IEnumerator WaitForMapReady()
@@ -65,6 +75,42 @@ public class MapUI : MonoBehaviour
         yield return new WaitUntil(() => MapManager.Instance.IsMapReady);
 
         UpdateMap();
+    }
+
+    private IEnumerator WaitForPlayerRols()
+    {
+        yield return new WaitUntil(() => MapManager.Instance.Player1 != null 
+            && MapManager.Instance.Player2 != null &&
+            MapManager.Instance.Player1.Role.Value != PlayerRole.None &&
+            MapManager.Instance.Player2.Role.Value != PlayerRole.None);
+
+        Player player1 = MapManager.Instance.Player1;
+        Player player2 = MapManager.Instance.Player2;
+
+        PlayerRole p1Role = player1.Role.Value;
+        PlayerRole p2Role = player2.Role.Value;
+
+        Color p1Color = p1Role == PlayerRole.Gardener ?
+            HexToColor(gardenerRolColor)
+            : HexToColor(builderRolColor);
+        Color p2Color = p2Role == PlayerRole.Gardener ?
+            HexToColor(gardenerRolColor)
+            : HexToColor(builderRolColor);
+
+        p1Name.text = player1.name;
+        p2Name.text = player2.name;
+
+        p1Name.color = p1Color;
+        p2Name.color = p2Color;
+
+        p1Coordinates.color = p1Color;
+        p2Coordinates.color = p2Color;
+    }
+
+    private Color HexToColor(string hex)
+    {
+        ColorUtility.TryParseHtmlString(hex, out Color color);
+        return color;
     }
 
     public void ToggleMap()
@@ -128,11 +174,14 @@ public class MapUI : MonoBehaviour
         Vector2Int grandmaHousePos = MapManager.Instance.grandmaPos;
         Vector2Int wolfDenPos = MapManager.Instance.wolfDenPos;
 
-        p1Coordinates.text = $"{mapPlayer.name.ToUpper()}\nY: {playerPos.y + 1}\nX: {playerPos.x + 1}";
-        p2Coordinates.text = $"{otherPlayer.name.ToUpper()}\nY: {otherPlayerPos.y + 1}\nX: {otherPlayerPos.x + 1}";
+        Vector2Int startPos = MapManager.Instance.startPos;
 
-        grandmaHouseCoordinates.text = $"Casa de la Abuela\nY: {grandmaHousePos.y + 1}\nX: {grandmaHousePos.x + 1}";
-        wolfDenCoordinates.text = $"Guarida del lobo\nY: {wolfDenPos.y + 1}\nX: {wolfDenPos.x + 1}";
+        p1Coordinates.text = $"Y: {playerPos.y + 1} X: {playerPos.x + 1}";
+        p2Coordinates.text = $"Y: {otherPlayerPos.y + 1} X: {otherPlayerPos.x + 1}";
+
+        grandmaHouseCoordinates.text = $"Y: {grandmaHousePos.y + 1} X: {grandmaHousePos.x + 1}";
+        wolfDenCoordinates.text = $"Y: {wolfDenPos.y + 1} X: {wolfDenPos.x + 1}";
+        momHouseCoordinates.text = $"Y: {startPos.y + 1} X: {startPos.x + 1}";
     }
 
     private void UpdateZoneIcons()
