@@ -244,6 +244,8 @@ public class Swamp : ZoneData
 
     public Swamp() : base(ZoneType.Swamp, "Pantano")
     {
+        canHaveChest = false;
+
         player1EntryPoints[2] = new Vector3(42.3f, -2.2f, -6.2f);
         player2EntryPoints[2] = new Vector3(503f, -2.3f, -6.2f);
         player1TpZonePos = new Vector3(-49.7f, -2.14f, -6.2f);
@@ -376,10 +378,10 @@ public class HorizontalRiver : ZoneData
         canHaveChest = false;
         icon = Resources.Load<Sprite>("Prefabs/ZoneIcons/River");
 
-        player1EntryPoints[0] = new Vector3(-49.2f, 39.4f, -6.2f);
-        player1EntryPoints[1] = new Vector3(-49.2f, -41.4f, -6.2f);
-        player1EntryPoints[2] = new Vector3(31.1f, 5.6f, -6.2f);
-        player1EntryPoints[3] = new Vector3(-132.1f, 5.6f, -6.2f);
+        player1EntryPoints[0] = new Vector3(-85.4f, 15.5f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-111.4f, -47.5f, -6.2f);
+        player1EntryPoints[2] = new Vector3(139.4f, -11.5f, -6.2f);
+        player1EntryPoints[3] = new Vector3(38.6f, -11.5f, -6.2f);
 
         player2EntryPoints[0] = new Vector3(380.1f, 13.8f, -6.2f);
         player2EntryPoints[1] = new Vector3(354.1f, -47.2f, -6.2f);

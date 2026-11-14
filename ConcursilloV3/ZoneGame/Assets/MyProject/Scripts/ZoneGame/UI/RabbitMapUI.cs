@@ -23,8 +23,6 @@ public class RabbitMapUI : MonoBehaviour
 
     private Vector2Int zoneToTp;
 
-    private Image selectedImage;
-
     private GameObject selectedZone = null;
 
     private void Start()
@@ -135,16 +133,6 @@ public class RabbitMapUI : MonoBehaviour
             selectedZone.transform.localScale = Vector3.one;
         }
 
-        /*
-        if (selectedImage != null)
-        {
-            Color color = selectedImage.color;
-            color.a = 0f;
-            selectedImage.color = color;
-            selectedImage.gameObject.transform.localScale = Vector3.one;
-        }
-        */
-
         Image actualZoneImg = zone.transform.Find("Background").GetComponent<Image>();
         
         Color actualColor = actualZoneImg.color;
@@ -154,8 +142,6 @@ public class RabbitMapUI : MonoBehaviour
         zone.transform.localScale = Vector3.one * 1.3f;
 
         selectedZone = zone;
-
-        //selectedImage = actualZoneImg;
     }
 
     private void InitTpButton(bool isDiscovered, bool isSameZoneAsPlayer, bool isRiver, Vector2Int zonePos)

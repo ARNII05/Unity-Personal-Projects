@@ -85,27 +85,11 @@ public class MapManager : MonoBehaviour
         {
             player1 = player;
             player1.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 1") : "Esperando jugador...";
-
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    player1.discoveredZones.Add(new(x, y));
-                }
-            }
         }
         else if (player2 == null && player != player1)
         {
             player2 = player;
             player2.name = player.IsOwner ? PlayerPrefs.GetString("PlayerName", "Player 2") : "Esperando jugador...";
-
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
-                {
-                    player2.discoveredZones.Add(new(x, y));
-                }
-            }
         }
 
         if (RoleSelectorUI.Instance != null)

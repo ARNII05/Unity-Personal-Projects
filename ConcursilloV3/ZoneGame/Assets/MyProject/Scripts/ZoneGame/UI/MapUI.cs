@@ -77,9 +77,18 @@ public class MapUI : MonoBehaviour
 
     private void OnOpen()
     {
-		mapPlayer.SetNewStateRpc(PlayerState.UsingMap);
+        mapPlayer.SetNewStateRpc(PlayerState.UsingMap);
 
-		mapUI.SetActive(true);
+        mapUI.SetActive(true);
+
+        StartCoroutine(HideTooltipNextFrame());
+    }
+
+    private IEnumerator HideTooltipNextFrame()
+    {
+        yield return null;
+
+        HideZoneTooltip();
     }
 
     private void OnPlayerPositionChanged(
@@ -98,7 +107,9 @@ public class MapUI : MonoBehaviour
     {
 		mapPlayer.SetNewStateRpc(PlayerState.Normal);
 
-		mapUI.SetActive(false);
+        HideZoneTooltip();
+
+        mapUI.SetActive(false);
     }
 
     public void UpdateMap()
@@ -186,14 +197,6 @@ public class MapUI : MonoBehaviour
 
     public void HideZoneTooltip()
     {
-        zoneTooltipUI.HideTooltip();
-    }
-
-    private void OnDisable()
-    {
-        if (zoneTooltipUI == null)
-            return;
-
         zoneTooltipUI.HideTooltip();
     }
 }

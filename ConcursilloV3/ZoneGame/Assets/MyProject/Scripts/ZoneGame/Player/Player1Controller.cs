@@ -10,7 +10,7 @@ public class Player1Controller : NetworkBehaviour
     public Animator anim;
 
     [Header("Configuración de Velocidad")]
-    private const float moveSpeed = 35;
+    private const float moveSpeed = 45;
 
     private Rigidbody2D rb;
     private Vector2 movementInput;
