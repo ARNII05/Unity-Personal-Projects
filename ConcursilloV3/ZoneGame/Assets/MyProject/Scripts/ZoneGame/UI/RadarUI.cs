@@ -170,11 +170,12 @@ public class RadarUI : MonoBehaviour
 
             case WolfState.MovingToPlayer:
                 wolfStatusText.text = "Persiguiendo a un jugador";
-                wolfStatusText.color = distanceText.color;
+                wolfStatusText.color = Color.red;
                 break;
 
             case WolfState.MovingToDen:
                 wolfStatusText.text = "Regresando a la cueva";
+                wolfStatusText.color = new Color32(229, 173, 69, 255);
                 break;
         }
     }

@@ -32,7 +32,7 @@ public class ChestUI : MonoBehaviour
 
     public void SendItemsToChest(int index)
     {
-        if (!player || !player.nearbyChest || !playerInventoryUI || !chestInventoryUI)
+        if (!player || !player.GetOpenedChest() || !playerInventoryUI || !chestInventoryUI)
             return;
 
         if (chestInventoryUI.inventory == null ||
@@ -52,7 +52,7 @@ public class ChestUI : MonoBehaviour
 
     public void SendAllItemsToChest(int index)
     {
-        if (!player || !player.nearbyChest || !playerInventoryUI || !chestInventoryUI)
+        if (!player || !player.GetOpenedChest() || !playerInventoryUI || !chestInventoryUI)
             return;
 
         if (chestInventoryUI.inventory == null ||
@@ -73,7 +73,7 @@ public class ChestUI : MonoBehaviour
 
     public void SendItemsToPlayer(int index)
     {
-        if (!player || !player.nearbyChest || !playerInventoryUI || !chestInventoryUI)
+        if (!player || !player.GetOpenedChest() || !playerInventoryUI || !chestInventoryUI)
             return;
 
         if (chestInventoryUI.inventory == null ||
@@ -93,7 +93,7 @@ public class ChestUI : MonoBehaviour
 
     public void SendAllItemsToPlayer(int index)
     {
-        if (!player || !player.nearbyChest || !playerInventoryUI || !chestInventoryUI)
+        if (!player || !player.GetOpenedChest() || !playerInventoryUI || !chestInventoryUI)
             return;
 
         if (chestInventoryUI.inventory == null ||

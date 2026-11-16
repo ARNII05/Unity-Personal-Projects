@@ -79,26 +79,23 @@ public class MapUI : MonoBehaviour
 
     private IEnumerator WaitForPlayerRols()
     {
-        yield return new WaitUntil(() => MapManager.Instance.Player1 != null 
-            && MapManager.Instance.Player2 != null &&
-            MapManager.Instance.Player1.Role.Value != PlayerRole.None &&
-            MapManager.Instance.Player2.Role.Value != PlayerRole.None);
+        yield return new WaitUntil(() =>
+            mapPlayer != null &&
+            otherPlayer != null &&
+            mapPlayer.Role.Value != PlayerRole.None &&
+            otherPlayer.Role.Value != PlayerRole.None
+        );
 
-        Player player1 = MapManager.Instance.Player1;
-        Player player2 = MapManager.Instance.Player2;
-
-        PlayerRole p1Role = player1.Role.Value;
-        PlayerRole p2Role = player2.Role.Value;
-
-        Color p1Color = p1Role == PlayerRole.Gardener ?
-            HexToColor(gardenerRolColor)
-            : HexToColor(builderRolColor);
-        Color p2Color = p2Role == PlayerRole.Gardener ?
-            HexToColor(gardenerRolColor)
+        Color p1Color = mapPlayer.Role.Value == PlayerRole.Gardener
+            ? HexToColor(gardenerRolColor)
             : HexToColor(builderRolColor);
 
-        p1Name.text = player1.name;
-        p2Name.text = player2.name;
+        Color p2Color = otherPlayer.Role.Value == PlayerRole.Gardener
+            ? HexToColor(gardenerRolColor)
+            : HexToColor(builderRolColor);
+
+        p1Name.text = mapPlayer.name;
+        p2Name.text = otherPlayer.name;
 
         p1Name.color = p1Color;
         p2Name.color = p2Color;

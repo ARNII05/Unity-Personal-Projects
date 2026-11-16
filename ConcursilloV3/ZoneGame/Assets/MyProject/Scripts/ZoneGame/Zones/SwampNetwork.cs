@@ -23,7 +23,7 @@ public class SwampNetwork : NetworkBehaviour
         swampDialogue = GetComponent<SwampDialogue>();
     }
 
-    public void TryToGetStolenItems(int probToRecoverItem, Vector2Int swampPos, ulong id, bool stolenItemsIsEmpty)
+    public void TryToGetStolenItems(int probToRecoverItem, Vector2Int swampPos, ulong id)
     {
         if (!IsServer)
             return;
@@ -36,7 +36,7 @@ public class SwampNetwork : NetworkBehaviour
         ZoneData[,] map = MapManager.Instance.map;
         Swamp swamp = (Swamp)map[swampPos.y, swampPos.x];
 
-        LootToRecover lootRecovered = LootRecovered(probToRecoverItem, swampPos, player, stolenItemsIsEmpty);
+        LootToRecover lootRecovered = LootRecovered(probToRecoverItem, swampPos, player);
 
         if (lootRecovered.recoveryState == RecoveryState.ItemRecovered)
         {
@@ -52,11 +52,8 @@ public class SwampNetwork : NetworkBehaviour
         ShowRecoveredItemToUserClientRpc(lootRecovered.item, lootRecovered.amount, lootRecovered.recoveryState, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
     }
 
-    private LootToRecover LootRecovered(int probToRecoverItem, Vector2Int swampPos, Player player, bool stolenItemsIsEmpty)
+    private LootToRecover LootRecovered(int probToRecoverItem, Vector2Int swampPos, Player player)
     {
-        if (stolenItemsIsEmpty)
-            return new LootToRecover(ItemType.None, 0, RecoveryState.NoItemsStolen);
-
         ZoneData[,] map = MapManager.Instance.map;
         Swamp swamp = (Swamp)map[swampPos.y, swampPos.x];
 

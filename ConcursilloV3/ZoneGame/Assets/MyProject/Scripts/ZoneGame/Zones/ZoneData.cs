@@ -246,8 +246,13 @@ public class Swamp : ZoneData
     {
         canHaveChest = false;
 
-        player1EntryPoints[2] = new Vector3(42.3f, -2.2f, -6.2f);
+        player1EntryPoints[2] = new Vector3(39.3f, -2.2f, -6.2f);
+        player1EntryPoints[3] = new Vector3(-138.2f, -0.2f, -6.2f);
+
+        player2EntryPoints[1] = new Vector3(366.1f, -42.2f, -6.2f);
         player2EntryPoints[2] = new Vector3(503f, -2.3f, -6.2f);
+        player2EntryPoints[3] = new Vector3(329.1f, -0.2f, -6.2f);
+
         player1TpZonePos = new Vector3(-49.7f, -2.14f, -6.2f);
         player2TpZonePos = new Vector3(417f, -1.3f, -6.2f);
     }

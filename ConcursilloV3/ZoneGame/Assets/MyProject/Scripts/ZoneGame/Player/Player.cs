@@ -95,6 +95,11 @@ public class Player : NetworkBehaviour
             otherPlayerVisualController.UpdateVisual();
     }
 
+    public Chest GetOpenedChest()
+    {
+        return openedChest;
+    }
+
     public void OpenPauseMenu()
     {
         pauseMenuUI.ShowPauseMenu();
@@ -154,7 +159,7 @@ public class Player : NetworkBehaviour
     {
         RiverInteractionServerRpc(NetworkMapPos.Value);
     }
-    
+
     [Rpc(SendTo.Server)]
     public void SetNewStateRpc(PlayerState newState)
     {

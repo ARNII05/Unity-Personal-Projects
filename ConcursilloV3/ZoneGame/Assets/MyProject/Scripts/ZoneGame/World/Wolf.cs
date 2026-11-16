@@ -12,7 +12,6 @@ public class Wolf : NetworkBehaviour
 {
     private const int moveInterval = 12;
     private const int distanceToChasePlayer = 2;
-    private const int distanceToChaseMeat = 5;
     private const int maxCountToSteal = 4;
     private const int maxItemsToSteal = 2;
 
@@ -57,7 +56,7 @@ public class Wolf : NetworkBehaviour
             player2.NetworkMapPos.OnValueChanged += UpdateWolfState;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = true;
+            readyToMove = false;
         }
     }
 
@@ -283,23 +282,6 @@ public class Wolf : NetworkBehaviour
             wolfState.Value = WolfState.MovingRandom;
     }
 
-    /*
-    private void MoveToMeat(Vector2Int meatPos)
-    {
-        wolfState.Value = WolfState.MovingToMeat;
-
-        Direction direction = MoveTowards(meatPos);
-
-        NetworkPosition.Value = MoveWolfTo(direction, meatPos);
-
-        if (NetworkPosition.Value == meatPos)
-        {
-            RemoveMeatInZone(meatPos);
-            wolfState.Value = WolfState.MovingToDen;
-        }
-    }
-    */
-
     private void MoveToPlayer(Player player)
     {
         wolfState.Value = WolfState.MovingToPlayer;
@@ -353,25 +335,6 @@ public class Wolf : NetworkBehaviour
             _ => NetworkPosition.Value == targetPos ? NetworkPosition.Value : MoveRandomly()
         };
     }
-
-    /*
-    private void RemoveMeatInZone(Vector2Int meatPos)
-    {
-        ZoneData zone = map[meatPos.y, meatPos.x];
-
-        zone.chestInventory.Remove(ItemType.Meat, 1);
-
-        RemoveMeatInZoneClientRpc(meatPos);
-    }
-
-    [Rpc(SendTo.NotServer)]
-    private void RemoveMeatInZoneClientRpc(Vector2Int meatPos)
-    {
-        ZoneData zone = map[meatPos.y, meatPos.x];
-
-        zone.chestInventory.Remove(ItemType.Meat, 1);
-    }
-    */
 
     private Direction MoveTowards(Vector2Int targetPos)
     {
@@ -493,43 +456,7 @@ public class Wolf : NetworkBehaviour
 
         return canMove ? newPos : new Vector2Int(-1, -1);
     }
-
-    /*
-    private Vector2Int CanMoveToMeat()
-    {
-        int closestDistance = int.MaxValue;
-        Vector2Int closestPosition = new(-1, -1);
-
-        for (int y = 0; y < mapHeight; y++)
-        {
-            for (int x = 0; x < mapWidth; x++)
-            {
-                ZoneData zone = map[y, x];
-
-                if (zone.type == ZoneType.Camp ||
-                    zone.type == ZoneType.WolfDen ||
-                    zone.chestInventory.GetAmount(ItemType.Meat) <= 0)
-                    continue;
-
-                int distanceToMeat =
-                    Mathf.Abs(x - NetworkPosition.Value.x) +
-                    Mathf.Abs(y - NetworkPosition.Value.y);
-
-                if (distanceToMeat > distanceToChaseMeat)
-                    continue;
-
-                if (distanceToMeat < closestDistance)
-                {
-                    closestDistance = distanceToMeat;
-                    closestPosition = new Vector2Int(x, y);
-                }
-            }
-        }
-
-        return closestPosition;
-    }
-    */
-
+   
     private Player CanMoveToPlayer()
     {
         Vector2Int player1Pos = player1.NetworkMapPos.Value;
@@ -622,7 +549,6 @@ public enum WolfState
     MovingRandom,
     MovingToPlayer,
     MovingToDen
-    //MovingToMeat,
 }
 
 public enum StealResult

@@ -43,12 +43,15 @@ public class SwampZone : MonoBehaviour
     {
         ItemsStolenResult itemsStolen = StealingItems(maxItemsToSteal, swampPos, player);
 
+        if (itemsStolen.items.Count == 0)
+            return;
+
         player.SetInventory();
 
         StartCoroutine(SwampNetwork.Instance.ShowUIToUserCoroutine(itemsStolen.items.ToArray(), 
             itemsStolen.amount.ToArray(), player));
 
-        SwampNetwork.Instance.TryToGetStolenItems(probToRecoverItem, swampPos, player.OwnerClientId, itemsStolen.items.Count <= 0);
+        SwampNetwork.Instance.TryToGetStolenItems(probToRecoverItem, swampPos, player.OwnerClientId);
     }
 
     private ItemsStolenResult StealingItems(
