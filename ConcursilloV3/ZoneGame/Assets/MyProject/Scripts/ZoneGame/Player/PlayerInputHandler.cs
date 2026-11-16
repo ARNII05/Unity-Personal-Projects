@@ -21,14 +21,6 @@ public class PlayerInputHandler : MonoBehaviour
         if (controls == null)
             return;
 
-        if (controls.Gameplay.Interact.WasPressedThisFrame())
-        {
-            Debug.Log(
-                $"F pulsada | State: {player.State.Value} | " +
-                $"NearbyChest: {player.NearbyObjects.NearbyChest != null}"
-            );
-        }
-
         if (controls.Gameplay.Esc.WasPressedThisFrame() && player.State.Value != PlayerState.PauseMenu)
         {
             player.OpenPauseMenu();
