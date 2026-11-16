@@ -126,8 +126,8 @@ public class ChestUI : MonoBehaviour
         playerInventoryUI.ChangeButtonStatus(true);
         chestInventoryUI.ChangeButtonStatus(true);
         
-        playerInventoryUI.ShowInventory();
-        chestInventoryUI.ShowInventory();
+        playerInventoryUI.ShowInventory(showGrid: true);
+        chestInventoryUI.ShowInventory(showGrid: true);
     }
 
     public void CloseInventory()

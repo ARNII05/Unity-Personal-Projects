@@ -780,6 +780,7 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
+        inventory.Add(ItemType.Log, 7);
     }
 
     [Rpc(SendTo.Owner)]

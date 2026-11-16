@@ -36,7 +36,7 @@ public class MainMenuUI : MonoBehaviour
         if (!controlsUI.PanelIsActive)
             return;
 
-        if (controls.Gameplay.Confirm.WasPressedThisFrame())
+        if (controls.Gameplay.Esc.WasPressedThisFrame())
             controlsUI.ClosePanel();
     }
 

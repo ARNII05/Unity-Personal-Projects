@@ -6,7 +6,6 @@ public class ParallaxBackgroundUI : MonoBehaviour
 {
     [SerializeField] private float globalSpeed = 1f;
 
-    // Velocidades ordenadas de arriba abajo en la jerarquía.
     private readonly float[] speeds =
     {
         0f,        // 10 - Sky

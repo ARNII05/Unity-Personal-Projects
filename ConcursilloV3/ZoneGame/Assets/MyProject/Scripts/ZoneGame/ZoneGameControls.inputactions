@@ -47,16 +47,6 @@
                     "priority": 0
                 },
                 {
-                    "name": "Confirm",
-                    "type": "Button",
-                    "id": "c11fff84-8825-4e16-b110-ecdb16d50a4a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false,
-                    "priority": 0
-                },
-                {
                     "name": "Buffs",
                     "type": "Button",
                     "id": "2aa3526d-ae61-486c-9d34-044bbe3dc606",
@@ -191,7 +181,7 @@
                 {
                     "name": "",
                     "id": "b8b91556-30e3-4259-8773-7ac4539a050c",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -202,7 +192,7 @@
                 {
                     "name": "",
                     "id": "f72de147-6e63-4e86-9083-e960d1854a79",
-                    "path": "<Keyboard>/i",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -223,19 +213,8 @@
                 },
                 {
                     "name": "",
-                    "id": "f0efe1bf-9b60-4dc1-aaac-d9d7b2d7b357",
-                    "path": "<Keyboard>/enter",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Confirm",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5ca85b1f-9faf-4ec0-b510-11cf7faa5457",
-                    "path": "<Keyboard>/b",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

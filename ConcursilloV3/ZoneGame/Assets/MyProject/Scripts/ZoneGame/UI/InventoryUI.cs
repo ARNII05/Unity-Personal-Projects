@@ -14,14 +14,15 @@ public class InventoryUI : MonoBehaviour
 
     private CraftingUI craftingUI;
 
+    private GameObject itemTransferControlsGrid;
+
     private void Awake()
     {
         inventoryUI = gameObject.transform.GetChild(0).gameObject;
         craftingUI = FindFirstObjectByType<CraftingUI>();
-    }
+        itemTransferControlsGrid = inventoryUI.transform.Find("ItemTransferControlsGrid").gameObject;
 
-    private void Start()
-    {
+        itemTransferControlsGrid.SetActive(false);
         ChangeItemBoxStatus(false);
         inventoryUI.SetActive(false);
     }
@@ -171,13 +172,15 @@ public class InventoryUI : MonoBehaviour
         craftingUI.CloseCraftingUI();
     }
 
-    public void ShowInventory()
+    public void ShowInventory(bool showGrid = false)
     {
+        itemTransferControlsGrid.SetActive(showGrid);
         inventoryUI.SetActive(true);
     }
 
     public void HideInventory()
     {
+        itemTransferControlsGrid.SetActive(false);
         inventoryUI.SetActive(false);
     }
 }

@@ -21,11 +21,8 @@ public class PlayerInputHandler : MonoBehaviour
         if (controls == null)
             return;
 
-        if (controls.Gameplay.Esc.WasPressedThisFrame() && player.State.Value != PlayerState.PauseMenu)
-        {
-            player.OpenPauseMenu();
+        if (ClosePanelsWithEsc())
             return;
-        }
 
         switch (player.State.Value)
         {
@@ -57,44 +54,66 @@ public class PlayerInputHandler : MonoBehaviour
                 if (controls.Gameplay.InitialObj.WasPressedThisFrame())
                     RadarUI.Instance.ToggleRadar();
                 break;
+        }
+    }
 
-            case PlayerState.RabbitMapUI:
-                if (controls.Gameplay.Confirm.WasPressedThisFrame())
-                    RabbitDialogue.Instance.CloseMap();
-                break;
+    private bool ClosePanelsWithEsc()
+    {
+        if (!controls.Gameplay.Esc.WasPressedThisFrame())
+            return false;
 
-            case PlayerState.CaughtByWolf:
-                if (controls.Gameplay.Confirm.WasPressedThisFrame())
-                    player.CloseWolfUI();
-                break;
-
-            case PlayerState.Trade:
-                if (controls.Gameplay.Confirm.WasPressedThisFrame())
-                    TradeUI.Instance.CloseUI();
-                break;
-
-            case PlayerState.InSwamp:
-                if (controls.Gameplay.Confirm.WasPressedThisFrame())
-                    SwampNetwork.Instance.CloseUI(player);
-                break;
-
-            case PlayerState.AncientChestUI:
-                if (controls.Gameplay.Confirm.WasPressedThisFrame())
-                    AncientChestUI.Instance.HidePanel();
+        switch (player.State.Value)
+        {
+            case PlayerState.Normal:
+                player.OpenPauseMenu();
                 break;
 
             case PlayerState.PauseMenu:
-                if (controls.Gameplay.Esc.WasPressedThisFrame())
-                    player.ClosePauseMenu();
+                player.ClosePauseMenu();
                 break;
 
-            case PlayerState.SelectingRole:
-            case PlayerState.RabbitDialogueInteraction:
-            case PlayerState.GrandmaDialogueInteraction:
-            case PlayerState.Transitioning:
-            case PlayerState.EndGame:
+            case PlayerState.ChestInventory:
+                player.CloseChest();
+                break;
+
+            case PlayerState.Inventory:
+                player.CloseInventory();
+                break;
+
+            case PlayerState.BuffsUI:
+                player.CloseBuffsUI();
+                break;
+
+            case PlayerState.UsingMap:
+                MapUI.Instance.ToggleMap();
+                break;
+
+            case PlayerState.UsingRadar:
+                RadarUI.Instance.ToggleRadar();
+                break;
+
+            case PlayerState.RabbitMapUI:
+                RabbitDialogue.Instance.CloseMap();
+                break;
+
+            case PlayerState.CaughtByWolf:
+                player.CloseWolfUI();
+                break;
+
+            case PlayerState.Trade:
+                TradeUI.Instance.CloseUI();
+                break;
+
+            case PlayerState.InSwamp:
+                SwampNetwork.Instance.CloseUI(player);
+                break;
+
+            case PlayerState.AncientChestUI:
+                AncientChestUI.Instance.HidePanel();
                 break;
         }
+
+        return true;
     }
 
     private void HandleNormalInput()
