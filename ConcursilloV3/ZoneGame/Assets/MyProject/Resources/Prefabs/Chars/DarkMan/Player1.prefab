@@ -132,6 +132,11 @@ GameObject:
   - component: {fileID: 807781835822540707}
   - component: {fileID: 4046487436973983766}
   - component: {fileID: -5596628586863515449}
+  - component: {fileID: 4132554478687941157}
+  - component: {fileID: 6809950419115256792}
+  - component: {fileID: 2123371148769949302}
+  - component: {fileID: 6296061976147609340}
+  - component: {fileID: 138110894408291308}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Player
@@ -180,7 +185,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &8706166708134200971
 BoxCollider2D:
@@ -269,6 +274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   anim: {fileID: 8078442261575060578}
+  movementSpeedMultiplier: 1
 --- !u!114 &8102183640445281570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,17 +288,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  otherPlayerVisualController: {fileID: 0}
-  CurrentZoneMapPos: {x: 0, y: 0}
-  initialPos: {x: 0, y: 0}
   currentZone: {fileID: 0}
-  nearbyChest: {fileID: 0}
   craftingSystem: {fileID: 0}
-  NetworkZoneEntryPosition:
+  State:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
-    m_InternalValue: {x: 0, y: 0, z: 0}
+    m_InternalValue: 0
   IsWalking:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -401,3 +403,63 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OtherPlayerVisual
   visualPrefab: {fileID: 2750538708692950159, guid: 605a6d82b3019d0498f0df9bc508b83a, type: 3}
+--- !u!114 &4132554478687941157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8706166708134200965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7954a633bddfcec42b11dc5cb33ee08a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerNearbyObjects
+--- !u!114 &6809950419115256792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8706166708134200965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e2eff335d49de04c9d4694d244ad8d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChestTransferSystem
+--- !u!114 &2123371148769949302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8706166708134200965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b19f71d2d6950574abab905586f4e592, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
+--- !u!114 &6296061976147609340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8706166708134200965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d021feec22e1d844a78547e044c6ae2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+--- !u!114 &138110894408291308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8706166708134200965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b552a83faf8f6034e945f1bda739eee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRoleSelectionVisuals

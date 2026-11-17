@@ -236,17 +236,29 @@ public class Player : NetworkBehaviour
         if (!currentZone.TryGetComponent<River>(out var river))
             return;
 
-        bool isBridged = river.Interact(this);
+        InteractResult interactResult = river.Interact(this);
 
-        if (!isBridged)
+        if (interactResult != InteractResult.Success)
+        {
+            ShowMissingLogsClientRpc(
+                CraftingSystem.logsForBridge - inventory.GetAmount(ItemType.Log),
+                inventory.GetAmount(ItemType.Log),
+                interactResult);
             return;
+        }
 
-        if (!inventory.Remove(ItemType.Log, 1))
+        if (!inventory.Remove(ItemType.Log, CraftingSystem.logsForBridge))
             return;
 
         SetInventory();
 
         RiverInteractionClientRpc(pos);
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void ShowMissingLogsClientRpc(int missingLogs, int playerLogs, InteractResult interactResult)
+    {
+        MissingLogsUI.Instance.ShowMissingLogs(missingLogs, playerLogs, interactResult);
     }
 
     [Rpc(SendTo.Everyone)]
@@ -513,8 +525,6 @@ public class Player : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        Debug.Log($"STATE: {previous} -> {current}");
-
         if (CursorManager.Instance != null)
             CursorManager.Instance.UpdateCursor(current);
 
@@ -590,6 +600,8 @@ public class Player : NetworkBehaviour
             AncientChestUI.Instance.InitPlayer(this);
 
             InteractionTooltipUI.Instance.Init(this);
+
+            MissingLogsUI.Instance.Init(this);
 
             if (otherPlayerVisualController != null)
                 otherPlayerVisualController.Initialize(this);
@@ -986,5 +998,6 @@ public enum PlayerState
     ChestInventory,
     PauseMenu,
     AncientChestUI,
+    MissingLogsUI,
     EndGame
 }

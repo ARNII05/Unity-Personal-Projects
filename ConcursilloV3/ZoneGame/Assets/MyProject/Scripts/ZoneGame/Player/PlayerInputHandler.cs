@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Player))]
@@ -114,6 +115,10 @@ public class PlayerInputHandler : MonoBehaviour
 
             case PlayerState.SelectingRole:
                 player.OpenPauseMenu();
+                break;
+            
+            case PlayerState.MissingLogsUI:
+                MissingLogsUI.Instance.Close();
                 break;
         }
 

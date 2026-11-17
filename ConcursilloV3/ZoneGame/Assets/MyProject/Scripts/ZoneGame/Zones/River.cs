@@ -103,15 +103,15 @@ public class River : MonoBehaviour
         riverInteractors[1].SetActive(direction != Direction.South);
     }
 
-    public bool Interact(Player player)
+    public InteractResult Interact(Player player)
     {
         if (isBridged)
-            return false;
+            return InteractResult.IsBridged;
 
         if (player.inventory.GetAmount(ItemType.Log) < CraftingSystem.logsForBridge)
-            return false;
+            return InteractResult.LogsMissing;
 
-        return true;
+        return InteractResult.Success;
     }
 
     private void SwapGameObjectStatus(bool status, GameObject[] objects)
@@ -141,4 +141,11 @@ public enum RiverType
 {
     Horizontal,
     Vertical
+}
+
+public enum InteractResult
+{
+    Success,
+    IsBridged,
+    LogsMissing
 }
