@@ -11,9 +11,9 @@ public class UserName : MonoBehaviour
 
     private TMP_InputField inputField;
 
-    private Button quitAppBtn;
-
     private Coroutine errorCoroutine;
+
+    public bool IsPanelActive => playerNameSetterPanel.activeSelf;
 
     private void Awake()
     {
@@ -23,7 +23,6 @@ public class UserName : MonoBehaviour
         playerNamePanel = transform.Find("PlayerNamePanel").gameObject;
         errorText = playerNameSetterPanel.transform.Find("ErrorText").GetComponent<TMP_Text>();
         inputField = playerNameSetterPanel.GetComponentInChildren<TMP_InputField>();
-        quitAppBtn = playerNameSetterPanel.transform.Find("QuitPanelBtn").GetComponent<Button>();
 
         errorText.gameObject.SetActive(false);
         playerNameSetterPanel.SetActive(!PlayerPrefs.HasKey("PlayerName"));

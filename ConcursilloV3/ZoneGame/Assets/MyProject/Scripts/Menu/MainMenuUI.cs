@@ -2,6 +2,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
+[RequireComponent(typeof(UserName))]
 public class MainMenuUI : MonoBehaviour
 {
     [SerializeField] private GameObject infoPanel, joinGamePanel;
@@ -9,6 +10,8 @@ public class MainMenuUI : MonoBehaviour
     private ZoneGameControls controls;
 
     private ControlsUI controlsUI;
+
+    private UserName userNameUI;
 
     private TMP_Text infoText;
     public static string PendingMessage { get; set; }
@@ -29,15 +32,23 @@ public class MainMenuUI : MonoBehaviour
         controls = new ZoneGameControls();
 
         controls.Gameplay.Enable();
+
+        userNameUI = GetComponent<UserName>();
     }
 
     private void Update()
     {
-        if (!controlsUI.PanelIsActive)
-            return;
-
-        if (controls.Gameplay.Esc.WasPressedThisFrame())
+        if (controlsUI.PanelIsActive && controls.Gameplay.Esc.WasPressedThisFrame())
             controlsUI.ClosePanel();
+
+        else if (userNameUI.IsPanelActive && controls.Gameplay.Esc.WasPressedThisFrame())
+            userNameUI.HidePanel();
+
+        else if (joinGamePanel.activeSelf && controls.Gameplay.Esc.WasPressedThisFrame())
+            CloseJoinGamePanel();
+
+        else if (infoPanel.activeSelf && controls.Gameplay.Esc.WasPressedThisFrame())
+            CloseInfoPanel();
     }
 
     private void Start()

@@ -120,6 +120,10 @@ public class PlayerInputHandler : MonoBehaviour
             case PlayerState.MissingLogsUI:
                 MissingLogsUI.Instance.Close();
                 break;
+
+            case PlayerState.RabbitDialogueInteraction:
+                RabbitDialogue.Instance.CloseDialogue();
+                break;
         }
 
         return true;

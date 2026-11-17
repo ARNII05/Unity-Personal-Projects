@@ -227,7 +227,7 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.LogError(
-            "No se pudo generar un mapa valido despues de 100 intentos."
+            "No se pudo generar un mapa valido después de 100 intentos."
         );
     }
 

@@ -5500,7 +5500,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter para salir
+  m_text: Esc para salir
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 45d5eca9a2960774db127d5a81a8898b, type: 2}
   m_sharedMaterial: {fileID: 1716754388878471839, guid: 45d5eca9a2960774db127d5a81a8898b, type: 2}
@@ -5527,7 +5527,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.5
+  m_fontSize: 27.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7812,7 +7812,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter para salir
+  m_text: Esc para salir
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 45d5eca9a2960774db127d5a81a8898b, type: 2}
   m_sharedMaterial: {fileID: 1716754388878471839, guid: 45d5eca9a2960774db127d5a81a8898b, type: 2}
@@ -7839,7 +7839,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.55
+  m_fontSize: 30.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -11147,7 +11147,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &457125195
 RectTransform:
   m_ObjectHideFlags: 0
@@ -35635,7 +35635,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter para salir
+  m_text: Esc para salir
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5756c41616fab4f479d888c4fbf7c0da, type: 2}
   m_sharedMaterial: {fileID: 7018411794981244631, guid: 5756c41616fab4f479d888c4fbf7c0da, type: 2}
@@ -35662,7 +35662,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.45
+  m_fontSize: 28.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
