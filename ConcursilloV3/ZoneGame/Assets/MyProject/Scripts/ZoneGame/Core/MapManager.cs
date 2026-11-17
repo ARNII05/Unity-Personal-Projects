@@ -683,14 +683,16 @@ public class MapManager : MonoBehaviour
         {
             { ZoneType.RabbitDen, 4 },
             { ZoneType.FlowerField, 9 },
-            { ZoneType.Swamp, 6 }
+            { ZoneType.Swamp, 6 },
+            { ZoneType.Village, 3 }
         };
 
         Dictionary<ZoneType, int> generatedZones = new()
         {
             { ZoneType.RabbitDen, 1 },
             { ZoneType.FlowerField, 1 },
-            { ZoneType.Swamp, 1 }
+            { ZoneType.Swamp, 1 },
+            { ZoneType.Village, 1 }
         };
 
         foreach (ZoneType type in System.Enum.GetValues(typeof(ZoneType)))
@@ -702,7 +704,6 @@ public class MapManager : MonoBehaviour
                 type != ZoneType.WolfDen &&
                 type != ZoneType.Camp &&
                 type != ZoneType.Tavern &&
-                type != ZoneType.Village &&
                 type != ZoneType.Ruins)
             {
                 allowedFillTypes.Add(type);

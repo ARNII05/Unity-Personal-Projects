@@ -997,6 +997,5 @@ public enum PlayerState
     ChestInventory,
     PauseMenu,
     AncientChestUI,
-    MissingLogsUI,
-    EndGame
+    MissingLogsUI
 }

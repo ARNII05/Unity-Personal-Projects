@@ -21,8 +21,7 @@ public class GrandmaUI : NetworkBehaviour
 
     private int bouquetCount = 0;
 
-    private bool initialized = false;
-    private bool uiReady = false;
+    private bool initialized, gameFinished, uiReady;
 
     private void Awake()
     {
@@ -156,6 +155,9 @@ public class GrandmaUI : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ShowEndGamePanelServerRpc(RpcParams rpcParams = default)
     {
+        if (gameFinished)
+            return;
+
         ulong senderId = rpcParams.Receive.SenderClientId;
 
         if (senderId != player.OwnerClientId &&
@@ -177,12 +179,7 @@ public class GrandmaUI : NetworkBehaviour
         if (!CanWin(totalBouquets, CraftingSystem.BouquetsToWin))
             return;
 
-        if (player.State.Value == PlayerState.EndGame ||
-            otherPlayer.State.Value == PlayerState.EndGame)
-            return;
-
-        player.State.Value = PlayerState.EndGame;
-        otherPlayer.State.Value = PlayerState.EndGame;
+        gameFinished = true;
 
         MapManager.Instance.wolf.SetReadyToMove(false);
 

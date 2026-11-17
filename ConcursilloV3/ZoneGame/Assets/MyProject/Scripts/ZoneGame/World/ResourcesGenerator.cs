@@ -74,7 +74,7 @@ public class ResourcesGenerator : MonoBehaviour
 
         const int extraFlowers = 15;
         const int extraBranches = 18;
-        const int totalBranchesToCraft = CraftingSystem.branchesForLog + extraBranches;
+        const int totalBranchesToCraft = CraftingSystem.branchesForLog * 7 + extraBranches;
         const int totalFlowersToCraft = CraftingSystem.flowersForBouquet * CraftingSystem.BouquetsToWin + extraFlowers;
 
         mapHeight = MapManager.mapHeight;
@@ -110,6 +110,8 @@ public class ResourcesGenerator : MonoBehaviour
         DistributeAncientRelics();
 
         FillRuinChest();
+
+        PrintItems();
     }
 
     private void CheckResources()

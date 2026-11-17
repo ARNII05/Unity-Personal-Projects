@@ -56,7 +56,7 @@ public class Wolf : NetworkBehaviour
             player2.NetworkMapPos.OnValueChanged += UpdateWolfState;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = true;
+            readyToMove = false;
         }
     }
 
@@ -132,7 +132,7 @@ public class Wolf : NetworkBehaviour
 
     private void StealFromPlayer(Player player)
     {
-        if (player.State.Value == PlayerState.Transitioning || player.State.Value == PlayerState.EndGame)
+        if (player.State.Value == PlayerState.Transitioning)
             return;
 
         int items = ItemsToSteal(player);
@@ -516,8 +516,7 @@ public class Wolf : NetworkBehaviour
 
     private bool CanPlayerBeCaught(Player player)
     {
-        if (player.State.Value == PlayerState.Transitioning ||
-            player.State.Value == PlayerState.EndGame)
+        if (player.State.Value == PlayerState.Transitioning)
             return false;
 
         int protection = ItemVault.GetBuffValue(

@@ -21,7 +21,6 @@ public class CursorManager : MonoBehaviour
         bool showCursor = state switch
         {
             PlayerState.BuffsUI
-            or PlayerState.EndGame
             or PlayerState.GrandmaDialogueInteraction
             or PlayerState.Inventory
             or PlayerState.RabbitDialogueInteraction

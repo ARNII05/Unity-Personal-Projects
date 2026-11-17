@@ -131,69 +131,80 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void HandleNormalInput()
     {
-        if (controls.Gameplay.InitialObj.WasPressedThisFrame())
-            HandleTabInput();
+        if (controls.Gameplay.InitialObj.WasPressedThisFrame() && HandleTabInput())
+            return;
 
-        if (controls.Gameplay.Interact.WasPressedThisFrame())
-            HandleInteractionInput();
+        if (controls.Gameplay.Interact.WasPressedThisFrame() && HandleInteractionInput())
+            return;
 
         if (controls.Gameplay.Inventory.WasPressedThisFrame())
+        {
             player.OpenInventory();
+            return;
+        }
 
         if (controls.Gameplay.Buffs.WasPressedThisFrame())
+        {
             player.OpenBuffsUI();
+            return;
+        }
     }
 
-    private void HandleTabInput()
+    private bool HandleTabInput()
     {
         if (player.inventory.GetAmount(ItemType.Radar) > 0)
         {
             RadarUI.Instance.ToggleRadar();
-            return;
+            return true;
         }
 
         if (player.inventory.GetAmount(ItemType.Map) > 0)
         {
             MapUI.Instance.ToggleMap();
+            return true;
         }
+
+        return false;
     }
 
-    private void HandleInteractionInput()
+    private bool HandleInteractionInput()
     {
         if (player.NearbyObjects.CurrentRiverInteraction != null)
         {
             player.InteractWithRiver();
-            return;
+            return true;
         }
 
         if (player.NearbyObjects.CurrentBorderZone != null)
         {
             player.ChangeZone();
-            return;
+            return true;
         }
 
         if (player.NearbyObjects.NearbyChest != null)
         {
             player.OpenChest();
-            return;
+            return true;
         }
 
         if (player.NearbyObjects.NearbyGrandma != null)
         {
             player.InteractWithGrandma();
-            return;
+            return true;
         }
 
         if (player.NearbyObjects.Rabbit != null)
         {
             RabbitDialogue.Instance.OpenDialogue();
-            return;
+            return true;
         }
 
         if (player.NearbyObjects.tradeCollider != null)
         {
             player.InteractWithTrade();
-            return;
+            return true;
         }
+
+        return false;
     }
 }
