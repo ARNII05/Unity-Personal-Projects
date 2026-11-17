@@ -517,6 +517,9 @@ public class Player : NetworkBehaviour
 
         if (CursorManager.Instance != null)
             CursorManager.Instance.UpdateCursor(current);
+
+        if (InteractionTooltipUI.Instance != null)
+            InteractionTooltipUI.Instance.UpdateVisibility(current);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -585,6 +588,8 @@ public class Player : NetworkBehaviour
             pauseMenuUI.InitPlayer(this);
 
             AncientChestUI.Instance.InitPlayer(this);
+
+            InteractionTooltipUI.Instance.Init(this);
 
             if (otherPlayerVisualController != null)
                 otherPlayerVisualController.Initialize(this);

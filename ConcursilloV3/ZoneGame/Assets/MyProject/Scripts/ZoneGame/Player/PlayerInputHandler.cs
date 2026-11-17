@@ -111,6 +111,10 @@ public class PlayerInputHandler : MonoBehaviour
             case PlayerState.AncientChestUI:
                 AncientChestUI.Instance.HidePanel();
                 break;
+
+            case PlayerState.SelectingRole:
+                player.OpenPauseMenu();
+                break;
         }
 
         return true;
@@ -174,6 +178,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (player.NearbyObjects.Rabbit != null)
         {
             RabbitDialogue.Instance.OpenDialogue();
+            return;
         }
 
         if (player.NearbyObjects.tradeCollider != null)
