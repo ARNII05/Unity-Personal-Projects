@@ -196,7 +196,7 @@ public class RabbitMapUI : MonoBehaviour
 
         canvasGroup.alpha = canInteract ? 1 : 0.4f;
 
-        if (canInteract) zoneToTp = zonePos;
+        zoneToTp = canInteract ? zonePos : zoneToTp;
     }
 
     private void SetZoneIcons()

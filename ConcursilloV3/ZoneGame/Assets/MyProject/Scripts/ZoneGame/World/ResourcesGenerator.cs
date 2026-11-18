@@ -110,8 +110,6 @@ public class ResourcesGenerator : MonoBehaviour
         DistributeAncientRelics();
 
         FillRuinChest();
-
-        PrintItems();
     }
 
     private void CheckResources()
@@ -292,11 +290,6 @@ public class ResourcesGenerator : MonoBehaviour
                 );
                 return;
             }
-
-            Debug.Log(
-                $"Ancient Relic added to {zone.name} " +
-                $"({position.y + 1}, {position.x + 1})."
-            );
         }
     }
 

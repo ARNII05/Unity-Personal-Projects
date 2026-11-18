@@ -205,6 +205,8 @@ public class MapManager : MonoBehaviour
 
                 ImplementCamps();
 
+                PutRabbinDenInMap();
+
                 GenerateRequiredZones();
 
                 FillOtherZones();
@@ -550,6 +552,69 @@ public class MapManager : MonoBehaviour
         ];
     }
 
+    private void PutRabbinDenInMap()
+    {
+        const int minDistance = 4;
+        const int maxDistributionAttempts = 100;
+        const int maxPositionAttempts = 100;
+
+        int random = Random.Range(0, 100);
+
+        int maxZones = random switch
+        {
+            < 20 => 2, //20%
+            < 60 => 3, //40%
+            _ => 4     //40%
+        };
+
+        List<Vector2Int> rabbitDenPos = new();
+
+        for (int attempt = 0; attempt < maxDistributionAttempts; attempt++)
+        {
+            rabbitDenPos.Clear();
+
+            int positionAttempts = 0;
+
+            while (rabbitDenPos.Count < maxZones &&
+                   positionAttempts < maxPositionAttempts)
+            {
+                positionAttempts++;
+
+                Vector2Int actualPos = new(
+                    Random.Range(0, mapWidth),
+                    Random.Range(0, mapHeight)
+                );
+
+                bool tooClose = false;
+
+                foreach (var position in rabbitDenPos)
+                {
+                    int distance = Mathf.Abs(position.y - actualPos.y)
+                                 + Mathf.Abs(position.x - actualPos.x);
+
+                    if (distance < minDistance)
+                    {
+                        tooClose = true;
+                        break;
+                    }
+                }
+
+                if (tooClose || map[actualPos.y, actualPos.x] != null)
+                    continue;
+
+                rabbitDenPos.Add(actualPos);
+            }
+
+            if (rabbitDenPos.Count == maxZones)
+                break;
+        }
+
+        foreach (var pos in rabbitDenPos)
+            map[pos.y, pos.x] = new RabbitDen();
+
+        Debug.Log($"Se han colocado {rabbitDenPos.Count} madrigueras del conejo de {maxZones} máximas disponibles");
+    }
+
     private void PutWolfDenPos(Vector2Int startPos, Vector2Int grandmaPos)
     {
         const int minDistance = 3;
@@ -644,7 +709,6 @@ public class MapManager : MonoBehaviour
         {
             ZoneType.Village,
             ZoneType.Ruins,
-            ZoneType.RabbitDen,
             ZoneType.FlowerField,
             ZoneType.Swamp
         };
@@ -681,7 +745,6 @@ public class MapManager : MonoBehaviour
 
         Dictionary<ZoneType, int> maxZones = new()
         {
-            { ZoneType.RabbitDen, 4 },
             { ZoneType.FlowerField, 9 },
             { ZoneType.Swamp, 6 },
             { ZoneType.Village, 3 }
@@ -689,7 +752,6 @@ public class MapManager : MonoBehaviour
 
         Dictionary<ZoneType, int> generatedZones = new()
         {
-            { ZoneType.RabbitDen, 1 },
             { ZoneType.FlowerField, 1 },
             { ZoneType.Swamp, 1 },
             { ZoneType.Village, 1 }
@@ -704,7 +766,8 @@ public class MapManager : MonoBehaviour
                 type != ZoneType.WolfDen &&
                 type != ZoneType.Camp &&
                 type != ZoneType.Tavern &&
-                type != ZoneType.Ruins)
+                type != ZoneType.Ruins &&
+                type != ZoneType.RabbitDen)
             {
                 allowedFillTypes.Add(type);
             }
