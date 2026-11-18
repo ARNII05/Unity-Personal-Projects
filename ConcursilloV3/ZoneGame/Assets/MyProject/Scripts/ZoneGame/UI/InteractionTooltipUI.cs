@@ -47,7 +47,7 @@ public class InteractionTooltipUI : MonoBehaviour
         interactionText.text = message;
         hasInteraction = true;
 
-        UpdateVisibility(player.State.Value);
+        UpdateVisibility(player.LocalState);
     }
 
     public void Clear()

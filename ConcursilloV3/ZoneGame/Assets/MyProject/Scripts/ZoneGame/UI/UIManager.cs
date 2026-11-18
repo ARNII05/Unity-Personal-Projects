@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
     {
         this.player = player;
 
-        player.SetNewStateRpc(PlayerState.Transitioning);
+        player.SetState(PlayerState.Transitioning);
 
         onTransitionCovered = onCovered;
 
@@ -66,8 +66,8 @@ public class UIManager : MonoBehaviour
     {
         transitionCanvas.SetActive(false);
 
-        if (player.State.Value == PlayerState.Transitioning)
-            player.SetNewStateRpc(PlayerState.Normal);
+        if (player.LocalState == PlayerState.Transitioning)
+            player.SetState(PlayerState.Normal);
     }
 
     private void OnDestroy()

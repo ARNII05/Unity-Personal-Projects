@@ -42,7 +42,7 @@ public class TradeUI : MonoBehaviour
     {
         tradeDialogue.SetActive(true);
 
-        player.SetNewStateRpc(PlayerState.Trade);
+        player.SetState(PlayerState.Trade);
     }
 
     public void CloseUI()
@@ -51,7 +51,7 @@ public class TradeUI : MonoBehaviour
 
         tradeObjects.ClosePanel();
 
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
     }
 
     public void OpenTradeObjects(int type)

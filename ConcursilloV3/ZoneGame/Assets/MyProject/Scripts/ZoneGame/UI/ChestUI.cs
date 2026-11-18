@@ -121,7 +121,7 @@ public class ChestUI : MonoBehaviour
 
     public void OpenInventory()
     {
-        player.SetNewStateRpc(PlayerState.ChestInventory);
+        player.SetState(PlayerState.ChestInventory);
         
         playerInventoryUI.ChangeButtonStatus(true);
         chestInventoryUI.ChangeButtonStatus(true);
@@ -132,7 +132,7 @@ public class ChestUI : MonoBehaviour
 
     public void CloseInventory()
     {
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
 
         playerInventoryUI.ChangeButtonStatus(false);
         chestInventoryUI.ChangeButtonStatus(false);

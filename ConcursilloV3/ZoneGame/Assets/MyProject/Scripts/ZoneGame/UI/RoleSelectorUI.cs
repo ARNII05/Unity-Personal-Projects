@@ -73,7 +73,7 @@ public class RoleSelectorUI : MonoBehaviour
 
         if (!roleSelectorInitialized)
         {
-            player.SetNewStateRpc(PlayerState.SelectingRole);
+            player.SetState(PlayerState.SelectingRole);
 
             player.Role.OnValueChanged += OnRoleChanged;
 

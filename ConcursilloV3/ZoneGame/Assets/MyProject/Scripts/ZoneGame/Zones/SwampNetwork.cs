@@ -99,16 +99,23 @@ public class SwampNetwork : NetworkBehaviour
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
-    private void ShowItemsStolenToUserClientRpc(ItemType[] items, int[] amount, RpcParams rpcParams = default)
+    private void ShowItemsStolenToUserClientRpc(
+        ItemType[] items,
+        int[] amount,
+        RpcParams rpcParams = default)
     {
+        Player localPlayer = MapManager.Instance.GetLocalPlayer();
+
+        localPlayer.SetLocalState(PlayerState.InSwamp);
+
         swampDialogue.ShowStolenItems(items, amount);
     }
 
     public void CloseUI(Player player)
     {
         swampDialogue.Close();
-        
-        player.SetNewStateRpc(PlayerState.Normal);
+
+        player.SetState(PlayerState.Normal);
     }
 
     private struct LootToRecover

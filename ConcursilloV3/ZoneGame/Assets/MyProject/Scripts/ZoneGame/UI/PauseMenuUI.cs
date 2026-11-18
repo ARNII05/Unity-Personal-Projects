@@ -26,13 +26,13 @@ public class PauseMenuUI : MonoBehaviour
 
     public void ShowPauseMenu()
     {
-        if (player.State.Value is 
+        if (player.LocalState is
             PlayerState.CaughtByWolf or PlayerState.Transitioning)
             return;
 
-        previousPlayerState = player.State.Value;
+        previousPlayerState = player.LocalState;
 
-        player.SetNewStateRpc(PlayerState.PauseMenu);
+        player.SetState(PlayerState.PauseMenu);
         pauseUI.SetActive(true);
     }
 
@@ -44,7 +44,7 @@ public class PauseMenuUI : MonoBehaviour
             return;
         }
 
-        player.SetNewStateRpc(previousPlayerState);
+        player.SetState(previousPlayerState);
         pauseUI.SetActive(false);
     }
 

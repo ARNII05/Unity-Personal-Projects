@@ -82,12 +82,12 @@ public class BuffsUI : MonoBehaviour
     private void OpenBuffsUI()
     {
         buffsUI.SetActive(true);
-        player.SetNewStateRpc(PlayerState.BuffsUI);
+        player.SetState(PlayerState.BuffsUI);
     }
 
     private void CloseBuffsUI()
     {
         buffsUI.SetActive(false);
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
     }
 }

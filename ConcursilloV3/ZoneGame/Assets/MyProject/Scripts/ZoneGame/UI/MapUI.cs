@@ -120,7 +120,7 @@ public class MapUI : MonoBehaviour
 
     private void OnOpen()
     {
-        mapPlayer.SetNewStateRpc(PlayerState.UsingMap);
+        mapPlayer.SetState(PlayerState.UsingMap);
 
         mapUI.SetActive(true);
 
@@ -148,7 +148,7 @@ public class MapUI : MonoBehaviour
 
     private void OnClose()
     {
-		mapPlayer.SetNewStateRpc(PlayerState.Normal);
+		mapPlayer.SetState(PlayerState.Normal);
 
         HideZoneTooltip();
 

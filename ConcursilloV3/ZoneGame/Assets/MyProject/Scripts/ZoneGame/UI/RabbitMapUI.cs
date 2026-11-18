@@ -54,7 +54,7 @@ public class RabbitMapUI : MonoBehaviour
 
     private void OpenMap()
     {
-        player.SetNewStateRpc(PlayerState.RabbitMapUI);
+        player.SetState(PlayerState.RabbitMapUI);
 
         SetZoneInfo(false);
         SetZoneIcons();
@@ -64,7 +64,7 @@ public class RabbitMapUI : MonoBehaviour
 
     private void CloseMap()
     {
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
 
         rabbitUI.SetActive(false);
     }

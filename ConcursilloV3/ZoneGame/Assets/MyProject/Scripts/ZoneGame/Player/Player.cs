@@ -41,6 +41,8 @@ public class Player : NetworkBehaviour
 
     public HashSet<Vector2Int> discoveredZones = new();
 
+    public PlayerState LocalState { get; private set; } = PlayerState.Normal;
+
     public NetworkVariable<PlayerState> State = new(
         PlayerState.Normal,
         NetworkVariableReadPermission.Everyone,
@@ -158,6 +160,33 @@ public class Player : NetworkBehaviour
     public void InteractWithRiver()
     {
         RiverInteractionServerRpc(NetworkMapPos.Value);
+    }
+
+    public void SetState(PlayerState newState)
+    {
+        if (!IsOwner)
+            return;
+
+        LocalState = newState;
+
+        if (CursorManager.Instance != null)
+            CursorManager.Instance.UpdateCursor(newState);
+        
+        if (InteractionTooltipUI.Instance != null)
+            InteractionTooltipUI.Instance.UpdateVisibility(newState);
+
+        SetNewStateRpc(newState);
+    }
+
+    public void SetLocalState(PlayerState newState)
+    {
+        if (!IsOwner)
+            return;
+
+        LocalState = newState;
+
+        CursorManager.Instance?.UpdateCursor(newState);
+        InteractionTooltipUI.Instance?.UpdateVisibility(newState);
     }
 
     [Rpc(SendTo.Server)]
@@ -286,7 +315,7 @@ public class Player : NetworkBehaviour
 
     public void ChangeZone()
     {
-        if (State.Value == PlayerState.Transitioning)
+        if (LocalState == PlayerState.Transitioning)
             return;
 
         Direction direction = nearbyObjects.CurrentBorderZone.direction;
@@ -497,15 +526,13 @@ public class Player : NetworkBehaviour
         NetworkMapPos.OnValueChanged += OnNetworkMapPosChanged;
         IsWalking.OnValueChanged += OnWalkingChanged;
         NetworkDirection.OnValueChanged += OnDirectionChanged;
-        State.OnValueChanged += OnPlayerStateChanged;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         TryInitializeGameplay();
 
         if (IsOwner)
-            if (CursorManager.Instance != null)
-                CursorManager.Instance.UpdateCursor(State.Value);
+            SetLocalState(State.Value);
     }
 
     public override void OnNetworkDespawn()
@@ -515,21 +542,8 @@ public class Player : NetworkBehaviour
         NetworkMapPos.OnValueChanged -= OnNetworkMapPosChanged;
         IsWalking.OnValueChanged -= OnWalkingChanged;
         NetworkDirection.OnValueChanged -= OnDirectionChanged;
-        State.OnValueChanged -= OnPlayerStateChanged;
 
         base.OnNetworkDespawn();
-    }
-
-    private void OnPlayerStateChanged(PlayerState previous, PlayerState current)
-    {
-        if (!IsOwner)
-            return;
-
-        if (CursorManager.Instance != null)
-            CursorManager.Instance.UpdateCursor(current);
-
-        if (InteractionTooltipUI.Instance != null)
-            InteractionTooltipUI.Instance.UpdateVisibility(current);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -817,6 +831,14 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Owner)]
     private void StartGameClientRpc()
     {
+        LocalState = PlayerState.Normal;
+
+        if (CursorManager.Instance != null)
+            CursorManager.Instance.UpdateCursor(LocalState);
+        
+        if (InteractionTooltipUI.Instance != null)
+            InteractionTooltipUI.Instance.UpdateVisibility(LocalState);
+
         RoleSelectorUI.Instance.CloseLobby();
 
         inventoryUI.InitCraftingUI();

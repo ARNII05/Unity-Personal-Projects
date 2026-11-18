@@ -13,7 +13,7 @@ public class CraftingSystem : MonoBehaviour
 
     public const int logsForBridge = 1;
 
-    public const int ancientRelicsToOpenAncientChest = 3;
+    public const int ancientRelicsToOpenAncientChest = 2;
 
     private void Awake()
     {

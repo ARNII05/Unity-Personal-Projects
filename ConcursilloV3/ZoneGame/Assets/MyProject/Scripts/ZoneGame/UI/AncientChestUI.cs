@@ -30,7 +30,7 @@ public class AncientChestUI : MonoBehaviour
 
     public void ShowPanel(int amountOfAncientRelics)
     {
-        player.SetNewStateRpc(PlayerState.AncientChestUI);
+        player.SetState(PlayerState.AncientChestUI);
 
         ancientChestUI.SetActive(true);
 
@@ -50,7 +50,7 @@ public class AncientChestUI : MonoBehaviour
 
     public void HidePanel()
     {
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
 
         ancientChestUI.SetActive(false);
     }

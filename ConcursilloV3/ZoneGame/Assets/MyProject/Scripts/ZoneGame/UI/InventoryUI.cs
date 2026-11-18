@@ -160,14 +160,14 @@ public class InventoryUI : MonoBehaviour
 
     private void ShowInventoryAndCrafting()
     {
-        player.SetNewStateRpc(PlayerState.Inventory);
+        player.SetState(PlayerState.Inventory);
         ShowInventory();
         craftingUI.OpenCraftingUI();
     }
 
     private void HideInventoryAndCrafting()
     {
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
         HideInventory();
         craftingUI.CloseCraftingUI();
     }

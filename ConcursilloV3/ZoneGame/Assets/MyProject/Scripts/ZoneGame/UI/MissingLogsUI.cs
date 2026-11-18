@@ -35,7 +35,7 @@ public class MissingLogsUI : MonoBehaviour
 
     public void ShowMissingLogs(int missingLogs, int playerLogs, InteractResult interactResult)
     {
-        player.SetNewStateRpc(PlayerState.MissingLogsUI);
+        player.SetState(PlayerState.MissingLogsUI);
 
         missingLogsUI.SetActive(true);
         notBridged.SetActive(false);
@@ -64,7 +64,7 @@ public class MissingLogsUI : MonoBehaviour
 
     public void Close()
     {
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
         missingLogsUI.SetActive(false);
     }
 }

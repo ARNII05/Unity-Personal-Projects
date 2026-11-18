@@ -28,13 +28,13 @@ public class WolfUI : MonoBehaviour
 
     private void OpenUI()
     {
-        if (player.State.Value != PlayerState.CaughtByWolf &&
-            player.State.Value != PlayerState.Transitioning)
+        if (player.LocalState != PlayerState.CaughtByWolf &&
+            player.LocalState != PlayerState.Transitioning)
         {
-            previousPlayerState = player.State.Value;
+            previousPlayerState = player.LocalState;
         }
 
-        player.SetNewStateRpc(PlayerState.CaughtByWolf);
+        player.SetState(PlayerState.CaughtByWolf);
         wolfUI.SetActive(true);
     }
 
@@ -42,7 +42,7 @@ public class WolfUI : MonoBehaviour
     {
         PlayerState stateToRestore = previousPlayerState;
 
-        player.SetNewStateRpc(stateToRestore);
+        player.SetState(stateToRestore);
 
         if (stateToRestore == PlayerState.UsingRadar)
             RadarUI.Instance.PlayVideoAndSound();

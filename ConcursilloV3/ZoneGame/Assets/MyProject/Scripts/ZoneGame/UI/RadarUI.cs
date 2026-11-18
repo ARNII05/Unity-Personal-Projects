@@ -79,7 +79,7 @@ public class RadarUI : MonoBehaviour
 
     private void OnOpen()
     {
-        playerWithRadar.SetNewStateRpc(PlayerState.UsingRadar);
+        playerWithRadar.SetState(PlayerState.UsingRadar);
 
         radarUI.SetActive(true);
 
@@ -102,7 +102,7 @@ public class RadarUI : MonoBehaviour
         videoPlayer.Pause();
         radarAudioSource.Pause();
 
-        playerWithRadar.SetNewStateRpc(PlayerState.Normal);
+        playerWithRadar.SetState(PlayerState.Normal);
     }
 
     public void StopVideoAndSound()

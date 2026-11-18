@@ -127,7 +127,7 @@ public class GrandmaUI : NetworkBehaviour
 
     public void OpenPanel()
     {
-        player.SetNewStateRpc(PlayerState.GrandmaDialogueInteraction);
+        player.SetState(PlayerState.GrandmaDialogueInteraction);
 
         grandmaPanel.SetActive(true);
 
@@ -141,7 +141,7 @@ public class GrandmaUI : NetworkBehaviour
 
     public void CloseUI()
     {
-        player.SetNewStateRpc(PlayerState.Normal);
+        player.SetState(PlayerState.Normal);
 
         grandmaPanel.SetActive(false);
     }

@@ -25,7 +25,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (ClosePanelsWithEsc())
             return;
 
-        switch (player.State.Value)
+        switch (player.LocalState)
         {
             case PlayerState.Normal:
                 HandleNormalInput();
@@ -63,7 +63,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (!controls.Gameplay.Esc.WasPressedThisFrame())
             return false;
 
-        switch (player.State.Value)
+        switch (player.LocalState)
         {
             case PlayerState.Normal:
                 player.OpenPauseMenu();
