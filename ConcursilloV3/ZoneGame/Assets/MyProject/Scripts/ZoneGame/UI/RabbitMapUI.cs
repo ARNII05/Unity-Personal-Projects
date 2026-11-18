@@ -15,7 +15,7 @@ public class RabbitMapUI : MonoBehaviour
 
     private Button tpButton;
 
-    private TextMeshProUGUI zoneName, zoneDesc, chestState;
+    private TextMeshProUGUI zoneName, zoneDesc, chestState, rabbitCd;
 
     private ZoneData[,] map;
 
@@ -36,12 +36,53 @@ public class RabbitMapUI : MonoBehaviour
         zoneName = zoneInfo.transform.Find("ZoneName").GetComponent<TextMeshProUGUI>();
         zoneDesc = zoneInfo.transform.Find("ZoneDesc").GetComponent<TextMeshProUGUI>();
         chestState = zoneInfo.transform.Find("ChestState").GetComponent<TextMeshProUGUI>();
+        rabbitCd = zoneInfo.transform.Find("RabbitCd").GetComponent<TextMeshProUGUI>();
         tpButton = zoneInfo.transform.Find("TpButton").GetComponent<Button>();
         lockObj = tpButton.transform.Find("Lock").gameObject;
 
         zoneZellPrefab = Resources.Load<GameObject>("Prefabs/Objects/ZoneZell");
 
         rabbitUI.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (!rabbitUI.activeSelf)
+            return;
+
+        float remaining = player.GetRabbitTeleportRemainingTime();
+
+        rabbitCd.text = remaining > 0
+            ? $"Cooldown: {Mathf.CeilToInt(remaining)}s"
+            : "Teletransporte disponible";
+
+        rabbitCd.color = remaining switch
+        {
+            > 0 => new Color32(255, 0, 0, 255),
+            _ => Color.green
+        };
+
+        if (remaining <= 0)
+            UpdateTpButton();
+    }
+
+    private void UpdateTpButton()
+    {
+        Vector2Int zonePos = GetZonePosition(selectedZone.name);
+
+        Vector2Int playerPos = player.NetworkMapPos.Value;
+
+        InitTpButton(zonePos == playerPos,
+            player.CanRabbitTeleport(),
+            zonePos);
+    }
+
+    public void Init(Player player)
+    {
+        map = MapManager.Instance.map;
+        this.player = player;
+
+        InitMap();
     }
 
     public void ToggleRabbitMap()
@@ -56,6 +97,7 @@ public class RabbitMapUI : MonoBehaviour
     {
         player.SetState(PlayerState.RabbitMapUI);
 
+        UpdateMap();
         SetZoneInfo(false);
         SetZoneIcons();
 
@@ -74,11 +116,16 @@ public class RabbitMapUI : MonoBehaviour
         if (!rabbitUI.activeSelf)
             return;
 
-        SetZoneInfo(false);
+        chestState.text = $"Cofre abierto";
     }
 
     public void TpToZone()
     {
+        if (!player.CanRabbitTeleport())
+            return;
+
+        player.StartRabbitTeleportCooldown();
+
         CloseMap();
         
         UIManager.Instance.PlayZoneTransition(
@@ -99,29 +146,23 @@ public class RabbitMapUI : MonoBehaviour
 
         ZoneData zone = map[zonePos.y, zonePos.x];
 
-        bool zoneDiscovered = player.discoveredZones.Contains(zonePos);
-
         SwapBackGroundColor(zonePos);
         
-        InitTpButton(zoneDiscovered, zonePos == player.NetworkMapPos.Value, 
-            zone.type == ZoneType.HorizontalRiver || zone.type == ZoneType.VerticalRiver,
+        InitTpButton(zonePos == player.NetworkMapPos.Value, 
+            player.CanRabbitTeleport(),
             zonePos);
 
-        zoneImage.sprite = zoneDiscovered ? map[zonePos.y, zonePos.x].icon : questionSprite;
-        
-        zoneName.text = zoneDiscovered switch
-        {
-            true => $"{zone.name} ({zonePos.y + 1}, {zonePos.x + 1})",
-            _ => $"Zona desconocida ({zonePos.y + 1}, {zonePos.x + 1})"
-        };
-        
-        zoneDesc.text = zoneDiscovered ? ZoneVault.GetZoneDescription(zone.type) : "Efecto desconocido";
-        chestState.text = zoneDiscovered ? $"Cofre {(zone.chestOpened ? "abierto" : "sin abrir")}" : "";
+        zoneImage.sprite = map[zonePos.y, zonePos.x].icon;
+
+        zoneName.text = $"{zone.name} ({zonePos.y + 1}, {zonePos.x + 1})";
+
+        zoneDesc.text = ZoneVault.GetZoneDescription(zone.type);
+        chestState.text = $"Cofre {(zone.chestOpened ? "abierto" : "sin abrir")}";
     }
 
-    private void SwapBackGroundColor(Vector2Int pos)
+    private void SwapBackGroundColor(Vector2Int zonePos)
     {
-        GameObject zone = grid.transform.Find($"Zone_{pos.y}_{pos.x}").gameObject;
+        GameObject zone = grid.transform.Find($"Zone_{zonePos.y}_{zonePos.x}").gameObject;
 
         if (selectedZone != null)
         {
@@ -144,9 +185,9 @@ public class RabbitMapUI : MonoBehaviour
         selectedZone = zone;
     }
 
-    private void InitTpButton(bool isDiscovered, bool isSameZoneAsPlayer, bool isRiver, Vector2Int zonePos)
+    private void InitTpButton(bool isSameZoneAsPlayer, bool rabbitAllowsTp, Vector2Int zonePos)
     {
-        bool canInteract = isDiscovered && !isSameZoneAsPlayer && !isRiver;
+        bool canInteract = rabbitAllowsTp && !isSameZoneAsPlayer;
 
         lockObj.SetActive(!canInteract);
         tpButton.interactable = canInteract;
@@ -185,12 +226,15 @@ public class RabbitMapUI : MonoBehaviour
         return player.discoveredZones.TryGetValue(zonePos, out var pos) ? map[pos.y, pos.x].icon : questionSprite;
     }
 
-    public void InitMap(Player player)
+    private void InitMap()
     {
-        map = MapManager.Instance.map;
+        selectedZone = null;
 
         foreach (Transform child in grid.transform)
+        {
+            child.gameObject.SetActive(false);
             Destroy(child.gameObject);
+        }
 
         for (int y = map.GetLength(0) - 1; y >= 0; y--)
         {
@@ -213,9 +257,29 @@ public class RabbitMapUI : MonoBehaviour
                 actualZoneBtn.onClick.AddListener(
                     () => SetZoneInfo(true, actualZone.name)
                 );
+
+                bool isRiver = map[y, x].type == ZoneType.HorizontalRiver ||
+                    map[y, x].type == ZoneType.VerticalRiver;
+
+                actualZone.SetActive(
+                    player.discoveredZones.Contains(new Vector2Int(x, y)) &&
+                    !isRiver);
             }
         }
+    }
 
-        this.player = player;
+    private void UpdateMap()
+    {
+        foreach (Transform child in grid.transform)
+        {
+            Vector2Int zonePos = GetZonePosition(child.name);
+
+            bool isRiver = map[zonePos.y, zonePos.x].type is
+                ZoneType.HorizontalRiver or ZoneType.VerticalRiver;
+
+            child.gameObject.SetActive(
+                player.discoveredZones.Contains(zonePos) && !isRiver
+            );
+        }
     }
 }

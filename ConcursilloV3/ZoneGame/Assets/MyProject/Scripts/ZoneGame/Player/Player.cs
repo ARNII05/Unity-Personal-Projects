@@ -43,6 +43,10 @@ public class Player : NetworkBehaviour
 
     public PlayerState LocalState { get; private set; } = PlayerState.Normal;
 
+    private const float rabbitTeleportCooldown = 60f;
+
+    private float nextRabbitTeleportTime;
+
     public NetworkVariable<PlayerState> State = new(
         PlayerState.Normal,
         NetworkVariableReadPermission.Everyone,
@@ -193,6 +197,21 @@ public class Player : NetworkBehaviour
     public void SetNewStateRpc(PlayerState newState)
     {
         State.Value = newState;
+    }
+
+    public bool CanRabbitTeleport()
+    {
+        return Time.time >= nextRabbitTeleportTime;
+    }
+
+    public float GetRabbitTeleportRemainingTime()
+    {
+        return Mathf.Max(0f, nextRabbitTeleportTime - Time.time);
+    }
+
+    public void StartRabbitTeleportCooldown()
+    {
+        nextRabbitTeleportTime = Time.time + rabbitTeleportCooldown;
     }
 
     public bool AddBuff(ItemType buff)

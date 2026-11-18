@@ -35,7 +35,7 @@ public class RabbitDialogue : MonoBehaviour
     public void Init(Player player)
     {
         this.player = player;
-        rabbitMapUI.InitMap(player);
+        rabbitMapUI.Init(player);
     }
 
     public void OpenDialogue()

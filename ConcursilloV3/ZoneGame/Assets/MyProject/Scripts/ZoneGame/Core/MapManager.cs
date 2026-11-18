@@ -212,7 +212,7 @@ public class MapManager : MonoBehaviour
                 ResourcesGenerator.Instance.Init();
                 
                 //startPos = GoTo(startPos, ItemType.AncientRelic);
-                //startPos = GoTo(ZoneType.Ruins, startPos);
+                //startPos = GoTo(ZoneType.RabbitDen, startPos);
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
@@ -1136,9 +1136,12 @@ public class MapManager : MonoBehaviour
     {
         map[position.y, position.x].chestOpened = true;
 
-        rabbitMapUI.UpdateZoneInfo();
-
         Player actualPlayer = GetLocalPlayer();
+
+        if (map[position.y, position.x].type == ZoneType.RabbitDen && 
+            actualPlayer.NetworkMapPos.Value == position)
+            rabbitMapUI.UpdateZoneInfo();
+
         Player otherPlayer = GetOtherPlayer(actualPlayer);
 
         UpdateChestSprite(actualPlayer, position);
