@@ -37,9 +37,10 @@ public class InteractionTooltipUI : MonoBehaviour
 
     public void UpdateVisibility(PlayerState state)
     {
-        tooltipUI.SetActive(
-            state == PlayerState.Normal && hasInteraction
-        );
+        if (tooltipUI == null)
+            return;
+
+        tooltipUI.SetActive(state == PlayerState.Normal && hasInteraction);
     }
 
     public void Show(string message)

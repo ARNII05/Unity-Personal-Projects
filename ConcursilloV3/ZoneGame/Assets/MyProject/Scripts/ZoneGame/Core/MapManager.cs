@@ -106,6 +106,7 @@ public class MapManager : MonoBehaviour
         if (isServer && ArePlayersRegistered && !IsMapReady)
         {
             MakeRandomMap();
+            //TestMapGeneration();
         }
     }
 
@@ -220,6 +221,7 @@ public class MapManager : MonoBehaviour
                 player2.NetworkMapPos.Value = startPos;
 
                 PrintMap();
+                PrintZoneCount();
                 CreateInitialZones();
                 IsMapReady = true;
                 SendMapToClient();
@@ -231,6 +233,60 @@ public class MapManager : MonoBehaviour
         Debug.LogError(
             "No se pudo generar un mapa valido después de 100 intentos."
         );
+    }
+
+    private void TestMapGeneration()
+    {
+        const int testCount = 20;
+        const int maxAttempts = 100;
+
+        for (int test = 0; test < testCount; test++)
+        {
+            bool success = false;
+
+            for (int attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                map = new ZoneData[mapHeight, mapWidth];
+
+                GenerateStartPositions();
+                InitPlayersInfo();
+                ImplementRiver();
+
+                if (!HasEnoughAccessibleTilesBeforeRiver())
+                    continue;
+
+                PutWolfDenPos(startPos, grandmaPos);
+                ImplementCamps();
+                PutRabbinDenInMap();
+                GenerateRequiredZones();
+                FillOtherZones();
+
+                Debug.Log($"===== MAPA {test + 1} =====");
+                PrintMap(false);
+                PrintZoneCount();
+
+                success = true;
+                break;
+            }
+
+            if (!success)
+                Debug.LogWarning($"No se pudo generar el mapa {test + 1}");
+        }
+    }
+
+    private void PrintZoneCount()
+    {
+        Dictionary<ZoneType, int> zones = new();
+
+        foreach (ZoneData zone in map)
+        {
+            zones[zone.type] = zones.GetValueOrDefault(zone.type) + 1;
+        }
+
+        foreach (var zone in zones)
+        {
+            Debug.Log($"{zone.Key} => {zone.Value}");
+        }
     }
 
     private Vector2Int GoTo(ZoneType zoneType, Vector2Int initialPos)
@@ -997,7 +1053,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private void PrintMap()
+    private void PrintMap(bool showPIconOnMap = true)
     {
         StringBuilder mapLayout =
             new();
@@ -1022,7 +1078,8 @@ public class MapManager : MonoBehaviour
                 if (
                     player1 != null &&
                     currentPos ==
-                    player1.NetworkMapPos.Value)
+                    player1.NetworkMapPos.Value &&
+                    showPIconOnMap)
                 {
                     mapLayout.Append("[P]");
                 }

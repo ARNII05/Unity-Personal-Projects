@@ -189,8 +189,11 @@ public class Player : NetworkBehaviour
 
         LocalState = newState;
 
-        CursorManager.Instance?.UpdateCursor(newState);
-        InteractionTooltipUI.Instance?.UpdateVisibility(newState);
+        if (CursorManager.Instance != null)
+            CursorManager.Instance.UpdateCursor(newState);
+        
+        if (InteractionTooltipUI.Instance != null)
+            InteractionTooltipUI.Instance.UpdateVisibility(newState);
     }
 
     [Rpc(SendTo.Server)]
