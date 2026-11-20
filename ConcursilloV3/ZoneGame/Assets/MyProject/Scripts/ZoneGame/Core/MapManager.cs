@@ -815,15 +815,16 @@ public class MapManager : MonoBehaviour
 
         foreach (ZoneType type in System.Enum.GetValues(typeof(ZoneType)))
         {
-            if (type != ZoneType.MomHouse &&
-                type != ZoneType.GrandmaHouse &&
-                type != ZoneType.VerticalRiver &&
-                type != ZoneType.HorizontalRiver &&
-                type != ZoneType.WolfDen &&
-                type != ZoneType.Camp &&
-                type != ZoneType.Tavern &&
-                type != ZoneType.Ruins &&
-                type != ZoneType.RabbitDen)
+            if (type is not (
+                ZoneType.MomHouse or
+                ZoneType.GrandmaHouse or
+                ZoneType.VerticalRiver or
+                ZoneType.HorizontalRiver or
+                ZoneType.WolfDen or
+                ZoneType.Camp or
+                ZoneType.Tavern or
+                ZoneType.Ruins or
+                ZoneType.RabbitDen))
             {
                 allowedFillTypes.Add(type);
             }
