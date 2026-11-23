@@ -28,6 +28,7 @@ public class Chest : MonoBehaviour
         chestUI.InitPlayer(player);
         chestUI.ToggleInventory();
         player.UpdateOpenedChestServerRpc();
+        AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.ChestOpen));
     }
 
     private void OpenAncientChest(Player player)

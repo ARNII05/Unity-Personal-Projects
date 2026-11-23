@@ -255,7 +255,10 @@ public class Player : NetworkBehaviour
         SetInventory();
 
         if (result == PurchaseResult.Success)
+        {
+            ReproduceSFXSoundClientRpc(SFXType.Trading);
             PurchaseSystem.Instance.UpdateStock(tradeMode, item, actualAmount);
+        }
 
         TradeItemClientRpc(result, item, actualAmount, tradeMode);
     }
@@ -302,6 +305,8 @@ public class Player : NetworkBehaviour
             return;
 
         SetInventory();
+
+        ReproduceSFXSoundClientRpc(SFXType.CraftingLog);
 
         RiverInteractionClientRpc(pos);
     }
@@ -383,6 +388,8 @@ public class Player : NetworkBehaviour
 
         UpdateOpenedChestClientRpc(position);
         OpenChestClientRpc(position);
+
+        ReproduceSFXSoundClientRpc(SFXType.ChestOpen);
     }
 
     [Rpc(SendTo.Owner)]
@@ -493,7 +500,22 @@ public class Player : NetworkBehaviour
         if (!craftingSystem.TryCraftCoreItem())
             return;
 
+        ReproduceSFXSoundClientRpc(Role.Value == PlayerRole.Gardener
+            ? SFXType.CraftingBouquet
+            : SFXType.CraftingLog);
+
         SetInventory();
+    }
+
+    [Rpc(SendTo.Owner)]
+    public void ReproduceSFXSoundClientRpc(SFXType soundType)
+    {
+        AudioClip audioClip = GameSounds.GetSFXSound(soundType);
+
+        if (audioClip != null)
+            AudioManager.Instance.PlaySFXSound(audioClip);
+        else
+            Debug.LogWarning("AudioClip is null");
     }
 
     [Rpc(SendTo.Server)]
@@ -833,6 +855,8 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
+        inventory.Add(ItemType.Log, 7);
+        inventory.Add(ItemType.Coin, 1000);
     }
 
     [Rpc(SendTo.Owner)]

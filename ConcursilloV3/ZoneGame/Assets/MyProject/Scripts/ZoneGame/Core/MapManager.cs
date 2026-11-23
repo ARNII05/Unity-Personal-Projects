@@ -215,7 +215,11 @@ public class MapManager : MonoBehaviour
                 ResourcesGenerator.Instance.Init();
                 
                 //startPos = GoTo(startPos, ItemType.AncientRelic);
-                //startPos = GoTo(ZoneType.RabbitDen, startPos);
+                startPos = GoTo(ZoneType.RabbitDen, startPos);
+
+                UnlockDiscoveredZone(
+                    new ZoneType[] { ZoneType.MomHouse, ZoneType.Village, ZoneType.RabbitDen },
+                    new Player[] { player1, player2 });
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
@@ -233,6 +237,25 @@ public class MapManager : MonoBehaviour
         Debug.LogError(
             "No se pudo generar un mapa valido después de 100 intentos."
         );
+    }
+
+    private void UnlockDiscoveredZone(ZoneType[] zoneTypes, Player[] players)
+    {
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                ZoneData zone = map[y, x];
+
+                if (zoneTypes.Contains(zone.type))
+                {
+                    foreach (var player in players)
+                    {
+                        player.discoveredZones.Add(new Vector2Int(x, y));
+                    }
+                }
+            }
+        }
     }
 
     private void TestMapGeneration()

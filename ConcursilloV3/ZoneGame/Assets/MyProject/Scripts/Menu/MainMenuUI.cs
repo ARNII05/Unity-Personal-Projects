@@ -22,6 +22,8 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
+        GameSounds.InitSounds();
+
         infoPanel.SetActive(false);
         joinGamePanel.SetActive(false);
 

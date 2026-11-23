@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class RabbitMapUI : MonoBehaviour
 {
     private GameObject rabbitUI;
-    [SerializeField] private Sprite questionSprite, UserSprite;
+    [SerializeField] private Sprite questionSprite, userSprite;
     
     private GameObject grid, zoneInfo, zoneZellPrefab, lockObj;
 
@@ -47,18 +47,24 @@ public class RabbitMapUI : MonoBehaviour
 
     private void Update()
     {
-        if (!rabbitUI.activeSelf)
+        if (!rabbitUI.activeSelf || !selectedZone)
             return;
 
         float remaining = player.GetRabbitTeleportRemainingTime();
 
-        rabbitCd.text = remaining > 0
-            ? $"Cooldown: {Mathf.CeilToInt(remaining)}s"
-            : "Teletransporte disponible";
+        bool IsInSameZone = player.NetworkMapPos.Value == GetZonePosition(selectedZone.name);
 
-        rabbitCd.color = remaining switch
+        rabbitCd.text = (IsInSameZone, remaining > 0) switch
         {
-            > 0 => new Color32(255, 0, 0, 255),
+            (true, _) => "Teletransporte no disponible",
+            (false, true) => $"Cooldown: {Mathf.CeilToInt(remaining)}s",
+            _ => "Teletransporte disponible"
+        };
+
+        rabbitCd.color = (IsInSameZone, remaining > 0) switch
+        {
+            (true, _) => new Color32(255, 0, 0, 255),
+            (false, true) => new Color32(255, 0, 0, 255),
             _ => Color.green
         };
 
@@ -127,7 +133,9 @@ public class RabbitMapUI : MonoBehaviour
         player.StartRabbitTeleportCooldown();
 
         CloseMap();
-        
+
+        player.ReproduceSFXSoundClientRpc(SFXType.Teleport);
+
         UIManager.Instance.PlayZoneTransition(
             () =>
             {
@@ -204,7 +212,7 @@ public class RabbitMapUI : MonoBehaviour
         foreach (Transform child in grid.transform)
         {
             Vector2Int zonePos = GetZonePosition(child.name);
-            child.transform.Find("ZoneIcon").GetComponent<Image>().sprite = GetZoneIcon(zonePos);
+            child.Find("ZoneIcon").GetComponent<Image>().sprite = GetZoneIcon(zonePos);
         }
     }
 
@@ -220,10 +228,7 @@ public class RabbitMapUI : MonoBehaviour
 
     private Sprite GetZoneIcon(Vector2Int zonePos)
     {
-        if (player.NetworkMapPos.Value == zonePos)
-            return UserSprite;
-
-        return player.discoveredZones.TryGetValue(zonePos, out var pos) ? map[pos.y, pos.x].icon : questionSprite;
+        return player.NetworkMapPos.Value == zonePos ? userSprite : map[zonePos.y, zonePos.x].icon;
     }
 
     private void InitMap()
@@ -281,5 +286,12 @@ public class RabbitMapUI : MonoBehaviour
                 player.discoveredZones.Contains(zonePos) && !isRiver
             );
         }
+    }
+
+    private enum RabbitCdType
+    {
+        TpNotAvailable,
+        IsInSameZone,
+        TpAvailable
     }
 }

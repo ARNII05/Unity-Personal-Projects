@@ -47,26 +47,20 @@ public class CraftingUI : MonoBehaviour
             boxItemBtn.onClick.AddListener(player.craftingSystem.CraftLog);
         }
         SetUI();
-        UpdateCanvasGroup();
+        UpdateCanvasGroup(player.Role.Value == PlayerRole.Gardener
+            ? player.craftingSystem.CanCraftBouquet()
+            : player.craftingSystem.CanCraftLog());
     }
 
     private void UpdateUI()
     {
-        ItemType itemType = player.Role.Value == PlayerRole.Gardener ? ItemType.Flower : ItemType.Branch;
-
-        int itemAmount = player.inventory.GetAmount(itemType);
-
-        int maxItemAmount = player.Role.Value == PlayerRole.Gardener
-            ? CraftingSystem.flowersForBouquet
-            : CraftingSystem.branchesForLog;
+        UpdateItemTextCount(player.Role.Value);
 
         bool canBuildItem = player.Role.Value == PlayerRole.Gardener 
             ? player.craftingSystem.CanCraftBouquet() 
             : player.craftingSystem.CanCraftLog();
 
         UpdateCanvasGroup(canBuildItem);
-
-        itemTextCount.text = $"{itemAmount}/{maxItemAmount}";
     }
 
     private void UpdateCanvasGroup(bool haveNecessaryItems = false)
@@ -81,10 +75,8 @@ public class CraftingUI : MonoBehaviour
     private void SetUI()
     {
         PlayerRole playerRole = player.Role.Value;
-        
-		int maxItemAmount = player.Role.Value == PlayerRole.Gardener
-            ? CraftingSystem.flowersForBouquet
-			: CraftingSystem.branchesForLog;
+
+        UpdateItemTextCount(playerRole);
 
         childItemImg.sprite = (playerRole) switch
         {
@@ -97,8 +89,20 @@ public class CraftingUI : MonoBehaviour
             (PlayerRole.Gardener) => Resources.Load<Sprite>(itemsBasePath + "Bouquet"),
             _ => Resources.Load<Sprite>(itemsBasePath + "Log"),
         };
+    }
 
-        itemTextCount.text = $"0/{maxItemAmount}";
+    private void UpdateItemTextCount(PlayerRole playerRole)
+    {
+        ItemType itemType = playerRole == PlayerRole.Gardener ? ItemType.Flower : ItemType.Branch;
+
+        int maxItemAmount = playerRole == PlayerRole.Gardener
+            ? CraftingSystem.flowersForBouquet
+            : CraftingSystem.branchesForLog;
+
+        int itemAmount = player.inventory.GetAmount(itemType);
+
+
+        itemTextCount.text = $"{itemAmount}/{maxItemAmount}";
     }
 
     public void OpenCraftingUI()
