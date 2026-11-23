@@ -1,14 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class ItemVault
 {
     private const string baseSpritePath = "Prefabs/ItemsImg/";
-    
+
+    private static readonly Dictionary<ItemType, Sprite> sprites = new();
+
     public static Sprite GetItemSprite(ItemType itemType)
     {
-        return Resources.Load<Sprite>(baseSpritePath + itemType.ToString());
+        if (sprites.TryGetValue(itemType, out Sprite sprite))
+            return sprite;
+
+        sprite = Resources.Load<Sprite>($"{baseSpritePath}{itemType}");
+
+        if (sprite == null)
+        {
+            Debug.LogWarning($"No se ha encontrado el sprite: {itemType}");
+            return null;
+        }
+
+        sprites.Add(itemType, sprite);
+
+        return sprite;
     }
 
     public static string GetItemName(ItemType itemType)

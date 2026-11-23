@@ -855,8 +855,6 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
-        inventory.Add(ItemType.Log, 7);
-        inventory.Add(ItemType.Coin, 1000);
     }
 
     [Rpc(SendTo.Owner)]

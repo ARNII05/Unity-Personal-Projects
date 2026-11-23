@@ -1,37 +1,28 @@
-
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameSounds
 {
-    private static AudioClip CraftingLog, CraftingBouquet, ChestOpen, Trading, Teleport;
+    private const string baseSoundPath = "Sounds/ZoneGame/";
 
-    private static bool soundsInitialized = false;
-
-    public static void InitSounds()
-    {
-        if (soundsInitialized)
-            return;
-
-        soundsInitialized = true;
-
-        CraftingLog = Resources.Load<AudioClip>("Sounds/ZoneGame/CraftingLog");
-        CraftingBouquet = Resources.Load<AudioClip>("Sounds/ZoneGame/CraftingBouquet");
-        ChestOpen = Resources.Load<AudioClip>("Sounds/ZoneGame/ChestOpen");
-        Trading = Resources.Load<AudioClip>("Sounds/ZoneGame/Trading");
-        Teleport = Resources.Load<AudioClip>("Sounds/ZoneGame/Teleport");
-    }
+    private static readonly Dictionary<SFXType, AudioClip> sounds = new();
 
     public static AudioClip GetSFXSound(SFXType soundType)
     {
-        return soundType switch
+        if (sounds.TryGetValue(soundType, out AudioClip audioClip))
+            return audioClip;
+
+        audioClip = Resources.Load<AudioClip>($"{baseSoundPath}{soundType}");
+
+        if (audioClip == null)
         {
-            SFXType.CraftingBouquet => CraftingBouquet,
-            SFXType.CraftingLog => CraftingLog,
-            SFXType.ChestOpen => ChestOpen,
-            SFXType.Trading => Trading,
-            SFXType.Teleport => Teleport,
-            _ => null
-        };
+            Debug.LogWarning($"No se ha encontrado el sonido: {soundType}");
+            return null;
+        }
+
+        sounds.Add(soundType, audioClip);
+
+        return audioClip;
     }
 }
 

@@ -214,12 +214,13 @@ public class MapManager : MonoBehaviour
 
                 ResourcesGenerator.Instance.Init();
                 
-                //startPos = GoTo(startPos, ItemType.AncientRelic);
+                /*
                 startPos = GoTo(ZoneType.RabbitDen, startPos);
 
                 UnlockDiscoveredZone(
                     new ZoneType[] { ZoneType.MomHouse, ZoneType.Village, ZoneType.RabbitDen },
                     new Player[] { player1, player2 });
+                */
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
