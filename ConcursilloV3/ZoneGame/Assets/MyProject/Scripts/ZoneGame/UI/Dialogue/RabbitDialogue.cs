@@ -24,7 +24,6 @@ public class RabbitDialogue : MonoBehaviour
 
         rabbitDialogue = transform.Find("RabbitDialogue").gameObject;
         rabbitMapUI = GameObject.Find("RabbitPanel").GetComponent<RabbitMapUI>();
-        MapManager.Instance.InitRabbitMapUI(rabbitMapUI);
     }
 
     void Start()

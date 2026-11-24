@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class MapManager : MonoBehaviour
 {
@@ -45,7 +47,7 @@ public class MapManager : MonoBehaviour
 
     public Wolf wolf;
 
-    private RabbitMapUI rabbitMapUI;
+    public event Action<Vector2Int> OnChestOpened;
 
     public static MapManager Instance
     {
@@ -72,11 +74,6 @@ public class MapManager : MonoBehaviour
         }
 
         CleanMap();
-    }
-
-    public void InitRabbitMapUI(RabbitMapUI rabbitMapUI)
-    {
-        this.rabbitMapUI = rabbitMapUI;
     }
 
     public void RegisterPlayer(Player player, bool isServer)
@@ -1281,14 +1278,12 @@ public class MapManager : MonoBehaviour
 
         Player actualPlayer = GetLocalPlayer();
 
-        if (map[position.y, position.x].type == ZoneType.RabbitDen && 
-            actualPlayer.NetworkMapPos.Value == position)
-            rabbitMapUI.UpdateZoneInfo();
-
         Player otherPlayer = GetOtherPlayer(actualPlayer);
 
         UpdateChestSprite(actualPlayer, position);
         UpdateChestSprite(otherPlayer, position);
+
+        OnChestOpened?.Invoke(position);
     }
 
     private void UpdateChestSprite(Player player, Vector2Int position)

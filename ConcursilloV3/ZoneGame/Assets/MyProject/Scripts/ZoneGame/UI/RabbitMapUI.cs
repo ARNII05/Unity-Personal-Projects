@@ -88,6 +88,8 @@ public class RabbitMapUI : MonoBehaviour
         map = MapManager.Instance.map;
         this.player = player;
 
+        MapManager.Instance.OnChestOpened += UpdateZoneInfo;
+
         InitMap();
     }
 
@@ -117,9 +119,14 @@ public class RabbitMapUI : MonoBehaviour
         rabbitUI.SetActive(false);
     }
 
-    public void UpdateZoneInfo()
+    public void UpdateZoneInfo(Vector2Int position)
     {
-        if (!rabbitUI.activeSelf)
+        if (!rabbitUI.activeSelf || !selectedZone)
+            return;
+
+        Vector2Int zonePos = GetZonePosition(selectedZone.name);
+
+        if (zonePos != position)
             return;
 
         chestState.text = $"Cofre abierto";
@@ -293,5 +300,11 @@ public class RabbitMapUI : MonoBehaviour
         TpNotAvailable,
         IsInSameZone,
         TpAvailable
+    }
+
+    private void OnDisable()
+    {
+        if (MapManager.Instance != null)
+            MapManager.Instance.OnChestOpened -= UpdateZoneInfo;
     }
 }
