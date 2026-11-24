@@ -25,7 +25,14 @@ public class PlayerNearbyObjects : MonoBehaviour
         switch (other.tag)
         {
             case "Border":
+                if (!player.IsOwner)
+                    break;
+
                 CurrentBorderZone = other.GetComponent<BorderZone>();
+
+                if (player.LocalState == PlayerState.Normal)
+                    player.ChangeZone();
+
                 break;
 
             case "Chest":
@@ -108,9 +115,6 @@ public class PlayerNearbyObjects : MonoBehaviour
     {
         if (CurrentRiverInteraction != null)
             return "E - Construir puente";
-
-        if (CurrentBorderZone != null)
-            return "E - Cambiar de zona";
 
         if (NearbyChest != null)
             return "E - Abrir cofre";

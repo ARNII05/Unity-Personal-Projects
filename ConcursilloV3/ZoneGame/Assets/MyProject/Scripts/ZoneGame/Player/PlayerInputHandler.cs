@@ -175,12 +175,6 @@ public class PlayerInputHandler : MonoBehaviour
             return true;
         }
 
-        if (player.NearbyObjects.CurrentBorderZone != null)
-        {
-            player.ChangeZone();
-            return true;
-        }
-
         if (player.NearbyObjects.NearbyChest != null)
         {
             player.OpenChest();

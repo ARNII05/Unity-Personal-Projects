@@ -661,6 +661,8 @@ public class Player : NetworkBehaviour
 
             MissingLogsUI.Instance.Init(this);
 
+            ProgressNotificationUI.Instance.Init(this);
+
             if (otherPlayerVisualController != null)
                 otherPlayerVisualController.Initialize(this);
         }
