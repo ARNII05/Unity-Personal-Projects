@@ -221,8 +221,8 @@ public class ResourcesGenerator : MonoBehaviour
 
             foreach (var item in zone.chestInventory.items)
             {
-                if (item.Key == itemType)
-                    itemCount += item.Value;
+                if (item.Item == itemType)
+                    itemCount += item.Amount;
             }
         }
 
@@ -232,8 +232,8 @@ public class ResourcesGenerator : MonoBehaviour
         {
             foreach (var item in player.inventory.items)
             {
-                if (item.Key == itemType)
-                    itemCount += item.Value;
+                if (item.Item == itemType)
+                    itemCount += item.Amount;
             }
         }
 

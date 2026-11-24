@@ -387,8 +387,8 @@ public class MapManager : MonoBehaviour
                 foreach (var item in
                          zone.chestInventory.items)
                 {
-                    chestItemTypesList.Add(item.Key);
-                    chestAmountsList.Add(item.Value);
+                    chestItemTypesList.Add(item.Item);
+                    chestAmountsList.Add(item.Amount);
                 }
 
                 index++;

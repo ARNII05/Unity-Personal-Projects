@@ -828,9 +828,8 @@ public class Player : NetworkBehaviour
         GiveStartingItemsOnServer();
         otherPlayer.GiveStartingItemsOnServer();
 
-        otherPlayer.GiveStartingItemClientRpc(otherPlayer.inventory.items.Keys.ToArray(), 
-            otherPlayer.inventory.items.Values.ToArray(),
-             otherPlayer.inventory.inventoryOrder.ToArray());
+        otherPlayer.GiveStartingItemClientRpc(otherPlayer.inventory.items.Select(item => item.Item).ToArray(),
+            otherPlayer.inventory.items.Select(item => item.Amount).ToArray());
 
         StartGameClientRpc();
         otherPlayer.StartGameClientRpc();
@@ -860,9 +859,9 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Owner)]
-    private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts, ItemType[] order)
+    private void GiveStartingItemClientRpc(ItemType[] itemTypes, int[] amounts)
     {
-        inventory.SetContents(itemTypes, amounts, order);
+        inventory.SetContents(itemTypes, amounts);
 
         if (Role.Value == PlayerRole.Gardener)
         {
@@ -901,21 +900,19 @@ public class Player : NetworkBehaviour
         if (!IsServer || OwnerClientId == NetworkManager.ServerClientId)
             return;
 
-        ItemType[] items = inventory.items.Keys.ToArray();
-        int[] amounts = inventory.items.Values.ToArray();
-        ItemType[] order = inventory.inventoryOrder.ToArray();
+        ItemType[] items = inventory.items.Select(item => item.Item).ToArray();
+        int[] amounts = inventory.items.Select(item => item.Amount).ToArray();
 
-        SetInventoryClientRpc(items, amounts, order, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
+        SetInventoryClientRpc(items, amounts, RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
     private void SetInventoryClientRpc(
         ItemType[] items,
         int[] amounts,
-        ItemType[] order,
         RpcParams rpcParams = default)
     {
-        inventory.SetContents(items, amounts, order);
+        inventory.SetContents(items, amounts);
     }
 
     [Rpc(SendTo.Server)]

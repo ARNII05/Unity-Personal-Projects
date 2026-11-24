@@ -110,12 +110,12 @@ public class InventoryUI : MonoBehaviour
 
         int i = 0;
 
-        foreach (var item in inventory.inventoryOrder)
+        foreach (var item in inventory.items)
         {
             if (i >= Inventory.maxCapacity)
                 break;
             
-            UpdateItemBox(i, item, inventory.items[item]);
+            UpdateItemBox(i, item.Item, item.Amount);
             i++;
         }
     }

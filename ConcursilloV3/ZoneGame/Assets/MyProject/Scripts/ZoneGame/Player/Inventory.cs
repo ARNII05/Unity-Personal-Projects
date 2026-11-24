@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class Inventory
 {
-    public Dictionary<ItemType, int> items = new();
-    public List<ItemType> inventoryOrder = new();
+    public List<InventorySlot> items = new();
     public readonly HashSet<ItemType> activeBuffs = new();
     public event Action OnInventoryChanged;
     public const int maxCapacity = 5;
@@ -15,15 +14,12 @@ public class Inventory
     public const int maxBuffs = 6;
 
 
-    public void SetContents(ItemType[] itemTypes, int[] amounts, ItemType[] order)
+    public void SetContents(ItemType[] itemTypes, int[] amounts)
     {
         items.Clear();
-        inventoryOrder.Clear();
 
         for (int i = 0; i < itemTypes.Length; i++)
-            items[itemTypes[i]] = amounts[i];
-
-        inventoryOrder.AddRange(order);
+            items.Add(new InventorySlot(itemTypes[i], amounts[i]));
 
         OnInventoryChanged?.Invoke();
     }
@@ -33,18 +29,21 @@ public class Inventory
         if (amount <= 0 || itemType == ItemType.None)
             return false;
 
-        if (items.Count >= maxCapacity && items.GetValueOrDefault(itemType) == 0)
-            return false;
+        InventorySlot slot = items.Find(x => x.Item == itemType);
 
-        bool isNewItem = !items.ContainsKey(itemType);
+        if (slot != null)
+        {
+            slot.Amount += amount;
+        }
+        else
+        {
+            if (items.Count >= maxCapacity)
+                return false;
 
-        items[itemType] = items.GetValueOrDefault(itemType) + amount;
-
-        if (isNewItem)
-            inventoryOrder.Add(itemType);
+            items.Add(new InventorySlot(itemType, amount));
+        }
 
         OnInventoryChanged?.Invoke();
-
         return true;
     }
 
@@ -66,7 +65,7 @@ public class Inventory
 
     public bool HasSpaceFor(ItemType itemType)
     {
-        return items.ContainsKey(itemType) || items.Count < maxCapacity || ItemVault.IsBuff(itemType);
+        return items.Exists(x => x.Item == itemType) || items.Count < maxCapacity || ItemVault.IsBuff(itemType);
     }
 
     public ItemType TryToGet(ItemType itemType, bool isBuff)
@@ -74,7 +73,7 @@ public class Inventory
         if (isBuff && activeBuffs.Contains(itemType))
             return itemType;
 
-        return items.ContainsKey(itemType) ? itemType : ItemType.None;
+        return items.Exists(x => x.Item == itemType) ? itemType : ItemType.None;
     }
 
     public bool HasSpaceAfterRemoving(
@@ -82,7 +81,7 @@ public class Inventory
         int amountToRemove,
         ItemType itemToAdd)
     {
-        bool alreadyHasItem = items.ContainsKey(itemToAdd);
+        bool alreadyHasItem = items.Exists(x => x.Item == itemToAdd);
 
         if (alreadyHasItem)
             return true;
@@ -96,15 +95,17 @@ public class Inventory
 
     public int GetAmount(ItemType itemType)
     {
-        return items.TryGetValue(itemType, out int amount) ? amount : 0;
+        InventorySlot slot = items.Find(x => x.Item == itemType);
+
+        return slot != null ? slot.Amount : 0;
     }
 
     public ItemType GetItemAt(int index)
     {
-        if (index < 0 || index >= inventoryOrder.Count)
+        if (index < 0 || index >= items.Count)
             return ItemType.None;
 
-        return inventoryOrder[index];
+        return items[index].Item;
     }
 
     public ItemType GetBuffAt(int index)
@@ -126,20 +127,32 @@ public class Inventory
 
     public bool Remove(ItemType itemType, int amount)
     {
-        if (!items.ContainsKey(itemType) || amount <= 0
-            || GetAmount(itemType) < amount)
-        {
+        if (amount <= 0)
             return false;
-        }
 
-        items[itemType] -= amount;
-        if (items[itemType] <= 0)
-        {
-            items.Remove(itemType);
-            inventoryOrder.Remove(itemType);
-        }
+        InventorySlot slot = items.Find(x => x.Item == itemType);
+
+        if (slot == null || slot.Amount < amount)
+            return false;
+
+        slot.Amount -= amount;
+
+        if (slot.Amount <= 0)
+            items.Remove(slot);
 
         OnInventoryChanged?.Invoke();
         return true;
+    }
+}
+
+public class InventorySlot
+{
+    public ItemType Item { get; }
+    public int Amount { get; set; }
+
+    public InventorySlot(ItemType item, int amount)
+    {
+        Item = item;
+        Amount = amount;
     }
 }
