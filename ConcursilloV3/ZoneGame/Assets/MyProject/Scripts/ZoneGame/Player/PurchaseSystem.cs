@@ -166,6 +166,11 @@ public class PurchaseSystem : MonoBehaviour
             ? amount
             : 0;
     }
+
+    public void ResetStocks()
+    {
+        villageStocks.Clear();
+    }
 }
 public class VillageStock
 {

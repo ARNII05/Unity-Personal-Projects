@@ -43,23 +43,37 @@ public class InteractionTooltipUI : MonoBehaviour
         tooltipUI.SetActive(state == PlayerState.Normal && hasInteraction);
     }
 
+    public void Clear()
+    {
+        hasInteraction = false;
+
+        if (interactionText != null)
+            interactionText.text = string.Empty;
+
+        if (tooltipUI != null)
+            tooltipUI.SetActive(false);
+    }
+
+    public void Hide()
+    {
+        if (tooltipUI != null)
+            tooltipUI.SetActive(false);
+    }
+
     public void Show(string message)
     {
+        if (interactionText == null || tooltipUI == null || player == null)
+            return;
+
         interactionText.text = message;
         hasInteraction = true;
 
         UpdateVisibility(player.LocalState);
     }
 
-    public void Clear()
+    private void OnDestroy()
     {
-        interactionText.text = string.Empty;
-        tooltipUI.SetActive(false);
-        hasInteraction = false;
-    }
-
-    public void Hide()
-    {
-        tooltipUI.SetActive(false);
+        if (Instance == this)
+            Instance = null;
     }
 }

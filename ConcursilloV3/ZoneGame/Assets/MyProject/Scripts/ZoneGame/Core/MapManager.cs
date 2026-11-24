@@ -12,6 +12,13 @@ using Random = UnityEngine.Random;
 public class MapManager : MonoBehaviour
 {
     public static MapManager instance { get; private set; }
+
+    [Header("Map Seed")]
+    [SerializeField] private bool useFixedSeed = false;
+    [SerializeField] private int fixedSeed = 12345;
+
+    public int MapSeed { get; private set; }
+    
     public bool IsMapReady { get; private set; } = false;
 
     private readonly HashSet<ulong> readyPlayers = new();
@@ -183,13 +190,15 @@ public class MapManager : MonoBehaviour
         return null;
     }
 
-    public void MakeRandomMap()
+    public void GenerateMap()
     {
         const int maxAttempts = 100;
 
         for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
             map = new ZoneData[mapHeight, mapWidth];
+
+            PurchaseSystem.Instance.ResetStocks();
 
             GenerateStartPositions();
 
@@ -211,12 +220,14 @@ public class MapManager : MonoBehaviour
 
                 ResourcesGenerator.Instance.Init();
                 
+                /*
                 startPos = GoTo(ZoneType.Village, startPos);
 
                 
                 UnlockDiscoveredZone(
                     new ZoneType[] { ZoneType.MomHouse, ZoneType.Village, ZoneType.RabbitDen },
                     new Player[] { player1, player2 });
+                */
   
 
                 player1.NetworkMapPos.Value = startPos;
@@ -235,6 +246,28 @@ public class MapManager : MonoBehaviour
         Debug.LogError(
             "No se pudo generar un mapa valido después de 100 intentos."
         );
+    }
+
+    public void MakeRandomMap()
+    {
+        MapSeed = useFixedSeed
+            ? fixedSeed
+            : Random.Range(0, int.MaxValue);
+
+        Random.State previousState = Random.state;
+
+        Random.InitState(MapSeed);
+
+        Debug.Log($"Map Seed: {MapSeed}");
+
+        try
+        {
+            GenerateMap();
+        }
+        finally
+        {
+            Random.state = previousState;
+        }
     }
 
     private void UnlockDiscoveredZone(ZoneType[] zoneTypes, Player[] players)

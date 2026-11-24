@@ -80,7 +80,6 @@ public class TradeObjects : MonoBehaviour
         selectedItem = ItemType.None;
         
         tradeUI.SetActive(false);
-        tradeUI.SetActive(false);
     }
 
     public void SelectItem(int index)

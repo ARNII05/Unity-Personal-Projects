@@ -100,7 +100,8 @@ public class PlayerNearbyObjects : MonoBehaviour
 
     public void UpdateInteractionTooltip()
     {
-        if (!player.IsOwner)
+        if (player == null || !player.IsOwner ||
+            InteractionTooltipUI.Instance == null)
             return;
 
         string message = GetInteractionMessage();
