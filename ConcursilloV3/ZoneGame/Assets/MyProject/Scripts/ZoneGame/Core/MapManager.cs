@@ -359,15 +359,6 @@ public class MapManager : MonoBehaviour
         map[grandmaPos.y, grandmaPos.x] = new GrandmaHouse();
     }
 
-    /*
-    private IEnumerator SendMapNextFrame()
-    {
-        yield return null;
-
-        SendMapToClient();
-    }
-    */
-
     private void SendMapToClient()
     {
         ZoneType[] zoneTypes =
@@ -665,21 +656,21 @@ public class MapManager : MonoBehaviour
                     Random.Range(0, mapHeight)
                 );
 
-                bool tooClose = false;
-
-                foreach (var position in rabbitDenPos)
+                bool IsTooClose(Vector2Int actualPos)
                 {
-                    int distance = Mathf.Abs(position.y - actualPos.y)
-                                 + Mathf.Abs(position.x - actualPos.x);
-
-                    if (distance < minDistance)
+                    foreach (Vector2Int position in rabbitDenPos)
                     {
-                        tooClose = true;
-                        break;
+                        int distance = Mathf.Abs(position.y - actualPos.y)
+                                     + Mathf.Abs(position.x - actualPos.x);
+
+                        if (distance < minDistance)
+                            return true;
                     }
+
+                    return false;
                 }
 
-                if (tooClose || map[actualPos.y, actualPos.x] != null)
+                if (IsTooClose(actualPos) || map[actualPos.y, actualPos.x] != null)
                     continue;
 
                 rabbitDenPos.Add(actualPos);
@@ -1039,20 +1030,27 @@ public class MapManager : MonoBehaviour
             {
                 Vector2Int next = current + direction;
 
-                if (next.x < 0 || next.x >= mapWidth ||
-                    next.y < 0 || next.y >= mapHeight)
-                    continue;
-
-                if (visited[next.y, next.x])
-                    continue;
-
-                if (map[next.y, next.x] != null &&
-                    (map[next.y, next.x].type == ZoneType.VerticalRiver || map[next.y, next.x].type == ZoneType.HorizontalRiver))
+                if (!IsValidPosition(next))
                     continue;
 
                 visited[next.y, next.x] = true;
                 queue.Enqueue(next);
             }
+        }
+
+        bool IsValidPosition(Vector2Int pos)
+        {
+            if (pos.x < 0 || pos.x >= mapWidth ||
+                pos.y < 0 || pos.y >= mapHeight)
+                return false;
+
+            if (visited[pos.y, pos.x])
+                return false;
+
+            ZoneData zone = map[pos.y, pos.x];
+
+            return zone == null ||
+                zone.type is not (ZoneType.VerticalRiver or ZoneType.HorizontalRiver);
         }
 
         return accessibleTiles >= MinAccessibleTilesBeforeRiver;
