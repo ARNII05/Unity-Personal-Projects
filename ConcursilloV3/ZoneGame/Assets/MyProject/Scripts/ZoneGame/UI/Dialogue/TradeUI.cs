@@ -57,6 +57,6 @@ public class TradeUI : MonoBehaviour
     public void OpenTradeObjects(int type)
     {
         tradeDialogue.SetActive(false);
-        tradeObjects.OpenTrade(type == 0 ? TradeMode.Buy : TradeMode.Sell);
+        tradeObjects.OpenTrade(type == 0 ? TradeMode.Buy : TradeMode.Sell, player.NetworkMapPos.Value);
     }
 }

@@ -24,7 +24,9 @@ public class TradeObjects : MonoBehaviour
 
     private Player player;
 
-    private TradeMode tradeMode; 
+    private TradeMode tradeMode;
+
+    private Vector2Int villagePos;
 
     private void Awake()
     {
@@ -52,10 +54,11 @@ public class TradeObjects : MonoBehaviour
         tradeUI.SetActive(false);
     }
 
-    public void OpenTrade(TradeMode tradeMode)
+    public void OpenTrade(TradeMode tradeMode, Vector2Int villagePos)
     {
         tradeUI.SetActive(true);
         this.tradeMode = tradeMode;
+        this.villagePos = villagePos;
 
         shopText.text = tradeMode switch
         {
@@ -144,7 +147,7 @@ public class TradeObjects : MonoBehaviour
             if (background != null && !callingInRpc)
                 background.SetActive(false);
 
-            maxItemAmount.text = $"x{PurchaseSystem.Instance.GetAmountLeft(itemType, tradeMode)}";
+            maxItemAmount.text = $"x{PurchaseSystem.Instance.GetAmountLeft(villagePos, itemType, tradeMode)}";
             itemCost.text = $"x{PurchaseSystem.Instance.GetItemPrice(itemType)}";
         }
     }
@@ -279,6 +282,7 @@ public class TradeObjects : MonoBehaviour
         ItemType itemToRemove = tradeMode == TradeMode.Buy ? ItemType.Coin : selectedItem;
         ItemType itemToAdd = tradeMode == TradeMode.Buy ? selectedItem : ItemType.Coin;
 
-        return PurchaseSystem.Instance.CanTradeItem(selectedItem, itemToAdd, itemToRemove, actualAmount, tradeMode, player);
+        return PurchaseSystem.Instance.CanTradeItem(selectedItem, itemToAdd, itemToRemove, 
+            actualAmount, tradeMode, player, villagePos);
     }
 }

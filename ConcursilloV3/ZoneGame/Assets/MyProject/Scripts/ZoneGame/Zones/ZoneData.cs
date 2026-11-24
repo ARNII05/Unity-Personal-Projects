@@ -65,8 +65,6 @@ public abstract class ZoneData
         return isPlayer1 ? player1TpZonePos : player2TpZonePos;
     }
 
-    public abstract void OnEnter(Player player);
-
     public virtual ChestItems ItemProbInChest(int prob)
     {
         return prob switch
@@ -86,9 +84,13 @@ public class MomHouse : ZoneData
     {
         canHaveChest = false;
     }
-    public override void OnEnter(Player player)
+}
+
+public class GrandmaHouse : ZoneData
+{
+    public GrandmaHouse() : base(ZoneType.GrandmaHouse, "Casa de la abuela")
     {
-        LogManager.Log("Entrando a la casa de tu Madre. Se escuchan los árboles mover con el viento.");
+        canHaveChest = false;
     }
 }
 
@@ -111,11 +113,6 @@ public class Forest : ZoneData
 
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(421.1f, 9.8f, -6.2f);
-    }
-
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando al Bosque. Se escuchan los árboles mover con el viento.");
     }
 }
 
@@ -140,11 +137,6 @@ public class RabbitDen : ZoneData
         player2TpZonePos = new Vector3(404.1f, -6.2f, -6.2f);
     }
 
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a una Zona Especial.");
-    }
-
     public override ChestItems ItemProbInChest(int prob)
     {
         return prob switch
@@ -162,10 +154,6 @@ public class Tavern : ZoneData
 {
     public Tavern() : base(ZoneType.Tavern, "Taberna")
     {
-    }
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a la Taberna.");
     }
 }
 
@@ -188,11 +176,6 @@ public class FlowerField : ZoneData
 
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(404.1f, -6.2f, -6.2f);
-    }
-
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a un Campo Florido.");
     }
 
     public override ChestItems ItemProbInChest(int prob)
@@ -232,10 +215,6 @@ public class Ruins : ZoneData
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(396f, -15.2f, -6.2f);
     }
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a unas Ruinas.");
-    }
 }
 
 public class Swamp : ZoneData
@@ -255,10 +234,6 @@ public class Swamp : ZoneData
 
         player1TpZonePos = new Vector3(-49.7f, -2.14f, -6.2f);
         player2TpZonePos = new Vector3(417f, -1.3f, -6.2f);
-    }
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a un Pantano.");
     }
 }
 
@@ -281,10 +256,6 @@ public class Village : ZoneData
 
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(429.1f, -27.3f, -6.2f);
-    }
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a un Pueblo.");
     }
 
     public override ChestItems ItemProbInChest(int prob)
@@ -319,10 +290,6 @@ public class Camp : ZoneData
 
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(404.1f, -6.2f, -6.2f);
-    }
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a un Campamento.");
     }
 }
 
@@ -368,11 +335,6 @@ public class VerticalRiver : ZoneData
             _ => Vector3.zero
         };
     }
-
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a un Río.");
-    }
 }
 
 public class HorizontalRiver : ZoneData
@@ -397,23 +359,6 @@ public class HorizontalRiver : ZoneData
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(422.1f, -11.2f, -6.2f);
     }
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a un Río.");
-    }
-}
-
-public class GrandmaHouse : ZoneData
-{
-    public GrandmaHouse() : base(ZoneType.GrandmaHouse, "Casa de la abuela")
-    {
-        canHaveChest = false;
-    }
-
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a la Casa de la Abuela.");
-    }
 }
 
 public class WolfDen : ZoneData
@@ -437,11 +382,6 @@ public class WolfDen : ZoneData
 
         player1TpZonePos = new Vector3(-64.9f, -4f, -6.2f);
         player2TpZonePos = new Vector3(404.1f, -6.2f, -6.2f);
-    }
-
-    public override void OnEnter(Player player)
-    {
-        LogManager.Log("Entrando a la Guarida del Lobo.");
     }
 }
 

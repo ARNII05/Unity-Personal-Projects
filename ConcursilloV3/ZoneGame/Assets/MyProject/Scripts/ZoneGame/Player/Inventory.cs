@@ -16,6 +16,13 @@ public class Inventory
 
     public void SetContents(ItemType[] itemTypes, int[] amounts)
     {
+        if (itemTypes == null || amounts == null ||
+            itemTypes.Length != amounts.Length)
+        {
+            Debug.LogError("Worng inventory data in Inventory.SetContents");
+            return;
+        }
+
         items.Clear();
 
         for (int i = 0; i < itemTypes.Length; i++)

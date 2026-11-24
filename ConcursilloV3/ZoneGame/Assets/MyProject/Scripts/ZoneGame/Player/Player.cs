@@ -250,26 +250,27 @@ public class Player : NetworkBehaviour
         if (zone.type != ZoneType.Village || State.Value != PlayerState.Trade)
             return;
 
-        PurchaseResult result = PurchaseSystem.Instance.TradeItem(item, itemToAdd, itemToRemove, actualAmount, tradeMode, this);
+        PurchaseResult result = PurchaseSystem.Instance.TradeItem(item, itemToAdd, itemToRemove, 
+            actualAmount, tradeMode, this, pos);
 
         SetInventory();
 
         if (result == PurchaseResult.Success)
         {
             ReproduceSFXSoundClientRpc(SFXType.Trading);
-            PurchaseSystem.Instance.UpdateStock(tradeMode, item, actualAmount);
+            PurchaseSystem.Instance.UpdateStock(pos, tradeMode, item, actualAmount);
         }
 
-        TradeItemClientRpc(result, item, actualAmount, tradeMode);
+        TradeItemClientRpc(result, item, actualAmount, tradeMode, pos);
     }
 
     [Rpc(SendTo.Everyone)]
-    private void TradeItemClientRpc(PurchaseResult result, ItemType item, int actualAmount, TradeMode tradeMode)
+    private void TradeItemClientRpc(PurchaseResult result, ItemType item, int actualAmount, TradeMode tradeMode, Vector2Int pos)
     {
         bool purchaseIsASuccess = result == PurchaseResult.Success;
 
         if (purchaseIsASuccess && !IsServer)
-            PurchaseSystem.Instance.UpdateStock(tradeMode, item, actualAmount);
+            PurchaseSystem.Instance.UpdateStock(pos, tradeMode, item, actualAmount);
 
         TradeUI.Instance.tradeObjects.UpdateUI(true);
 
@@ -856,6 +857,9 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
+        inventory.Add(ItemType.Coin, 20);
+        inventory.Add(ItemType.Log, 20);
+        inventory.Add(ItemType.Flower, 20);
     }
 
     [Rpc(SendTo.Owner)]

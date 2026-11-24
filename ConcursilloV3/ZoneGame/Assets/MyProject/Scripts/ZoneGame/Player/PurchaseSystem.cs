@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PurchaseSystem : MonoBehaviour
@@ -12,13 +13,7 @@ public class PurchaseSystem : MonoBehaviour
     public const int maxBranches = 5;
     public const int maxMeats = 5;
 
-    private int buyingFlowersLeft = maxFlowers;
-    private int buyingBranchesLeft = maxBranches;
-    private int buyingMeatsLeft = maxMeats;
-
-    private int sellingFlowersLeft = maxFlowers;
-    private int sellingBranchesLeft = maxBranches;
-    private int sellingMeatsLeft = maxMeats;
+    private readonly Dictionary<Vector2Int, VillageStock> villageStocks = new();
 
     private void Awake()
     {
@@ -31,7 +26,8 @@ public class PurchaseSystem : MonoBehaviour
         Instance = this;
     }
 
-    public PurchaseResult CanTradeItem(ItemType itemToPrice, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode, Player player)
+    public PurchaseResult CanTradeItem(ItemType itemToPrice, ItemType itemToAdd, ItemType itemToRemove, 
+        int actualAmount, TradeMode tradeMode, Player player, Vector2Int pos)
     {
         if (itemToPrice == ItemType.None || itemToRemove == ItemType.None || itemToAdd == ItemType.None || actualAmount <= 0)
             return PurchaseResult.Error;
@@ -48,7 +44,7 @@ public class PurchaseSystem : MonoBehaviour
 
         bool hasEnoughItems =
             player.inventory.GetAmount(itemToRemove) >= amountToRemove;
-        bool hasEnoughAmount = GetAmountLeft(itemToPrice, tradeMode) >= actualAmount;
+        bool hasEnoughAmount = GetAmountLeft(pos, itemToPrice, tradeMode) >= actualAmount;
         bool hasSpaceInInventory =
             player.inventory.HasSpaceAfterRemoving(
                 itemToRemove,
@@ -65,9 +61,11 @@ public class PurchaseSystem : MonoBehaviour
         };
     }
 
-    public PurchaseResult TradeItem(ItemType item, ItemType itemToAdd, ItemType itemToRemove, int actualAmount, TradeMode tradeMode, Player player)
+    public PurchaseResult TradeItem(ItemType item, ItemType itemToAdd, ItemType itemToRemove, 
+        int actualAmount, TradeMode tradeMode, Player player, Vector2Int pos)
     {
-        PurchaseResult purchaseResult = CanTradeItem(item, itemToAdd, itemToRemove, actualAmount, tradeMode, player);
+        PurchaseResult purchaseResult = CanTradeItem(item, itemToAdd, itemToRemove, 
+            actualAmount, tradeMode, player, pos);
         
         if (purchaseResult != PurchaseResult.Success)
             return purchaseResult;
@@ -87,31 +85,41 @@ public class PurchaseSystem : MonoBehaviour
         return PurchaseResult.Success;
     }
 
-    public void UpdateStock(TradeMode tradeMode, ItemType item, int actualAmount)
+    public void UpdateStock(
+        Vector2Int position,
+        TradeMode tradeMode,
+        ItemType item,
+        int actualAmount)
     {
-        if (tradeMode == TradeMode.Buy)
-            UpdateBuyStock(item, actualAmount);
-        else
-            UpdateSellStock(item, actualAmount);
-    }
+        VillageStock village = GetVillageStock(position);
 
-    private void UpdateBuyStock(ItemType item, int actualAmount)
-    {
-        buyingFlowersLeft = item == ItemType.Flower ? buyingFlowersLeft - actualAmount : buyingFlowersLeft;
-        buyingBranchesLeft = item == ItemType.Branch ? buyingBranchesLeft - actualAmount : buyingBranchesLeft;
-        buyingMeatsLeft = item == ItemType.Meat ? buyingMeatsLeft - actualAmount : buyingMeatsLeft;
-    }
+        Dictionary<ItemType, int> stock = tradeMode switch
+        {
+            TradeMode.Buy => village.BuyStock,
+            TradeMode.Sell => village.SellStock,
+            _ => null
+        };
 
-    private void UpdateSellStock(ItemType item, int actualAmount)
-    {
-        sellingFlowersLeft = item == ItemType.Flower ? sellingFlowersLeft - actualAmount : sellingFlowersLeft;
-        sellingBranchesLeft = item == ItemType.Branch ? sellingBranchesLeft - actualAmount : sellingBranchesLeft;
-        sellingMeatsLeft = item == ItemType.Meat ? sellingMeatsLeft - actualAmount : sellingMeatsLeft;
+        if (stock == null || !stock.ContainsKey(item))
+            return;
+
+        stock[item] -= actualAmount;
     }
 
     private bool ItemToPriceIsValid(ItemType itemToPrice)
     {
         return itemToPrice == ItemType.Flower || itemToPrice == ItemType.Branch || itemToPrice == ItemType.Meat;
+    }
+
+    private VillageStock GetVillageStock(Vector2Int position)
+    {
+        if (!villageStocks.TryGetValue(position, out VillageStock stock))
+        {
+            stock = new VillageStock();
+            villageStocks.Add(position, stock);
+        }
+
+        return stock;
     }
 
     private bool ItemsSendedAreValid(ItemType item, ItemType itemToAdd, ItemType itemToRemove, TradeMode tradeMode)
@@ -140,16 +148,40 @@ public class PurchaseSystem : MonoBehaviour
         };
     }
 
-    public int GetAmountLeft(ItemType item, TradeMode tradeMode)
+    public int GetAmountLeft(
+        Vector2Int position,
+        ItemType item,
+        TradeMode tradeMode)
     {
-        return item switch
+        VillageStock village = GetVillageStock(position);
+
+        Dictionary<ItemType, int> stock = tradeMode switch
         {
-            ItemType.Flower => tradeMode == TradeMode.Buy ? buyingFlowersLeft : sellingFlowersLeft,
-            ItemType.Branch => tradeMode == TradeMode.Buy ? buyingBranchesLeft : sellingBranchesLeft,
-            ItemType.Meat => tradeMode == TradeMode.Buy ? buyingMeatsLeft : sellingMeatsLeft,
-            _ => 0
+            TradeMode.Buy => village.BuyStock,
+            TradeMode.Sell => village.SellStock,
+            _ => null
         };
+
+        return stock != null && stock.TryGetValue(item, out int amount)
+            ? amount
+            : 0;
     }
+}
+public class VillageStock
+{
+    public Dictionary<ItemType, int> BuyStock { get; } = new()
+    {
+        [ItemType.Flower] = PurchaseSystem.maxFlowers,
+        [ItemType.Branch] = PurchaseSystem.maxBranches,
+        [ItemType.Meat] = PurchaseSystem.maxMeats
+    };
+
+    public Dictionary<ItemType, int> SellStock { get; } = new()
+    {
+        [ItemType.Flower] = PurchaseSystem.maxFlowers,
+        [ItemType.Branch] = PurchaseSystem.maxBranches,
+        [ItemType.Meat] = PurchaseSystem.maxMeats
+    };
 }
 
 public enum PurchaseResult
