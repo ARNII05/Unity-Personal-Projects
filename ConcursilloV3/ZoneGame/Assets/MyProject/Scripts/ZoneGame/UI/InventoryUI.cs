@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
+    [SerializeField] private int toWho;
+
     private GameObject inventoryUI;
     
     public Inventory inventory;
@@ -17,7 +19,7 @@ public class InventoryUI : MonoBehaviour
 
     private GameObject itemTransferControlsGrid, boxesGrid;
 
-    private int boxCount = 0;
+    private const string boxPrefabPath = "Prefabs/Objects/InventoryBox";
 
     private void Awake()
     {
@@ -30,9 +32,34 @@ public class InventoryUI : MonoBehaviour
         ChangeItemBoxStatus(false);
         inventoryUI.SetActive(false);
 
-        boxCount = inventoryUI.transform
-            .Cast<Transform>()
-            .Count(child => child.name.StartsWith("Box"));
+        InitBoxesGrid();
+    }
+
+    private void InitBoxesGrid()
+    {
+        foreach (Transform child in boxesGrid.transform)
+            Destroy(child.gameObject);
+
+        GameObject boxPrefab = Resources.Load<GameObject>(boxPrefabPath);
+
+        if (boxPrefab == null)
+        {
+            Debug.LogError($"Prefab not found in: {boxPrefabPath}");
+            return;
+        }
+
+        for (int i = 0; i < Inventory.maxCapacity; i++)
+        {
+            GameObject box = Instantiate(boxPrefab, boxesGrid.transform);
+
+            InventoryButton inventoryButton = box.GetComponent<InventoryButton>();
+
+            inventoryButton.index = i;
+            inventoryButton.toWho = toWho;
+            inventoryButton.isBuffUI = false;
+            
+            box.name = $"Box{i + 1}";
+        }
     }
 
     public void SetPlayer(Player player)
@@ -62,9 +89,9 @@ public class InventoryUI : MonoBehaviour
 
     private void ChangeItemBoxStatus(bool status)
     {
-        for (int i = 0; i < Inventory.maxCapacity && i < boxCount; i++)
+        for (int i = 0; i < Inventory.maxCapacity && i < boxesGrid.transform.childCount; i++)
         {
-            GameObject actualBox = boxesGrid.transform.Find($"Box{i + 1}").gameObject;
+            GameObject actualBox = boxesGrid.transform.GetChild(i).gameObject;
             actualBox.GetComponent<Button>().interactable = status;
 
             UpdateBoxLock(actualBox);
@@ -76,28 +103,28 @@ public class InventoryUI : MonoBehaviour
 
     public void ChangeButtonStatus(bool status)
     {
-        for (int i = 0; i < Inventory.maxCapacity && i < boxCount; i++)
+        for (int i = 0; i < Inventory.maxCapacity && i < boxesGrid.transform.childCount; i++)
         {
-            GameObject actualBox = boxesGrid.transform.Find($"Box{i + 1}").gameObject;
+            GameObject actualBox = boxesGrid.transform.GetChild(i).gameObject;
             actualBox.GetComponent<Button>().interactable = false;
         }
 
         if (!status)
             return;
 
-        for (int i = 0; i < inventory.items.Count && i < boxCount; i++)
+        for (int i = 0; i < inventory.items.Count && i < boxesGrid.transform.childCount; i++)
         {
-            GameObject actualBox = boxesGrid.transform.Find($"Box{i + 1}").gameObject;
+            GameObject actualBox = boxesGrid.transform.GetChild(i).gameObject;
             actualBox.GetComponent<Button>().interactable = status;
         }
     }
 
     private void Refresh()
     {
-        for (int j = 0; j < Inventory.maxCapacity && j < boxCount; j++)
+        for (int j = 0; j < Inventory.maxCapacity && j < boxesGrid.transform.childCount; j++)
         {
             GameObject box =
-                boxesGrid.transform.Find($"Box{j + 1}").gameObject;
+                boxesGrid.transform.GetChild(j).gameObject;
 
             GameObject iconBox =
                 box.transform.Find("IconBox").gameObject;
@@ -105,10 +132,10 @@ public class InventoryUI : MonoBehaviour
             iconBox.SetActive(false);
         }
 
-        for (int j = 0; j < Inventory.maxCapacity && j < boxCount; j++)
+        for (int j = 0; j < Inventory.maxCapacity && j < boxesGrid.transform.childCount; j++)
         {
             GameObject box =
-                boxesGrid.transform.Find($"Box{j + 1}").gameObject;
+                boxesGrid.transform.GetChild(j).gameObject;
 
             UpdateBoxLock(box, false);
         }
@@ -117,21 +144,21 @@ public class InventoryUI : MonoBehaviour
 
         foreach (var item in inventory.items)
         {
-            if (i >= Inventory.maxCapacity)
+            if (i >= boxesGrid.transform.childCount)
                 break;
-            
+
             UpdateItemBox(i, item.Item, item.Amount);
             i++;
         }
     }
 
-    private void UpdateItemBox(int index, ItemType itemType, int amount)
+    private void UpdateItemBox(int i, ItemType itemType, int amount)
     {
-        if (index >= boxCount)
+        if (i >= boxesGrid.transform.childCount)
             return;
 
         GameObject actualBox =
-            boxesGrid.transform.Find($"Box{index + 1}").gameObject;
+            boxesGrid.transform.GetChild(i).gameObject;
 
         GameObject iconBox =
             actualBox.transform.Find("IconBox").gameObject;
