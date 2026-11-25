@@ -21,6 +21,12 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFXSound(AudioClip audioClip, float volume = 0.1f)
     {
+        if (!audioClip)
+        {
+            Debug.LogError("AudioClip in AuidoManager is NULL");
+            return;
+        }
+
         sfxAudioSource.volume = volume;
         sfxAudioSource.PlayOneShot(audioClip);
     }

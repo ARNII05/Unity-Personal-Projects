@@ -23,6 +23,9 @@ public class Player : NetworkBehaviour
     private PlayerRoleSelectionVisuals roleSelectionVisuals;
     private PauseMenuUI pauseMenuUI;
 
+    private PlayerStats stats;
+
+    public PlayerStats Stats => stats;
     public Chest nearbyChest => nearbyObjects.NearbyChest;
     public PlayerNearbyObjects NearbyObjects => nearbyObjects;
     public GameObject currentZone;
@@ -88,6 +91,7 @@ public class Player : NetworkBehaviour
         playerInputHandler = GetComponent<PlayerInputHandler>();
         playerInputHandler.Initialize(controls);
         roleSelectionVisuals = GetComponent<PlayerRoleSelectionVisuals>();
+        stats = new PlayerStats();
     }
 
     private void Update()
@@ -215,6 +219,12 @@ public class Player : NetworkBehaviour
     public void StartRabbitTeleportCooldown()
     {
         nextRabbitTeleportTime = Time.time + rabbitTeleportCooldown;
+    }
+
+    [Rpc(SendTo.Server)]
+    public void UpdateDiscoveredZonesStatsRpc()
+    {
+        Stats.SaveStats(StatsType.DiscoveredZones, 1);
     }
 
     public bool AddBuff(ItemType buff)
@@ -473,6 +483,8 @@ public class Player : NetworkBehaviour
 
         ReproduceSFXSoundClientRpc(SFXType.ItemPickup);
 
+        stats.SaveStats(StatsType.ItemsPicked, amount);
+
         SendItemsToPlayerClientRpc(item, amount, pos);
     }
 
@@ -508,6 +520,8 @@ public class Player : NetworkBehaviour
         ReproduceSFXSoundClientRpc(Role.Value == PlayerRole.Gardener
             ? SFXType.CraftingBouquet
             : SFXType.CraftingLog);
+
+        stats.SaveStats(StatsType.ObjectsCrafted, 1);
 
         SetInventory();
     }
@@ -667,6 +681,8 @@ public class Player : NetworkBehaviour
             MissingLogsUI.Instance.Init(this);
 
             ProgressNotificationUI.Instance.Init(this);
+
+            GameManager.Instance.Init(this);
 
             if (otherPlayerVisualController != null)
                 otherPlayerVisualController.Initialize(this);
@@ -853,6 +869,7 @@ public class Player : NetworkBehaviour
 
         if (Role.Value == PlayerRole.Gardener)
         {
+            inventory.Add(ItemType.Bouquet, 20);
             inventory.Add(ItemType.Radar, 1);
             RadarUI.Instance.Init(this);
         }
@@ -1069,5 +1086,6 @@ public enum PlayerState
     ChestInventory,
     PauseMenu,
     AncientChestUI,
-    MissingLogsUI
+    MissingLogsUI,
+    Endgame
 }

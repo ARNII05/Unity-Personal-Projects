@@ -141,6 +141,8 @@ public class Wolf : NetworkBehaviour
 
         player.SetInventory();
 
+        player.Stats.SaveStats(StatsType.TimesStolenByWolf, 1);
+
         StealFromPlayerRpc(
             itemsStolen.items.ToArray(),
             itemsStolen.amount.ToArray(),
@@ -237,6 +239,7 @@ public class Wolf : NetworkBehaviour
             if (!AddItemsToWolfDenChest(item, amountToSteal, player))
                 continue;
 
+            player.Stats.SaveStats(StatsType.LostObjectsCount, amountToSteal);
             stolenItemTypes.Add(item);
             stolenItems.Add(item);
             amount.Add(amountToSteal);
@@ -519,7 +522,8 @@ public class Wolf : NetworkBehaviour
 
     private bool CanPlayerBeCaught(Player player)
     {
-        if (player.State.Value == PlayerState.Transitioning)
+        if (player.State.Value == PlayerState.Transitioning || 
+            player.State.Value == PlayerState.Endgame)
             return false;
 
         int protection = ItemVault.GetBuffValue(

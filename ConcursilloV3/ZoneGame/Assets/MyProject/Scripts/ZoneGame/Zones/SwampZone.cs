@@ -89,6 +89,7 @@ public class SwampZone : MonoBehaviour
             if (!player.inventory.Remove(item, amountToSteal))
                 continue;
 
+            player.Stats.SaveStats(StatsType.LostObjectsCount, amountToSteal);
             swamp.internalInventory[item] = swamp.internalInventory.GetValueOrDefault(item) + amountToSteal;
             stolenItemTypes.Add(item);
             stolenItems.Add(item);

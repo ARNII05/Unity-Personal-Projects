@@ -220,15 +220,15 @@ public class MapManager : MonoBehaviour
 
                 ResourcesGenerator.Instance.Init();
                 
-                /*
-                startPos = GoTo(ZoneType.Village, startPos);
-
                 
+                startPos = GoTo(ZoneType.GrandmaHouse, startPos);
+                
+                
+                /*
                 UnlockDiscoveredZone(
                     new ZoneType[] { ZoneType.MomHouse, ZoneType.Village, ZoneType.RabbitDen },
                     new Player[] { player1, player2 });
                 */
-  
 
                 player1.NetworkMapPos.Value = startPos;
                 player2.NetworkMapPos.Value = startPos;
@@ -572,7 +572,8 @@ public class MapManager : MonoBehaviour
                 chests[0].chestUI.SetInventory(
                     zoneData.chestInventory);
 
-            player.discoveredZones.Add(position);
+            if (player.discoveredZones.Add(position))
+                player.UpdateDiscoveredZonesStatsRpc();
         }
 
         currentZone.Setup(

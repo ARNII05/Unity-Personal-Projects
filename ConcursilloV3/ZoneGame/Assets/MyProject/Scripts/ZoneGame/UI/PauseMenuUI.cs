@@ -27,7 +27,8 @@ public class PauseMenuUI : MonoBehaviour
     public void ShowPauseMenu()
     {
         if (player.LocalState is
-            PlayerState.CaughtByWolf or PlayerState.Transitioning)
+            PlayerState.CaughtByWolf or PlayerState.Transitioning
+            or PlayerState.Endgame)
             return;
 
         previousPlayerState = player.LocalState;

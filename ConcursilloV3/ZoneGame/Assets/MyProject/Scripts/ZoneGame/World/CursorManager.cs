@@ -31,6 +31,7 @@ public class CursorManager : MonoBehaviour
             or PlayerState.AncientChestUI
             or PlayerState.UsingMap
             or PlayerState.MissingLogsUI
+            or PlayerState.Endgame
             or PlayerState.ChestInventory => true,
 
             _ => false

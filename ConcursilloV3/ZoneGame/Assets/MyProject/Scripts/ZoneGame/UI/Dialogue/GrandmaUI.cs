@@ -21,7 +21,7 @@ public class GrandmaUI : NetworkBehaviour
 
     private int bouquetCount = 0;
 
-    private bool initialized, gameFinished, uiReady;
+    private bool initialized, uiReady;
 
     private void Awake()
     {
@@ -155,7 +155,7 @@ public class GrandmaUI : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ShowEndGamePanelServerRpc(RpcParams rpcParams = default)
     {
-        if (gameFinished)
+        if (GameManager.Instance.gameEnded)
             return;
 
         ulong senderId = rpcParams.Receive.SenderClientId;
@@ -179,23 +179,32 @@ public class GrandmaUI : NetworkBehaviour
         if (!CanWin(totalBouquets, CraftingSystem.BouquetsToWin))
             return;
 
-        gameFinished = true;
+        player.SetState(PlayerState.Endgame);
+        otherPlayer.SetState(PlayerState.Endgame);
+
+        GameManager.Instance.gameEnded = true;
 
         MapManager.Instance.wolf.SetReadyToMove(false);
 
-        ShowWinPanelInMenuClientRpc();
+        PlayerStatsData gardenerData = player.Role.Value == PlayerRole.Gardener
+            ? player.Stats.GetStatsData()
+            : otherPlayer.Stats.GetStatsData();
+        
+        PlayerStatsData builderData = player.Role.Value == PlayerRole.Builder
+            ? player.Stats.GetStatsData()
+            : otherPlayer.Stats.GetStatsData();
+
+        ShowEngamePanelRpc(gardenerData.GetStatValues(),
+            builderData.GetStatValues(), GameManager.Instance.gameTime);
     }
 
     [Rpc(SendTo.Everyone)]
-    private void ShowWinPanelInMenuClientRpc()
+    private void ShowEngamePanelRpc(int[] gardenerData, int[] builderData, float gameTime)
     {
-        string winMessage = "¡Enhorabuena!\n\n" +
-                    "¡Habéis completado Hello Grandma!\n\n" +
-                    "Muchas gracias por jugar. ¡Espero que hayáis disfrutado de la aventura!";
-
         AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.Victory), 0.2f);
 
-        PersistentNetworkManager.Instance.ReturnToMainMenu(winMessage, isErrorMsg: false);
+        EndgameUI.Instance.ShowStats(gardenerData,
+            builderData, gameTime);
     }
 
     public override void OnNetworkDespawn()
