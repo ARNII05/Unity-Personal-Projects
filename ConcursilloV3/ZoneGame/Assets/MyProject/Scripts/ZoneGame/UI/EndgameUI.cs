@@ -24,8 +24,8 @@ public class EndgameUI : NetworkBehaviour
         objectsPanel = endgameUI.transform.Find("ObjectsPanel").gameObject;
         statsGrid = objectsPanel.transform.Find("StatsGrid").gameObject;
 
-        gardenerName = objectsPanel.transform.Find("NameGrid").Find("GardenerZell").Find("PlayerName").GetComponent<TMP_Text>();
-        builderName = objectsPanel.transform.Find("NameGrid").Find("BuilderZell").Find("PlayerName").GetComponent<TMP_Text>();
+        gardenerName = objectsPanel.transform.Find("GardenerZell").Find("PlayerName").GetComponent<TMP_Text>();
+        builderName = objectsPanel.transform.Find("BuilderZell").Find("PlayerName").GetComponent<TMP_Text>();
         timeUsed = objectsPanel.transform.Find("TimeUsed").GetComponent<TMP_Text>();
 
         endgameUI.SetActive(false);
@@ -39,20 +39,22 @@ public class EndgameUI : NetworkBehaviour
         Player player2 = MapManager.instance.Player2;
 
         gardenerName.text = player.Role.Value == PlayerRole.Gardener
-            ? $"({player.name})"
-            : $"({player2.name})";
+            ? player.name
+            : player2.name;
 
         builderName.text = player.Role.Value == PlayerRole.Builder
-            ? $"({player.name})"
-            : $"({player2.name})";
+            ? player.name
+            : player2.name;
 
         int minutes = Mathf.FloorToInt(gameTime / 60f);
         int seconds = Mathf.FloorToInt(gameTime % 60f);
 
         timeUsed.text = $"{minutes:00}:{seconds:00}";
 
-        for (int i = 0; i < gardenerData.Length; i++)
-        {
+        for (int i = 0; i < gardenerData.Length &&
+                i < builderData.Length &&
+                i < statsGrid.transform.childCount; i++)
+        { 
             GameObject zell = statsGrid.transform.GetChild(i).gameObject;
             TMP_Text gardenerText = zell.transform.Find("GardenerText").GetComponent<TMP_Text>();
             TMP_Text builderText = zell.transform.Find("BuilderText").GetComponent<TMP_Text>();
@@ -72,8 +74,14 @@ public class EndgameUI : NetworkBehaviour
 
         Application.Quit();
     }
-    
+
     public void GoToMenu()
+    {
+        RequestReturnToMenuRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void RequestReturnToMenuRpc()
     {
         ShowWinPanelInMenuClientRpc();
     }

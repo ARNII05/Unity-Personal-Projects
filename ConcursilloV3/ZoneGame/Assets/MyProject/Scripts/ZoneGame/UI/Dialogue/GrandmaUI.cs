@@ -179,8 +179,8 @@ public class GrandmaUI : NetworkBehaviour
         if (!CanWin(totalBouquets, CraftingSystem.BouquetsToWin))
             return;
 
-        player.SetState(PlayerState.Endgame);
-        otherPlayer.SetState(PlayerState.Endgame);
+        player.State.Value = PlayerState.Endgame;
+        otherPlayer.State.Value = PlayerState.Endgame;
 
         GameManager.Instance.gameEnded = true;
 
@@ -201,6 +201,11 @@ public class GrandmaUI : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     private void ShowEngamePanelRpc(int[] gardenerData, int[] builderData, float gameTime)
     {
+        Player localPlayer = MapManager.Instance.GetLocalPlayer();
+
+        if (localPlayer != null)
+            localPlayer.SetLocalState(PlayerState.Endgame);
+
         AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.Victory), 0.2f);
 
         EndgameUI.Instance.ShowStats(gardenerData,

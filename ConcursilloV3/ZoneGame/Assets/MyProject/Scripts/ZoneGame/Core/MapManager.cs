@@ -220,8 +220,7 @@ public class MapManager : MonoBehaviour
 
                 ResourcesGenerator.Instance.Init();
                 
-                
-                startPos = GoTo(ZoneType.GrandmaHouse, startPos);
+                //startPos = GoTo(ZoneType.GrandmaHouse, startPos);
                 
                 
                 /*
@@ -573,7 +572,7 @@ public class MapManager : MonoBehaviour
                     zoneData.chestInventory);
 
             if (player.discoveredZones.Add(position))
-                player.UpdateDiscoveredZonesStatsRpc();
+                player.UpdateDiscoveredZonesStatsRpc(position);
         }
 
         currentZone.Setup(

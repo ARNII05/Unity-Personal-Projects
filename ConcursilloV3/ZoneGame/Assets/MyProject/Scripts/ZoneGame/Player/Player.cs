@@ -44,6 +44,8 @@ public class Player : NetworkBehaviour
 
     public HashSet<Vector2Int> discoveredZones = new();
 
+    private readonly HashSet<Vector2Int> discoveredZonesStats = new();
+
     public PlayerState LocalState { get; private set; } = PlayerState.Normal;
 
     private const float rabbitTeleportCooldown = 60f;
@@ -222,8 +224,19 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void UpdateDiscoveredZonesStatsRpc()
+    public void UpdateDiscoveredZonesStatsRpc(Vector2Int position)
     {
+        bool isNew = discoveredZonesStats.Add(position);
+
+        Debug.Log(
+            $"[STATS] Player {OwnerClientId} | " +
+            $"Pos: {position} | Nueva: {isNew} | " +
+            $"Total: {discoveredZonesStats.Count}"
+        );
+
+        if (!isNew)
+            return;
+
         Stats.SaveStats(StatsType.DiscoveredZones, 1);
     }
 
@@ -869,7 +882,6 @@ public class Player : NetworkBehaviour
 
         if (Role.Value == PlayerRole.Gardener)
         {
-            inventory.Add(ItemType.Bouquet, 20);
             inventory.Add(ItemType.Radar, 1);
             RadarUI.Instance.Init(this);
         }

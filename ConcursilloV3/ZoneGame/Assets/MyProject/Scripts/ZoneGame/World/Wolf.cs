@@ -141,7 +141,8 @@ public class Wolf : NetworkBehaviour
 
         player.SetInventory();
 
-        player.Stats.SaveStats(StatsType.TimesStolenByWolf, 1);
+        if (itemsStolen.items.Count > 0)
+            player.Stats.SaveStats(StatsType.TimesStolenByWolf, 1);
 
         StealFromPlayerRpc(
             itemsStolen.items.ToArray(),
@@ -189,6 +190,8 @@ public class Wolf : NetworkBehaviour
 
         if (player.inventory.GetAmount(ItemType.Meat) > 0)
         {
+            player.Stats.SaveStats(StatsType.TimesStolenByWolf, 1);
+
             player.inventory.Remove(ItemType.Meat, 1);
 
             return new ItemsStolenResult(
