@@ -29,10 +29,11 @@ public class InventoryUI : MonoBehaviour
         boxesGrid = inventoryUI.transform.Find("BoxesGrid").gameObject;
 
         itemTransferControlsGrid.SetActive(false);
-        ChangeItemBoxStatus(false);
-        inventoryUI.SetActive(false);
 
         InitBoxesGrid();
+
+        ChangeItemBoxStatus(false);
+        inventoryUI.SetActive(false);
     }
 
     private void InitBoxesGrid()
@@ -52,7 +53,12 @@ public class InventoryUI : MonoBehaviour
         {
             GameObject box = Instantiate(boxPrefab, boxesGrid.transform);
 
-            InventoryButton inventoryButton = box.GetComponent<InventoryButton>();
+            if (!box.TryGetComponent(out InventoryButton inventoryButton))
+            {
+                Debug.LogError($"InventoryButton not found in prefab: {boxPrefabPath}");
+                Destroy(box);
+                continue;
+            }
 
             inventoryButton.index = i;
             inventoryButton.toWho = toWho;

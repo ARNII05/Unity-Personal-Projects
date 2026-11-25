@@ -30,7 +30,10 @@ public class InventoryButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
             Debug.LogError("No se ha encontrado ChestUI o le falta el componente.", this);
 
         tooltipUI = FindAnyObjectByType<TooltipUI>();
+    }
 
+    private void Start()
+    {
         StartCoroutine(SetPlayer());
     }
 
