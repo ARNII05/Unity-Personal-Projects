@@ -390,7 +390,7 @@ public class Player : NetworkBehaviour
         UpdateOpenedChestClientRpc(position);
         OpenChestClientRpc(position);
 
-        ReproduceSFXSoundClientRpc(SFXType.ChestOpen);
+        ReproduceSFXSoundClientRpc(SFXType.AncientChest);
     }
 
     [Rpc(SendTo.Owner)]
@@ -433,6 +433,8 @@ public class Player : NetworkBehaviour
 
         SetInventory();
 
+        ReproduceSFXSoundClientRpc(SFXType.ItemPickup);
+
         SendItemsToChestClientRpc(item, amount, pos);
     }
 
@@ -468,6 +470,8 @@ public class Player : NetworkBehaviour
             return;
 
         SetInventory();
+
+        ReproduceSFXSoundClientRpc(SFXType.ItemPickup);
 
         SendItemsToPlayerClientRpc(item, amount, pos);
     }
@@ -784,6 +788,8 @@ public class Player : NetworkBehaviour
         RecoverySystemUI recoverySystemUI = ResourcesGenerator.Instance.GetRecoverySystemUI();
 
         StartCoroutine(recoverySystemUI.ShowRecoverySystemPanelInfo(items, amounts));
+
+        AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.Notification), volume: 0.4f);
     }
 
     [Rpc(SendTo.NotServer)]
@@ -857,9 +863,6 @@ public class Player : NetworkBehaviour
         }
         
         inventory.Add(ItemType.Meat, 1);
-        inventory.Add(ItemType.Coin, 20);
-        inventory.Add(ItemType.Log, 20);
-        inventory.Add(ItemType.Flower, 20);
     }
 
     [Rpc(SendTo.Owner)]

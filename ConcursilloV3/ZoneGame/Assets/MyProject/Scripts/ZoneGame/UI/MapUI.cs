@@ -120,6 +120,8 @@ public class MapUI : MonoBehaviour
 
     private void OnOpen()
     {
+        AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.MapOpen));
+
         mapPlayer.SetState(PlayerState.UsingMap);
 
         mapUI.SetActive(true);

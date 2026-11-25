@@ -20,6 +20,11 @@ public class Player1Controller : NetworkBehaviour
 
     public float movementSpeedMultiplier = 1f;
 
+    [SerializeField] private float footstepInterval = 0.5f;
+    [SerializeField, Range(0f, 1f)] private float footstepVolume = 0.05f;
+
+    private float footstepTimer;
+
     private void Awake()
     {
         controls = new ZoneGameControls();
@@ -89,6 +94,32 @@ public class Player1Controller : NetworkBehaviour
 
         if (movementInput != Vector2.zero)
             UpdateDirection();
+
+        //UpdateFootsteps();
+    }
+
+    private void UpdateFootsteps()
+    {
+        if (!IsOwner)
+            return;
+
+        if (movementInput == Vector2.zero)
+        {
+            footstepTimer = 0f;
+            return;
+        }
+
+        footstepTimer += Time.deltaTime;
+
+        if (footstepTimer >= footstepInterval)
+        {
+            footstepTimer = 0f;
+
+            AudioManager.Instance.PlaySFXSound(
+                GameSounds.GetSFXSound(SFXType.Footstep),
+                footstepVolume
+            );
+        }
     }
 
     private void FixedUpdate()

@@ -33,10 +33,13 @@ public enum SFXType
     BridgeBuild,
     ChestOpen,
     Trading,
-    TradeFailed,
     Teleport,
+    Footstep,
+    ItemPickup,
+    Notification,
+    Victory,
+    TradeFailed,
     WolfSteal,
     AncientChest,
-    Potion,
     MapOpen
 }

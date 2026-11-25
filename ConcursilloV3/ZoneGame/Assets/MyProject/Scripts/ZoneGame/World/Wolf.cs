@@ -56,7 +56,7 @@ public class Wolf : NetworkBehaviour
             player2.NetworkMapPos.OnValueChanged += UpdateWolfState;
 
             NetworkPosition.Value = MapManager.Instance.wolfDenPos;
-            readyToMove = false;
+            readyToMove = true;
         }
     }
 
@@ -167,6 +167,8 @@ public class Wolf : NetworkBehaviour
 
         if (localPlayer == null)
             return;
+
+        AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.WolfSteal), volume: 0.4f);
 
         wolfUI.ShowItemsStolen(items, amounts, localPlayer, stealResult);
     }

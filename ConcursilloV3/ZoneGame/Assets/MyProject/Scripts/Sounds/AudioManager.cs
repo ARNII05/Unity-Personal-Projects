@@ -19,8 +19,9 @@ public class AudioManager : MonoBehaviour
         sfxAudioSource = GameObject.Find("SFXSounds").GetComponent<AudioSource>();
     }
 
-    public void PlaySFXSound(AudioClip audioClip)
+    public void PlaySFXSound(AudioClip audioClip, float volume = 0.1f)
     {
+        sfxAudioSource.volume = volume;
         sfxAudioSource.PlayOneShot(audioClip);
     }
 }

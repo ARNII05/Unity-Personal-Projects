@@ -193,6 +193,8 @@ public class GrandmaUI : NetworkBehaviour
                     "¡Habéis completado Hello Grandma!\n\n" +
                     "Muchas gracias por jugar. ¡Espero que hayáis disfrutado de la aventura!";
 
+        AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.Victory), 0.2f);
+
         PersistentNetworkManager.Instance.ReturnToMainMenu(winMessage, isErrorMsg: false);
     }
 

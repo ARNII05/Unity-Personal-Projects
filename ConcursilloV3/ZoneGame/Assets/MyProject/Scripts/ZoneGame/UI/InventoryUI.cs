@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -14,17 +15,24 @@ public class InventoryUI : MonoBehaviour
 
     private CraftingUI craftingUI;
 
-    private GameObject itemTransferControlsGrid;
+    private GameObject itemTransferControlsGrid, boxesGrid;
+
+    private int boxCount = 0;
 
     private void Awake()
     {
         inventoryUI = gameObject.transform.GetChild(0).gameObject;
         craftingUI = FindFirstObjectByType<CraftingUI>();
         itemTransferControlsGrid = inventoryUI.transform.Find("ItemTransferControlsGrid").gameObject;
+        boxesGrid = inventoryUI.transform.Find("BoxesGrid").gameObject;
 
         itemTransferControlsGrid.SetActive(false);
         ChangeItemBoxStatus(false);
         inventoryUI.SetActive(false);
+
+        boxCount = inventoryUI.transform
+            .Cast<Transform>()
+            .Count(child => child.name.StartsWith("Box"));
     }
 
     public void SetPlayer(Player player)
@@ -54,9 +62,9 @@ public class InventoryUI : MonoBehaviour
 
     private void ChangeItemBoxStatus(bool status)
     {
-        for (int i = 0; i < Inventory.maxCapacity; i++)
+        for (int i = 0; i < Inventory.maxCapacity && i < boxCount; i++)
         {
-            GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
+            GameObject actualBox = boxesGrid.transform.Find($"Box{i + 1}").gameObject;
             actualBox.GetComponent<Button>().interactable = status;
 
             UpdateBoxLock(actualBox);
@@ -68,31 +76,28 @@ public class InventoryUI : MonoBehaviour
 
     public void ChangeButtonStatus(bool status)
     {
-        for (int i = 0; i < Inventory.maxCapacity; i++)
+        for (int i = 0; i < Inventory.maxCapacity && i < boxCount; i++)
         {
-            GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
+            GameObject actualBox = boxesGrid.transform.Find($"Box{i + 1}").gameObject;
             actualBox.GetComponent<Button>().interactable = false;
         }
 
         if (!status)
             return;
 
-        for (int i = 0; i < inventory.items.Count; i++)
+        for (int i = 0; i < inventory.items.Count && i < boxCount; i++)
         {
-            if (i >= Inventory.maxCapacity)
-                break;
-            
-            GameObject actualBox = inventoryUI.transform.Find($"Box{i + 1}").gameObject;
+            GameObject actualBox = boxesGrid.transform.Find($"Box{i + 1}").gameObject;
             actualBox.GetComponent<Button>().interactable = status;
         }
     }
 
     private void Refresh()
     {
-        for (int j = 0; j < Inventory.maxCapacity; j++)
+        for (int j = 0; j < Inventory.maxCapacity && j < boxCount; j++)
         {
             GameObject box =
-                inventoryUI.transform.Find($"Box{j + 1}").gameObject;
+                boxesGrid.transform.Find($"Box{j + 1}").gameObject;
 
             GameObject iconBox =
                 box.transform.Find("IconBox").gameObject;
@@ -100,10 +105,10 @@ public class InventoryUI : MonoBehaviour
             iconBox.SetActive(false);
         }
 
-        for (int j = 0; j < Inventory.maxCapacity; j++)
+        for (int j = 0; j < Inventory.maxCapacity && j < boxCount; j++)
         {
             GameObject box =
-                inventoryUI.transform.Find($"Box{j + 1}").gameObject;
+                boxesGrid.transform.Find($"Box{j + 1}").gameObject;
 
             UpdateBoxLock(box, false);
         }
@@ -122,8 +127,11 @@ public class InventoryUI : MonoBehaviour
 
     private void UpdateItemBox(int index, ItemType itemType, int amount)
     {
+        if (index >= boxCount)
+            return;
+
         GameObject actualBox =
-            inventoryUI.transform.Find($"Box{index + 1}").gameObject;
+            boxesGrid.transform.Find($"Box{index + 1}").gameObject;
 
         GameObject iconBox =
             actualBox.transform.Find("IconBox").gameObject;

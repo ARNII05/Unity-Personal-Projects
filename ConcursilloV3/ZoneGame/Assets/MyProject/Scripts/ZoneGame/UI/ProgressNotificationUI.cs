@@ -113,6 +113,7 @@ public class ProgressNotificationUI : NetworkBehaviour
     private void ShowProgressNotificationRpc(ProgressNotification progressNotification)
     {
         ShowProgressNotification(progressNotification);
+        AudioManager.Instance.PlaySFXSound(GameSounds.GetSFXSound(SFXType.Notification), volume: 0.4f);
     }
 
     private void ShowProgressNotification(ProgressNotification progressNotification)
