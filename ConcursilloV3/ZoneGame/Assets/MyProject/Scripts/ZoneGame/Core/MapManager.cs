@@ -220,7 +220,7 @@ public class MapManager : MonoBehaviour
 
                 ResourcesGenerator.Instance.Init();
                 
-                startPos = GoTo(ZoneType.GrandmaHouse, startPos);
+                //startPos = GoTo(ZoneType.GrandmaHouse, startPos);
                 
                 
                 /*
@@ -1209,7 +1209,7 @@ public class MapManager : MonoBehaviour
                         newPos,
                         side
                     );
-                
+
                 if (player.TryGetComponent<NetworkTransform>(out var networkTransform))
                 {
                     networkTransform.Teleport(

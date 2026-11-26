@@ -26,12 +26,12 @@ public abstract class ZoneData
         this.name = name;
 
         player1EntryPoints[0] = new Vector3(-116f, 37.5f, -6.2f);
-        player1EntryPoints[1] = new Vector3(-116f, -40.6f, -6.2f);
+        player1EntryPoints[1] = new Vector3(-116f, -23.2f, -6.2f);
         player1EntryPoints[2] = new Vector3(36.8f, 0.2f, -6.2f);
         player1EntryPoints[3] = new Vector3(-135.3f, 0.2f, -6.2f);
 
         player2EntryPoints[0] = new Vector3(350.5f, 38.8f, -6.2f);
-        player2EntryPoints[1] = new Vector3(350.5f, -41.2f, -6.2f);
+        player2EntryPoints[1] = new Vector3(350.5f, -29.5f, -6.2f);
         player2EntryPoints[2] = new Vector3(502.2f, -0.1f, -6.2f);
         player2EntryPoints[3] = new Vector3(334.3f, -0.1f, -6.2f);
 
@@ -108,7 +108,7 @@ public class Forest : ZoneData
         player1EntryPoints[3] = new Vector3(-132.1f, 5.6f, -6.2f);
 
         player2EntryPoints[0] = new Vector3(417.1f, 43.5f, -6.2f);
-        player2EntryPoints[1] = new Vector3(417.1f, -50.2f, -6.2f);
+        player2EntryPoints[1] = new Vector3(417.1f, -41.4f, -6.2f);
         player2EntryPoints[2] = new Vector3(503.1f, 3.7f, -6.2f);
         player2EntryPoints[3] = new Vector3(330.1f, 3.7f, -6.2f);
 
