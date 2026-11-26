@@ -26904,7 +26904,7 @@ MonoBehaviour:
   grandmaPos: {x: 0, y: 0}
   startPos: {x: 0, y: 0}
   wolfDenPos: {x: 0, y: 0}
-  player1RealPos: {x: -54.7, y: -3.14, z: -6.2}
+  player1RealPos: {x: -49.4, y: 1.1, z: -6.2}
   player2RealPos: {x: 421.3, y: -3.14, z: -6.2}
   wolf: {fileID: 310874355}
 --- !u!114 &1347194777
@@ -40874,7 +40874,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2073411863
 MonoBehaviour:
   m_ObjectHideFlags: 0

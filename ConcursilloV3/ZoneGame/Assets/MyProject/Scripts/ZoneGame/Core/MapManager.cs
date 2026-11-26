@@ -220,7 +220,7 @@ public class MapManager : MonoBehaviour
 
                 ResourcesGenerator.Instance.Init();
                 
-                //startPos = GoTo(ZoneType.GrandmaHouse, startPos);
+                startPos = GoTo(ZoneType.GrandmaHouse, startPos);
                 
                 
                 /*
@@ -542,10 +542,7 @@ public class MapManager : MonoBehaviour
         if (prefab == null)
             return;
 
-        Vector3 zonePosition =
-            player == player1
-                ? zoneData.player1ZonePos
-                : zoneData.player2ZonePos;
+        Vector3 zonePosition = zoneData.GetPlayerZonePosition(player == player1);
 
         GameObject zone = Instantiate(
             prefab,
