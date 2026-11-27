@@ -12,6 +12,7 @@ public abstract class ZoneData
     public bool riverBridged = false;
     public bool canHaveChest = true;
     public Direction firstRiverDirection = Direction.None;
+    public HashSet<Direction> blockedDirections = new();
     protected readonly Vector3[] player1EntryPoints = new Vector3[6];
     protected readonly Vector3[] player2EntryPoints = new Vector3[6];
     protected Vector3 player1ZonePos;

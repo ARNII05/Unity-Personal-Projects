@@ -228,12 +228,6 @@ public class Player : NetworkBehaviour
     {
         bool isNew = discoveredZonesStats.Add(position);
 
-        Debug.Log(
-            $"[STATS] Player {OwnerClientId} | " +
-            $"Pos: {position} | Nueva: {isNew} | " +
-            $"Total: {discoveredZonesStats.Count}"
-        );
-
         if (!isNew)
             return;
 

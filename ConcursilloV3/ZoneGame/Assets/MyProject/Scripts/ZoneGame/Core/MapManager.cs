@@ -237,7 +237,6 @@ public class MapManager : MonoBehaviour
                 player2.NetworkMapPos.Value = startPos;
 
                 PrintMap();
-                PrintZoneCount();
                 CreateInitialZones();
                 IsMapReady = true;
                 SendMapToClient();
@@ -253,7 +252,7 @@ public class MapManager : MonoBehaviour
 
     public void SetMainEnemy()
     {
-        int index = Random.Range(0, 2);
+        int index = 1;
 
         enemyType = index == 0 ? EnemyType.Wolf : EnemyType.Owl;
 
@@ -265,16 +264,22 @@ public class MapManager : MonoBehaviour
 
     public void InitMainEnemy()
     {
-        if (enemyType is EnemyType.Wolf)
+        switch (enemyType)
         {
-            Debug.Log("Wolf is the main enemy");
-            wolf.Init();
-            return;
+            case EnemyType.Wolf:
+                Debug.Log("Wolf is the main enemy");
+                wolf.Init();
+                break;
+
+            case EnemyType.Owl:
+                Debug.Log("Owl is the main enemy");
+                owl.Init();
+                break;
+            
+            default:
+                Debug.Log("Main enemy is None");
+                break;
         }
-
-        owl.Init();
-
-        Debug.Log("Owl is the main enemy");
     }
 
     public void MakeRandomMap()
@@ -978,7 +983,7 @@ public class MapManager : MonoBehaviour
             if (campsPos.Count < maxCamps)
                 continue;
 
-            if (WolfCanLeaveDen(campsPos))
+            if (enemyType != EnemyType.Wolf || WolfCanLeaveDen(campsPos))
             {
                 foreach (var pos in campsPos)
                     map[pos.y, pos.x] = new Camp();
@@ -1290,6 +1295,9 @@ public class MapManager : MonoBehaviour
         Vector2Int position,
         Direction direction)
     {
+        if (map[position.y, position.x].blockedDirections.Contains(direction))
+            return new PlayerMoveResult(false, position);
+
         Vector2Int newPos = position;
 
         switch (direction)

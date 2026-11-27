@@ -22,13 +22,25 @@ public class Zone : MonoBehaviour
 
     public void Setup(Vector2Int mapPos, ZoneData[,] map)
     {
-        foreach (var border in borders)
+        Direction[] directions =
         {
-            Direction direction = border.direction;
-            Vector2Int offset = GetDirectionOffset(direction);
-            Vector2Int neighborPos = mapPos + offset;
-            bool isNeighborValid = IsValid(neighborPos, map);
-            SetBorderAndProtector(direction, isNeighborValid);
+            Direction.North,
+            Direction.South,
+            Direction.East,
+            Direction.West
+        };
+
+        foreach (Direction direction in directions)
+        {
+            Vector2Int neighborPos = mapPos + GetDirectionOffset(direction);
+
+            bool isCursed = map[mapPos.y, mapPos.x]
+                .blockedDirections.Contains(direction);
+
+            bool canMove = IsValid(neighborPos, map) && !isCursed;
+
+            SetBorderAndProtector(direction, canMove);
+            SetProtectorColor(direction, isCursed);
         }
     }
 
@@ -42,6 +54,25 @@ public class Zone : MonoBehaviour
             Direction.West => Vector2Int.left,
             _ => Vector2Int.zero
         };
+    }
+
+    private void SetProtectorColor(Direction direction, bool isCursed)
+    {
+        foreach (var protector in protectors)
+        {
+            if (protector.directionType != direction)
+                continue;
+
+            SpriteRenderer spriteRenderer =
+                protector.GetComponentInChildren<SpriteRenderer>(true);
+
+            if (spriteRenderer == null)
+                continue;
+
+            spriteRenderer.color = isCursed
+                ? new Color32(152, 101, 201, 255)
+                : Color.white;
+        }
     }
 
     private void SetBorderAndProtector(Direction direction, bool active)

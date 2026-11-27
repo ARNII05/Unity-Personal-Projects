@@ -82,7 +82,7 @@ public class Wolf : NetworkBehaviour
         if (time <= 0)
         {
             MoveWolf();
-            time = moveInterval;
+            time += moveInterval;
         }
     }
 
@@ -274,7 +274,7 @@ public class Wolf : NetworkBehaviour
            new[] { pos },
            new[] { item },
            new[] { amount }
-       );
+        );
 
         return true;
     }

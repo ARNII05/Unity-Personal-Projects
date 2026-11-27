@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
 public static class ItemVault
@@ -37,6 +38,8 @@ public static class ItemVault
             ItemType.Meat => "Carne",
             ItemType.Bouquet => "Ramo de Flores",
             ItemType.Log => "Tronco",
+            ItemType.PurificationFragment => "Fragmento de Purificación",
+            ItemType.PurificationAmulet => "Amuleto de Purificación",
             ItemType.Radar => "Radar",
             ItemType.Map => "Mapa",
             ItemType.AncientRelic => "Reliquia Antigua",
@@ -56,6 +59,8 @@ public static class ItemVault
             ItemType.Coin => "Se utiliza para comprar objetos.",
             ItemType.Meat => "Sirve para distraer al lobo y evitar que te robe otros objetos",
             ItemType.Bouquet => "Un ramo de flores para entregárselo a la abuela.",
+            ItemType.PurificationFragment => "Un fragmento extraño para poder fabricar el Amuleto de Purificación",
+            ItemType.PurificationAmulet => "Un amuleto para poder purificar la maldición del búho",
             ItemType.Log => "Permite cruzar los ríos.",
             ItemType.Radar => "Detecta el lobo.",
             ItemType.Map => "Muestra las zonas adyacentes a tu posición.",
@@ -78,6 +83,8 @@ public static class ItemVault
             ItemType.Meat => "Consumible",
             ItemType.Bouquet => "Objeto de misión",
             ItemType.Log => "Recurso de fabricación",
+            ItemType.PurificationFragment => "Recurso de fabricación",
+            ItemType.PurificationAmulet => "Objeto de purificación",
             ItemType.Radar => "Objeto de ayuda",
             ItemType.Map => "Objeto de ayuda",
             ItemType.AncientRelic => "Objeto de misión",
@@ -144,7 +151,8 @@ public static class ItemVault
     public static bool IsStealable(ItemType itemType)
     {
         return itemType != ItemType.Map && itemType != ItemType.Radar
-            && itemType != ItemType.None && itemType != ItemType.AncientRelic;
+            && itemType != ItemType.None && itemType != ItemType.AncientRelic 
+            && itemType != ItemType.PurificationFragment;
     }
 
     public static bool IsBuff(ItemType itemType)
@@ -186,6 +194,8 @@ public enum ItemType
     AncestralNecklace,
     AgilityPotion,
     LuckPotion,
+    PurificationFragment,
+    PurificationAmulet
 }
 
 public enum BuffApplierType
