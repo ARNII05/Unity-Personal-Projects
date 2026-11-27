@@ -928,7 +928,7 @@ public class Player : NetworkBehaviour
 
         GrandmaUI.Instance.Init(this);
 
-        MapManager.Instance.wolf.Init();
+        MapManager.Instance.InitMainEnemy();
     }
 
     public void SetInventory()
@@ -1033,14 +1033,16 @@ public class Player : NetworkBehaviour
         ItemType[] chestItemTypes,
         int[] chestAmounts,
         int[] chestItemCounts,
-        Vector2Int[] positions)
+        Vector2Int[] positions,
+        EnemyType enemyType)
     {
         StartCoroutine(ReceiveMapWhenReady(
             zoneTypes,
             chestItemTypes,
             chestAmounts,
             chestItemCounts,
-            positions
+            positions,
+            enemyType
         ));
     }
 
@@ -1049,7 +1051,8 @@ public class Player : NetworkBehaviour
         ItemType[] chestItemTypes,
         int[] chestAmounts,
         int[] chestItemCounts,
-        Vector2Int[] positions)
+        Vector2Int[] positions,
+        EnemyType enemyType)
     {
         while (MapManager.Instance == null ||
                !MapManager.Instance.ArePlayersRegistered)
@@ -1062,7 +1065,8 @@ public class Player : NetworkBehaviour
             chestItemTypes,
             chestAmounts,
             chestItemCounts,
-            positions
+            positions,
+            enemyType
         );
     }
 }

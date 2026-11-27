@@ -54,7 +54,11 @@ public class MapManager : MonoBehaviour
 
     public Wolf wolf;
 
+    public Owl owl;
+
     public event Action<Vector2Int> OnChestOpened;
+
+    public EnemyType enemyType = EnemyType.None;
 
     public static MapManager Instance
     {
@@ -208,7 +212,7 @@ public class MapManager : MonoBehaviour
 
             if (HasEnoughAccessibleTilesBeforeRiver())
             {
-                PutWolfDenPos(startPos, grandmaPos);
+                SetMainEnemy();
 
                 ImplementCamps();
 
@@ -243,8 +247,34 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.LogError(
-            "No se pudo generar un mapa valido después de 100 intentos."
+            "Can't generate a valid map in 100 attempts."
         );
+    }
+
+    public void SetMainEnemy()
+    {
+        int index = Random.Range(0, 2);
+
+        enemyType = index == 0 ? EnemyType.Wolf : EnemyType.Owl;
+
+        if (enemyType is EnemyType.Owl)
+            return;
+
+        PutWolfDenPos(startPos, grandmaPos);
+    }
+
+    public void InitMainEnemy()
+    {
+        if (enemyType is EnemyType.Wolf)
+        {
+            Debug.Log("Wolf is the main enemy");
+            wolf.Init();
+            return;
+        }
+
+        owl.Init();
+
+        Debug.Log("Owl is the main enemy");
     }
 
     public void MakeRandomMap()
@@ -432,7 +462,8 @@ public class MapManager : MonoBehaviour
             chestItemTypesList.ToArray(),
             chestAmountsList.ToArray(),
             chestItemCounts,
-            new[] { startPos, grandmaPos, wolfDenPos }
+            new[] { startPos, grandmaPos, wolfDenPos },
+            enemyType
         );
     }
 
@@ -441,11 +472,13 @@ public class MapManager : MonoBehaviour
         ItemType[] chestItemTypes,
         int[] chestAmounts,
         int[] chestItemCounts,
-        Vector2Int[] positions)
+        Vector2Int[] positions,
+        EnemyType enemyType)
     {
         startPos = positions[0];
         grandmaPos = positions[1];
         wolfDenPos = positions[2];
+        this.enemyType = enemyType;
 
         int index = 0;
         int chestItemIndex = 0;
@@ -1349,4 +1382,11 @@ public class MapManager : MonoBehaviour
             this.newPos = newPos;
         }
     }
+}
+
+public enum EnemyType
+{
+    Wolf,
+    Owl,
+    None
 }
