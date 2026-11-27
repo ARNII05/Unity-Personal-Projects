@@ -15,6 +15,8 @@ public class CraftingSystem : MonoBehaviour
 
     public const int ancientRelicsToOpenAncientChest = 2;
 
+    public const int purificationFragmentsForPurificationAmulet = 6;
+
     private void Awake()
     {
         player = GetComponent<Player>();

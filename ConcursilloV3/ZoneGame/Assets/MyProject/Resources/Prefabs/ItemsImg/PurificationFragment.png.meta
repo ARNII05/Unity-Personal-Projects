@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 3a7ad0597e7ae67498fa92f4071f3a6d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -753223445348923167
+    second: PurificationFragment_0
+  - first:
+      213: -7667946727077250528
+    second: PurificationFragment_1
+  - first:
+      213: -6940445473917469963
+    second: PurificationFragment_2
+  - first:
+      213: -404143884100583014
+    second: PurificationFragment_3
+  - first:
+      213: -8726251207616155324
+    second: PurificationFragment_4
+  - first:
+      213: -8885422360808277452
+    second: PurificationFragment_5
+  - first:
+      213: -8888615673181760940
+    second: PurificationFragment_6
+  - first:
+      213: -8538342724217888798
+    second: PurificationFragment_7
+  - first:
+      213: -7774494143998939419
+    second: PurificationFragment_8
+  - first:
+      213: 3673136472154411490
+    second: PurificationFragment_9
+  - first:
+      213: 7310891922560489887
+    second: PurificationFragment_10
+  - first:
+      213: -6909641455939437624
+    second: PurificationFragment_11
+  - first:
+      213: 5744705833273649630
+    second: PurificationFragment_12
+  - first:
+      213: -8151720937117667467
+    second: PurificationFragment_13
+  - first:
+      213: 8910301852223357437
+    second: PurificationFragment_14
+  - first:
+      213: -2121484248654875789
+    second: PurificationFragment_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: PurificationFragment_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 23
+        width: 1237
+        height: 1203
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e84b7764430c85f0800000000000000
+      internalID: -753223445348923167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_1
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 1124
+        width: 136
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02af0f7041bf59590800000000000000
+      internalID: -7667946727077250528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_2
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 1020
+        width: 48
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fa7e201d959eaf90800000000000000
+      internalID: -6940445473917469963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_3
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 1020
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a91c9065741346af0800000000000000
+      internalID: -404143884100583014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_4
+      rect:
+        serializedVersion: 2
+        x: 1071
+        y: 808
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4413735a2c026e680800000000000000
+      internalID: -8726251207616155324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_5
+      rect:
+        serializedVersion: 2
+        x: 1159
+        y: 661
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43ab5b89073a0b480800000000000000
+      internalID: -8885422360808277452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_6
+      rect:
+        serializedVersion: 2
+        x: 940
+        y: 527
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 452180f932b45a480800000000000000
+      internalID: -8888615673181760940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_7
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 264
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ef9378c786b18980800000000000000
+      internalID: -8538342724217888798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_8
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 184
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5eea69e54c27b1490800000000000000
+      internalID: -7774494143998939419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_9
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 192
+        width: 32
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e19b4a092a99f230800000000000000
+      internalID: 3673136472154411490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_10
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 162
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f999d730871857560800000000000000
+      internalID: 7310891922560489887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_11
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 127
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cbba6564b50c10a0800000000000000
+      internalID: -6909641455939437624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_12
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 128
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed9e363c48b49bf40800000000000000
+      internalID: 5744705833273649630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_13
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 117
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57facf25ff44fde80800000000000000
+      internalID: -8151720937117667467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_14
+      rect:
+        serializedVersion: 2
+        x: 739
+        y: 87
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df147476350c7ab70800000000000000
+      internalID: 8910301852223357437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationFragment_15
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 63
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 373f652e059fe82e0800000000000000
+      internalID: -2121484248654875789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      PurificationFragment_0: -753223445348923167
+      PurificationFragment_1: -7667946727077250528
+      PurificationFragment_10: 7310891922560489887
+      PurificationFragment_11: -6909641455939437624
+      PurificationFragment_12: 5744705833273649630
+      PurificationFragment_13: -8151720937117667467
+      PurificationFragment_14: 8910301852223357437
+      PurificationFragment_15: -2121484248654875789
+      PurificationFragment_2: -6940445473917469963
+      PurificationFragment_3: -404143884100583014
+      PurificationFragment_4: -8726251207616155324
+      PurificationFragment_5: -8885422360808277452
+      PurificationFragment_6: -8888615673181760940
+      PurificationFragment_7: -8538342724217888798
+      PurificationFragment_8: -7774494143998939419
+      PurificationFragment_9: 3673136472154411490
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

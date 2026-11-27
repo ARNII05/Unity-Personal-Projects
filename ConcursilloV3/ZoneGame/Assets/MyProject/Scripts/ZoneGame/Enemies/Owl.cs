@@ -8,12 +8,13 @@ using UnityEngine.UIElements;
 public class Owl : NetworkBehaviour
 {
     private bool readyToMove = false;
-    private const int moveInterval = 20;
+    private const float minCurseInterval = 75f;
+    private const float maxCurseInterval = 105f;
 
     private int mapWidth;
     private int mapHeight;
 
-    private float time = moveInterval;
+    private float time = 0;
 
     private Player player1, player2;
 
@@ -31,7 +32,6 @@ public class Owl : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
 
-
     public void Init()
     {
         map = MapManager.Instance.map;
@@ -44,12 +44,18 @@ public class Owl : NetworkBehaviour
             player2 = MapManager.Instance.Player2;
 
             readyToMove = true;
+            ResetCurseTimer();
         }
+    }
+    
+    private void ResetCurseTimer()
+    {
+        time = Random.Range(minCurseInterval, maxCurseInterval);
     }
 
     private void Update()
     {
-        if (!IsServer || !readyToMove || isCurseActive)
+        if (!IsServer || !readyToMove || isCurseActive || isPreparingCurse)
             return;
 
         time -= Time.deltaTime;
@@ -57,7 +63,6 @@ public class Owl : NetworkBehaviour
         if (time <= 0)
         {
             OrganizeCursedZones();
-            time += moveInterval;
         }
     }
 
@@ -77,36 +82,83 @@ public class Owl : NetworkBehaviour
             player2.State.Value != PlayerState.Transitioning
         );
 
-        Vector2Int startPos = new(
-            Random.Range(0, mapWidth),
-            Random.Range(0, mapHeight)
-        );
+        const int maxAttempts = 20;
+        bool success = false;
 
-        List<Vector2Int> generatedZones = GenerateCurseShape(startPos);
-
-        if (generatedZones.Count != zonesPerCurse)
+        for (int i = 0; i < maxAttempts; i++)
         {
-            Debug.LogWarning("Owl could not generate the required cursed zones");
-            isPreparingCurse = false;
-            yield break;
+            Vector2Int startPos = GetCurseStartPosition();
+            List<Vector2Int> generatedZones = GenerateCurseShape(startPos);
+
+            if (generatedZones.Count != zonesPerCurse)
+                continue;
+
+            if (!DistributePurificationFragments(generatedZones))
+            {
+                RemoveFragments();
+                continue;
+            }
+
+            isCurseActive = true;
+            State.Value = OwlState.WaitingForPurification;
+
+            ApplyCurseRpc(generatedZones.ToArray());
+
+            success = true;
+            break;
         }
 
-        bool addedAllFragments = DistributePurificationFragments(generatedZones);
-
-        if (!addedAllFragments)
+        if (!success)
         {
-            RemoveFragments();
-            Debug.LogError($"Could not add all fragments to chest. Removed all.");
-            isPreparingCurse = false;
-            yield break;
+            Debug.LogWarning("Owl could not find a valid curse region");
+            ResetCurseTimer();
         }
-
-        isCurseActive = true;
-        State.Value = OwlState.WaitingForPurification;
-
-        ApplyCurseRpc(generatedZones.ToArray());
 
         isPreparingCurse = false;
+    }
+
+    private Vector2Int GetCurseStartPosition()
+    {
+        List<(Vector2Int pos, int weight)> candidates = new();
+
+        Vector2Int p1Pos = player1.NetworkMapPos.Value;
+        Vector2Int p2Pos = player2.NetworkMapPos.Value;
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                Vector2Int pos = new(x, y);
+
+                int distance = Mathf.Min(
+                    Mathf.Abs(pos.x - p1Pos.x) + Mathf.Abs(pos.y - p1Pos.y),
+                    Mathf.Abs(pos.x - p2Pos.x) + Mathf.Abs(pos.y - p2Pos.y)
+                );
+
+                int weight = distance switch
+                {
+                    0 => 15,
+                    1 => 10,
+                    2 => 6,
+                    _ => 1
+                };
+
+                candidates.Add((pos, weight));
+            }
+        }
+
+        int totalWeight = candidates.Sum(c => c.weight);
+        int random = Random.Range(0, totalWeight);
+
+        foreach (var (pos, weight) in candidates)
+        {
+            random -= weight;
+
+            if (random < 0)
+                return pos;
+        }
+
+        return p1Pos;
     }
 
     private void RemoveFragments()
@@ -119,43 +171,95 @@ public class Owl : NetworkBehaviour
                 zone.chestInventory.Remove(ItemType.PurificationFragment, fragmentsAmount);
         }
 
-        Player[] players = new[] { player1, player2 };
+        if (!IsServer)
+            return;
 
-        foreach (Player player in players)
+        foreach (Player player in new[] { player1, player2 })
         {
-            int fragmentsAmount = player.inventory.GetAmount(ItemType.PurificationFragment);
+            int amount = player.inventory.GetAmount(ItemType.PurificationFragment);
 
-            if (fragmentsAmount > 0)
-                player.inventory.Remove(ItemType.PurificationFragment, fragmentsAmount);
+            if (amount <= 0)
+                continue;
+
+            if (player.inventory.Remove(ItemType.PurificationFragment, amount))
+                player.SetInventory();
         }
     }
 
     private bool DistributePurificationFragments(List<Vector2Int> generatedZones)
     {
-        Vector2Int p1Pos = player1.NetworkMapPos.Value;
-        Vector2Int p2Pos = player2.NetworkMapPos.Value;
+        (int inside, int outside) = GetFragmentsDistribution(generatedZones);
 
-        bool p1Inside = generatedZones.Contains(p1Pos);
-        bool p2Inside = generatedZones.Contains(p2Pos);
+        List<Vector2Int> normalZones = GetValidNormalZones(generatedZones);
+
+        ShuffleZones(normalZones);
+        ShuffleZones(generatedZones);
+
+        List<Vector2Int> positions = new();
+        List<ItemType> items = new();
+        List<int> amounts = new();
+
+        bool insideSuccess = AddPurificationFragmentsToChest(
+            generatedZones, inside, positions, items, amounts);
+
+        bool outsideSuccess = AddPurificationFragmentsToChest(
+            normalZones, outside, positions, items, amounts);
+
+        if (!insideSuccess || !outsideSuccess)
+            return false;
+
+        SyncPurificationFragments(positions, items, amounts);
+
+        return true;
+    }
+
+    private void ShuffleZones(List<Vector2Int> zones)
+    {
+        for (int i = zones.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+
+            (zones[i], zones[j]) = (zones[j], zones[i]);
+        }
+    }
+
+    private (int inside, int outside) GetFragmentsDistribution(
+        List<Vector2Int> generatedZones)
+    {
+        bool p1Inside = generatedZones.Contains(player1.NetworkMapPos.Value);
+        bool p2Inside = generatedZones.Contains(player2.NetworkMapPos.Value);
 
         int totalFragments =
             CraftingSystem.purificationFragmentsForPurificationAmulet;
 
-        int totalFragmentsInCursedZones = (p1Inside, p2Inside) switch
+        int inside = (p1Inside, p2Inside) switch
         {
             (true, true) => totalFragments,
             (false, false) => 0,
             _ => Random.Range(1, totalFragments)
         };
 
-        int totalFragmentsOutsideCursedZones =
-            totalFragments - totalFragmentsInCursedZones;
+        return (inside, totalFragments - inside);
+    }
 
-        List<ItemType> items = new();
-        List<int> amounts = new();
-        
-        List<Vector2Int> positions = new();
+    private List<Vector2Int> GetValidNormalZones(
+        List<Vector2Int> generatedZones)
+    {
+        bool builderIsInside =
+            (player1.Role.Value == PlayerRole.Builder &&
+             generatedZones.Contains(player1.NetworkMapPos.Value)) ||
+            (player2.Role.Value == PlayerRole.Builder &&
+             generatedZones.Contains(player2.NetworkMapPos.Value));
+
+        bool needsMomPartRestriction =
+            builderIsInside &&
+            !map.Cast<ZoneData>().Any(zone => zone.riverBridged);
+
         List<Vector2Int> normalZones = new();
+
+        List<Vector2Int> momPart = needsMomPartRestriction
+            ? GetTilesInMomPart(MapManager.Instance.startPos)
+            : null;
 
         for (int y = 0; y < mapHeight; y++)
         {
@@ -163,71 +267,136 @@ public class Owl : NetworkBehaviour
             {
                 Vector2Int pos = new(x, y);
 
-                if (!generatedZones.Contains(pos))
-                    normalZones.Add(pos);
+                if (generatedZones.Contains(pos))
+                    continue;
+
+                if (needsMomPartRestriction && !momPart.Contains(pos))
+                    continue;
+
+                normalZones.Add(pos);
             }
         }
 
-        for (int i = normalZones.Count - 1; i > 0; i--)
+        return normalZones;
+    }
+
+    private void SyncPurificationFragments(
+        List<Vector2Int> positions,
+        List<ItemType> items,
+        List<int> amounts)
+    {
+        for (int i = 0; i < positions.Count; i++)
         {
-            int j = Random.Range(0, i + 1);
-            (normalZones[i], normalZones[j]) = (normalZones[j], normalZones[i]);
+            Vector2Int pos = positions[i];
+
+            Debug.Log(
+                $"Added {amounts[i]} purification fragments in " +
+                $"{map[pos.y, pos.x]} (Y: {pos.y + 1}, X: {pos.x + 1})"
+            );
         }
-
-        for (int i = generatedZones.Count - 1; i > 0; i--)
-        {
-            int j = Random.Range(0, i + 1);
-            (generatedZones[i], generatedZones[j]) = (generatedZones[j], generatedZones[i]);
-        }
-
-        bool addedTotalFragmentsInCursedZones = AddPurificationFragmentsToChest(generatedZones, totalFragmentsInCursedZones, 
-            positions, items, amounts);
-
-        bool addedTotalFragmentsInNormalZones = AddPurificationFragmentsToChest(normalZones, totalFragmentsOutsideCursedZones,
-            positions, items, amounts);
-
-        bool success = addedTotalFragmentsInCursedZones &&
-               addedTotalFragmentsInNormalZones;
-
-        if (!success)
-            return false;
 
         player2.SyncChestItemsRpc(
             positions.ToArray(),
             items.ToArray(),
             amounts.ToArray()
         );
+    }
 
-        return true;
+    private List<Vector2Int> GetTilesInMomPart(Vector2Int position)
+    {
+        List<Vector2Int> tilesInZone = new();
+        bool[,] visited = new bool[mapHeight, mapWidth];
+        Queue<Vector2Int> queue = new();
+
+        queue.Enqueue(position);
+        visited[position.y, position.x] = true;
+
+        Vector2Int[] directions =
+        {
+            Vector2Int.up,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.right
+        };
+
+        while (queue.Count > 0)
+        {
+            Vector2Int current = queue.Dequeue();
+
+            tilesInZone.Add(current);
+
+            foreach (Vector2Int direction in directions)
+            {
+                Vector2Int next = current + direction;
+
+                if (next.x < 0 || next.x >= mapWidth ||
+                    next.y < 0 || next.y >= mapHeight)
+                    continue;
+
+                if (visited[next.y, next.x])
+                    continue;
+
+                ZoneData nextZone = map[next.y, next.x];
+
+                if (nextZone == null)
+                    continue;
+
+                visited[next.y, next.x] = true;
+
+                bool isRiver = nextZone.type == ZoneType.VerticalRiver ||
+                               nextZone.type == ZoneType.HorizontalRiver;
+
+                if (isRiver)
+                {
+                    tilesInZone.Add(next);
+                    continue;
+                }
+
+                queue.Enqueue(next);
+            }
+        }
+
+        return tilesInZone;
     }
 
     private bool AddPurificationFragmentsToChest(List<Vector2Int> zones, int totalFragments, 
         List<Vector2Int> positions, List<ItemType> items, List<int> amounts)
     {
         int actualFragments = 0;
+        int attemps = 0;
+        const int maxAttemps = 100;
 
-        foreach (Vector2Int pos in zones)
+        while (attemps < maxAttemps && 
+            actualFragments < totalFragments)
         {
-            if (actualFragments >= totalFragments)
-                break;
+            foreach (Vector2Int pos in zones)
+            {
+                if (actualFragments >= totalFragments)
+                    break;
 
-            ZoneData zone = map[pos.y, pos.x];
+                ZoneData zone = map[pos.y, pos.x];
 
-            if (!zone.chestInventory.HasSpaceFor(ItemType.PurificationFragment))
-                continue;
+                if (zone.type == ZoneType.Swamp)
+                    continue;
 
-            int remaining = totalFragments - actualFragments;
+                if (!zone.chestInventory.HasSpaceFor(ItemType.PurificationFragment))
+                    continue;
 
-            int amount = Random.Range(1, Mathf.Min(remaining, 2) + 1);
+                int remaining = totalFragments - actualFragments;
 
-            if (!zone.chestInventory.Add(ItemType.PurificationFragment, amount))
-                continue;
+                int amount = Random.Range(1, Mathf.Min(remaining, 2) + 1);
 
-            positions.Add(pos);
-            items.Add(ItemType.PurificationFragment);
-            amounts.Add(amount);
+                if (!zone.chestInventory.Add(ItemType.PurificationFragment, amount))
+                    continue;
 
-            actualFragments += amount;
+                positions.Add(pos);
+                items.Add(ItemType.PurificationFragment);
+                amounts.Add(amount);
+
+                actualFragments += amount;
+            }
+
+            attemps++;
         }
 
         return actualFragments == totalFragments;
@@ -328,7 +497,7 @@ public class Owl : NetworkBehaviour
         {
             isCurseActive = false;
             State.Value = OwlState.Resting;
-            time = moveInterval;
+            ResetCurseTimer();
         }
 
         UpdatePlayerCurrentZone();
@@ -369,10 +538,10 @@ public class Owl : NetworkBehaviour
             _ => Direction.None
         };
     }
-}
 
-public enum OwlState
-{
-    Resting,
-    WaitingForPurification,
+    public enum OwlState
+    {
+        Resting,
+        WaitingForPurification,
+    }
 }

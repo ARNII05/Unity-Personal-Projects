@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: beb1dc14dda65084594811132e524194
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6382151014947323817
+    second: PurificationAmulet_0
+  - first:
+      213: -5820465133601262664
+    second: PurificationAmulet_1
+  - first:
+      213: -6950334391537239810
+    second: PurificationAmulet_2
+  - first:
+      213: 3745766677962017958
+    second: PurificationAmulet_3
+  - first:
+      213: -1775963403595223000
+    second: PurificationAmulet_4
+  - first:
+      213: 1297273498308956109
+    second: PurificationAmulet_5
+  - first:
+      213: 7962248407902517123
+    second: PurificationAmulet_6
+  - first:
+      213: 2851032474943238383
+    second: PurificationAmulet_7
+  - first:
+      213: -1504157023939053630
+    second: PurificationAmulet_8
+  - first:
+      213: -4702633960698400658
+    second: PurificationAmulet_9
+  - first:
+      213: -3728293227035968134
+    second: PurificationAmulet_10
+  - first:
+      213: -1491968666942464959
+    second: PurificationAmulet_11
+  - first:
+      213: 7242698082199340816
+    second: PurificationAmulet_12
+  - first:
+      213: -4790368148392114657
+    second: PurificationAmulet_13
+  - first:
+      213: -583899589103535490
+    second: PurificationAmulet_14
+  - first:
+      213: 7850282321325877894
+    second: PurificationAmulet_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: PurificationAmulet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 21
+        width: 1227
+        height: 1193
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9af75d4b884f19850800000000000000
+      internalID: 6382151014947323817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_1
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 990
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b376249ccd893fa0800000000000000
+      internalID: -5820465133601262664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_2
+      rect:
+        serializedVersion: 2
+        x: 1069
+        y: 883
+        width: 7
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef8fd3202b37b8f90800000000000000
+      internalID: -6950334391537239810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_3
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 863
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6accb6b92f2abf330800000000000000
+      internalID: 3745766677962017958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_4
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 811
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 820fc92a1b28a57e0800000000000000
+      internalID: -1775963403595223000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_5
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 806
+        width: 12
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcfcb3b9f57d00210800000000000000
+      internalID: 1297273498308956109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_6
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 773
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 387f27ebdb69f7e60800000000000000
+      internalID: 7962248407902517123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_7
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 706
+        width: 11
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe038183ee6e09720800000000000000
+      internalID: 2851032474943238383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_8
+      rect:
+        serializedVersion: 2
+        x: 1174
+        y: 682
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c734b5f729202be0800000000000000
+      internalID: -1504157023939053630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_9
+      rect:
+        serializedVersion: 2
+        x: 1157
+        y: 570
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6032ef0453ecbeb0800000000000000
+      internalID: -4702633960698400658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_10
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 372
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7db6083011724cc0800000000000000
+      internalID: -3728293227035968134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_11
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 168
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14c91e6f6667b4be0800000000000000
+      internalID: -1491968666942464959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_12
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 168
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01705e4488b338460800000000000000
+      internalID: 7242698082199340816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_13
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 83
+        width: 10
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f160ebbac81358db0800000000000000
+      internalID: -4790368148392114657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_14
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 47
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7abcf6da6295e7f0800000000000000
+      internalID: -583899589103535490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PurificationAmulet_15
+      rect:
+        serializedVersion: 2
+        x: 581
+        y: 0
+        width: 40
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68a682dbd2ec1fc60800000000000000
+      internalID: 7850282321325877894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      PurificationAmulet_0: 6382151014947323817
+      PurificationAmulet_1: -5820465133601262664
+      PurificationAmulet_10: -3728293227035968134
+      PurificationAmulet_11: -1491968666942464959
+      PurificationAmulet_12: 7242698082199340816
+      PurificationAmulet_13: -4790368148392114657
+      PurificationAmulet_14: -583899589103535490
+      PurificationAmulet_15: 7850282321325877894
+      PurificationAmulet_2: -6950334391537239810
+      PurificationAmulet_3: 3745766677962017958
+      PurificationAmulet_4: -1775963403595223000
+      PurificationAmulet_5: 1297273498308956109
+      PurificationAmulet_6: 7962248407902517123
+      PurificationAmulet_7: 2851032474943238383
+      PurificationAmulet_8: -1504157023939053630
+      PurificationAmulet_9: -4702633960698400658
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
